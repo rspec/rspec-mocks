@@ -52,8 +52,8 @@ module RSpec
         @already_proxied_respond_to
       end
 
-      def add_message_expectation(location, method_name, opts={}, &block)        
-        method_double[method_name].add_expectation @error_generator, @expectation_ordering, location, opts, &block
+      def add_message_expectation(location, method_name, opts={}, &implementation)        
+        method_double[method_name].add_expectation @error_generator, @expectation_ordering, location, opts, &implementation
       end
 
       def add_negative_message_expectation(location, method_name, &implementation)
@@ -94,16 +94,16 @@ module RSpec
           if expectation = find_almost_matching_expectation(method_name, *args)
             expectation.advise(args, block) unless expectation.expected_messages_received?
           end
-          stub.invoke(args, block)
+          stub.invoke(*args, &block)
         elsif expectation
-          expectation.invoke(args, block)
+          expectation.invoke(*args, &block)
         elsif expectation = find_almost_matching_expectation(method_name, *args)
           expectation.advise(args, block) if null_object? unless expectation.expected_messages_received?
           raise_unexpected_message_args_error(expectation, *args) unless (has_negative_expectation?(method_name) or null_object?)
         elsif @object.is_a?(Class)
           @object.superclass.send(method_name, *args, &block)
         else
-          @object.__send__ :method_missing, method_name, *args, &block
+          @object.__send__(:method_missing, method_name, *args, &block)
         end
       end
 
@@ -112,7 +112,7 @@ module RSpec
       end
 
       def raise_unexpected_message_error(method_name, *args)
-        @error_generator.raise_unexpected_message_error method_name, *args
+        @error_generator.raise_unexpected_message_error(method_name, *args)
       end
       
     private

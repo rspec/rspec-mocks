@@ -8,13 +8,12 @@ module RSpec
       attr_accessor :error_generator
       protected :error_generator, :error_generator=
       
-      def initialize(error_generator, expectation_ordering, expected_from, sym, method_block, expected_received_count=1, opts={}, &implementation)
+      def initialize(error_generator, expectation_ordering, expected_from, sym, expected_received_count=1, opts={}, &implementation)
         @error_generator = error_generator
         @error_generator.opts = opts
         @expected_from = expected_from
         @sym = sym
-        @method_block = method_block
-        @return_block = nil
+        @method_block = @return_block = implementation
         @actual_received_count = 0
         @expected_received_count = expected_received_count
         @args_expectation = ArgumentExpectation.new([ArgumentMatchers::AnyArgsMatcher.new])
@@ -27,14 +26,13 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @args_to_yield_were_cloned = false
-        @return_block = implementation
         @eval_context = nil
       end
       
-      def build_child(expected_from, method_block, expected_received_count, opts={})
+      def build_child(expected_from, expected_received_count, opts={}, &implementation)
         child = clone
         child.expected_from = expected_from
-        child.method_block = method_block
+        child.method_block = implementation
         child.expected_received_count = expected_received_count
         child.clear_actual_received_count!
         new_gen = error_generator.clone
@@ -49,17 +47,17 @@ module RSpec
       end
 
       def and_return(*values, &return_block)
-        Kernel::raise AmbiguousReturnError unless @method_block.nil?
-        case values.size
-          when 0 then value = nil
-          when 1 then value = values[0]
+        Kernel::raise AmbiguousReturnError if @method_block
+        if values.size < 2
+          value = values[0]
         else
-          value = values
           @consecutive = true
-          @expected_received_count = values.size if !ignoring_args? &&
-                                                    @expected_received_count < values.size
+          unless ignoring_args?
+            @expected_received_count = [values.size, @expected_received_count].max
+          end
+          value = values
         end
-        @return_block = block_given? ? return_block : lambda { value }
+        @return_block = return_block || lambda { value }
       end
       
       # :call-seq:
@@ -98,11 +96,11 @@ module RSpec
         self
       end
       
-      def matches(sym, args)
-        @sym == sym and @args_expectation.args_match?(args)
+      def matches(sym, *args)
+        @sym == sym and @args_expectation.args_match?(*args)
       end
       
-      def invoke(args, block)
+      def invoke(*args, &block)
         if @expected_received_count == 0
           @failed_fast = true
           @actual_received_count += 1
@@ -112,23 +110,23 @@ module RSpec
         @order_group.handle_order_constraint self
 
         begin
-          Kernel::raise @exception_to_raise unless @exception_to_raise.nil?
-          Kernel::throw @symbol_to_throw unless @symbol_to_throw.nil?
+          Kernel::raise @exception_to_raise if @exception_to_raise
+          Kernel::throw @symbol_to_throw    if @symbol_to_throw
           
-          if !@method_block.nil?
-            default_return_val = invoke_method_block(args)
-          elsif @args_to_yield.size > 0 || @eval_context
-            default_return_val = invoke_with_yield(&block)
-          else
-            default_return_val = nil
-          end
+          default_return_val = if @method_block
+                                 eval_block(*args, &@method_block)
+                               elsif @args_to_yield.size > 0 || @eval_context
+                                 invoke_with_yield(&block)
+                               else
+                                 nil
+                               end
           
           if @consecutive
-            return invoke_consecutive_return_block(args, block)
-          elsif @return_block
-            return invoke_return_block(args, block)
+            invoke_consecutive_return_block(args, block)
+          elsif @return_block && !@method_block
+            eval_block(*args, &@return_block)
           else
-            return default_return_val
+            default_return_val
           end
         ensure
           @actual_received_count += 1
@@ -142,14 +140,6 @@ module RSpec
       
       protected
 
-      def invoke_method_block(args)
-        begin
-          @method_block.call(*args)
-        rescue => detail
-          @error_generator.raise_block_failed_error @sym, detail.message
-        end
-      end
-      
       def invoke_with_yield(&block)
         if block.nil?
           @error_generator.raise_missing_block_error @args_to_yield
@@ -170,6 +160,8 @@ module RSpec
         else
           block.call(*args)
         end
+      rescue => e
+        @error_generator.raise_block_failed_error @sym, e.message
       end
 
       def invoke_consecutive_return_block(args, block)
@@ -179,7 +171,7 @@ module RSpec
       end
       
       def invoke_return_block(args, block)
-        args << block unless block.nil?
+        args << block if block
         # Ruby 1.9 - when we set @return_block to return values
         # regardless of arguments, any arguments will result in
         # a "wrong number of arguments" error
@@ -329,8 +321,8 @@ module RSpec
     end
     
     class NegativeMessageExpectation < MessageExpectation
-      def initialize(message, expectation_ordering, expected_from, sym, method_block)
-        super(message, expectation_ordering, expected_from, sym, method_block, 0)
+      def initialize(message, expectation_ordering, expected_from, sym, &method_block)
+        super(message, expectation_ordering, expected_from, sym, 0, &method_block)
       end
       
       def negative_expectation_for?(sym)

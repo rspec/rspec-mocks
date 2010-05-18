@@ -366,7 +366,7 @@ module RSpec
           @mock.yield_me do |x|
             raise "Bang"
           end
-        }.should raise_error(StandardError, "Bang")
+        }.should raise_error(/Bang/)
 
         @mock.rspec_verify
       end
