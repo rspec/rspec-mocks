@@ -3,14 +3,25 @@ require 'spec_helper'
 module RSpec
   module Mocks
     describe "#any_instance" do
+      class CustomErrorForTesting < StandardError;end
       let(:klass) do 
         klass = Class.new
         klass.class_eval{ def ooga;2;end }
         klass
       end
       
-      it "should raise an error if the method chain is in the wrong order" do
-        lambda{ klass.any_instance.with("1").stub(:foo) }.should raise_error(NoMethodError)
+      context "invocation order" do
+        it "should raise an error if 'stub' follows 'with'" do
+          lambda{ klass.any_instance.with("1").stub(:foo) }.should raise_error(NoMethodError)
+        end
+        
+        it "should raise an error if 'with' follows 'and_return'" do
+          lambda{ klass.any_instance.stub(:foo).and_return(1).with("1") }.should raise_error(NoMethodError)
+        end
+        
+        it "should raise an error if 'with' follows 'and_raise'" do
+          lambda{ klass.any_instance.stub(:foo).and_raise(1).with("1") }.should raise_error(NoMethodError)
+        end
       end
       
       context "with #stub" do
@@ -36,6 +47,18 @@ module RSpec
           klass.any_instance.stub(:foo).and_return(return_value)
           klass.new.foo.should be(return_value)
           klass.new.foo.should be(return_value)
+        end
+      end
+
+      context "with #and_raise" do
+        it "stubs a method that doesn't exist on any instance of a particular class" do
+          klass.any_instance.stub(:foo).and_raise(CustomErrorForTesting)
+          lambda{ klass.new.foo}.should raise_error(CustomErrorForTesting)
+        end
+
+        it "stubs a method that exists on any instance of a particular class" do
+          klass.any_instance.stub(:ooga).and_raise(CustomErrorForTesting)
+          lambda{ klass.new.ooga}.should raise_error(CustomErrorForTesting)
         end
       end
       

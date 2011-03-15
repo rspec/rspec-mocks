@@ -4,7 +4,8 @@ module RSpec
       class StubChain
         InvocationOrder = {
           :with => [:stub],
-          :and_return => [:with, :stub]
+          :and_return => [:with, :stub],
+          :and_raise => [:with, :stub]
         }
         
         def initialize(method_name, *args, &block)
@@ -19,6 +20,10 @@ module RSpec
         def and_return(*args, &block)
           record(:and_return, args, block)
         end
+        
+        def and_raise(*args, &block)
+          record(:and_raise, args, block)
+        end
 
         def record(rspec_method_name, args, block)
           verify_invocation_order(rspec_method_name, args, block)
@@ -28,12 +33,12 @@ module RSpec
         
         def verify_invocation_order(rspec_method_name, args, block)
           if rspec_method_name != :stub && !InvocationOrder[rspec_method_name].include?(last_message)
-            raise(NoMethodError, "Undefined method #{method_name}")
+            raise(NoMethodError, "Undefined method #{rspec_method_name}")
           end
         end
         
         def last_message
-          @messages.last.first.first
+          @messages.last.first.first unless @messages.empty?
         end
         
         def playback!(target)
