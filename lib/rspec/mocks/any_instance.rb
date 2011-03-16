@@ -1,16 +1,10 @@
 module RSpec
   module Mocks
     module AnyInstance
-      class StubChain
-        InvocationOrder = {
-          :with => [:stub],
-          :and_return => [:with, :stub],
-          :and_raise => [:with, :stub]
-        }
-        
-        def initialize(method_name, *args, &block)
+      class Chain        
+        def initialize(rspec_method_name, method_name, *args, &block)
           @messages = []
-          record(:stub, [method_name] + args, block)
+          record(rspec_method_name, [method_name] + args, block)
         end
         
         def with(*args, &block)
@@ -24,15 +18,16 @@ module RSpec
         def and_raise(*args, &block)
           record(:and_raise, args, block)
         end
-
-        def record(rspec_method_name, args, block)
-          verify_invocation_order(rspec_method_name, args, block)
-          @messages << [args.unshift(rspec_method_name), block]
-          self
+        
+        def playback!(instance)
+          @messages.inject(instance) do |instance, message|
+            instance.__send__(*message.first, &message.last)
+          end
         end
         
+        private
         def verify_invocation_order(rspec_method_name, args, block)
-          if rspec_method_name != :stub && !InvocationOrder[rspec_method_name].include?(last_message)
+          if !invocation_order[rspec_method_name].include?(last_message)
             raise(NoMethodError, "Undefined method #{rspec_method_name}")
           end
         end
@@ -41,48 +36,101 @@ module RSpec
           @messages.last.first.first unless @messages.empty?
         end
         
-        def playback!(target)
-          @messages.inject(target) do |target, message|
-            target.__send__(*message.first, &message.last)
-          end
+        def record(rspec_method_name, args, block)
+          verify_invocation_order(rspec_method_name, args, block)
+          @messages << [args.unshift(rspec_method_name), block]
+          self
+        end
+      end
+      
+      class StubChain < Chain
+        def invocation_order
+          @invocation_order ||= {
+            :stub => [nil],
+            :with => [:stub],
+            :and_return => [:with, :stub],
+            :and_raise => [:with, :stub]
+          }
+        end
+          
+        def initialize(*args, &block)
+          super(:stub, *args, &block)
+        end
+      end
+
+      class ExpectationChain < Chain
+        def invocation_order
+          @invocation_order ||= {
+            :should_receive => [nil],
+            :with => [:should_receive],
+            :and_return => [:with, :should_receive],
+            :and_raise => [:with, :should_receive]
+          }
+        end
+        
+        def initialize(*args, &block)
+          super(:should_receive, *args, &block)
         end
       end
       
       class Recorder
         def initialize(klass)
-          @stubs = {}
+          @observed_methods = {}
+          @played_methods = []
           @klass = klass
         end
 
         def stub(method_name, *args, &block)
           observe!(method_name)
-          @stubs[method_name.to_sym] = StubChain.new(method_name, *args, &block)
+          @observed_methods[method_name.to_sym] = StubChain.new(method_name, *args, &block)
         end
         
-        def playback!(target, method_name)
-          @stubs[method_name].playback!(target)
-        end
-        
-        def observed_methods
-          @stubs.keys
+        def should_receive(method_name, *args, &block)
+          observe!(method_name)
+          @observed_methods[method_name.to_sym] = ExpectationChain.new(method_name, *args, &block)
         end
         
         def stop_observing_currently_observed_methods!
-          observed_methods.each do |method_name|
+          observed_method_names.each do |method_name|
             stop_observing!(method_name)
           end
         end
-
+        
+        def playback_to_uninvoked_observed_methods_with_expectations!(instance)
+          @observed_methods.each do |method_name, chain|
+            case chain
+            when ExpectationChain
+              chain.playback!(instance) unless @played_methods.include?(method_name)
+            end
+          end
+        end
+        
+        def playback!(instance, method_name)
+          RSpec::Mocks::space.add(instance) if RSpec::Mocks::space
+          @observed_methods[method_name].playback!(instance)
+          @played_methods << method_name
+        end
+        
+        private
+        def observed_method_names
+          @observed_methods.keys
+        end
+        
+        def build_alias_method_name(method_name)
+          "__#{method_name}_without_any_instance__".to_sym
+        end
+        
         def stop_observing!(method_name)
-          alias_method_name = "__#{method_name}_without_any_instance__"
-          if @klass.respond_to?(alias_method_name)
-            restore_original_method!(alias_method_name)
+          if @klass.instance_methods.include?(build_alias_method_name(method_name))
+            restore_original_method!(method_name)
           else
             remove_dummy_method!(method_name)
           end
+          @observed_methods.delete(method_name)
         end
 
-        def restore_original_method!(alias_method_name)
+        def restore_original_method!(method_name)
+          alias_method_name = build_alias_method_name(method_name)
           @klass.class_eval do
             alias_method  method_name, alias_method_name
             remove_method alias_method_name
@@ -96,10 +144,12 @@ module RSpec
         end
         
         def observe!(method_name)
+          alias_method_name = build_alias_method_name(method_name)
           @klass.class_eval do
-            if respond_to?(method_name)
-              alias_method "__#{method_name}_without_any_instance__", method_name
+            if instance_methods.include?(method_name)
+              alias_method alias_method_name, method_name
             end
+            
             define_method(method_name) do |*args, &blk|
               self.class.__recorder.playback!(self, method_name)
               self.send(method_name, *args, &blk)
@@ -107,12 +157,20 @@ module RSpec
           end
         end
       end
-
+      
+      module ExpectationEnsurer
+        def rspec_verify
+          self.class.__recorder.playback_to_uninvoked_observed_methods_with_expectations!(self)
+          super
+        end
+      end
+      
       def any_instance
         RSpec::Mocks::space.add(self) if RSpec::Mocks::space
+        self.class_eval{ include ExpectationEnsurer }
         __recorder
       end
-
+      
       def rspec_reset
         __recorder.stop_observing_currently_observed_methods!
         @__recorder = nil
