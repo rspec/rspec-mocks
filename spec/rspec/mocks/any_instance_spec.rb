@@ -105,7 +105,7 @@ module RSpec
         end
       end
       
-      context "with #should_raise" do
+      context "with #should_receive" do
         context "when the method on which the expectation is set doesn't exist" do
           it "returns the expected value" do
             klass.any_instance.should_receive(:foo).and_return(1)
