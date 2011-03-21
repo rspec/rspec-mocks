@@ -126,7 +126,7 @@ module RSpec
         end
         
         def stop_observing!(method_name)
-          if @klass.instance_methods.include?(build_alias_method_name(method_name))
+          if @klass.method_defined?(build_alias_method_name(method_name))
             restore_original_method!(method_name)
           else
             remove_dummy_method!(method_name)
@@ -151,7 +151,7 @@ module RSpec
         def observe!(method_name)
           alias_method_name = build_alias_method_name(method_name)
           @klass.class_eval do
-            if instance_methods.include?(method_name)
+            if method_defined?(method_name)
               alias_method alias_method_name, method_name
             end
             
