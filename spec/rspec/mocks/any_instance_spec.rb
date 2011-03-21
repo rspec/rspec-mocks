@@ -23,6 +23,10 @@ module RSpec
           it "raises an error if 'with' follows 'and_raise'" do
             lambda{ klass.any_instance.stub(:foo).and_raise(1).with("1") }.should raise_error(NoMethodError)
           end
+          
+          it "raises an error if 'with' follows 'and_yield'" do
+            lambda{ klass.any_instance.stub(:foo).and_yield(1).with("1") }.should raise_error(NoMethodError)
+          end
         end
         
         context "#should_receive" do
@@ -47,10 +51,8 @@ module RSpec
           klass.any_instance.stub(:foo)
           lambda{ klass.new.bar }.should raise_error(NoMethodError)
         end
-      end
-      
-      context "with #and_return" do
-        context "stubs" do
+        
+        context "with #and_return" do
           it "stubs a method that doesn't exist on any instance of a particular class" do
             klass.any_instance.stub(:foo).and_return(1)
             klass.new.foo.should == 1
@@ -69,47 +71,73 @@ module RSpec
           end
         end
         
-        context "expectations" do
-          context "method doesn't exist" do
-            it "returns the expected value" do
-              klass.any_instance.should_receive(:foo).and_return(1)
-              klass.new.foo(1).should == 1
-            end
+        context "with #and_yield" do
+          it "yields the value specified" do
+            yielded_value = Object.new
+            klass.any_instance.stub(:foo).and_yield(yielded_value)
             
-            it "fails the verification if an instance is created but no invocation occurs" do
-              pending "This test fails as expected, but I'm not sure how to set the *expectation* that it should fail"
-              klass.any_instance.should_receive(:foo)
-              expect{ klass.new.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
-            end
-            
-            it "does nothing if no instance is created" do
-              klass.any_instance.should_receive(:foo).and_return(1)
-            end
+            klass.new.foo{|value| value.should be(yielded_value)}
+          end
+        end
+
+        context "with #and_raise" do
+          it "stubs a method that doesn't exist on any instance of a particular class" do
+            klass.any_instance.stub(:foo).and_raise(CustomErrorForTesting)
+            lambda{ klass.new.foo}.should raise_error(CustomErrorForTesting)
+          end
+
+          it "stubs a method that exists on any instance of a particular class" do
+            klass.any_instance.stub(:ooga).and_raise(CustomErrorForTesting)
+            lambda{ klass.new.ooga}.should raise_error(CustomErrorForTesting)
+          end
+        end
+      
+        context "with a block" do
+          it "stubs a method on any instance of a particular class" do
+            klass.any_instance.stub(:foo) { 1 }
+            klass.new.foo.should == 1
+          end
+
+          it "returns the same computed value for calls on different instances" do
+            klass.any_instance.stub(:foo) { 1 + 2 }
+            klass.new.foo.should == klass.new.foo
           end
         end
       end
-
-      context "with #and_raise" do
-        it "stubs a method that doesn't exist on any instance of a particular class" do
-          klass.any_instance.stub(:foo).and_raise(CustomErrorForTesting)
-          lambda{ klass.new.foo}.should raise_error(CustomErrorForTesting)
-        end
-
-        it "stubs a method that exists on any instance of a particular class" do
-          klass.any_instance.stub(:ooga).and_raise(CustomErrorForTesting)
-          lambda{ klass.new.ooga}.should raise_error(CustomErrorForTesting)
-        end
-      end
       
-      context "with a block" do
-        it "stubs a method on any instance of a particular class" do
-          klass.any_instance.stub(:foo) { 1 }
-          klass.new.foo.should == 1
+      context "with #should_raise" do
+        context "when the method on which the expectation is set doesn't exist" do
+          it "returns the expected value" do
+            klass.any_instance.should_receive(:foo).and_return(1)
+            klass.new.foo(1).should == 1
+          end
+        
+          it "fails the verification if an instance is created but no invocation occurs" do
+            pending "This test fails as expected, but I'm not sure how to set the *expectation* that it should fail"
+            klass.any_instance.should_receive(:foo)
+            expect{ klass.new.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+          end
+        
+          it "does nothing if no instance is created" do
+            klass.any_instance.should_receive(:foo).and_return(1)
+          end
         end
 
-        it "returns the same computed value for calls on different instances" do
-          klass.any_instance.stub(:foo) { 1 + 2 }
-          klass.new.foo.should == klass.new.foo
+        context "when an expectation is set on a method that exists" do
+          it "returns the expected value" do
+            klass.any_instance.should_receive(:ooga).and_return(1)
+            klass.new.ooga(1).should == 1
+          end
+        
+          it "fails the verification if an instance is created but no invocation occurs" do
+            pending "This test fails as expected, but I'm not sure how to set the *expectation* that it should fail"
+            klass.any_instance.should_receive(:ooga)
+            expect{ klass.new.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+          end
+        
+          it "does nothing if no instance is created" do
+            klass.any_instance.should_receive(:ooga).and_return(1)
+          end
         end
       end
       

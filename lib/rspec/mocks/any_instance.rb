@@ -18,6 +18,10 @@ module RSpec
         def and_raise(*args, &block)
           record(:and_raise, args, block)
         end
+
+        def and_yield(*args, &block)
+          record(:and_yield, args, block)
+        end
         
         def playback!(instance)
           @messages.inject(instance) do |instance, message|
@@ -49,7 +53,8 @@ module RSpec
             :stub => [nil],
             :with => [:stub],
             :and_return => [:with, :stub],
-            :and_raise => [:with, :stub]
+            :and_raise => [:with, :stub],
+            :and_yield => [:with, :stub]
           }
         end
           
