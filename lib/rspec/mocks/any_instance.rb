@@ -7,20 +7,18 @@ module RSpec
           record(rspec_method_name, [method_name] + args, block)
         end
         
-        def with(*args, &block)
-          record(:with, args, block)
-        end
-
-        def and_return(*args, &block)
-          record(:and_return, args, block)
-        end
-        
-        def and_raise(*args, &block)
-          record(:and_raise, args, block)
-        end
-
-        def and_yield(*args, &block)
-          record(:and_yield, args, block)
+        [
+          :with, :and_return, :and_raise, :and_yield,
+          :once, :twice, :any_number_of_times,
+          :exactly, :times, :never, 
+          :at_least, :at_most
+          ].each do |method_name|
+            dispatch_method_definition = <<-EOM
+              def #{method_name}(*args, &block)
+                record(:#{method_name}, args, block)
+              end
+            EOM
+          class_eval(dispatch_method_definition, __FILE__, __LINE__)
         end
         
         def playback!(instance)
@@ -31,9 +29,8 @@ module RSpec
         
         private
         def verify_invocation_order(rspec_method_name, args, block)
-          if !invocation_order[rspec_method_name].include?(last_message)
-            raise(NoMethodError, "Undefined method #{rspec_method_name}")
-          end
+          # implement in subclasses
+          raise NotImplementedError
         end
         
         def last_message
@@ -61,6 +58,13 @@ module RSpec
         def initialize(*args, &block)
           super(:stub, *args, &block)
         end
+        
+        private
+        def verify_invocation_order(rspec_method_name, args, block)
+          if !invocation_order[rspec_method_name].include?(last_message)
+            raise(NoMethodError, "Undefined method #{rspec_method_name}")
+          end
+        end
       end
 
       class ExpectationChain < Chain
@@ -75,6 +79,10 @@ module RSpec
         
         def initialize(*args, &block)
           super(:should_receive, *args, &block)
+        end
+        
+        private
+        def verify_invocation_order(rspec_method_name, args, block)
         end
       end
       

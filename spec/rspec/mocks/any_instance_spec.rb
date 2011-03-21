@@ -153,8 +153,10 @@ module RSpec
         
           it "fails the verification if an instance is created but no invocation occurs" do
             pending "This test fails as expected, but I'm not sure how to set the *expectation* that it should fail"
-            klass.any_instance.should_receive(:foo)
-            expect{ klass.new.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+            expect do
+              klass.any_instance.should_receive(:foo)
+              klass.new.rspec_verify 
+            end.to raise_error(RSpec::Mocks::MockExpectationError)
           end
         
           it "does nothing if no instance is created" do
@@ -170,12 +172,152 @@ module RSpec
         
           it "fails the verification if an instance is created but no invocation occurs" do
             pending "This test fails as expected, but I'm not sure how to set the *expectation* that it should fail"
-            klass.any_instance.should_receive(:ooga)
-            expect{ klass.new.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+            expect do 
+              klass.any_instance.should_receive(:ooga)
+              instance = klass.new
+              instance.rspec_verify 
+            end.to raise_error(RSpec::Mocks::MockExpectationError)
           end
         
           it "does nothing if no instance is created" do
             klass.any_instance.should_receive(:ooga).and_return(1)
+          end
+        end
+        
+        context "message count" do
+          context "the 'once' constraint" do
+            it "passes for one invocation" do
+              klass.any_instance.should_receive(:foo).once
+              instance = klass.new
+              instance.foo
+            end
+            
+            it "fails for more than one invocation" do
+              expect do 
+                klass.any_instance.should_receive(:foo).once
+                instance = klass.new
+                2.times{ instance.foo }
+                instance.rspec_verify
+              end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end
+          end
+
+          context "the 'twice' constraint" do
+            it "passes for two invocations" do
+              klass.any_instance.should_receive(:foo).twice
+              instance = klass.new
+              2.times{ instance.foo }
+            end
+            
+            it "fails for more than two invocations" do
+              expect do 
+                klass.any_instance.should_receive(:foo).twice
+                instance = klass.new
+                3.times{ instance.foo }
+                instance.rspec_verify
+              end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end
+          end
+          
+          context "the 'exactly(n)' constraint" do
+            it "passes for n invocations where n = 3" do
+              klass.any_instance.should_receive(:foo).exactly(3).times
+              instance = klass.new
+              3.times{ instance.foo }
+            end
+            
+            it "fails for n invocations where n < 3" do
+              expect do 
+                klass.any_instance.should_receive(:foo).exactly(3).times
+                instance = klass.new
+                2.times{ instance.foo }
+                instance.rspec_verify
+              end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end
+
+            it "fails for n invocations where n > 3" do
+              expect do 
+                klass.any_instance.should_receive(:foo).exactly(3).times
+                instance = klass.new
+                4.times{ instance.foo }
+                instance.rspec_verify
+              end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end
+          end
+
+          context "the 'at_least(n)' constraint" do
+            it "passes for n invocations where n = 3" do
+              klass.any_instance.should_receive(:foo).at_least(3).times
+              instance = klass.new
+              3.times{ instance.foo }
+            end
+            
+            it "fails for n invocations where n < 3" do
+              expect do 
+                klass.any_instance.should_receive(:foo).at_least(3).times
+                instance = klass.new
+                2.times{ instance.foo }
+                instance.rspec_verify
+              end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end
+
+            it "passes for n invocations where n > 3" do
+              klass.any_instance.should_receive(:foo).at_least(3).times
+              instance = klass.new
+              4.times{ instance.foo }
+            end
+          end
+
+          context "the 'at_most(n)' constraint" do
+            it "passes for n invocations where n = 3" do
+              klass.any_instance.should_receive(:foo).at_most(3).times
+              instance = klass.new
+              3.times{ instance.foo }
+            end
+            
+            it "passes for n invocations where n < 3" do
+              klass.any_instance.should_receive(:foo).at_most(3).times
+              instance = klass.new
+              2.times{ instance.foo }
+            end
+
+            it "fails for n invocations where n > 3" do
+              expect do 
+                klass.any_instance.should_receive(:foo).at_most(3).times
+                instance = klass.new
+                4.times{ instance.foo }
+                instance.rspec_verify
+              end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end
+          end
+
+          context "the 'never' constraint" do
+            it "passes for 0 invocations" do
+              klass.any_instance.should_receive(:foo).never
+              klass.new
+            end
+            
+            it "fails on the first invocation" do
+              expect do 
+                klass.any_instance.should_receive(:foo).never
+                instance = klass.new
+                instance.foo
+                instance.rspec_verify
+              end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end
+          end
+
+          context "the 'any_number_of_times' constraint" do
+            it "passes for 0 invocations" do
+              klass.any_instance.should_receive(:foo).any_number_of_times
+              klass.new.rspec_verify
+            end
+            
+            it "passes for a non-zero number of invocations" do
+              klass.any_instance.should_receive(:foo).any_number_of_times
+              instance = klass.new
+              instance.foo
+            end
           end
         end
       end
