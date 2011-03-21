@@ -154,12 +154,14 @@ module RSpec
             if method_defined?(method_name)
               alias_method alias_method_name, method_name
             end
-            
-            define_method(method_name) do |*args, &blk|
-              self.class.__recorder.playback!(self, method_name)
-              self.send(method_name, *args, &blk)
-            end
           end
+          method = <<-EOM
+            def #{method_name}(*args, &blk)
+              self.class.__recorder.playback!(self, :#{method_name})
+              self.send(:#{method_name}, *args, &blk)
+            end
+          EOM
+          @klass.class_eval(method, __FILE__, __LINE__)
         end
       end
       

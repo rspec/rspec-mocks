@@ -103,6 +103,45 @@ module RSpec
             klass.new.foo.should == klass.new.foo
           end
         end
+        
+        context "core ruby objects" do
+          it "should work uniformly across *everything*" do
+            Object.any_instance.stub(:foo).and_return(1)
+            Object.new.foo.should == 1
+          end
+
+          it "should work with the non-standard constructor []" do
+            Array.any_instance.stub(:foo).and_return(1)
+            [].foo.should == 1
+          end
+
+          it "should work with the non-standard constructor {}" do
+            Hash.any_instance.stub(:foo).and_return(1)
+            {}.foo.should == 1
+          end
+
+          it "should work with the non-standard constructor \"\"" do
+            String.any_instance.stub(:foo).and_return(1)
+            "".foo.should == 1
+          end
+
+          it "should work with the non-standard constructor \'\'" do
+            String.any_instance.stub(:foo).and_return(1)
+            ''.foo.should == 1
+          end
+
+          it "should work with the non-standard constructor module" do
+            Module.any_instance.stub(:foo).and_return(1)
+            module RSpec::SampleRspecTestModule;end
+            RSpec::SampleRspecTestModule.foo.should == 1
+          end
+
+          it "should work with the non-standard constructor class" do
+            Class.any_instance.stub(:foo).and_return(1)
+            class RSpec::SampleRspecTestClass;end
+            RSpec::SampleRspecTestClass.foo.should == 1
+          end
+        end
       end
       
       context "with #should_receive" do
@@ -165,45 +204,6 @@ module RSpec
           instance = klass.new
           instance.foo
           RSpec::Mocks::space.send(:mocks).should include(instance)
-        end
-      end
-      
-      context "core ruby objects" do
-        it "should work uniformly across *everything*" do
-          Object.any_instance.stub(:foo).and_return(1)
-          Object.new.foo.should == 1
-        end
-        
-        it "should work with the non-standard constructor []" do
-          Array.any_instance.stub(:foo).and_return(1)
-          [].foo.should == 1
-        end
-        
-        it "should work with the non-standard constructor {}" do
-          Hash.any_instance.stub(:foo).and_return(1)
-          {}.foo.should == 1
-        end
-        
-        it "should work with the non-standard constructor \"\"" do
-          String.any_instance.stub(:foo).and_return(1)
-          "".foo.should == 1
-        end
-        
-        it "should work with the non-standard constructor \'\'" do
-          String.any_instance.stub(:foo).and_return(1)
-          ''.foo.should == 1
-        end
-
-        it "should work with the non-standard constructor module" do
-          Module.any_instance.stub(:foo).and_return(1)
-          module RSpec::SampleRspecTestModule;end
-          RSpec::SampleRspecTestModule.foo.should == 1
-        end
-        
-        it "should work with the non-standard constructor class" do
-          Class.any_instance.stub(:foo).and_return(1)
-          class RSpec::SampleRspecTestClass;end
-          RSpec::SampleRspecTestClass.foo.should == 1
         end
       end
     end
