@@ -152,11 +152,11 @@ module RSpec
           end
         
           it "fails the verification if an instance is created but no invocation occurs" do
-            pending "This test fails as expected, but I'm not sure how to set the *expectation* that it should fail"
             expect do
               klass.any_instance.should_receive(:foo)
               klass.new.rspec_verify 
             end.to raise_error(RSpec::Mocks::MockExpectationError)
+            klass.rspec_reset
           end
         
           it "does nothing if no instance is created" do
@@ -171,12 +171,12 @@ module RSpec
           end
         
           it "fails the verification if an instance is created but no invocation occurs" do
-            pending "This test fails as expected, but I'm not sure how to set the *expectation* that it should fail"
             expect do 
               klass.any_instance.should_receive(:ooga)
               instance = klass.new
               instance.rspec_verify 
             end.to raise_error(RSpec::Mocks::MockExpectationError)
+            klass.rspec_reset
           end
         
           it "does nothing if no instance is created" do
