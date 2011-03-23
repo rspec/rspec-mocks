@@ -156,7 +156,6 @@ module RSpec
               klass.any_instance.should_receive(:foo)
               klass.new.rspec_verify 
             end.to raise_error(RSpec::Mocks::MockExpectationError)
-            klass.rspec_reset
           end
         
           it "does nothing if no instance is created" do
@@ -176,11 +175,19 @@ module RSpec
               instance = klass.new
               instance.rspec_verify 
             end.to raise_error(RSpec::Mocks::MockExpectationError)
-            klass.rspec_reset
           end
         
           it "does nothing if no instance is created" do
             klass.any_instance.should_receive(:ooga).and_return(1)
+          end
+        end
+        
+        context "resetting" do
+          it "does not interfere with expectations set on the class" do
+            expect do 
+              klass.should_receive(:woot).and_return(3)
+              klass.rspec_verify
+            end.to raise_error(RSpec::Mocks::MockExpectationError)
           end
         end
         

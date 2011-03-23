@@ -186,6 +186,12 @@ module RSpec
         __recorder
       end
       
+      def rspec_verify
+        super
+      ensure
+        rspec_reset
+      end
+      
       def rspec_reset
         __recorder.stop_observing_currently_observed_methods!
         @__recorder = nil
