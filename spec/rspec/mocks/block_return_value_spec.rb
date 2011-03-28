@@ -18,10 +18,10 @@ describe "a double declaration with a block handed to:" do
   end
 
   describe "with" do
-    it "returns the value of executing the block" do
-      obj = Object.new
-      obj.stub(:foo).with('baz') { 'bar' }
-      obj.foo('baz').should eq('bar')
+    it "raises an error if a block is passed to it" do
+      expect do
+        Object.new.stub(:foo).with('baz') { 'bar' }
+      end.to raise_error(RSpec::Mocks::InvalidExpectationError)
     end
   end
 

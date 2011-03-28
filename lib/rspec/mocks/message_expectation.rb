@@ -249,7 +249,7 @@ module RSpec
       end
 
       def with(*args, &block)
-        @return_block = block if block_given?
+        Kernel::raise(InvalidExpectationError, "A block was passed to 'with' where none was expected") if block_given?
         @args_expectation = ArgumentExpectation.new(*args, &block)
         self
       end

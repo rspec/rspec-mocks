@@ -5,6 +5,9 @@ module RSpec
     
     class AmbiguousReturnError < StandardError
     end
+    
+    class InvalidExpectationError < StandardError
+    end
   end
 end
 
