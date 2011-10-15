@@ -698,6 +698,26 @@ module RSpec
           end
 
           context "with expectations" do
+            context "private methods" do
+              before :each do
+                klass.any_instance.should_receive(:private_method).and_return(:something)
+                klass.new.private_method
+                space.verify_all
+              end
+
+              it "cleans up the backed up method" do
+                klass.method_defined?(:__existing_method_without_any_instance__).should be_false
+              end
+
+              it "restores a stubbed private method after the spec is run" do
+                klass.private_method_defined?(:private_method).should be_true
+              end
+
+              it "ensures that the restored method behaves as it originally did" do
+                klass.new.send(:private_method).should eq(:private_method_return_value)
+              end
+            end
+            
             context "ensures that the subsequent specs do not see expectations set in previous specs" do
               context "when the instance created after the expectation is set" do
                 it "first spec" do
