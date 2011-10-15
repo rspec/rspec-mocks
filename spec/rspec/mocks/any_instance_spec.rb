@@ -10,6 +10,8 @@ module RSpec
           def existing_method; :existing_method_return_value; end
           def existing_method_with_arguments(arg_one, arg_two = nil); :existing_method_with_arguments_return_value; end
           def another_existing_method; end
+          private
+          def private_method; :private_method_return_value; end
         end
       end
       let(:existing_method_return_value){ :existing_method_return_value }
@@ -194,7 +196,7 @@ module RSpec
             klass.new.foo.should eq(klass.new.foo)
           end
         end
-
+        
         context "core ruby objects" do
           it "works uniformly across *everything*" do
             Object.any_instance.stub(:foo).and_return(1)
@@ -671,6 +673,16 @@ module RSpec
 
               klass.method_defined?(:__existing_method_without_any_instance__).should be_false
               klass.new.existing_method.should eq(existing_method_return_value)
+            end
+            
+            context "private methods" do
+              it "restores a stubbed private method after the spec is run (issue #85)" do
+                klass.any_instance.stub(:private_method).and_return(:something)
+                
+                space.verify_all
+                
+                klass.new.send(:private_method).should eq(:private_method_return_value)
+              end
             end
           end
 
