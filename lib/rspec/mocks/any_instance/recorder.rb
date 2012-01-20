@@ -170,15 +170,16 @@ module RSpec
         end
 
         def observe!(method_name)
-          stop_observing!(method_name) if already_observing?(method_name)
-          @observed_methods << method_name
-          backup_method!(method_name)
-          @klass.class_eval(<<-EOM, __FILE__, __LINE__)
-            def #{method_name}(*args, &blk)
-              self.class.__recorder.playback!(self, :#{method_name})
-              self.__send__(:#{method_name}, *args, &blk)
-            end
-          EOM
+          unless already_observing?(method_name)
+            @observed_methods << method_name
+            backup_method!(method_name)
+            @klass.class_eval(<<-EOM, __FILE__, __LINE__)
+              def #{method_name}(*args, &blk)
+                self.class.__recorder.playback!(self, :#{method_name})
+                self.__send__(:#{method_name}, *args, &blk)
+              end
+            EOM
+          end
         end
 
         def mark_invoked!(method_name)
