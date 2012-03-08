@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'delegate'
 
 module RSpec
   module Mocks
@@ -44,6 +45,17 @@ module RSpec
       it "should_receive mocks out the method" do
         @object.should_receive(:foobar).with(:test_param).and_return(1)
         @object.foobar(:test_param).should equal(1)
+      end
+      
+      it "should_receive mocks out the method (on a SimpleDelegator)" do
+        @delegator_object = Class.new(SimpleDelegator) do
+          def foobar(*params)
+            2
+          end
+        end.new(@object)
+        
+        @delegator_object.should_receive(:foobar).with(:test_param).and_return(1)
+        @delegator_object.foobar(:test_param).should equal(1)
       end
     
       it "should_receive handles a hash" do
