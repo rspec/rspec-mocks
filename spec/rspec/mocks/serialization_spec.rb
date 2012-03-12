@@ -2,6 +2,12 @@ require 'spec_helper'
 
 module RSpec
   module Mocks
+    describe Mock do
+      it 'should be unserializable' do
+        YAML.load(subject.to_yaml).should be_a(Mock)
+      end
+    end
+
     class SerializableStruct < Struct.new(:foo, :bar); end
 
     class SerializableMockProxy

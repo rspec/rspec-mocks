@@ -38,6 +38,7 @@ module RSpec
 
       # @private
       def respond_to?(message, incl_private=false)
+        return false if message == :yaml_initialize
         __mock_proxy.null_object? && message != :to_ary ? true : super
       end
 
