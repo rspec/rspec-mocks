@@ -77,6 +77,10 @@ module RSpec
         @instance.msg1.should eq(1)
         @instance.msg2.should eq(2)
       end
+      
+      it "returns the receiver when handling multiple stubbed methods" do
+        @instance.stub(:msg1 => 1, :msg2 => 2).should eql(@instance)
+      end
 
       describe "#rspec_reset" do
         it "removes stubbed methods that didn't exist" do

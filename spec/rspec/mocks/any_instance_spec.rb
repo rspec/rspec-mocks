@@ -72,9 +72,14 @@ module RSpec
             instance.bar.should eq('bar')
           end
           
-          it "adheres to the contract of multiple method stubbing withou any instance" do
-            Object.new.stub(:foo => 'foo', :bar => 'bar').should eq(:foo => 'foo', :bar => 'bar')
-            klass.any_instance.stub(:foo => 'foo', :bar => 'bar').should eq(:foo => 'foo', :bar => 'bar')
+          it "adheres to the contract of multiple method stubbing without any instance" do
+            object = Object.new
+            object.stub(:foo => 'foo', :bar => 'bar').should eql(object)
+          end
+          
+          it "returns the given stubs with any instance" do
+            any = klass.any_instance
+            any.stub(:foo => 'foo', :bar => 'bar').should eq(:foo => 'foo', :bar => 'bar')
           end
           
           context "allows a chain of methods to be stubbed using #stub_chain" do
