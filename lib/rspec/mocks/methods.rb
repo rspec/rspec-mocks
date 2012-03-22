@@ -31,6 +31,7 @@ module RSpec
       def stub(message_or_hash, opts={}, &block)
         if Hash === message_or_hash
           message_or_hash.each {|message, value| stub(message).and_return value }
+          self
         else
           __mock_proxy.add_stub(caller(1)[0], message_or_hash.to_sym, opts, &block)
         end
