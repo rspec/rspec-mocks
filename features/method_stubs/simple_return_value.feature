@@ -46,6 +46,17 @@ Feature: stub with a simple return value
             collaborator.message_1.should eq(:value_1)
             collaborator.message_2.should eq(:value_2)
           end
+
+          context "with hash keys representing multiple methods" do
+            it "returns the specified value of each key" do
+              receiver = double("receiver", 
+                :first_message => :first_return_value,
+                :second_message => :second_return_value
+              )
+              receiver.first_message.should eq(:first_return_value)
+              receiver.second_message.should eq(:second_return_value)
+            end
+          end
         end
 
         context "specified with a hash passed to #double" do
