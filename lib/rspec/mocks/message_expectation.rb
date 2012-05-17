@@ -3,11 +3,10 @@ module RSpec
 
     class MessageExpectation
       # @private
-      attr_reader :message
-      attr_writer :expected_received_count, :expected_from, :argument_list_matcher, :implementation
-      protected :expected_received_count=, :expected_from=, :implementation=
       attr_accessor :error_generator
-      protected :error_generator, :error_generator=
+      attr_reader :message
+      attr_writer :expected_received_count, :expected_from, :argument_list_matcher
+      protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=
 
       # @private
       def initialize(error_generator, expectation_ordering, expected_from, message, expected_received_count=1, opts={}, &implementation)
@@ -30,19 +29,17 @@ module RSpec
         @implementation = implementation
       end
 
+      def implementation=(implementation)
+        @consecutive = false
+        @implementation = implementation
+      end
+      protected :implementation=
+
       # @private
       def build_child(expected_from, expected_received_count, opts={}, &implementation)
         child = clone
         child.expected_from = expected_from
-
-        if implementation
-          child.implementation = implementation
-
-          # A new block implementation is given, so the old multi-return
-          # implementation needs to be disabled
-          child.instance_variable_set(:@consecutive, false)
-        end
-
+        child.implementation = implementation if implementation
         child.expected_received_count = expected_received_count
         child.clear_actual_received_count!
         new_gen = error_generator.clone
