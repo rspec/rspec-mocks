@@ -34,7 +34,15 @@ module RSpec
       def build_child(expected_from, expected_received_count, opts={}, &implementation)
         child = clone
         child.expected_from = expected_from
-        child.implementation = implementation if implementation
+
+        if implementation
+          child.implementation = implementation
+
+          # A new block implementation is given, so the old multi-return
+          # implementation needs to be disabled
+          child.instance_variable_set(:@consecutive, false)
+        end
+
         child.expected_received_count = expected_received_count
         child.clear_actual_received_count!
         new_gen = error_generator.clone
