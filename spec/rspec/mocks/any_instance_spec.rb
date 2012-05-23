@@ -64,6 +64,17 @@ module RSpec
           lambda{ klass.new.bar }.should raise_error(NoMethodError)
         end
 
+        context "multiple return values" do
+          context "Array#sample" do
+            it "should behave like any other invocation of #any_instance" do
+              Array.any_instance.stub(:sample).and_return(:one, :two, :three)
+              [].sample.should eq(:one)
+              [].sample.should eq(:two)
+              [].sample.should eq(:three)
+            end
+          end
+        end
+
         context 'multiple methods' do
           it "allows multiple methods to be stubbed in a single invocation" do
             klass.any_instance.stub(:foo => 'foo', :bar => 'bar')
@@ -273,37 +284,37 @@ module RSpec
           end.should raise_error(RSpec::Mocks::MockExpectationError, 'The method `existing_method` was not stubbed or was already unstubbed')
         end
       end
-      
+
       context "with #should_not_receive" do
         it "fails if the method is called" do
           klass.any_instance.should_not_receive(:existing_method)
           lambda { klass.new.existing_method }.should raise_error(RSpec::Mocks::MockExpectationError)
         end
-        
+
         it "passes if no method is called" do
           lambda { klass.any_instance.should_not_receive(:existing_method) }.should_not raise_error
         end
-        
+
         it "passes if only a different method is called" do
           klass.any_instance.should_not_receive(:existing_method)
           lambda { klass.new.another_existing_method }.should_not raise_error
         end
-        
+
         context "with constraints" do
           it "fails if the method is called with the specified parameters" do
             klass.any_instance.should_not_receive(:existing_method_with_arguments).with(:argument_one, :argument_two)
             lambda do
-              klass.new.existing_method_with_arguments(:argument_one, :argument_two) 
+              klass.new.existing_method_with_arguments(:argument_one, :argument_two)
             end.should raise_error(RSpec::Mocks::MockExpectationError)
           end
-          
+
           it "passes if the method is called with different parameters" do
             klass.any_instance.should_not_receive(:existing_method_with_arguments).with(:argument_one, :argument_two)
             lambda { klass.new.existing_method_with_arguments(:argument_three, :argument_four) }.should_not raise_error
           end
         end
       end
-      
+
       context "with #should_receive" do
         let(:foo_expectation_error_message) { 'Exactly one instance should have received the following message(s) but didn\'t: foo' }
         let(:existing_method_expectation_error_message) { 'Exactly one instance should have received the following message(s) but didn\'t: existing_method' }
