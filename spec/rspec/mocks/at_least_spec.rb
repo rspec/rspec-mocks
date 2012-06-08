@@ -97,33 +97,11 @@ module RSpec
         @double.rspec_verify
       end
 
-      it "passes with at_least(0) with no return if called once" do
-        @double.should_receive(:do_something).at_least(0).times
-        @double.do_something
-      end
 
-      it "passes with at_least(0) with return block if called once" do
-        @double.should_receive(:do_something).at_least(0).times { true }
-        @double.do_something
+      it "raises wrong expected receive count error when the at least 0 method is called" do
+        expect{ @double.should_receive(:do_something).at_least(0) }.to raise_error(RSpec::Mocks::MockExpectationError, /expected: at_least\(n\) with n > 0/)
       end
-
-      it "passes with at_least(0) with and_return if called once" do
-        @double.should_receive(:do_something).at_least(0).times.and_return true
-        @double.do_something
-      end
-
-      it "passes with at_least(0) with no return if never called" do
-        @double.should_receive(:do_something).at_least(0).times
-      end
-
-      it "passes with at_least(0) with return block if never called" do
-        @double.should_receive(:do_something).at_least(0).times { true }
-      end
-
-      it "passes with at_least(0) with and_return if never called" do
-        @double.should_receive(:do_something).at_least(0).times.and_return true
-      end
-
+     
       it "uses a stub value if no value set" do
         @double.stub(:do_something => 'foo')
         @double.should_receive(:do_something).at_least(:once)

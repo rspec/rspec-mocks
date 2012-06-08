@@ -66,6 +66,11 @@ module RSpec
         __raise "#{intro} yielded |#{arg_list(*args_to_yield)}| to block with arity of #{arity}"
       end
 
+      # @private
+      def raise_wrong_expected_receive_count_error(message)
+        __raise "#{intro} received :#{message} with invalid expectation\n     expected: at_least(n) with n > 0 \n     got: 0"
+      end
+
       private
 
       def intro
