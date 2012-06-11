@@ -234,6 +234,11 @@ MESSAGE
       end
 
       # @private
+      def at_least_count_greater_than_zero?(n)
+        @at_least ?  n > 0 : true
+      end
+
+      # @private
       def matches_at_most_count?
         @at_most && @actual_received_count <= @expected_received_count
       end
@@ -264,6 +269,10 @@ MESSAGE
 
       def raise_out_of_order_error
         @error_generator.raise_out_of_order_error @message
+      end
+
+      def raise_wrong_expected_receive_count_error
+        @error_generator.raise_wrong_expected_receive_count_error(@message)
       end
 
       # Constrains a stub or message expectation to invocations with specific
@@ -449,8 +458,15 @@ MESSAGE
         @at_least = (relativity == :at_least)
         @at_most  = (relativity == :at_most)
         @exactly  = (relativity == :exactly)
+
         @expected_received_count = case n
-                                   when Numeric then n
+                                   when Numeric
+                                    if at_least_count_greater_than_zero?(n) 
+                                      n
+                                    else
+                                      @expected_received_count = 0
+                                      raise_wrong_expected_receive_count_error
+                                    end
                                    when :once   then 1
                                    when :twice  then 2
                                    end
@@ -466,6 +482,7 @@ MESSAGE
         value = values.size == 1 ? values.first : values
         lambda { value }
       end
+
     end
 
     # @private
@@ -477,6 +494,8 @@ MESSAGE
 
       def and_return(*)
         # no-op
+        # @deprecated Please do not use and_return with negative message expectations.
+        warn "[DEPRECATION] `and_return` with `should_not_receive` is deprecated."
       end
 
       # @private

@@ -98,6 +98,11 @@ module RSpec
         @double.b
         @double.a
       end
+
+      it "warns when should_not_receive is followed by and_return" do
+        @double.should_receive(:warn).with("[DEPRECATION] `and_return` with `should_not_receive` is deprecated.")
+        @double.should_not_receive(:do_something).and_return(1)
+      end
     end
   end
 end
