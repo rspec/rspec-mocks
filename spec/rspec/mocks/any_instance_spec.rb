@@ -63,6 +63,24 @@ module RSpec
           klass.any_instance.stub(:foo)
           lambda{ klass.new.bar }.should raise_error(NoMethodError)
         end
+        
+        context "multiple return values" do
+          it "handles multiple return values" do
+            klass.any_instance.stub(:foo).and_return(:one,:two,:three)
+            instance = klass.new
+            instance.foo.should eq(:one)
+            instance.foo.should eq(:two)
+            instance.foo.should eq(:three)
+          end
+
+          it "returns the same value" do
+            klass.any_instance.stub(:foo).and_return(:one,:two,:three)
+            instance = klass.new
+            another_instance = klass.new
+            instance.foo.should eq(:one)
+            another_instance.foo.should eq(:one)
+          end          
+        end
 
         context 'multiple methods' do
           it "allows multiple methods to be stubbed in a single invocation" do
