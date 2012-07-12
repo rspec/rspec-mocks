@@ -78,7 +78,7 @@ module RSpec
       #   stub_const("CardDeck", Class.new, :transfer_nested_constants => [:SUITS])
       #   CardDeck::SUITS # => our suits array
       #   CardDeck::NUM_CARDS # => uninitialized constant error
-      def stub_const(constant_name, value, options = {})
+      def stub_const(constant_name, value=Mock.new, options = {})
         ConstantStubber.stub(constant_name, value, options)
       end
 

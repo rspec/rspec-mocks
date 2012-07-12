@@ -59,6 +59,10 @@ module RSpec
         it 'returns the stubbed value' do
           stub_const(const_name, 7).should eq(7)
         end
+
+        it 'provides a default stub value' do
+          stub_const(const_name).should be_a_kind_of(RSpec::Mocks::Mock)
+        end
       end
 
       shared_examples_for "unloaded constant stubbing" do |const_name|
@@ -95,6 +99,10 @@ module RSpec
           stub = Module.new
           stub_const(const_name, stub, :transfer_nested_constants => true)
           stub.constants.should eq([])
+        end
+
+        it 'provides a default stub value' do
+          stub_const(const_name).should be_a_kind_of(RSpec::Mocks::Mock)
         end
       end
 
@@ -259,6 +267,13 @@ module RSpec
           it("indicates it was previously defined") { const.should be_previously_defined }
           it("indicates it has been stubbed")       { const.should be_stubbed }
           it("exposes its original value")          { const.original_value.should eq(:m) }
+
+          context 'with no explict stubbed value' do
+            before { stub_const("TestClass::M") }
+            let(:const) { Constant.original("TestClass::M") }
+
+            it("provides a default stub") { const.should be_stubbed }
+          end
         end
 
         context 'for a previously undefined stubbed constant' do
@@ -269,6 +284,13 @@ module RSpec
           it("indicates it was not previously defined") { const.should_not be_previously_defined }
           it("indicates it has been stubbed")           { const.should be_stubbed }
           it("returns nil for the original value")      { const.original_value.should be_nil }
+
+          context 'with no explict stubbed value' do
+            before { stub_const("TestClass::M") }
+            let(:const) { Constant.original("TestClass::M") }
+
+            it("provides a default stub") { const.should be_stubbed }
+          end
         end
 
         context 'for a previously undefined unstubbed constant' do
