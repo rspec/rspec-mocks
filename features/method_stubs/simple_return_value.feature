@@ -52,10 +52,10 @@ Feature: stub with a simple return value
           it "returns the specified value" do
             collaborator = double("collaborator",
               :message_1 => :value_1,
-              :message_2 => :value_2
+              'message_2.message_3' => :value_2
             )
             collaborator.message_1.should eq(:value_1)
-            collaborator.message_2.should eq(:value_2)
+            collaborator.message_2.message_3.should eq(:value_2)
           end
         end
       end
