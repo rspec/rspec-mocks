@@ -95,7 +95,7 @@ module RSpec
 
       def assign_stubs(stubs)
         stubs.each_pair do |message, response|
-          stub(message).and_return(response)
+          stub_chain(message) { response }
         end
       end
     end
