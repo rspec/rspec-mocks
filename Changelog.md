@@ -1,3 +1,11 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.2...master)
+
+Bug fixes
+
+* Fix `:transfer_nested_constants` option of `stub_const` so that it
+  doesn't blow up when there are inherited constants. (Myron Marston)
+
 ### 2.11.2 / 2012-08-11
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.1...v2.11.2)
 
