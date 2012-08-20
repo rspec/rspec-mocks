@@ -477,8 +477,11 @@ MESSAGE
 
       def and_return(*)
         # no-op
-        # @deprecated Please do not use and_return with negative message expectations.
-        warn "[DEPRECATION] `and_return` with `should_not_receive` is deprecated."
+        # @deprecated and_return is not supported with negative message expectations.
+        RSpec.warn_deprecation <<-MSG
+
+DEPRECATION: `and_return` with `should_not_receive` is deprecated. Called from #{caller(0)[1]}
+MSG
       end
 
       # @private

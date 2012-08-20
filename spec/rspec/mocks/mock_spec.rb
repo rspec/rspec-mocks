@@ -42,11 +42,11 @@ module RSpec
         @double.rspec_verify
       end
 
-      it "passes when not receiving message specified as not to be received with and_return" do
-        # NOTE (DC 2012-05-05) calling `and_return` after `should_not_receive` makes no sense
-        # and should probably be disallowed.
-        @double.should_not_receive(:not_expected).and_return nil
-        @double.rspec_verify
+      it "warns when should_not_receive is followed by and_return" do
+        RSpec.should_receive(:warn_deprecation).
+          with(/`and_return` with `should_not_receive` is deprecated/)
+
+        @double.should_not_receive(:do_something).and_return(1)
       end
 
       it "passes when receiving message specified as not to be received with different args" do
