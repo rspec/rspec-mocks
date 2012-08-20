@@ -477,6 +477,8 @@ MESSAGE
 
       def and_return(*)
         # no-op
+        # @deprecated Please do not use and_return with negative message expectations.
+        warn "[DEPRECATION] `and_return` with `should_not_receive` is deprecated."
       end
 
       # @private
