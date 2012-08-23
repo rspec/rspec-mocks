@@ -98,7 +98,7 @@ module RSpec
       end
 
       # @overload and_raise
-      # @overload and_raise(ExceptionClass)
+      # @overload and_raise(ExceptionClass, message)
       # @overload and_raise(exception_instance)
       #
       # Tells the object to raise an exception when the message is received.
@@ -115,8 +115,15 @@ module RSpec
       #   car.stub(:go).and_raise
       #   car.stub(:go).and_raise(OutOfGas)
       #   car.stub(:go).and_raise(OutOfGas.new(2, :oz))
-      def and_raise(exception=RuntimeError)
-        @exception_to_raise = exception
+      def and_raise(exception=RuntimeError, message = "")
+        if !exception.respond_to?(:instance_method) || exception.instance_method(:initialize).arity <= 1
+            @exception_to_raise = (exception.instance_of? Class) ? exception.new(message) : exception
+        else
+          raise ArgumentError.new(<<-MESSAGE)
+'and_raise' can only accept an Exception class if an instance can be constructed with no arguments.
+#{@exception_to_raise.to_s}'s initialize method requires #{exception.instance_method(:initialize).arity} arguments, so you have to supply an instance instead.
+MESSAGE
+        end
       end
 
       # @overload and_throw(symbol)
@@ -186,15 +193,7 @@ module RSpec
 
       # @private
       def raise_exception
-        if !@exception_to_raise.respond_to?(:instance_method) ||
-            @exception_to_raise.instance_method(:initialize).arity <= 0
-          raise(@exception_to_raise)
-        else
-          raise ArgumentError.new(<<-MESSAGE)
-'and_raise' can only accept an Exception class if an instance can be constructed with no arguments.
-#{@exception_to_raise.to_s}'s initialize method requires #{@exception_to_raise.instance_method(:initialize).arity} arguments, so you have to supply an instance instead.
-MESSAGE
-        end
+        raise(@exception_to_raise)
       end
 
       # @private
