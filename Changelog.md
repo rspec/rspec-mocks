@@ -1,6 +1,12 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.2...master)
 
+Enhancements
+
+* and_raise can accept an exception class and message, more closely
+  matching Kernel#raise (e.g., foo.stub(:bar).and_raise(RuntimeError, "message"))
+  (Bas Vodde)
+
 Bug fixes
 
 * Fix `:transfer_nested_constants` option of `stub_const` so that it

@@ -214,49 +214,49 @@ module RSpec
         )
       end
 
-      it "raises when told to" do
-        @double.should_receive(:something).and_raise(StandardError)
-        expect { @double.something }.to raise_error(StandardError)
-      end
-
       it "raises RuntimeError by default" do
         @double.should_receive(:something).and_raise
         expect { @double.something }.to raise_error(RuntimeError)
       end
 
-      it "raises instance of submitted Exception" do
-        error = RuntimeError.new("error message")
-        @double.should_receive(:something).and_raise(error)
-        lambda {
-          @double.something
-        }.should raise_error(RuntimeError, "error message")
-      end
-
-      it "raises instance of submitted ArgumentError" do
-        error = ArgumentError.new("error message")
-        @double.should_receive(:something).and_raise(error)
-        lambda {
-          @double.something
-        }.should raise_error(ArgumentError, "error message")
-      end
-
-      it "fails with helpful message if submitted Exception requires constructor arguments" do
-        class ErrorWithNonZeroArgConstructor < RuntimeError
-          def initialize(i_take_an_argument)
-          end
-        end
-
-        @double.stub(:something).and_raise(ErrorWithNonZeroArgConstructor)
-        lambda {
-          @double.something
-        }.should raise_error(ArgumentError, /^'and_raise' can only accept an Exception class if an instance/)
-      end
-
-      it "raises RuntimeError with submitted message" do
+      it "raises RuntimeError with a message by default" do
         @double.should_receive(:something).and_raise("error message")
-        lambda {
+        expect { @double.something }.to raise_error(RuntimeError, "error message")
+      end
+
+      it "raises an exception of a given type without an error message" do
+        @double.should_receive(:something).and_raise(StandardError)
+        expect { @double.something }.to raise_error(StandardError)
+      end
+
+      it "raises an exception of a given type with a message" do
+        @double.should_receive(:something).and_raise(RuntimeError, "error message")
+        expect { @double.something }.to raise_error(RuntimeError, "error message")
+      end
+
+      it "raises a given instance of an exception" do
+        @double.should_receive(:something).and_raise(RuntimeError.new("error message"))
+        expect { @double.something }.to raise_error(RuntimeError, "error message")
+      end
+
+      class OutOfGas < StandardError
+        attr_reader :amount, :units
+        def initialize(amount, units)
+          @amount = amount
+          @units  = units
+        end
+      end
+
+      it "raises a given instance of an exception with arguments other than the standard 'message'" do
+        @double.should_receive(:something).and_raise(OutOfGas.new(2, :oz))
+
+        begin
           @double.something
-        }.should raise_error(RuntimeError, "error message")
+          fail "OutOfGas was not raised"
+        rescue OutOfGas => e
+          e.amount.should == 2
+          e.units.should  == :oz
+        end
       end
 
       it "does not raise when told to if args dont match" do

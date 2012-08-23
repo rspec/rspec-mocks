@@ -99,6 +99,7 @@ module RSpec
 
       # @overload and_raise
       # @overload and_raise(ExceptionClass)
+      # @overload and_raise(ExceptionClass, message)
       # @overload and_raise(exception_instance)
       #
       # Tells the object to raise an exception when the message is received.
@@ -106,17 +107,23 @@ module RSpec
       # @note
       #
       #   When you pass an exception class, the MessageExpectation will raise
-      #   an instance of it, creating it with `new`. If the exception class
-      #   initializer requires any parameters, you must pass in an instance and
-      #   not the class.
+      #   an instance of it, creating it with `exception` and passing `message`
+      #   if specified.  If the exception class initializer requires more than
+      #   one parameters, you must pass in an instance and not the class,
+      #   otherwise this method will raise an ArgumentError exception.
       #
       # @example
       #
       #   car.stub(:go).and_raise
       #   car.stub(:go).and_raise(OutOfGas)
+      #   car.stub(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
       #   car.stub(:go).and_raise(OutOfGas.new(2, :oz))
-      def and_raise(exception=RuntimeError)
-        @exception_to_raise = exception
+      def and_raise(exception = RuntimeError, message = nil)
+        if exception.respond_to?(:exception)
+          @exception_to_raise = message ? exception.exception(message) : exception.exception
+        else
+          @exception_to_raise = exception
+        end
       end
 
       # @overload and_throw(symbol)
@@ -167,7 +174,7 @@ module RSpec
         @order_group.handle_order_constraint self
 
         begin
-          raise_exception unless @exception_to_raise.nil?
+          raise(@exception_to_raise) unless @exception_to_raise.nil?
           Kernel::throw(*@args_to_throw) unless @args_to_throw.empty?
 
           default_return_val = call_with_yield(&block) if !@args_to_yield.empty? || @eval_context
@@ -181,19 +188,6 @@ module RSpec
           end
         ensure
           @actual_received_count += 1
-        end
-      end
-
-      # @private
-      def raise_exception
-        if !@exception_to_raise.respond_to?(:instance_method) ||
-            @exception_to_raise.instance_method(:initialize).arity <= 0
-          raise(@exception_to_raise)
-        else
-          raise ArgumentError.new(<<-MESSAGE)
-'and_raise' can only accept an Exception class if an instance can be constructed with no arguments.
-#{@exception_to_raise.to_s}'s initialize method requires #{@exception_to_raise.instance_method(:initialize).arity} arguments, so you have to supply an instance instead.
-MESSAGE
         end
       end
 
