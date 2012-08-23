@@ -19,6 +19,7 @@ module RSpec
         @argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
         @consecutive = false
         @exception_to_raise = nil
+        @exception_to_raise_message = ""
         @args_to_throw = []
         @order_group = expectation_ordering
         @at_least = @at_most = @exactly = nil
@@ -115,8 +116,9 @@ module RSpec
       #   car.stub(:go).and_raise
       #   car.stub(:go).and_raise(OutOfGas)
       #   car.stub(:go).and_raise(OutOfGas.new(2, :oz))
-      def and_raise(exception=RuntimeError)
+      def and_raise(exception=RuntimeError, message = "")
         @exception_to_raise = exception
+        @exception_to_raise_message = message
       end
 
       # @overload and_throw(symbol)
@@ -188,10 +190,14 @@ module RSpec
       def raise_exception
         if !@exception_to_raise.respond_to?(:instance_method) ||
             @exception_to_raise.instance_method(:initialize).arity <= 0
-          raise(@exception_to_raise)
+          if @exception_to_raise.instance_of? Class
+            raise(@exception_to_raise, @exception_to_raise_message)
+          else
+            raise(@exception_to_raise)
+          end
         else
           raise ArgumentError.new(<<-MESSAGE)
-'and_raise' can only accept an Exception class if an instance can be constructed with no arguments.
+'and_raise' can only accept an Exception class if an instance can be constructed with none or one arguments.
 #{@exception_to_raise.to_s}'s initialize method requires #{@exception_to_raise.instance_method(:initialize).arity} arguments, so you have to supply an instance instead.
 MESSAGE
         end

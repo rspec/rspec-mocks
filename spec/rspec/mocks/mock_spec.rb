@@ -240,9 +240,16 @@ module RSpec
         }.should raise_error(ArgumentError, "error message")
       end
 
-      it "fails with helpful message if submitted Exception requires constructor arguments" do
+      it "raises instance of submitted ArgumentError when passed in as class with message" do
+        @double.should_receive(:something).and_raise(ArgumentError, "error message")
+        lambda {
+          @double.something
+        }.should raise_error(ArgumentError, "error message")
+      end
+
+      it "fails with helpful message if submitted Exception requires more than one constructor arguments" do
         class ErrorWithNonZeroArgConstructor < RuntimeError
-          def initialize(i_take_an_argument)
+          def initialize(i_take_an_argument, and_an_additional_one)
           end
         end
 
