@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+echo "Bundling Standalone so we can run the specs w/o bundler loaded"
+
+bundle install --standalone
+path_to_rspec_exe=`script/find_path_to_rspec_exe`
+
+command_prefix="ruby -r./bundle/bundler/setup.rb -S $path_to_rspec_exe"
+
+echo "Running all..."
+
+$command_prefix spec --format progress --profile
+
+echo
+echo "--------------------------------------------------------------------"
+echo
+
+for file in `find spec -iname '*_spec.rb'`; do
+  echo "Running just $file"
+  $command_prefix $file --format progress
+done
+
