@@ -1,4 +1,8 @@
 require 'yaml'
+begin
+  require 'psych'
+rescue LoadError
+end
 
 RSpec::Matchers.define :include_method do |expected|
   match do |actual|
