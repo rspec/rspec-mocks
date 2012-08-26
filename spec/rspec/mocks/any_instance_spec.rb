@@ -845,6 +845,26 @@ module RSpec
           end.to raise_error(RSpec::Mocks::MockExpectationError, "The message 'existing_method' was received by #{instance_two.inspect} but has already been received by #{instance_one.inspect}")
         end
       end
+
+      context "when a class overrides Object#method" do
+        before do
+          klass.class_eval <<-EOM
+            def method
+              "this is not awesome but does happen in real code"
+            end
+          EOM
+        end
+
+        it "stubs the method correctly" do
+          klass.any_instance.stub(:existing_method).and_return("foo")
+          klass.new.existing_method.should == "foo"
+        end
+
+        it "mocks the method correctly" do
+          klass.any_instance.should_receive(:existing_method).and_return("foo")
+          klass.new.existing_method.should == "foo"
+        end
+      end
     end
   end
 end
