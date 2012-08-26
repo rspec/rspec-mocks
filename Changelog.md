@@ -5,6 +5,8 @@ Bug fixes
 
 * Fix `:transfer_nested_constants` option of `stub_const` so that it
   doesn't blow up when there are inherited constants. (Myron Marston)
+* `any_instance` stubs can be used on classes that override `Object#method`.
+  (Andy Lindeman)
 
 Deprecations:
 
