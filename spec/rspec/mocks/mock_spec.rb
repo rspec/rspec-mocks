@@ -214,71 +214,134 @@ module RSpec
         )
       end
 
-      it "raises when told to" do
-        @double.should_receive(:something).and_raise(StandardError)
-        expect { @double.something }.to raise_error(StandardError)
-      end
+      context "raising errors" do
+        
+        it "raises when told to" do
+          @double.should_receive(:something).and_raise(StandardError)
+          expect { @double.something }.to raise_error(StandardError)
+        end
 
-      it "raises RuntimeError by default" do
-        @double.should_receive(:something).and_raise
-        expect { @double.something }.to raise_error(RuntimeError)
-      end
+        it "raises RuntimeError by default" do
+          @double.should_receive(:something).and_raise
+          expect { @double.something }.to raise_error(RuntimeError)
+        end
 
-      it "raises instance of submitted Exception" do
-        error = RuntimeError.new("error message")
-        @double.should_receive(:something).and_raise(error)
-        lambda {
-          @double.something
-        }.should raise_error(RuntimeError, "error message")
-      end
+        it "raises instance of submitted Exception" do
+          error = RuntimeError.new("error message")
+          @double.should_receive(:something).and_raise(error)
+          expect {
+            @double.something
+          }.to raise_error(RuntimeError, "error message")
+        end
 
-      it "raises instance of submitted ArgumentError" do
-        error = ArgumentError.new("error message")
-        @double.should_receive(:something).and_raise(error)
-        lambda {
-          @double.something
-        }.should raise_error(ArgumentError, "error message")
-      end
-
-      it "raises instance of submitted ArgumentError when passed in as class with message" do
-        @double.should_receive(:something).and_raise(ArgumentError, "error message")
-        lambda {
-          @double.something
-        }.should raise_error(ArgumentError, "error message")
-      end
-
-      it "fails with helpful message if submitted Exception requires more than one constructor arguments" do
-        class ErrorWithNonZeroOrOneArgConstructor < RuntimeError
-          def initialize(i_take_an_argument, and_andother_argument)
+        class ErrorWithoutConstructorParameters < Exception
+          def initialize
+            super "No special parameters"
           end
         end
 
-        lambda {
-          @double.stub(:something).and_raise(ErrorWithNonZeroOrOneArgConstructor)
-        }.should raise_error(ArgumentError, /^'and_raise' can only accept an Exception class if an instance/)
-      end
+        it "raises an instance of submitted Exception when that has no constructor parameters" do        
+          @double.should_receive(:something).and_raise(ErrorWithoutConstructorParameters)
+          expect {
+            @double.something
+          }.to raise_error(ErrorWithoutConstructorParameters)
+        end
+        
+        it "fails to raise an instance of submitted Exception when that has no constructor parameters but we do pass in a message" do
+          expect {
+            @double.should_receive(:something).and_raise(ErrorWithoutConstructorParameters, "a message")
+          }.to raise_error(ArgumentError)          
+        end
+        
+        class ErrorWithOneConstructorParameter < Exception
+          def initialize(message)
+            super message
+          end
+        end
+        
+        it "fails raise an instance of submitted Exception when that has one parameter but we do not pass in a message" do
+          expect {
+            @double.should_receive(:something).and_raise(ErrorWithOneConstructorParameter)
+          }.to raise_error(ArgumentError)                    
+        end
 
-      it "raises RuntimeError with submitted message" do
-        @double.should_receive(:something).and_raise("error message")
-        lambda {
-          @double.something
-        }.should raise_error(RuntimeError, "error message")
-      end
+        it "raise an instance of submitted Exception when that has one parameter and we do pass in a message" do
+          @double.should_receive(:something).and_raise(ErrorWithOneConstructorParameter, "a message")
+          expect {
+            @double.something
+          }.to raise_error(ErrorWithOneConstructorParameter, "a message")                    
+        end
+        
+        class ErrorWithOneDefaultConstructorParameter < Exception
+        end
+        
+        it "raise an instance of submitted Exception when that has one default parameter and we do not pass in a message" do
+          @double.should_receive(:something).and_raise(ErrorWithOneDefaultConstructorParameter)
+          expect {
+            @double.something
+          }.to raise_error(ErrorWithOneDefaultConstructorParameter, ErrorWithOneDefaultConstructorParameter.name)                              
+        end
+        
+        it "raise an instance of submitted Exception when that has one default parameter and we do pass in a message" do
+          @double.should_receive(:something).and_raise(ErrorWithOneDefaultConstructorParameter, "an important message")
+          expect {
+            @double.something
+          }.to raise_error(ErrorWithOneDefaultConstructorParameter, "an important message")                                        
+        end
+        
+        it "fails to raise an instance of submitted Exception when that has more than one parameter" do
+          class ErrorWithMoreThanOneConstructorParameter < Exception
+            def initialize(one, two, thee, four)
+              super "one two three four"
+            end
+          end
+          expect {
+            @double.should_receive(:something).and_raise(ErrorWithMoreThanOneConstructorParameter)
+          }.to raise_error(ArgumentError)                                        
+        end
+        
+        it "raise an instance of submitted Exception that has more than one constructor parameter but they all have default values" do
+          class ErrorWithMOreThanOneConstructorParameterWhichAreAllDefault < Exception
+            def initialize(one = "one", two = "two", three = "three", four = "four")
+              super one
+            end
+          end
 
-      it "does not raise when told to if args dont match" do
-        @double.should_receive(:something).with(2).and_raise(RuntimeError)
-        lambda {
-          @double.something 1
-        }.should raise_error(RSpec::Mocks::MockExpectationError)
-      end
+          @double.should_receive(:something).and_raise(ErrorWithMOreThanOneConstructorParameterWhichAreAllDefault)
+          expect {
+            @double.something
+          }.to raise_error(ErrorWithMOreThanOneConstructorParameterWhichAreAllDefault, "one")                                        
+        end
 
-      it "throws when told to" do
-        @double.should_receive(:something).and_throw(:blech)
-        lambda {
-          @double.something
-        }.should throw_symbol(:blech)
-      end
+        it "raise an instance of submitted Exception that has more than one constructor parameters but only one is mandatory" do
+          class ErrorWithMOreThanOneConstructorParameterWhichAreAlmostAllDefault < Exception
+            def initialize(one, two = "", three = "", four = "")
+              super one
+            end
+          end
 
+          @double.should_receive(:something).and_raise(ErrorWithMOreThanOneConstructorParameterWhichAreAlmostAllDefault, "message")
+          expect {
+            @double.something
+          }.to raise_error(ErrorWithMOreThanOneConstructorParameterWhichAreAlmostAllDefault, "message")                                        
+        end                        
+
+        it "does not raise when told to if args dont match" do
+          @double.should_receive(:something).with(2).and_raise(RuntimeError)
+          lambda {
+            @double.something 1
+          }.should raise_error(RSpec::Mocks::MockExpectationError)
+        end
+
+        it "throws when told to" do
+          @double.should_receive(:something).and_throw(:blech)
+          lambda {
+            @double.something
+          }.should throw_symbol(:blech)
+        end
+
+      end
+        
       it "ignores args on any args" do
         @double.should_receive(:something).at_least(:once).with(any_args)
         @double.something

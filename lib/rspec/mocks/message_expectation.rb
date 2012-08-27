@@ -107,10 +107,10 @@ module RSpec
       # @note
       #
       #   When you pass an exception class, the MessageExpectation will raise
-      #   an instance of it, creating it with `new` and it will pass the message
-      #   as parameter. If the exception class initializer requires more than one 
-      #   parameters, you must pass in an instance and not the class, otherwise this
-      #   mthod will raise an ArgumentError exception
+      #   an instance of it, creating it with `new` and when message was passed, then it 
+      #   will pass the message as parameter. If the exception class initializer requires 
+      #   more than one parameters, you must pass in an instance and not the class, otherwise 
+      #   this method will raise an ArgumentError exception
       #
       # @example
       #
@@ -118,14 +118,11 @@ module RSpec
       #   car.stub(:go).and_raise(OutOfGas)
       #   car.stub(:go).and_raise(OutOfGas, "OutOfGas: Need to walk")
       #   car.stub(:go).and_raise(OutOfGas.new(2, :oz))
-      def and_raise(exception=RuntimeError, message = "")
-        if !exception.respond_to?(:instance_method) || exception.instance_method(:initialize).arity <= 1
-            @exception_to_raise = (exception.instance_of? Class) ? exception.new(message) : exception
+      def and_raise(exception=RuntimeError, message = nil)
+        if exception.instance_of? Class
+          @exception_to_raise = (message.nil?) ? exception.new : exception.new(message)
         else
-          raise ArgumentError.new(<<-MESSAGE)
-'and_raise' can only accept an Exception class if an instance can be constructed with none or one arguments.
-#{@exception_to_raise.to_s}'s initialize method requires #{exception.instance_method(:initialize).arity} arguments, so you have to supply an instance instead.
-MESSAGE
+          @exception_to_raise = exception
         end
       end
 
