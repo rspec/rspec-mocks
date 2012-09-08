@@ -46,17 +46,6 @@ module RSpec
       end
 
       # @private
-      def object_responds_to?(method_name)
-        if @proxy.already_proxied_respond_to?
-          @object.__send__(obfuscate(:respond_to?), method_name)
-        elsif method_name == :respond_to?
-          @proxy.already_proxied_respond_to
-        else
-          @object.respond_to?(method_name, true)
-        end
-      end
-
-      # @private
       def configure_method
         RSpec::Mocks::space.add(@object) if RSpec::Mocks::space
         warn_if_nil_class
