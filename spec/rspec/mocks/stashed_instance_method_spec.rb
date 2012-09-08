@@ -28,7 +28,7 @@ describe StashedInstanceMethod do
   it "stashes private instance methods" do
     obj = Object.new
     def obj.hello; :hello_defined_on_singleton_class; end;
-    singleton_class_for(obj).class_eval "private :hello"
+    singleton_class_for(obj).__send__(:private, :hello)
 
     stashed_method = StashedInstanceMethod.new(singleton_class_for(obj), :hello)
     stashed_method.stash

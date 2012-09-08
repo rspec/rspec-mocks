@@ -86,9 +86,7 @@ module RSpec
       def restore_original_method
         return unless @method_is_proxied
 
-        object_singleton_class.class_eval <<-EOF, __FILE__, __LINE__ + 1
-          remove_method :#{@method_name}
-        EOF
+        object_singleton_class.__send__(:remove_method, @method_name)
         @stashed_method.restore
         @method_is_proxied = false
       end

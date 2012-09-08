@@ -11,9 +11,7 @@ class StashedInstanceMethod
   def stash
     return if !method_defined_directly_on_klass? || @method_is_stashed
 
-    @klass.class_eval <<-EOF, __FILE__, __LINE__ + 1
-      alias_method :#{stashed_method_name}, :#{@method}
-    EOF
+    @klass.__send__(:alias_method, stashed_method_name, @method)
     @method_is_stashed = true
   end
 
@@ -45,10 +43,8 @@ class StashedInstanceMethod
   def restore
     return unless @method_is_stashed
 
-    @klass.class_eval <<-EOF, __FILE__, __LINE__ + 1
-      alias_method :#{@method}, :#{stashed_method_name}
-      remove_method :#{stashed_method_name}
-    EOF
+    @klass.__send__(:alias_method, @method, stashed_method_name)
+    @klass.__send__(:remove_method, stashed_method_name)
     @method_is_stashed = false
   end
 end
