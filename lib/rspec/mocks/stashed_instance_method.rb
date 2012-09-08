@@ -19,16 +19,26 @@ class StashedInstanceMethod
 
   # @private
   def method_defined_directly_on_klass?
-    if @klass.method_defined?(@method) || @klass.private_method_defined?(@method)
-      method_obj = @klass.instance_method(@method)
-      if method_obj && method_obj.respond_to?(:owner)
-        method_obj.owner == @klass
-      else
-        # On 1.8.6, which does not support Method#owner, we have no choice but
-        # to assume it's defined on the klass even if it may be defined on
-        # a superclass.
-        true
-      end
+    method_defined_on_klass? && method_owned_by_klass?
+  end
+
+  # @private
+  def method_defined_on_klass?
+    @klass.method_defined?(@method) || @klass.private_method_defined?(@method)
+  end
+
+  if ::Method.method_defined?(:owner)
+    # @private
+    def method_owned_by_klass?
+      @klass.instance_method(@method).owner == @klass
+    end
+  else
+    # @private
+    def method_owned_by_klass?
+      # On 1.8.6, which does not support Method#owner, we have no choice but
+      # to assume it's defined on the klass even if it may be defined on
+      # a superclass.
+      true
     end
   end
 
