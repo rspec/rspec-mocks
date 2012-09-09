@@ -27,7 +27,7 @@ class StashedInstanceMethod
     @klass.method_defined?(@method) || @klass.private_method_defined?(@method)
   end
 
-  if ::Method.method_defined?(:owner)
+  if ::UnboundMethod.method_defined?(:owner)
     # @private
     def method_owned_by_klass?
       @klass.instance_method(@method).owner == @klass
