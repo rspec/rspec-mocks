@@ -7,6 +7,8 @@ Bug fixes
   doesn't blow up when there are inherited constants. (Myron Marston)
 * `any_instance` stubs can be used on classes that override `Object#method`.
   (Andy Lindeman)
+* Methods stubbed with `any_instance` are unstubbed after the test finishes.
+  (Andy Lindeman)
 
 Deprecations:
 
