@@ -859,6 +859,19 @@ module RSpec
           http_request_class.new.existing_method.should == "foo"
         end
       end
+
+      context "when used after the test has finished" do
+        it "restores the original behavior of a stubbed method" do
+          klass.any_instance.stub(:existing_method).and_return(:stubbed_return_value)
+
+          instance = klass.new
+          instance.existing_method.should == :stubbed_return_value
+
+          RSpec::Mocks.verify
+
+          instance.existing_method.should == :existing_method_return_value
+        end
+      end
     end
   end
 end
