@@ -49,7 +49,7 @@ module RSpec
       def configure_method
         RSpec::Mocks::space.add(@object) if RSpec::Mocks::space
         warn_if_nil_class
-        @stashed_method.stash
+        @stashed_method.stash unless @method_is_proxied
         define_proxy_method
       end
 
