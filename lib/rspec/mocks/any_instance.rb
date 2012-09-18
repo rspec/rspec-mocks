@@ -30,7 +30,7 @@ module RSpec
         modify_dup_to_remove_mock_proxy_when_invoked
         __recorder
       end
-      
+
       # @private
       def rspec_verify
         __recorder.verify
@@ -40,36 +40,36 @@ module RSpec
         restore_dup
         @__recorder = nil
       end
-      
+
       # @private
       def rspec_reset
         restore_dup
         __mock_proxy.reset
       end
-      
+
       # @private
       def __recorder
         @__recorder ||= AnyInstance::Recorder.new(self)
       end
-      
+
       private
       def modify_dup_to_remove_mock_proxy_when_invoked
-        if self.method_defined?(:dup) and !self.method_defined?(:__rspec_original_dup)
-          self.class_eval do
+        if method_defined?(:dup) and !method_defined?(:__rspec_original_dup)
+          class_eval do
             def __rspec_dup
               __remove_mock_proxy
               __rspec_original_dup
             end
-            
+
             alias_method  :__rspec_original_dup, :dup
             alias_method  :dup, :__rspec_dup
           end
         end
       end
-      
+
       def restore_dup
-        if self.method_defined?(:__rspec_original_dup)
-          self.class_eval do
+        if method_defined?(:__rspec_original_dup)
+          class_eval do
             alias_method  :dup, :__rspec_original_dup
             remove_method :__rspec_original_dup
             remove_method :__rspec_dup
