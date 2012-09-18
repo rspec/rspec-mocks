@@ -15,6 +15,8 @@ Bug fixes
   (Andy Lindeman)
 * Methods stubbed with `any_instance` are unstubbed after the test finishes.
   (Andy Lindeman)
+* Fix confusing error message when calling a mocked class method an
+  extra time with the wrong arguments (Myron Marston).
 
 Deprecations:
 
