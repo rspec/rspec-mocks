@@ -170,16 +170,27 @@ module RSpec
       end
 
       def find_matching_expectation(method_name, *args)
-        (method_double[method_name].expectations.find {|expectation| expectation.matches?(method_name, *args) && !expectation.called_max_times?}) || 
-          method_double[method_name].expectations.find {|expectation| expectation.matches?(method_name, *args)}
+        find_best_matching_expectation_for(method_name) do |expectation|
+          expectation.matches?(method_name, *args)
+        end
       end
 
       def find_almost_matching_expectation(method_name, *args)
-        method_double[method_name].expectations.find do |expectation|
-          expectation.matches_name_but_not_args(method_name, *args) && !expectation.called_max_times?
-        end || method_double[method_name].expectations.find do |expectation|
+        find_best_matching_expectation_for(method_name) do |expectation|
           expectation.matches_name_but_not_args(method_name, *args)
         end
+      end
+
+      def find_best_matching_expectation_for(method_name)
+        first_match = nil
+
+        method_double[method_name].expectations.each do |expectation|
+          next unless yield expectation
+          return expectation unless expectation.called_max_times?
+          first_match ||= expectation
+        end
+
+        first_match
       end
 
       def find_matching_method_stub(method_name, *args)
