@@ -1,11 +1,19 @@
 ### dev
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.2...master)
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.3...master)
 
 Enhancements
 
 * and_raise can accept an exception class and message, more closely
   matching Kernel#raise (e.g., foo.stub(:bar).and_raise(RuntimeError, "message"))
   (Bas Vodde)
+
+Deprecations:
+
+* Add deprecation warning when using `and_return` with `should_not_receive`
+  (Neha Kumari)
+
+### 2.11.3 / 2012-09-19
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.2...v2.11.3)
 
 Bug fixes
 
@@ -17,11 +25,6 @@ Bug fixes
   (Andy Lindeman)
 * Fix confusing error message when calling a mocked class method an
   extra time with the wrong arguments (Myron Marston).
-
-Deprecations:
-
-* Add deprecation warning when using `and_return` with `should_not_receive`
-  (Neha Kumari)
 
 ### 2.11.2 / 2012-08-11
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.1...v2.11.2)
