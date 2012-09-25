@@ -38,7 +38,7 @@ method stub in one statement:
 book = double("book", :title => "The RSpec Book")
 ```
 
-The first argment is a name, which is used for documentation and appears in
+The first argument is a name, which is used for documentation and appears in
 failure messages. If you don't care about the name, you can leave it out,
 making the combined instantiation/stub declaration very terse:
 
