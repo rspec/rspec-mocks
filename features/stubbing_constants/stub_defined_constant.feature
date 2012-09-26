@@ -15,6 +15,11 @@ Feature: Stub Defined Constant
           FOO.should eq(5)
         end
 
+        it "can stub undefined constant BAR defaulting the value to a stub" do
+          stub_const("BAR")
+          BAR.should be_a_kind_of(RSpec::Mocks::Mock)
+        end
+
         it "restores the stubbed constant when the example completes" do
           FOO.should eq(7)
         end
