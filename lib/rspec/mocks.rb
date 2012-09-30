@@ -2,6 +2,8 @@ require 'rspec/mocks/framework'
 require 'rspec/mocks/version'
 require 'rspec/mocks/example_methods'
 
+require 'delegate'
+
 module RSpec
   module Mocks
     class << self
@@ -27,6 +29,7 @@ module RSpec
 
       def add_extensions
         Object.class_eval { include RSpec::Mocks::Methods }
+        Delegator.class_eval { include RSpec::Mocks::Methods }
         Class.class_eval  { include RSpec::Mocks::AnyInstance }
         $_rspec_mocks_extensions_added = true
       end
