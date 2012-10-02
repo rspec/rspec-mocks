@@ -3,14 +3,12 @@ require 'spec_helper'
 module RSpec
   module Mocks
     describe "using a Partial Mock," do
-      before(:each) do
-        @object = Object.new
-      end
+      let(:object) { Object.new }
 
       it "names the class in the failure message" do
-        @object.should_receive(:foo)
+        object.should_receive(:foo)
         expect do
-          @object.rspec_verify
+          object.rspec_verify
         end.to raise_error(RSpec::Mocks::MockExpectationError, /\(#<Object:.*>\).foo/)
       end
 
@@ -22,15 +20,15 @@ module RSpec
       end
 
       it "does not conflict with @options in the object" do
-        @object.instance_eval { @options = Object.new }
-        @object.should_receive(:blah)
-        @object.blah
+        object.instance_eval { @options = Object.new }
+        object.should_receive(:blah)
+        object.blah
       end
 
       it "should_not_receive mocks out the method" do
-        @object.should_not_receive(:fuhbar)
+        object.should_not_receive(:fuhbar)
         expect {
-          @object.fuhbar
+          object.fuhbar
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
           /expected\: 0 times\n    received\: 1 time/
@@ -38,46 +36,46 @@ module RSpec
       end
 
       it "should_not_receive returns a negative message expectation" do
-        @object.should_not_receive(:foobar).should be_kind_of(RSpec::Mocks::NegativeMessageExpectation)
+        object.should_not_receive(:foobar).should be_kind_of(RSpec::Mocks::NegativeMessageExpectation)
       end
 
       it "should_receive mocks out the method" do
-        @object.should_receive(:foobar).with(:test_param).and_return(1)
-        @object.foobar(:test_param).should equal(1)
+        object.should_receive(:foobar).with(:test_param).and_return(1)
+        object.foobar(:test_param).should equal(1)
       end
 
       it "should_receive handles a hash" do
-        @object.should_receive(:foobar).with(:key => "value").and_return(1)
-        @object.foobar(:key => "value").should equal(1)
+        object.should_receive(:foobar).with(:key => "value").and_return(1)
+        object.foobar(:key => "value").should equal(1)
       end
 
       it "should_receive handles an inner hash" do
         hash = {:a => {:key => "value"}}
-        @object.should_receive(:foobar).with(:key => "value").and_return(1)
-        @object.foobar(hash[:a]).should equal(1)
+        object.should_receive(:foobar).with(:key => "value").and_return(1)
+        object.foobar(hash[:a]).should equal(1)
       end
 
       it "should_receive returns a message expectation" do
-        @object.should_receive(:foobar).should be_kind_of(RSpec::Mocks::MessageExpectation)
-        @object.foobar
+        object.should_receive(:foobar).should be_kind_of(RSpec::Mocks::MessageExpectation)
+        object.foobar
       end
 
       it "should_receive verifies method was called" do
-        @object.should_receive(:foobar).with(:test_param).and_return(1)
+        object.should_receive(:foobar).with(:test_param).and_return(1)
         lambda do
-          @object.rspec_verify
+          object.rspec_verify
         end.should raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "should_receive also takes a String argument" do
-        @object.should_receive('foobar')
-        @object.foobar
+        object.should_receive('foobar')
+        object.foobar
       end
 
       it "should_not_receive also takes a String argument" do
-        @object.should_not_receive('foobar')
+        object.should_not_receive('foobar')
         lambda do
-          @object.foobar
+          object.foobar
         end.should raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -144,26 +142,24 @@ module RSpec
         def private_method; end
       end
 
-      before(:each) do
-        @object = MockableClass.new
-      end
+      let(:object) { MockableClass.new }
 
       it 'keeps public methods public' do
-        @object.should_receive(:public_method)
-        @object.public_methods.should include_method(:public_method)
-        @object.public_method
+        object.should_receive(:public_method)
+        object.public_methods.should include_method(:public_method)
+        object.public_method
       end
 
       it 'keeps private methods private' do
-        @object.should_receive(:private_method)
-        @object.private_methods.should include_method(:private_method)
-        @object.public_method
+        object.should_receive(:private_method)
+        object.private_methods.should include_method(:private_method)
+        object.public_method
       end
 
       it 'keeps protected methods protected' do
-        @object.should_receive(:protected_method)
-        @object.protected_methods.should include_method(:protected_method)
-        @object.public_method
+        object.should_receive(:protected_method)
+        object.protected_methods.should include_method(:protected_method)
+        object.public_method
       end
 
     end
