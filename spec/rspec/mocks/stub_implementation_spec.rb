@@ -24,12 +24,12 @@ module RSpec
           obj = stub()
           obj.stub(:foo) {|*given| given.first}
           obj.foo(:bar).should eq :bar
-        end        
+        end
       end
     end
 
-  
-    describe "unstub implementation" do      
+
+    describe "unstub implementation" do
       it "replaces the stubbed method with the original method" do
         obj = Object.new
         def obj.foo; :original; end
@@ -37,7 +37,7 @@ module RSpec
         obj.unstub(:foo)
         obj.foo.should eq :original
       end
-    
+
       it "removes all stubs with the supplied method name" do
         obj = Object.new
         def obj.foo; :original; end
@@ -46,7 +46,7 @@ module RSpec
         obj.unstub(:foo)
         obj.foo.should eq :original
       end
-    
+
       it "does not remove any expectations with the same method name" do
         obj = Object.new
         def obj.foo; :original; end
@@ -69,7 +69,7 @@ module RSpec
         parent.new.should be_an_instance_of parent
         child.new.should be_an_instance_of child
       end
-    
+
       it "raises a MockExpectationError if the method has not been stubbed" do
         obj = Object.new
         lambda do
