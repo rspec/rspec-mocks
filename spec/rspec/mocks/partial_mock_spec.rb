@@ -113,36 +113,40 @@ module RSpec
         stub("existing mock", :foo => :foo)
       end
 
-      class PartiallyMockedEquals
-        attr_reader :val
-        def initialize(val)
-          @val = val
-        end
+      let(:klass) do
+        Class.new do
+          attr_reader :val
+          def initialize(val)
+            @val = val
+          end
 
-        def ==(other)
-          @val == other.val
+          def ==(other)
+            @val == other.val
+          end
         end
       end
 
       it "does not raise an error when stubbing the object" do
-        o = PartiallyMockedEquals.new :foo
-        lambda { o.stub(:bar) }.should_not raise_error(NoMethodError)
+        o = klass.new :foo
+        expect { o.stub(:bar) }.not_to raise_error(NoMethodError)
       end
     end
 
     describe "Method visibility when using partial mocks" do
-      class MockableClass
-        def public_method
-          private_method
-          protected_method
+      let(:klass) do
+        Class.new do
+          def public_method
+            private_method
+            protected_method
+          end
+          protected
+          def protected_method; end
+          private
+          def private_method; end
         end
-        protected
-        def protected_method; end
-        private
-        def private_method; end
       end
 
-      let(:object) { MockableClass.new }
+      let(:object) { klass.new }
 
       it 'keeps public methods public' do
         object.should_receive(:public_method)
