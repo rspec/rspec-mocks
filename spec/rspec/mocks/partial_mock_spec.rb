@@ -82,10 +82,10 @@ module RSpec
       it "uses reports nil in the error message" do
         allow_message_expectations_on_nil
 
-        @nil = nil
-        @nil.should_receive(:foobar)
+        _nil = nil
+        _nil.should_receive(:foobar)
         expect {
-          @nil.rspec_verify
+          _nil.rspec_verify
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
           %Q|(nil).foobar(any args)\n    expected: 1 time\n    received: 0 times|
