@@ -23,6 +23,10 @@ module RSpec
         space.reset_all
       end
 
+      def configuration
+        @configuration ||= Configuration.new
+      end
+
     private
 
       def add_extensions
