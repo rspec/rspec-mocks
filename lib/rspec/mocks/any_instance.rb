@@ -56,9 +56,9 @@ module RSpec
       def modify_dup_to_remove_mock_proxy_when_invoked
         if method_defined?(:dup) and !method_defined?(:__rspec_original_dup)
           class_eval do
-            def __rspec_dup
+            def __rspec_dup(*arguments, &block)
               __remove_mock_proxy
-              __rspec_original_dup
+              __rspec_original_dup(*arguments, &block)
             end
 
             alias_method  :__rspec_original_dup, :dup
