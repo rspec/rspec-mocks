@@ -108,6 +108,31 @@ module RSpec
       end
     end
 
+    describe "Using a partial mock on a proxy object", :if => defined?(::BasicObject) do
+      let(:proxy_class) do
+        Class.new(::BasicObject) do
+          def initialize(target)
+            @target = target
+          end
+
+          def proxied?
+            true
+          end
+
+          def method_missing(*a)
+            @target.send(*a)
+          end
+        end
+      end
+
+      let(:instance) { proxy_class.new(Object.new) }
+
+      it 'works properly' do
+        instance.should_receive(:proxied?).and_return(false)
+        instance.should_not be_proxied
+      end
+    end
+
     describe "Partially mocking an object that defines ==, after another mock has been defined" do
       before(:each) do
         stub("existing mock", :foo => :foo)

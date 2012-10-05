@@ -23,16 +23,32 @@ module RSpec
         space.reset_all
       end
 
+      def configuration
+        @configuration ||= Configuration.new
+      end
+
     private
 
       def add_extensions
-        Object.class_eval { include RSpec::Mocks::Methods }
+        method_host.class_eval { include RSpec::Mocks::Methods }
         Class.class_eval  { include RSpec::Mocks::AnyInstance }
         $_rspec_mocks_extensions_added = true
       end
 
       def extensions_added?
         defined?($_rspec_mocks_extensions_added)
+      end
+
+      def method_host
+        # On 1.8.7, Object.ancestors.last == Kernel but
+        # things blow up if we include `RSpec::Mocks::Methods`
+        # into Kernel...not sure why.
+        return Object unless defined?(::BasicObject)
+
+        # MacRuby has BasicObject but it's not the root class.
+        return Object unless Object.ancestors.last == ::BasicObject
+
+        ::BasicObject
       end
     end
   end
