@@ -48,4 +48,11 @@ describe RSpec::Mocks do
       end.to raise_error(/received unexpected message/)
     end
   end
+
+  describe ".configuration" do
+    it 'returns a memoized configuration instance' do
+      RSpec::Mocks.configuration.should be_a(RSpec::Mocks::Configuration)
+      RSpec::Mocks.configuration.should be(RSpec::Mocks.configuration)
+    end
+  end
 end
