@@ -65,6 +65,25 @@ module RSpec
         end
       end
 
+      shared_examples_for "loaded constant hiding" do |const_name|
+        before { recursive_const_defined?(const_name).should be_true }
+
+        it 'allows it to be hidden' do
+          hide_const(const_name)
+          recursive_const_defined?(const_name).should be_false
+        end
+
+        it 'resets the constant when rspec clear its mocks' do
+          hide_const(const_name)
+          reset_rspec_mocks
+          recursive_const_defined?(const_name).should be_true
+        end
+
+        it 'returns nil' do
+          hide_const(const_name).should be_nil
+        end
+      end
+
       shared_examples_for "unloaded constant stubbing" do |const_name|
         before { recursive_const_defined?(const_name).should be_false }
 
@@ -99,6 +118,45 @@ module RSpec
           stub = Module.new
           stub_const(const_name, stub, :transfer_nested_constants => true)
           stub.constants.should eq([])
+        end
+      end
+
+      describe "#hide_const" do
+        context 'for a loaded deeply nested constant' do
+          it_behaves_like "loaded constant hiding", "TestClass::Nested::NestedEvenMore"
+        end
+
+        context 'for a loaded deeply nested constant' do
+          it_behaves_like "loaded constant hiding", "TestClass::Nested::NestedEvenMore"
+        end
+
+        it 'performs no action if the constant does not exist' do
+          hide_const("NonExistantConstant")
+
+          reset_rspec_mocks
+          recursive_const_defined?("NonExistantConstant").should be_false
+        end
+
+        it 'can be hidden multiple times but still restores the original value properly' do
+          orig_value = TestClass
+          hide_const("TestClass")
+          hide_const("TestClass")
+
+          reset_rspec_mocks
+          TestClass.should be(orig_value)
+        end
+
+        it 'allows a constant to be hidden, then stubbed, restoring it to its original value properly' do
+          orig_value = TOP_LEVEL_VALUE_CONST
+
+          hide_const("TOP_LEVEL_VALUE_CONST")
+          recursive_const_defined?("TOP_LEVEL_VALUE_CONST").should be_false
+
+          stub_const("TOP_LEVEL_VALUE_CONST", 12345)
+          TOP_LEVEL_VALUE_CONST.should == 12345
+
+          reset_rspec_mocks
+          TOP_LEVEL_VALUE_CONST.should == orig_value
         end
       end
 

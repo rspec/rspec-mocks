@@ -159,6 +159,26 @@ module RSpec
         value
       end
 
+      # Hides a constant.
+      #
+      # @param (see ExampleMethods#hide_const)
+      #
+      # @see ExampleMethods#hide_const
+      # @note It's recommended that you use `hide_const` in your
+      #  examples. This is an alternate public API that is provided
+      #  so you can hide constants in other contexts (e.g. helper
+      #  classes).
+      def self.hide(constant_name)
+        return unless recursive_const_defined?(constant_name)
+
+        stubber = ConstantHider.new(constant_name, nil, { })
+        stubbers << stubber
+
+        stubber.stub
+        ensure_registered_with_mocks_space
+        nil
+      end
+
       # Contains common functionality used by both of the constant stubbers.
       #
       # @api private
@@ -182,6 +202,26 @@ module RSpec
           const.original_value = original_value
 
           const
+        end
+      end
+
+      # Hides a defined constant for the duration of an example.
+      #
+      # @api private
+      class ConstantHider < BaseStubber
+        def stub
+          @context = recursive_const_get(@context_parts.join('::'))
+          @original_value = get_const_defined_on(@context, @const_name)
+
+          @context.send(:remove_const, @const_name)
+        end
+
+        def previously_defined?
+          true
+        end
+
+        def rspec_reset
+          @context.const_set(@const_name, @original_value)
         end
       end
 
