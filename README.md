@@ -233,6 +233,19 @@ double.should_receive(:msg) do |arg|
 end
 ```
 
+If the method being stubbed itself takes a block, and you need to yield to it 
+in some special way, you can use this:
+
+```ruby
+double.should_receive(:msg) do |&arg|
+  begin
+    arg.call
+  ensure
+    # cleanup
+  end
+end
+```
+
 ## Combining Expectation Details
 
 Combining the message name with specific arguments, receive counts and responses
