@@ -8,7 +8,7 @@ Feature: stub on any instance of a class
 
   Scenario: any_instance stub with a single return value
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "any_instance.stub" do
         it "returns the specified value on any instance of the class" do
           Object.any_instance.stub(:foo).and_return(:return_value)
@@ -23,7 +23,7 @@ Feature: stub on any instance of a class
     
   Scenario: any_instance stub with a hash
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "any_instance.stub" do
         context "with a hash" do
           it "returns the hash values on any instance of the class" do
@@ -41,7 +41,7 @@ Feature: stub on any instance of a class
     
   Scenario: any_instance stub with specific arguments matchers
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "any_instance.stub" do
         context "with arguments" do
           it "returns the stubbed value when arguments match" do
@@ -60,7 +60,7 @@ Feature: stub on any instance of a class
   
   Scenario: any_instance unstub
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "any_instance.unstub" do
         it "unstubs a stubbed method" do
           class Object
@@ -81,7 +81,7 @@ Feature: stub on any instance of a class
   
   Scenario: any_instance unstub
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "any_instance.unstub" do
         context "with both an expectation and a stub already set" do
           it "only removes the stub" do
@@ -104,7 +104,7 @@ Feature: stub on any instance of a class
     
   Scenario: stub a chain of methods an any instance
     Given a file named "stub_chain_spec.rb" with:
-      """
+      """ruby
       describe "stubbing a chain of methods" do
         context "given symbols representing methods" do
           it "returns the correct value" do
@@ -130,4 +130,3 @@ Feature: stub on any instance of a class
       """
     When I run `rspec stub_chain_spec.rb`
     Then the examples should all pass
-    

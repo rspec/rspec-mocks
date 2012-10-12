@@ -7,7 +7,7 @@ Feature: General matchers
 
   Scenario: anything argument matcher
     Given a file named "stub_anything_args_spec.rb" with:
-      """
+      """ruby
       describe "stubbed anything() args spec" do
         it "works" do
           object = Object.new
@@ -25,7 +25,7 @@ Feature: General matchers
 
   Scenario: any_args argument matcher
     Given a file named "stub_any_args_spec.rb" with:
-      """
+      """ruby
       describe "stubbed any_args() args spec" do
         it "works" do
           object = Object.new
@@ -44,7 +44,7 @@ Feature: General matchers
 
   Scenario: no_args argument matcher
     Given a file named "stub_no_args_spec.rb" with:
-      """
+      """ruby
       describe "stubbed no_args() args spec" do
         it "works for no args" do
           object = Object.new
@@ -65,7 +65,7 @@ Feature: General matchers
 
   Scenario: no_args argument matcher for expectations
     Given a file named "stub_no_args_expectations_spec.rb" with:
-      """
+      """ruby
       describe "stubbed no_args() args spec for expectations" do
         it "works for no args" do
           object = Object.new

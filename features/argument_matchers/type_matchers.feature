@@ -6,7 +6,7 @@ Feature: stub with argument constraints
   
   Scenario: an_instance_of argument matcher
     Given a file named "stub_an_instance_of_args_spec.rb" with:
-      """
+      """ruby
       describe "stubbed an_instance_of() args spec" do
         it "works" do
           object = Object.new

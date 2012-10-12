@@ -21,7 +21,7 @@ Feature: stub a chain of methods
 
   Scenario: stub a chain of methods
     Given a file named "stub_chain_spec.rb" with:
-      """
+      """ruby
       describe "stubbing a chain of methods" do
         subject { Object.new }
 

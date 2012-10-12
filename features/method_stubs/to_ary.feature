@@ -14,7 +14,7 @@ Feature: double handling to_ary
 
   Scenario: double receiving to_ary
     Given a file named "example.rb" with:
-      """
+      """ruby
       describe "#to_ary" do
         shared_examples "to_ary" do
           it "raises a NoMethodError" do
