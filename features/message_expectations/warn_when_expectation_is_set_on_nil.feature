@@ -2,7 +2,7 @@ Feature: warn when expectation is set on nil
 
   Scenario: nil instance variable
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure {|c| c.mock_with :rspec}
       describe "something" do
         it "does something" do
@@ -16,7 +16,7 @@ Feature: warn when expectation is set on nil
 
   Scenario: allow
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure {|c| c.mock_with :rspec}
       describe "something" do
         it "does something" do
@@ -31,7 +31,7 @@ Feature: warn when expectation is set on nil
 
   Scenario: allow in one example, but not on another
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure {|c| c.mock_with :rspec}
       describe "something" do
         it "does something (foo)" do

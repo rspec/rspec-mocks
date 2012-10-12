@@ -5,7 +5,7 @@ Feature: expect a message
 
   Scenario: expect a message
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       require "account"
 
       describe Account do
@@ -23,7 +23,7 @@ Feature: expect a message
       end
       """
     And a file named "lib/account.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -37,7 +37,7 @@ Feature: expect a message
 
   Scenario: expect a message with an argument
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       require "account"
 
       describe Account do
@@ -55,7 +55,7 @@ Feature: expect a message
       end
       """
     And a file named "lib/account.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -69,7 +69,7 @@ Feature: expect a message
 
   Scenario: provide a return value
     Given a file named "message_expectation_spec.rb" with:
-      """
+      """ruby
       describe "a message expectation" do
         context "with a return value" do
           context "specified in a block" do

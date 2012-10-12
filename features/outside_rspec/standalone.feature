@@ -6,7 +6,7 @@ Feature: standalone
 
   Scenario: method stub outside rspec
     Given a file named "example.rb" with:
-      """
+      """ruby
       require "rspec/mocks/standalone"
 
       greeter = double("greeter")
@@ -18,7 +18,7 @@ Feature: standalone
 
   Scenario: message expectation outside rspec
     Given a file named "example.rb" with:
-      """
+      """ruby
       require "rspec/mocks/standalone"
 
       greeter = double("greeter")

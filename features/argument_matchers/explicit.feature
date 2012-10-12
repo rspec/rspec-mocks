@@ -4,7 +4,7 @@ Feature: explicit arguments
 
   Scenario: explicit arguments
     Given a file named "stub_explicit_args_spec.rb" with:
-      """
+      """ruby
       describe "stubbed explicit arguments" do
         it "works on stubs" do
           object = Object.new
@@ -32,7 +32,7 @@ Feature: explicit arguments
 
   Scenario: explicit arguments with multiple arities
     Given a file named "stub_multiple_explicit_args_spec.rb" with:
-      """
+      """ruby
       describe "stubbed multiple explicit arguments" do
         it "works on stubs" do
           object = Object.new

@@ -5,7 +5,7 @@ Feature: stub with substitute implementation
   
   Scenario: stub implementation
     Given a file named "stub_implementation_spec.rb" with:
-      """
+      """ruby
       describe "a stubbed implementation" do
         it "works" do
           object = Object.new
