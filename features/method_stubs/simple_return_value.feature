@@ -6,7 +6,7 @@ Feature: stub with a simple return value
 
   Scenario: stub with no return value
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "a stub with no return value specified" do
         let(:collaborator) { double("collaborator") }
 
@@ -21,7 +21,7 @@ Feature: stub with a simple return value
 
   Scenario: stubs with return values
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "a stub with a return value" do
         context "specified in a block" do
           it "returns the specified value" do

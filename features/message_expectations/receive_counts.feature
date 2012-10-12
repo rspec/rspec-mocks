@@ -2,7 +2,7 @@ Feature: receive counts
 
   Scenario: expect a message once
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -30,7 +30,7 @@ Feature: receive counts
 
   Scenario: expect a message twice
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -59,7 +59,7 @@ Feature: receive counts
 
   Scenario: expect a message 3 times
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -89,7 +89,7 @@ Feature: receive counts
 
   Scenario: expect a message at least (:once)
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -118,7 +118,7 @@ Feature: receive counts
 
   Scenario: expect a message at least (n) times
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -151,7 +151,7 @@ Feature: receive counts
 
   Scenario: expect a message at most (:once)
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 
@@ -181,7 +181,7 @@ Feature: receive counts
 
   Scenario: expect a message at most (n) times
     Given a file named "spec/account_spec.rb" with:
-      """
+      """ruby
       class Account
         attr_accessor :logger
 

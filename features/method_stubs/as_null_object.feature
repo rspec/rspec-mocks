@@ -8,7 +8,7 @@ Feature: as_null_object
 
   Scenario: double acting as_null_object 
     Given a file named "as_null_object_spec.rb" with:
-      """
+      """ruby
       describe "a double with as_null_object called" do
         let(:null_object) { double('null object').as_null_object }
 

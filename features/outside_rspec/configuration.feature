@@ -25,7 +25,7 @@ Feature: configure any test framework to use rspec-mocks
 
   Scenario: RSpec::Mocks::setup(object) adds double, mock, and stub methods to the submitted object
     Given a file named "foo.rb" with:
-      """
+      """ruby
       require 'rspec/mocks'
 
       class CodeExample
@@ -48,7 +48,7 @@ Feature: configure any test framework to use rspec-mocks
 
   Scenario: RSpec::Mocks::setup(anything) adds methods to Object
     Given a file named "foo.rb" with:
-      """
+      """ruby
       require 'rspec/mocks'
 
       RSpec::Mocks::setup(Object.new)
@@ -66,7 +66,7 @@ Feature: configure any test framework to use rspec-mocks
 
   Scenario: require "rspec/mocks" does not add methods to Object
     Given a file named "foo.rb" with:
-      """
+      """ruby
       require 'rspec/mocks'
 
       obj = Object.new
