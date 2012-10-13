@@ -17,14 +17,14 @@ module RSpec
       # On 1.8:
       #   - C.const_get("Hash") # => ::Hash
       #   - C.const_defined?("Hash") # => false
-      #   - C.constants # => ["A"]
+      #   - C.constants # => ["B"]
       #   - None of these methods accept the extra `inherit` argument
       # On 1.9:
       #   - C.const_get("Hash") # => ::Hash
       #   - C.const_defined?("Hash") # => true
       #   - C.const_get("Hash", false) # => raises NameError
       #   - C.const_defined?("Hash", false) # => false
-      #   - C.constants # => [:A]
+      #   - C.constants # => [:B]
       #   - C.constants(false) #=> []
       if Module.method(:const_defined?).arity == 1
         def const_defined_on?(mod, const_name)
