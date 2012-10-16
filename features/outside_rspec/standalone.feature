@@ -27,6 +27,7 @@ Feature: standalone
       RSpec::Mocks.verify
       """
     When I run `ruby example.rb`
-    Then the output should contain "say_hi(any args) (RSpec::Mocks::MockExpectationError)"
-    Then the output should contain "expected: 1 time"
-    Then the output should contain "received: 0 times"
+    Then the output should contain "RSpec::Mocks::MockExpectationError"
+    And the output should contain "say_hi(any args)"
+    And the output should contain "expected: 1 time"
+    And the output should contain "received: 0 times"
