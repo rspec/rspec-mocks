@@ -66,6 +66,17 @@ module RSpec
         __raise "#{intro} yielded |#{arg_list(*args_to_yield)}| to block with arity of #{arity}"
       end
 
+      # @private
+      def raise_does_not_implement_error(message)
+        __raise "#{intro} does not implement ##{message}. `and_call_original` " +
+                "is only supported when the object has an original implemention."
+      end
+
+      def raise_only_valid_on_a_partial_mock(method)
+        __raise "#{intro} is a pure mock object. `#{method}` is only " +
+                "available on a partial mock object."
+      end
+
       private
 
       def intro

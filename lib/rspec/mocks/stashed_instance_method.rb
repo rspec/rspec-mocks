@@ -10,6 +10,11 @@ module RSpec
       end
 
       # @private
+      def method_is_stashed?
+        @method_is_stashed
+      end
+
+      # @private
       def stash
         return if !method_defined_directly_on_klass? || @method_is_stashed
 
@@ -44,12 +49,12 @@ module RSpec
         end
       end
 
+      public
+
       # @private
       def stashed_method_name
         "obfuscated_by_rspec_mocks__#{@method}"
       end
-
-      public
 
       # @private
       def restore

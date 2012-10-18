@@ -9,11 +9,13 @@ module RSpec
       protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=
 
       # @private
-      def initialize(error_generator, expectation_ordering, expected_from, message, expected_received_count=1, opts={}, &implementation)
+      def initialize(error_generator, expectation_ordering, expected_from, method_double,
+                     expected_received_count=1, opts={}, &implementation)
         @error_generator = error_generator
         @error_generator.opts = opts
         @expected_from = expected_from
-        @message = message
+        @method_double = method_double
+        @message = @method_double.method_name
         @actual_received_count = 0
         @expected_received_count = expected_received_count
         @argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
@@ -95,6 +97,27 @@ module RSpec
         @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
         @consecutive = true if values.size > 1
         @implementation = implementation || build_implementation(values)
+      end
+
+      # Tells the object to delegate to the original unmodified method
+      # when it receives the message.
+      #
+      # @note This is only available on partial mock objects.
+      #
+      # @example
+      #
+      #   counter.should_receive(:increment).and_call_original
+      #   original_count = counter.count
+      #   counter.increment
+      #   expect(counter.count).to eq(original_count + 1)
+      def and_call_original
+        if @method_double.object.is_a?(RSpec::Mocks::TestDouble)
+          @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
+        else
+          self.implementation = @method_double.original_method
+        end
+      rescue NameError
+        @error_generator.raise_does_not_implement_error(message)
       end
 
       # @overload and_raise
@@ -465,8 +488,8 @@ module RSpec
     # @private
     class NegativeMessageExpectation < MessageExpectation
       # @private
-      def initialize(error_generator, expectation_ordering, expected_from, message, &implementation)
-        super(error_generator, expectation_ordering, expected_from, message, 0, {}, &implementation)
+      def initialize(error_generator, expectation_ordering, expected_from, method_double, &implementation)
+        super(error_generator, expectation_ordering, expected_from, method_double, 0, {}, &implementation)
       end
 
       def and_return(*)
