@@ -79,7 +79,7 @@ module RSpec
       #   CardDeck::SUITS # => our suits array
       #   CardDeck::NUM_CARDS # => uninitialized constant error
       def stub_const(constant_name, value, options = {})
-        ConstantStubber.stub(constant_name, value, options)
+        ConstantMutator.stub(constant_name, value, options)
       end
 
       # Hides the named constant with the given value. The constant will be
@@ -95,7 +95,7 @@ module RSpec
       #
       #   hide_const("MyClass") # => MyClass is now an undefined constant
       def hide_const(constant_name)
-        ConstantStubber.hide(constant_name)
+        ConstantMutator.hide(constant_name)
       end
 
     private
