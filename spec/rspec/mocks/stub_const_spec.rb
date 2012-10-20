@@ -25,10 +25,7 @@ module RSpec
         ::RSpec::Mocks.space.reset_all
       end
 
-      shared_examples_for "loaded constant stubbing" do |const_name|
-        let!(:original_const_value) { const }
-        after { change_const_value_to(original_const_value) }
-
+      shared_context "constant example methods" do |const_name|
         define_method :const do
           recursive_const_get(const_name)
         end
@@ -40,6 +37,13 @@ module RSpec
         define_method :last_const_part do
           const_name.split('::').last
         end
+      end
+
+      shared_examples_for "loaded constant stubbing" do |const_name|
+        include_context "constant example methods", const_name
+
+        let!(:original_const_value) { const }
+        after { change_const_value_to(original_const_value) }
 
         def change_const_value_to(value)
           parent_const.send(:remove_const, last_const_part)
@@ -85,19 +89,9 @@ module RSpec
       end
 
       shared_examples_for "unloaded constant stubbing" do |const_name|
+        include_context "constant example methods", const_name
+
         before { recursive_const_defined?(const_name).should be_false }
-
-        define_method :const do
-          recursive_const_get(const_name)
-        end
-
-        define_method :parent_const do
-          recursive_const_get("Object::" + const_name.sub(/(::)?[^:]+\z/, ''))
-        end
-
-        define_method :last_const_part do
-          const_name.split('::').last
-        end
 
         it 'allows it to be stubbed' do
           stub_const(const_name, 7)
@@ -121,20 +115,60 @@ module RSpec
         end
       end
 
-      describe "#hide_const" do
-        context 'for a loaded deeply nested constant' do
-          it_behaves_like "loaded constant hiding", "TestClass::Nested::NestedEvenMore"
+      shared_examples_for "unloaded constant hiding" do |const_name|
+        include_context "constant example methods", const_name
+
+        before { recursive_const_defined?(const_name).should be_false }
+
+        it 'allows it to be hidden, though the operation has no effect' do
+          hide_const(const_name)
+          recursive_const_defined?(const_name).should be_false
         end
 
-        context 'for a loaded deeply nested constant' do
-          it_behaves_like "loaded constant hiding", "TestClass::Nested::NestedEvenMore"
-        end
-
-        it 'performs no action if the constant does not exist' do
-          hide_const("NonExistantConstant")
-
+        it 'remains undefined after rspec clears its mocks' do
+          hide_const(const_name)
           reset_rspec_mocks
-          recursive_const_defined?("NonExistantConstant").should be_false
+          recursive_const_defined?(const_name).should be_false
+        end
+
+        it 'returns nil' do
+          hide_const(const_name).should be_nil
+        end
+      end
+
+      describe "#hide_const" do
+        context 'for a loaded nested constant' do
+          it_behaves_like "loaded constant hiding", "TestClass::Nested"
+        end
+
+        context 'for an unloaded constant with nested name that matches a top-level constant' do
+          it_behaves_like "unloaded constant hiding", "TestClass::Hash"
+
+          it 'does not hide the top-level constant' do
+            top_level_hash = ::Hash
+
+            hide_const("TestClass::Hash")
+            expect(::Hash).to equal(top_level_hash)
+          end
+
+          it 'does not affect the ability to access the top-level constant from nested contexts' do
+            top_level_hash = ::Hash
+
+            hide_const("TestClass::Hash")
+            expect(TestClass::Hash).to equal(top_level_hash)
+          end
+        end
+
+        context 'for a loaded deeply nested constant' do
+          it_behaves_like "loaded constant hiding", "TestClass::Nested::NestedEvenMore"
+        end
+
+        context 'for an unloaded unnested constant' do
+          it_behaves_like "unloaded constant hiding", "X"
+        end
+
+        context 'for an unloaded nested constant' do
+          it_behaves_like "unloaded constant hiding", "X::Y"
         end
 
         it 'can be hidden multiple times but still restores the original value properly' do
