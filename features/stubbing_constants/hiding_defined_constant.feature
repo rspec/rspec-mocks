@@ -45,3 +45,20 @@ Feature: Hide Defined Constant
       """
     When I run `rspec hide_const_spec.rb`
     Then the examples should all pass
+
+  Scenario: Hiding undefined constant
+    Given a file named "hide_const_spec.rb" with:
+      """
+      describe "hiding UNDEFINED_CONSTANT" do
+        it "has no effect" do
+          hide_const("UNDEFINED_CONSTANT")
+          expect { UNDEFINED_CONSTANT }.to raise_error(NameError)
+        end
+
+        it "is still undefined after the example completes" do
+          expect { UNDEFINED_CONSTANT }.to raise_error(NameError)
+        end
+      end
+      """
+    When I run `rspec hide_const_spec.rb`
+    Then the examples should all pass
