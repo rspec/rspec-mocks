@@ -36,6 +36,10 @@ Feature: Hide Defined Constant
             hide_const("MyGem::SomeClass::FOO")
             expect { SomeClass::FOO }.to raise_error(NameError)
           end
+
+          it "restores the hidden constant when the example completes" do
+            MyGem::SomeClass::FOO.should eq(7)
+          end
         end
       end
       """
