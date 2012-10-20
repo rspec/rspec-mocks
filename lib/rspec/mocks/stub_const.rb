@@ -124,13 +124,13 @@ module RSpec
       # @return [Constant] an object contaning information about the named
       #   constant.
       def self.original(name)
-        stubber = ConstantStubber.find(name)
-        stubber ? stubber.to_constant : unstubbed(name)
+        mutator = ConstantMutator.find(name)
+        mutator ? mutator.to_constant : unstubbed(name)
       end
     end
 
     # Provides a means to stub constants.
-    class ConstantStubber
+    class ConstantMutator
       extend RecursiveConstMethods
 
       # Stubs a constant.
@@ -145,17 +145,13 @@ module RSpec
       #  so you can stub constants in other contexts (e.g. helper
       #  classes).
       def self.stub(constant_name, value, options = {})
-        stubber = if recursive_const_defined?(constant_name, &raise_on_invalid_const)
+        mutator = if recursive_const_defined?(constant_name, &raise_on_invalid_const)
           DefinedConstantReplacer
         else
           UndefinedConstantSetter
         end
 
-        stubber = stubber.new(constant_name, value, options[:transfer_nested_constants])
-        stubbers << stubber
-
-        stubber.stub
-        ensure_registered_with_mocks_space
+        mutate(mutator.new(constant_name, value, options[:transfer_nested_constants]))
         value
       end
 
@@ -171,18 +167,14 @@ module RSpec
       def self.hide(constant_name)
         return unless recursive_const_defined?(constant_name)
 
-        stubber = ConstantHider.new(constant_name, nil, { })
-        stubbers << stubber
-
-        stubber.stub
-        ensure_registered_with_mocks_space
+        mutate(ConstantHider.new(constant_name, nil, { }))
         nil
       end
 
-      # Contains common functionality used by both of the constant stubbers.
+      # Contains common functionality used by all of the constant mutators.
       #
       # @api private
-      class BaseStubber
+      class BaseMutator
         include RecursiveConstMethods
 
         attr_reader :original_value, :full_constant_name
@@ -208,8 +200,8 @@ module RSpec
       # Hides a defined constant for the duration of an example.
       #
       # @api private
-      class ConstantHider < BaseStubber
-        def stub
+      class ConstantHider < BaseMutator
+        def mutate
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
@@ -228,8 +220,8 @@ module RSpec
       # Replaces a defined constant for the duration of an example.
       #
       # @api private
-      class DefinedConstantReplacer < BaseStubber
-        def stub
+      class DefinedConstantReplacer < BaseMutator
+        def mutate
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
@@ -290,8 +282,8 @@ module RSpec
       # Sets an undefined constant for the duration of an example.
       #
       # @api private
-      class UndefinedConstantSetter < BaseStubber
-        def stub
+      class UndefinedConstantSetter < BaseMutator
+        def mutate
           remaining_parts = @context_parts.dup
           @deepest_defined_const = @context_parts.inject(Object) do |klass, name|
             break klass unless const_defined_on?(klass, name)
@@ -316,6 +308,17 @@ module RSpec
         end
       end
 
+      # Uses the mutator to mutate (stub or hide) a constant. Ensures that
+      # the mutator is correctly registered so it can be backed out at the end
+      # of the test.
+      #
+      # @api private
+      def self.mutate(mutator)
+        register_mutator(mutator)
+        mutator.mutate
+        ensure_registered_with_mocks_space
+      end
+
       # Ensures the constant stubbing is registered with
       # rspec-mocks space so that stubbed constants can
       # be restored when examples finish.
@@ -337,21 +340,26 @@ module RSpec
         # We use reverse order so that if the same constant
         # was stubbed multiple times, the original value gets
         # properly restored.
-        stubbers.reverse.each { |s| s.rspec_reset }
+        mutators.reverse.each { |s| s.rspec_reset }
 
-        stubbers.clear
+        mutators.clear
       end
 
-      # The list of constant stubbers that have been used for
+      # The list of constant mutators that have been used for
       # the current example.
       #
       # @api private
-      def self.stubbers
-        @stubbers ||= []
+      def self.mutators
+        @mutators ||= []
+      end
+
+      # @api private
+      def self.register_mutator(mutator)
+        mutators << mutator
       end
 
       def self.find(name)
-        stubbers.find { |s| s.full_constant_name == name }
+        mutators.find { |s| s.full_constant_name == name }
       end
 
       # Used internally by the constant stubbing to raise a helpful
@@ -367,6 +375,12 @@ module RSpec
         end
       end
     end
+
+    # Keeps backwards compatibility since we had released an rspec-mocks that
+    # only supported stubbing. Later, we released the hide_const feature and
+    # decided that the term "mutator" was a better term to wrap up the concept
+    # of both stubbing and hiding.
+    ConstantStubber = ConstantMutator
   end
 end
 
