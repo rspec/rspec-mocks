@@ -70,7 +70,7 @@ module RSpec
     end
 
     # Provides information about constants that may (or may not)
-    # have been stubbed by rspec-mocks.
+    # have been mutated by rspec-mocks.
     class Constant
       extend RecursiveConstMethods
 
@@ -83,7 +83,7 @@ module RSpec
       attr_reader :name
 
       # @return [Object, nil] The original value (e.g. before it
-      #   was stubbed by rspec-mocks) of the constant, or
+      #   was mutated by rspec-mocks) of the constant, or
       #   nil if the constant was not previously defined.
       attr_accessor :original_value
 
@@ -108,7 +108,7 @@ module RSpec
       alias inspect to_s
 
       # @api private
-      def self.unstubbed(name)
+      def self.unmutated(name)
         const = new(name)
         const.previously_defined = recursive_const_defined?(name)
         const.stubbed = false
@@ -116,7 +116,7 @@ module RSpec
 
         const
       end
-      private_class_method :unstubbed
+      private_class_method :unmutated
 
       # Queries rspec-mocks to find out information about the named constant.
       #
@@ -125,7 +125,7 @@ module RSpec
       #   constant.
       def self.original(name)
         mutator = ConstantMutator.find(name)
-        mutator ? mutator.to_constant : unstubbed(name)
+        mutator ? mutator.to_constant : unmutated(name)
       end
     end
 
@@ -179,9 +179,9 @@ module RSpec
 
         attr_reader :original_value, :full_constant_name
 
-        def initialize(full_constant_name, stubbed_value, transfer_nested_constants)
+        def initialize(full_constant_name, mutated_value, transfer_nested_constants)
           @full_constant_name        = full_constant_name
-          @stubbed_value             = stubbed_value
+          @mutated_value             = mutated_value
           @transfer_nested_constants = transfer_nested_constants
           @context_parts             = @full_constant_name.split('::')
           @const_name                = @context_parts.pop
@@ -228,7 +228,7 @@ module RSpec
           constants_to_transfer = verify_constants_to_transfer!
 
           @context.send(:remove_const, @const_name)
-          @context.const_set(@const_name, @stubbed_value)
+          @context.const_set(@const_name, @mutated_value)
 
           transfer_nested_constants(constants_to_transfer)
         end
@@ -244,14 +244,14 @@ module RSpec
 
         def transfer_nested_constants(constants)
           constants.each do |const|
-            @stubbed_value.const_set(const, get_const_defined_on(original_value, const))
+            @mutated_value.const_set(const, get_const_defined_on(original_value, const))
           end
         end
 
         def verify_constants_to_transfer!
           return [] unless @transfer_nested_constants
 
-          { @original_value => "the original value", @stubbed_value => "the stubbed value" }.each do |value, description|
+          { @original_value => "the original value", @mutated_value => "the stubbed value" }.each do |value, description|
             unless value.respond_to?(:constants)
               raise ArgumentError,
                 "Cannot transfer nested constants for #{@full_constant_name} " +
@@ -296,7 +296,7 @@ module RSpec
           end
 
           @const_to_remove = remaining_parts.first || @const_name
-          context.const_set(@const_name, @stubbed_value)
+          context.const_set(@const_name, @mutated_value)
         end
 
         def previously_defined?
