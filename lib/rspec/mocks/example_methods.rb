@@ -79,11 +79,27 @@ module RSpec
       #   CardDeck::SUITS # => our suits array
       #   CardDeck::NUM_CARDS # => uninitialized constant error
       def stub_const(constant_name, value, options = {})
-        ConstantStubber.stub(constant_name, value, options)
+        ConstantMutator.stub(constant_name, value, options)
+      end
+
+      # Hides the named constant with the given value. The constant will be
+      # undefined for the duration of the test.
+      #
+      # Like method stubs, the constant will be restored to its original value
+      # when the example completes.
+      #
+      # @param constant_name [String] The fully qualified name of the constant.
+      #   The current constant scoping at the point of call is not considered.
+      #
+      # @example
+      #
+      #   hide_const("MyClass") # => MyClass is now an undefined constant
+      def hide_const(constant_name)
+        ConstantMutator.hide(constant_name)
       end
 
     private
-      
+
       def declare_double(declared_as, *args)
         args << {} unless Hash === args.last
         args.last[:__declared_as] = declared_as

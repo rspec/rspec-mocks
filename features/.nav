@@ -18,9 +18,10 @@
   - explicit.feature
   - general_matchers.feature
   - type_matchers.feature
-- stubbing_constants:
+- mutating_constants:
   - stub_defined_constant.feature
   - stub_undefined_constant.feature
+  - hiding_defined_constant.feature
 - outside_rspec:
   - configuration.feature
   - standalone.feature

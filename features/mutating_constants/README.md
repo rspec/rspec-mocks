@@ -1,4 +1,6 @@
-## Stubbing Constants
+## Mutating Constants
+
+### Stubbing
 
 Support is provided for stubbing constants. Like with method stubs, the
 stubbed constants will be restored to their original state when an
@@ -60,3 +62,21 @@ CardDeck::SUITS # => [:Spades, :Diamonds, :Clubs, :Hearts]
 CardDeck::NUM_CARDS # => raises uninitialized constant error
 ```
 
+### Hiding
+
+Support is also provided for hiding constants. Hiding a constant temporarily
+removes it; it is restored to its original value after the test completes.
+
+```ruby
+FOO = 42
+hide_const("FOO")
+FOO => NameError: uninitialized constant FOO
+```
+
+Like stubbed constants, names must be fully qualified.
+
+Hiding constants that are already undefined has no effect.
+
+```ruby
+hide_const("NO_OP")
+```
