@@ -70,7 +70,7 @@ module RSpec
     end
 
     # Provides information about constants that may (or may not)
-    # have been stubbed by rspec-mocks.
+    # have been mutated by rspec-mocks.
     class Constant
       extend RecursiveConstMethods
 
@@ -83,17 +83,23 @@ module RSpec
       attr_reader :name
 
       # @return [Object, nil] The original value (e.g. before it
-      #   was stubbed by rspec-mocks) of the constant, or
+      #   was mutated by rspec-mocks) of the constant, or
       #   nil if the constant was not previously defined.
       attr_accessor :original_value
 
       # @api private
-      attr_writer :previously_defined, :stubbed
+      attr_writer :previously_defined, :stubbed, :hidden
 
       # @return [Boolean] Whether or not the constant was defined
       #   before the current example.
       def previously_defined?
         @previously_defined
+      end
+
+      # @return [Boolean] Whether or not rspec-mocks has mutated
+      #   (stubbed or hidden) this constant.
+      def mutated?
+        @stubbed || @hidden
       end
 
       # @return [Boolean] Whether or not rspec-mocks has stubbed
@@ -102,21 +108,28 @@ module RSpec
         @stubbed
       end
 
+      # @return [Boolean] Whether or not rspec-mocks has hidden
+      #   this constant.
+      def hidden?
+        @hidden
+      end
+
       def to_s
         "#<#{self.class.name} #{name}>"
       end
       alias inspect to_s
 
       # @api private
-      def self.unstubbed(name)
+      def self.unmutated(name)
         const = new(name)
         const.previously_defined = recursive_const_defined?(name)
         const.stubbed = false
+        const.hidden = false
         const.original_value = recursive_const_get(name) if const.previously_defined?
 
         const
       end
-      private_class_method :unstubbed
+      private_class_method :unmutated
 
       # Queries rspec-mocks to find out information about the named constant.
       #
@@ -124,13 +137,13 @@ module RSpec
       # @return [Constant] an object contaning information about the named
       #   constant.
       def self.original(name)
-        stubber = ConstantStubber.find(name)
-        stubber ? stubber.to_constant : unstubbed(name)
+        mutator = ConstantMutator.find(name)
+        mutator ? mutator.to_constant : unmutated(name)
       end
     end
 
     # Provides a means to stub constants.
-    class ConstantStubber
+    class ConstantMutator
       extend RecursiveConstMethods
 
       # Stubs a constant.
@@ -145,31 +158,43 @@ module RSpec
       #  so you can stub constants in other contexts (e.g. helper
       #  classes).
       def self.stub(constant_name, value, options = {})
-        stubber = if recursive_const_defined?(constant_name, &raise_on_invalid_const)
+        mutator = if recursive_const_defined?(constant_name, &raise_on_invalid_const)
           DefinedConstantReplacer
         else
           UndefinedConstantSetter
         end
 
-        stubber = stubber.new(constant_name, value, options[:transfer_nested_constants])
-        stubbers << stubber
-
-        stubber.stub
-        ensure_registered_with_mocks_space
+        mutate(mutator.new(constant_name, value, options[:transfer_nested_constants]))
         value
       end
 
-      # Contains common functionality used by both of the constant stubbers.
+      # Hides a constant.
+      #
+      # @param (see ExampleMethods#hide_const)
+      #
+      # @see ExampleMethods#hide_const
+      # @note It's recommended that you use `hide_const` in your
+      #  examples. This is an alternate public API that is provided
+      #  so you can hide constants in other contexts (e.g. helper
+      #  classes).
+      def self.hide(constant_name)
+        return unless recursive_const_defined?(constant_name)
+
+        mutate(ConstantHider.new(constant_name, nil, { }))
+        nil
+      end
+
+      # Contains common functionality used by all of the constant mutators.
       #
       # @api private
-      class BaseStubber
+      class BaseMutator
         include RecursiveConstMethods
 
         attr_reader :original_value, :full_constant_name
 
-        def initialize(full_constant_name, stubbed_value, transfer_nested_constants)
+        def initialize(full_constant_name, mutated_value, transfer_nested_constants)
           @full_constant_name        = full_constant_name
-          @stubbed_value             = stubbed_value
+          @mutated_value             = mutated_value
           @transfer_nested_constants = transfer_nested_constants
           @context_parts             = @full_constant_name.split('::')
           @const_name                = @context_parts.pop
@@ -177,32 +202,58 @@ module RSpec
 
         def to_constant
           const = Constant.new(full_constant_name)
-          const.stubbed = true
-          const.previously_defined = previously_defined?
           const.original_value = original_value
 
           const
         end
       end
 
+      # Hides a defined constant for the duration of an example.
+      #
+      # @api private
+      class ConstantHider < BaseMutator
+        def mutate
+          @context = recursive_const_get(@context_parts.join('::'))
+          @original_value = get_const_defined_on(@context, @const_name)
+
+          @context.send(:remove_const, @const_name)
+        end
+
+        def to_constant
+          const = super
+          const.hidden = true
+          const.previously_defined = true
+
+          const
+        end
+
+        def rspec_reset
+          @context.const_set(@const_name, @original_value)
+        end
+      end
+
       # Replaces a defined constant for the duration of an example.
       #
       # @api private
-      class DefinedConstantReplacer < BaseStubber
-        def stub
+      class DefinedConstantReplacer < BaseMutator
+        def mutate
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
           constants_to_transfer = verify_constants_to_transfer!
 
           @context.send(:remove_const, @const_name)
-          @context.const_set(@const_name, @stubbed_value)
+          @context.const_set(@const_name, @mutated_value)
 
           transfer_nested_constants(constants_to_transfer)
         end
 
-        def previously_defined?
-          true
+        def to_constant
+          const = super
+          const.stubbed = true
+          const.previously_defined = true
+
+          const
         end
 
         def rspec_reset
@@ -212,14 +263,14 @@ module RSpec
 
         def transfer_nested_constants(constants)
           constants.each do |const|
-            @stubbed_value.const_set(const, get_const_defined_on(original_value, const))
+            @mutated_value.const_set(const, get_const_defined_on(original_value, const))
           end
         end
 
         def verify_constants_to_transfer!
           return [] unless @transfer_nested_constants
 
-          { @original_value => "the original value", @stubbed_value => "the stubbed value" }.each do |value, description|
+          { @original_value => "the original value", @mutated_value => "the stubbed value" }.each do |value, description|
             unless value.respond_to?(:constants)
               raise ArgumentError,
                 "Cannot transfer nested constants for #{@full_constant_name} " +
@@ -250,8 +301,8 @@ module RSpec
       # Sets an undefined constant for the duration of an example.
       #
       # @api private
-      class UndefinedConstantSetter < BaseStubber
-        def stub
+      class UndefinedConstantSetter < BaseMutator
+        def mutate
           remaining_parts = @context_parts.dup
           @deepest_defined_const = @context_parts.inject(Object) do |klass, name|
             break klass unless const_defined_on?(klass, name)
@@ -264,16 +315,31 @@ module RSpec
           end
 
           @const_to_remove = remaining_parts.first || @const_name
-          context.const_set(@const_name, @stubbed_value)
+          context.const_set(@const_name, @mutated_value)
         end
 
-        def previously_defined?
-          false
+        def to_constant
+          const = super
+          const.stubbed = true
+          const.previously_defined = false
+
+          const
         end
 
         def rspec_reset
           @deepest_defined_const.send(:remove_const, @const_to_remove)
         end
+      end
+
+      # Uses the mutator to mutate (stub or hide) a constant. Ensures that
+      # the mutator is correctly registered so it can be backed out at the end
+      # of the test.
+      #
+      # @api private
+      def self.mutate(mutator)
+        register_mutator(mutator)
+        mutator.mutate
+        ensure_registered_with_mocks_space
       end
 
       # Ensures the constant stubbing is registered with
@@ -297,21 +363,26 @@ module RSpec
         # We use reverse order so that if the same constant
         # was stubbed multiple times, the original value gets
         # properly restored.
-        stubbers.reverse.each { |s| s.rspec_reset }
+        mutators.reverse.each { |s| s.rspec_reset }
 
-        stubbers.clear
+        mutators.clear
       end
 
-      # The list of constant stubbers that have been used for
+      # The list of constant mutators that have been used for
       # the current example.
       #
       # @api private
-      def self.stubbers
-        @stubbers ||= []
+      def self.mutators
+        @mutators ||= []
+      end
+
+      # @api private
+      def self.register_mutator(mutator)
+        mutators << mutator
       end
 
       def self.find(name)
-        stubbers.find { |s| s.full_constant_name == name }
+        mutators.find { |s| s.full_constant_name == name }
       end
 
       # Used internally by the constant stubbing to raise a helpful
@@ -327,6 +398,12 @@ module RSpec
         end
       end
     end
+
+    # Keeps backwards compatibility since we had released an rspec-mocks that
+    # only supported stubbing. Later, we released the hide_const feature and
+    # decided that the term "mutator" was a better term to wrap up the concept
+    # of both stubbing and hiding.
+    ConstantStubber = ConstantMutator
   end
 end
 
