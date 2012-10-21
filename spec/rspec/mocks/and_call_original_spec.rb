@@ -65,7 +65,7 @@ describe "and_call_original" do
       before do
         klass.class_eval do
           def method_missing(name, *args)
-            return super unless name =~ /^greet_(.*)$/
+            return super unless name.to_s =~ /^greet_(.*)$/
             "Hello, #{$1}"
           end
         end
