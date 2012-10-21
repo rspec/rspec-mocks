@@ -28,7 +28,7 @@ module RSpec
         context 'without YAML loaded' do
           before do
             # We can't really unload yaml, but we can fake it here...
-            @orig_yaml_constant = Object.send(:remove_const, :YAML)
+            hide_const("YAML")
             Struct.class_eval do
               alias __old_to_yaml to_yaml
               undef to_yaml
@@ -38,7 +38,6 @@ module RSpec
           module_eval(&block)
 
           after do
-            Object.const_set(:YAML, @orig_yaml_constant)
             Struct.class_eval do
               alias to_yaml __old_to_yaml
               undef __old_to_yaml
