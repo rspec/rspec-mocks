@@ -365,7 +365,9 @@ module RSpec
 
           it("exposes its name")                    { const.name.should eq("TestClass::M") }
           it("indicates it was previously defined") { const.should be_previously_defined }
+          it("indicates it has not been mutated")   { const.should_not be_mutated }
           it("indicates it has not been stubbed")   { const.should_not be_stubbed }
+          it("indicates it has not been hidden")    { const.should_not be_hidden }
           it("exposes its original value")          { const.original_value.should eq(:m) }
         end
 
@@ -375,7 +377,9 @@ module RSpec
 
           it("exposes its name")                    { const.name.should eq("TestClass::M") }
           it("indicates it was previously defined") { const.should be_previously_defined }
+          it("indicates it has been mutated")       { const.should be_mutated }
           it("indicates it has been stubbed")       { const.should be_stubbed }
+          it("indicates it has not been hidden")    { const.should_not be_hidden }
           it("exposes its original value")          { const.original_value.should eq(:m) }
         end
 
@@ -385,7 +389,9 @@ module RSpec
 
           it("exposes its name")                        { const.name.should eq("TestClass::Undefined") }
           it("indicates it was not previously defined") { const.should_not be_previously_defined }
+          it("indicates it has been mutated")           { const.should be_mutated }
           it("indicates it has been stubbed")           { const.should be_stubbed }
+          it("indicates it has not been hidden")        { const.should_not be_hidden }
           it("returns nil for the original value")      { const.original_value.should be_nil }
         end
 
@@ -394,7 +400,9 @@ module RSpec
 
           it("exposes its name")                        { const.name.should eq("TestClass::Undefined") }
           it("indicates it was not previously defined") { const.should_not be_previously_defined }
+          it("indicates it has not been mutated")       { const.should_not be_mutated }
           it("indicates it has not been stubbed")       { const.should_not be_stubbed }
+          it("indicates it has not been hidden")        { const.should_not be_hidden }
           it("returns nil for the original value")      { const.original_value.should be_nil }
         end
 
@@ -405,7 +413,9 @@ module RSpec
 
           it("exposes its name")                    { const.name.should eq("TestClass::M") }
           it("indicates it was previously defined") { const.should be_previously_defined }
+          it("indicates it has been mutated")       { const.should be_mutated }
           it("indicates it has been stubbed")       { const.should be_stubbed }
+          it("indicates it has not been hidden")    { const.should_not be_hidden }
           it("exposes its original value")          { const.original_value.should eq(:m) }
         end
 
@@ -416,8 +426,35 @@ module RSpec
 
           it("exposes its name")                        { const.name.should eq("TestClass::Undefined") }
           it("indicates it was not previously defined") { const.should_not be_previously_defined }
+          it("indicates it has been mutated")           { const.should be_mutated }
           it("indicates it has been stubbed")           { const.should be_stubbed }
+          it("indicates it has not been hidden")        { const.should_not be_hidden }
           it("returns nil for the original value")      { const.original_value.should be_nil }
+        end
+
+        context 'for a previously defined hidden constant' do
+          before { hide_const("TestClass::M") }
+          let(:const) { Constant.original("TestClass::M") }
+
+          it("exposes its name")                    { const.name.should eq("TestClass::M") }
+          it("indicates it was previously defined") { const.should be_previously_defined }
+          it("indicates it has been mutated")       { const.should be_mutated }
+          it("indicates it has not been stubbed")   { const.should_not be_stubbed }
+          it("indicates it has been hidden")        { const.should be_hidden }
+          it("exposes its original value")          { const.original_value.should eq(:m) }
+        end
+
+        context 'for a previously defined constant that has been hidden twice' do
+          before { hide_const("TestClass::M") }
+          before { hide_const("TestClass::M") }
+          let(:const) { Constant.original("TestClass::M") }
+
+          it("exposes its name")                    { const.name.should eq("TestClass::M") }
+          it("indicates it was previously defined") { const.should be_previously_defined }
+          it("indicates it has been mutated")       { const.should be_mutated }
+          it("indicates it has not been stubbed")   { const.should_not be_stubbed }
+          it("indicates it has been hidden")        { const.should be_hidden }
+          it("exposes its original value")          { const.original_value.should eq(:m) }
         end
       end
     end

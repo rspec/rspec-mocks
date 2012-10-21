@@ -88,7 +88,7 @@ module RSpec
       attr_accessor :original_value
 
       # @api private
-      attr_writer :previously_defined, :stubbed
+      attr_writer :previously_defined, :stubbed, :hidden
 
       # @return [Boolean] Whether or not the constant was defined
       #   before the current example.
@@ -96,10 +96,22 @@ module RSpec
         @previously_defined
       end
 
+      # @return [Boolean] Whether or not rspec-mocks has mutated
+      #   (stubbed or hidden) this constant.
+      def mutated?
+        @stubbed || @hidden
+      end
+
       # @return [Boolean] Whether or not rspec-mocks has stubbed
       #   this constant.
       def stubbed?
         @stubbed
+      end
+
+      # @return [Boolean] Whether or not rspec-mocks has hidden
+      #   this constant.
+      def hidden?
+        @hidden
       end
 
       def to_s
@@ -112,6 +124,7 @@ module RSpec
         const = new(name)
         const.previously_defined = recursive_const_defined?(name)
         const.stubbed = false
+        const.hidden = false
         const.original_value = recursive_const_get(name) if const.previously_defined?
 
         const
@@ -189,8 +202,6 @@ module RSpec
 
         def to_constant
           const = Constant.new(full_constant_name)
-          const.stubbed = true
-          const.previously_defined = previously_defined?
           const.original_value = original_value
 
           const
@@ -208,8 +219,12 @@ module RSpec
           @context.send(:remove_const, @const_name)
         end
 
-        def previously_defined?
-          true
+        def to_constant
+          const = super
+          const.hidden = true
+          const.previously_defined = true
+
+          const
         end
 
         def rspec_reset
@@ -233,8 +248,12 @@ module RSpec
           transfer_nested_constants(constants_to_transfer)
         end
 
-        def previously_defined?
-          true
+        def to_constant
+          const = super
+          const.stubbed = true
+          const.previously_defined = true
+
+          const
         end
 
         def rspec_reset
@@ -299,8 +318,12 @@ module RSpec
           context.const_set(@const_name, @mutated_value)
         end
 
-        def previously_defined?
-          false
+        def to_constant
+          const = super
+          const.stubbed = true
+          const.previously_defined = false
+
+          const
         end
 
         def rspec_reset
