@@ -77,6 +77,12 @@ describe "and_call_original" do
       end
 
       it 'raises an error on invocation if method_missing does not handle the message' do
+        # Demonstration of weird 1.8.7 bug
+        obj = double('anything').as_null_object
+        # Uncomment this line to make the raise_error
+        # expectation below to fail--it changes the error class to NameError
+        # obj.should be_null_object
+
         instance.should_receive(:not_a_handled_message).and_call_original
         expect {
           instance.not_a_handled_message
