@@ -18,4 +18,15 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.filter_run_including :focus
+
+  old_verbose = nil
+  config.before(:each, :silence_warnings) do
+    old_verbose = $VERBOSE
+    $VERBOSE = nil
+  end
+
+  config.after(:each, :silence_warnings) do
+    $VERBOSE = old_verbose
+  end
 end
+

@@ -151,7 +151,7 @@ module RSpec
             expect(::Hash).to equal(top_level_hash)
           end
 
-          it 'does not affect the ability to access the top-level constant from nested contexts' do
+          it 'does not affect the ability to access the top-level constant from nested contexts', :silence_warnings do
             top_level_hash = ::Hash
 
             hide_const("TestClass::Hash")
