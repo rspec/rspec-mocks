@@ -12,8 +12,8 @@ describe "and_call_original" do
           yield x, 3
         end
 
-        def self.class_method
-          :original_class_method
+        def self.new_instance
+          new
         end
       end
     end
@@ -39,14 +39,14 @@ describe "and_call_original" do
 
     it 'works for class methods defined on a superclass' do
       subclass = Class.new(klass)
-      subclass.should_receive(:class_method).and_call_original
-      expect(subclass.class_method).to eq(:original_class_method)
+      subclass.should_receive(:new_instance).and_call_original
+      expect(subclass.new_instance).to be_a(subclass)
     end
 
     it 'works for class methods defined on a grandparent class' do
       sub_subclass = Class.new(Class.new(klass))
-      sub_subclass.should_receive(:class_method).and_call_original
-      expect(sub_subclass.class_method).to eq(:original_class_method)
+      sub_subclass.should_receive(:new_instance).and_call_original
+      expect(sub_subclass.new_instance).to be_a(sub_subclass)
     end
 
     it 'works for class methods defined on the Class class' do

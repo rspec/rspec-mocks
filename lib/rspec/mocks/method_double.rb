@@ -62,7 +62,7 @@ module RSpec
             # ...we want `Class#new` bound to `klass` (which will return
             # an instance of `klass`), not `klass.superclass.new` (which
             # would return an instance of `klass.superclass`).
-            @object.superclass.method(@method_name)
+            @object.superclass.singleton_class.instance_method(@method_name).bind(@object)
           end
         end
       rescue NameError
