@@ -102,6 +102,45 @@ describe "and_call_original" do
     end
   end
 
+  context "on a partial mock object that overrides #method" do
+    let(:request_klass) do
+      Struct.new(:method, :url) do
+        def perform
+          :the_response
+        end
+
+        def self.method
+          :some_method
+        end
+      end
+    end
+
+    let(:request) { request_klass.new(:get, "http://foo.com/bar") }
+
+    it 'still works even though #method has been overriden' do
+      request.should_receive(:perform).and_call_original
+      expect(request.perform).to eq(:the_response)
+    end
+
+    it 'works for a singleton method' do
+      def request.perform
+        :a_response
+      end
+
+      request.should_receive(:perform).and_call_original
+      expect(request.perform).to eq(:a_response)
+    end
+
+    it 'raises an error if the object does not respond to the message' do
+      mock_expectation = request.should_receive(:blah)
+      request.blah # to satisfy the expectation
+
+      expect {
+        mock_expectation.and_call_original
+      }.to raise_error(/does not implement/)
+    end
+  end
+
   context "on a pure mock object" do
     let(:instance) { double }
 

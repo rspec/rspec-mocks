@@ -44,7 +44,7 @@ module RSpec
       def original_method
         if @stashed_method.method_is_stashed?
           # Example: a singleton method defined on @object
-          @object.method(@stashed_method.stashed_method_name)
+          method_handle_for(@object, @stashed_method.stashed_method_name)
         else
           begin
             # Example: an instance method defined on @object's class.
@@ -68,7 +68,7 @@ module RSpec
       rescue NameError
         # No matching method object can be located, but the object
         # may use method_missing to respond to the message.
-        method_missing = @object.method(:method_missing)
+        method_missing = method_handle_for(@object, :method_missing)
 
         # If it's the root method_missing implementation, we can give
         # the user early feedback that there's definitely no original
@@ -83,6 +83,12 @@ module RSpec
         Proc.new do |*args, &block|
           method_missing.call(@method_name, *args, &block)
         end
+      end
+
+      OBJECT_METHOD_METHOD = ::Object.instance_method(:method)
+
+      def method_handle_for(object, method_name)
+        OBJECT_METHOD_METHOD.bind(object).call(method_name)
       end
 
       ROOT_METHOD_MISSING_OWNER = Object.instance_method(:method_missing).owner
