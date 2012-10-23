@@ -75,8 +75,10 @@ module RSpec
         end
       end
 
+      # @private
       OBJECT_METHOD_METHOD = ::Object.instance_method(:method)
 
+      # @private
       def method_handle_for(object, method_name)
         OBJECT_METHOD_METHOD.bind(object).call(method_name)
       end
