@@ -66,22 +66,12 @@ module RSpec
           end
         end
       rescue NameError
-        # No matching method object can be located, but the object
-        # may use method_missing to respond to the message.
-        method_missing = method_handle_for(@object, :method_missing)
-
-        # If it's the root method_missing implementation, we can give
-        # the user early feedback that there's definitely no original
-        # implementation for this message, so bubble the error up to
-        # the caller.
-        raise if method_missing.owner == ROOT_METHOD_MISSING_OWNER
-
         # We have no way of knowing if the object's method_missing
         # will handle this message or not...but we can at least try.
         # If it's not handled, a `NoMethodError` will be raised, just
         # like normally.
         Proc.new do |*args, &block|
-          method_missing.call(@method_name, *args, &block)
+          @object.__send__(:method_missing, @method_name, *args, &block)
         end
       end
 
@@ -90,8 +80,6 @@ module RSpec
       def method_handle_for(object, method_name)
         OBJECT_METHOD_METHOD.bind(object).call(method_name)
       end
-
-      ROOT_METHOD_MISSING_OWNER = Object.instance_method(:method_missing).owner
 
       # @private
       def object_singleton_class
