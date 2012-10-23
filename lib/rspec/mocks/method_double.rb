@@ -11,7 +11,7 @@ module RSpec
         @object = object
         @proxy = proxy
 
-        @stashed_method = StashedInstanceMethod.new(object_singleton_class, @method_name)
+        @method_stasher = InstanceMethodStasher.new(object_singleton_class, @method_name)
         @method_is_proxied = false
         store(:expectations, [])
         store(:stubs, [])
@@ -42,9 +42,9 @@ module RSpec
 
       # @private
       def original_method
-        if @stashed_method.method_is_stashed?
+        if @method_stasher.method_is_stashed?
           # Example: a singleton method defined on @object
-          method_handle_for(@object, @stashed_method.stashed_method_name)
+          method_handle_for(@object, @method_stasher.stashed_method_name)
         else
           begin
             # Example: an instance method defined on @object's class.
@@ -90,7 +90,7 @@ module RSpec
       def configure_method
         RSpec::Mocks::space.add(@object) if RSpec::Mocks::space
         warn_if_nil_class
-        @stashed_method.stash unless @method_is_proxied
+        @method_stasher.stash unless @method_is_proxied
         define_proxy_method
       end
 
@@ -117,7 +117,7 @@ module RSpec
         return unless @method_is_proxied
 
         object_singleton_class.__send__(:remove_method, @method_name)
-        @stashed_method.restore
+        @method_stasher.restore
         @method_is_proxied = false
       end
 

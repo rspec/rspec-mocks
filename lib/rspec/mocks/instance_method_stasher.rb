@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     # @private
-    class StashedInstanceMethod
+    class InstanceMethodStasher
       def initialize(klass, method)
         @klass = klass
         @method = method
