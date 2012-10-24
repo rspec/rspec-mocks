@@ -9,7 +9,7 @@ describe "and_call_original" do
         end
 
         def meth_2(x)
-          yield x, 3
+          yield x, :additional_yielded_arg
         end
 
         def self.new_instance
@@ -27,8 +27,8 @@ describe "and_call_original" do
 
     it 'passes args and blocks through to the original method' do
       instance.should_receive(:meth_2).and_call_original
-      value = instance.meth_2(2) { |a, b| a * b }
-      expect(value).to eq(6)
+      value = instance.meth_2(:submitted_arg) { |a, b| [a, b] }
+      expect(value).to eq([:submitted_arg, :additional_yielded_arg])
     end
 
     it 'works for singleton methods' do
@@ -67,8 +67,11 @@ describe "and_call_original" do
           private
 
           def method_missing(name, *args)
-            return super unless name.to_s =~ /^greet_(.*)$/
-            "Hello, #{$1}"
+            if name.to_s == "greet_jack"
+              "Hello, jack"
+            else
+              super
+            end
           end
         end
       end
