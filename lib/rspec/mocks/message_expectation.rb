@@ -116,8 +116,6 @@ module RSpec
         else
           self.implementation = @method_double.original_method
         end
-      rescue NameError
-        @error_generator.raise_does_not_implement_error(message)
       end
 
       # @overload and_raise
