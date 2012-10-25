@@ -62,7 +62,7 @@ module RSpec
             # ...we want `Class#new` bound to `klass` (which will return
             # an instance of `klass`), not `klass.superclass.new` (which
             # would return an instance of `klass.superclass`).
-            @object.superclass.singleton_class.instance_method(@method_name).bind(@object)
+            original_method_from_superclass
           end
         end
       rescue NameError
@@ -72,6 +72,37 @@ module RSpec
         # like normally.
         Proc.new do |*args, &block|
           @object.__send__(:method_missing, @method_name, *args, &block)
+        end
+      end
+
+      if RUBY_VERSION.to_f > 1.8
+        # @private
+        def original_method_from_superclass
+          @object.superclass.
+                  singleton_class.
+                  instance_method(@method_name).
+                  bind(@object)
+        end
+      else
+        # Our implementation for 1.9 (above) causes an error on 1.8:
+        # TypeError: singleton method bound for a different object
+        #
+        # This doesn't work quite right in all circumstances but it's the
+        # best we can do.
+        # @private
+        def original_method_from_superclass
+          ::Kernel.warn <<-WARNING.gsub(/^ +\|/, '')
+            |
+            |WARNING: On ruby 1.8, rspec-mocks is unable to bind the original
+            |`#{@method_name}` method to your partial mock object (#{@object})
+            |for `and_call_original`. The superclass's `#{@method_name}` is being
+            |used instead; however, it may not work correctly when executed due
+            |to the fact that `self` will be #{@object.superclass}, not #{@object}.
+            |
+            |Called from: #{caller[2]}
+          WARNING
+
+          @object.superclass.method(@method_name)
         end
       end
 
