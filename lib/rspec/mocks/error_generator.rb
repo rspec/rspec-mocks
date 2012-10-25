@@ -66,6 +66,12 @@ module RSpec
         __raise "#{intro} yielded |#{arg_list(*args_to_yield)}| to block with arity of #{arity}"
       end
 
+      # @private
+      def raise_only_valid_on_a_partial_mock(method)
+        __raise "#{intro} is a pure mock object. `#{method}` is only " +
+                "available on a partial mock object."
+      end
+
       private
 
       def intro

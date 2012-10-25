@@ -1,12 +1,17 @@
 module RSpec
   module Mocks
     # @private
-    class StashedInstanceMethod
+    class InstanceMethodStasher
       def initialize(klass, method)
         @klass = klass
         @method = method
 
         @method_is_stashed = false
+      end
+
+      # @private
+      def method_is_stashed?
+        @method_is_stashed
       end
 
       # @private
@@ -44,12 +49,12 @@ module RSpec
         end
       end
 
+      public
+
       # @private
       def stashed_method_name
         "obfuscated_by_rspec_mocks__#{@method}"
       end
-
-      public
 
       # @private
       def restore
