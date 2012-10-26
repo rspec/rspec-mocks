@@ -22,6 +22,10 @@ block contents are evaluated lazily when the `obj` receives the
       # and set a return value
     end
 
+### Using the original implementation
+
+    obj.should_receive(:message).and_call_original
+
 ### Raising/Throwing
 
     obj.should_receive(:message).and_raise("this error")

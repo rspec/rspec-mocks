@@ -246,6 +246,18 @@ double.should_receive(:msg) do |&arg|
 end
 ```
 
+## Delegating to the Original Implementation
+
+When working with a partial mock object, you may occasionally
+want to set a message expecation without interfering with how
+the object responds to the message. You can use `and_call_original`
+to achieve this:
+
+```ruby
+Person.should_receive(:find).and_call_original
+Person.find # => executes the original find method and returns the result
+```
+
 ## Combining Expectation Details
 
 Combining the message name with specific arguments, receive counts and responses

@@ -6,6 +6,8 @@ Enhancements
 * and_raise can accept an exception class and message, more closely
   matching Kernel#raise (e.g., foo.stub(:bar).and_raise(RuntimeError, "message"))
   (Bas Vodde)
+* Add `and_call_original`, which will delegate the message to the
+  original method (Myron Marston).
 
 Deprecations:
 
