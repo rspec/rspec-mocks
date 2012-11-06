@@ -3,12 +3,18 @@ module RSpec
     module ExampleMethods
       include RSpec::Mocks::ArgumentMatchers
 
-      # Creates an instance of RSpec::Mocks::Mock.
+      # @overload double()
+      # @overload double(name)
+      # @overload double(stubs)
+      # @overload double(name, stubs)
+      # @param name [String/Symbol] (optional) used in
+      #   clarify intent
+      # @param stubs (Hash) (optional) hash of method/return-value pairs
+      # @return (Mock)
       #
-      # `name` is used for failure reporting, so you should use the role that
-      # the mock is playing in the example.
-      #
-      # Use `stubs` to declare one or more method stubs in one statement.
+      # Constructs an instance of [RSpec::Mocks::Mock](RSpec::Mocks::Mock) configured
+      # with an optional name, used for reporting in failure messages, and an optional
+      # hash of method/return-value pairs.
       #
       # @example
       #
@@ -18,16 +24,19 @@ module RSpec
       #   card = double("card", :suit => "Spades", :rank => "A")
       #   card.suit  #=> "Spades"
       #   card.rank  #=> "A"
+      #
+      # @see #mock
+      # @see #stub
       def double(*args)
         declare_double('Double', *args)
       end
 
-      # Just like double
+      # Effectively an alias for [double](#double-instance_method).
       def mock(*args)
         declare_double('Mock', *args)
       end
 
-      # Just like double
+      # Effectively an alias for [double](#double-instance_method).
       def stub(*args)
         declare_double('Stub', *args)
       end
