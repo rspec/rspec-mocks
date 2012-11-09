@@ -316,7 +316,7 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_recieve(:deal_card).exactly(10).times
+      #   dealer.should_receive(:deal_card).exactly(10).times
       def exactly(n, &block)
         @implementation = block if block
         set_expected_received_count :exactly, n
@@ -328,7 +328,7 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_recieve(:deal_card).at_least(9).times
+      #   dealer.should_receive(:deal_card).at_least(9).times
       def at_least(n, &block)
         @implementation = block if block
         set_expected_received_count :at_least, n
@@ -340,7 +340,7 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_recieve(:deal_card).at_most(10).times
+      #   dealer.should_receive(:deal_card).at_most(10).times
       def at_most(n, &block)
         @implementation = block if block
         set_expected_received_count :at_most, n
@@ -351,9 +351,9 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_recieve(:deal_card).exactly(10).times
-      #   dealer.should_recieve(:deal_card).at_least(10).times
-      #   dealer.should_recieve(:deal_card).at_most(10).times
+      #   dealer.should_receive(:deal_card).exactly(10).times
+      #   dealer.should_receive(:deal_card).at_least(10).times
+      #   dealer.should_receive(:deal_card).at_most(10).times
       def times(&block)
         @implementation = block if block
         self
