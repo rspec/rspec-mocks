@@ -254,7 +254,7 @@ module RSpec
           @double.something
           fail "OutOfGas was not raised"
         rescue OutOfGas => e
-          e.amount.should == 2
+          e.amount.should eq 2
           e.units.should  == :oz
         end
       end

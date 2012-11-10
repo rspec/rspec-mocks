@@ -876,7 +876,7 @@ module RSpec
           klass.any_instance.stub(:existing_method).and_return(:stubbed_return_value)
 
           instance = klass.new
-          instance.existing_method.should == :stubbed_return_value
+          instance.existing_method.should eq :stubbed_return_value
 
           RSpec::Mocks.verify
 
