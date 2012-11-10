@@ -187,7 +187,7 @@ module RSpec
           recursive_const_defined?("TOP_LEVEL_VALUE_CONST").should be_false
 
           stub_const("TOP_LEVEL_VALUE_CONST", 12345)
-          TOP_LEVEL_VALUE_CONST.should == 12345
+          TOP_LEVEL_VALUE_CONST.should eq 12345
 
           reset_rspec_mocks
           TOP_LEVEL_VALUE_CONST.should == orig_value
