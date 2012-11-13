@@ -1,10 +1,10 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.3...master)
+### 2.12.0 / 2012-11-12
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.3...2.12.0)
 
 Enhancements
 
-* and_raise can accept an exception class and message, more closely
-  matching Kernel#raise (e.g., foo.stub(:bar).and_raise(RuntimeError, "message"))
+* `and_raise` can accept an exception class and message, more closely
+  matching `Kernel#raise` (e.g., `foo.stub(:bar).and_raise(RuntimeError, "message")`)
   (Bas Vodde)
 * Add `and_call_original`, which will delegate the message to the
   original method (Myron Marston).
