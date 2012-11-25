@@ -109,6 +109,10 @@ module RSpec
           @played_methods[method_name]
         end
 
+        def build_alias_method_name(method_name)
+          "__#{method_name}_without_any_instance__"
+        end
+
         private
 
         def normalize_chain(*args)
@@ -128,10 +132,6 @@ module RSpec
           else
             remove_dummy_method!(method_name)
           end
-        end
-
-        def build_alias_method_name(method_name)
-          "__#{method_name}_without_any_instance__"
         end
 
         def restore_original_method!(method_name)

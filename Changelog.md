@@ -1,3 +1,12 @@
+### dev
+[full
+changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.0...master)
+
+Enhancements
+
+* Add support for `and_call_original` to an `any_instance` partial mock.
+  (Myron Marston)
+
 ### 2.12.0 / 2012-11-12
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.3...v2.12.0)
 

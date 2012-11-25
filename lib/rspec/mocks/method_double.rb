@@ -45,6 +45,8 @@ module RSpec
         if @method_stasher.method_is_stashed?
           # Example: a singleton method defined on @object
           method_handle_for(@object, @method_stasher.stashed_method_name)
+        elsif meth = original_unrecorded_any_instance_method
+          meth
         else
           begin
             # Example: an instance method defined on @object's class.
@@ -73,6 +75,12 @@ module RSpec
         Proc.new do |*args, &block|
           @object.__send__(:method_missing, @method_name, *args, &block)
         end
+      end
+
+      def original_unrecorded_any_instance_method
+        alias_name = @object.class.__recorder.build_alias_method_name(@method_name)
+        return nil unless @object.respond_to?(alias_name)
+        @object.method(alias_name)
       end
 
       if RUBY_VERSION.to_f > 1.8

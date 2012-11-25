@@ -37,6 +37,11 @@ describe "and_call_original" do
       expect(instance.foo).to eq(:bar)
     end
 
+    it 'works for an any_instance partial mock' do
+      klass.any_instance.should_receive(:meth_1).and_call_original
+      expect(klass.new.meth_1).to eq(:original)
+    end
+
     if RUBY_VERSION.to_f > 1.8
       it 'works for class methods defined on a superclass' do
         subclass = Class.new(klass)
