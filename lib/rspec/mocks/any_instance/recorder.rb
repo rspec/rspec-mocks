@@ -113,6 +113,10 @@ module RSpec
           "__#{method_name}_without_any_instance__"
         end
 
+        def already_observing?(method_name)
+          @observed_methods.include?(method_name)
+        end
+
         private
 
         def normalize_chain(*args)
@@ -163,10 +167,6 @@ module RSpec
         def stop_observing!(method_name)
           restore_method!(method_name)
           @observed_methods.delete(method_name)
-        end
-
-        def already_observing?(method_name)
-          @observed_methods.include?(method_name)
         end
 
         def observe!(method_name)

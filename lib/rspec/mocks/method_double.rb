@@ -85,9 +85,16 @@ module RSpec
       end
 
       def original_unrecorded_any_instance_method
+        return nil unless any_instance_class_recorder_observing_method?(@object.class)
         alias_name = @object.class.__recorder.build_alias_method_name(@method_name)
-        return nil unless @object.respond_to?(alias_name)
         @object.method(alias_name)
+      end
+
+      def any_instance_class_recorder_observing_method?(klass)
+        return true if klass.__recorder.already_observing?(@method_name)
+        superklass = klass.superclass
+        return false if superklass.nil?
+        any_instance_class_recorder_observing_method?(superklass)
       end
 
       if RUBY_VERSION.to_f > 1.8

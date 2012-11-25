@@ -37,9 +37,22 @@ describe "and_call_original" do
       expect(instance.foo).to eq(:bar)
     end
 
-    it 'works for an any_instance partial mock' do
-      klass.any_instance.should_receive(:meth_1).and_call_original
-      expect(klass.new.meth_1).to eq(:original)
+    context 'when using any_instance' do
+      it 'works for instance methods defined on the class' do
+        klass.any_instance.should_receive(:meth_1).and_call_original
+        expect(klass.new.meth_1).to eq(:original)
+      end
+
+      it 'works for instance methods defined on the superclass of the class' do
+        subclass = Class.new(klass)
+        subclass.any_instance.should_receive(:meth_1).and_call_original
+        expect(subclass.new.meth_1).to eq(:original)
+      end
+
+      it 'works when mocking the method on one class and calling the method on an instance of a subclass' do
+        klass.any_instance.should_receive(:meth_1).and_call_original
+        expect(Class.new(klass).new.meth_1).to eq(:original)
+      end
     end
 
     if RUBY_VERSION.to_f > 1.8
@@ -101,6 +114,18 @@ describe "and_call_original" do
       it 'works when the method_missing definition handles the message' do
         instance.should_receive(:greet_jack).and_call_original
         expect(instance.greet_jack).to eq("Hello, jack")
+      end
+
+      it 'works for an any_instance partial mock' do
+        klass.any_instance.should_receive(:greet_jack).and_call_original
+        expect(instance.greet_jack).to eq("Hello, jack")
+      end
+
+      it 'raises an error for an unhandled message for an any_instance partial mock' do
+        klass.any_instance.should_receive(:not_a_handled_message).and_call_original
+        expect {
+          instance.not_a_handled_message
+        }.to raise_error(NameError, /not_a_handled_message/)
       end
 
       it 'raises an error on invocation if method_missing does not handle the message' do
