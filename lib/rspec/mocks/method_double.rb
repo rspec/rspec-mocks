@@ -46,6 +46,13 @@ module RSpec
           # Example: a singleton method defined on @object
           method_handle_for(@object, @method_stasher.stashed_method_name)
         elsif meth = original_unrecorded_any_instance_method
+          # Example: a method that has been mocked through
+          #   klass.any_instance.should_receive(:msg).and_call_original
+          # any_instance.should_receive(:msg) causes the method to be
+          # replaced with a proxy method, and then `and_call_original`
+          # is recorded and played back on the object instance. We need
+          # special handling here to get a handle on the original method
+          # object rather than the proxy method.
           meth
         else
           begin
