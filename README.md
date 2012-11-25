@@ -271,10 +271,10 @@ While this is a good thing when you really need it, you probably don't really
 need it! Take care to specify only the things that matter to the behavior of
 your code.
 
-## Stubbing Constants
+## Stubbing and Hiding Constants
 
-See the [stubbing constants
-README](https://github.com/rspec/rspec-mocks/blob/master/features/stubbing_constants/README.md)
+See the [mutating constants
+README](https://github.com/rspec/rspec-mocks/blob/master/features/mutating_constants/README.md)
 for info on this feature.
 
 ## Use `before(:each)`, not `before(:all)`
