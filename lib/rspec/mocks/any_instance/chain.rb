@@ -13,7 +13,7 @@ module RSpec
           #   @see RSpec::Mocks::MessageExpectation#$1
           #
           def record(method_name)
-            class_eval(<<-EOM, __FILE__, __LINE__)
+            class_eval(<<-EOM, __FILE__, __LINE__ + 1)
               def #{method_name}(*args, &block)
                 record(:#{method_name}, *args, &block)
               end

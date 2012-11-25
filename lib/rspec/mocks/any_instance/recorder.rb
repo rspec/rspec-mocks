@@ -173,7 +173,7 @@ module RSpec
           stop_observing!(method_name) if already_observing?(method_name)
           @observed_methods << method_name
           backup_method!(method_name)
-          @klass.class_eval(<<-EOM, __FILE__, __LINE__)
+          @klass.class_eval(<<-EOM, __FILE__, __LINE__ + 1)
             def #{method_name}(*args, &blk)
               klass = ::Object.instance_method(:method).bind(self).call(:#{method_name}).owner
               klass.__recorder.playback!(self, :#{method_name})
@@ -184,7 +184,7 @@ module RSpec
 
         def mark_invoked!(method_name)
           backup_method!(method_name)
-          @klass.class_eval(<<-EOM, __FILE__, __LINE__)
+          @klass.class_eval(<<-EOM, __FILE__, __LINE__ + 1)
             def #{method_name}(*args, &blk)
               method_name = :#{method_name}
               klass = ::Object.instance_method(:method).bind(self).call(:#{method_name}).owner
