@@ -141,6 +141,10 @@ module RSpec
           it_behaves_like "loaded constant hiding", "TestClass::Nested"
         end
 
+        context 'for a loaded context prefixed with ::' do
+          it_behaves_like 'loaded constant hiding', "::TestClass"
+        end
+
         context 'for an unloaded constant with nested name that matches a top-level constant' do
           it_behaves_like "unloaded constant hiding", "TestClass::Hash"
 
@@ -289,6 +293,10 @@ module RSpec
 
         context 'for a loaded nested constant' do
           it_behaves_like "loaded constant stubbing", "TestClass::Nested"
+        end
+
+        context 'for a loaded context prefixed with ::' do
+          it_behaves_like 'loaded constant stubbing', "::TestClass"
         end
 
         context 'for an unloaded constant with nested name that matches a top-level constant' do
