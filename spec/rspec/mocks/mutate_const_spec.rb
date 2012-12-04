@@ -12,9 +12,26 @@ class TestClass
   end
 end
 
+class TestConstMissingClass
+  def self.const_missing(name)
+    if name == :Missing
+      klass = Class.new do
+        def foo
+          :bar
+        end
+      end
+      const_set :Missing, klass
+      return klass
+    else
+      super
+    end
+  end
+end
+
 class TestSubClass < TestClass
   P = :p
 end
+
 
 module RSpec
   module Mocks
@@ -309,6 +326,17 @@ module RSpec
 
         context 'for an unloaded unnested constant' do
           it_behaves_like "unloaded constant stubbing", "X"
+        end
+
+        context 'for an dynamically defined nested constant' do
+          before do
+            stub_const "TestConstMissingClass::Missing::X", :foo
+          end
+
+          it "uses dynamically defined class" do
+            TestConstMissingClass::Missing::X.should == :foo
+            TestConstMissingClass::Missing.new.foo.should == :bar
+          end
         end
 
         context 'for an unloaded nested constant' do

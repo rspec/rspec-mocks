@@ -28,6 +28,12 @@ module RSpec
       #   - C.constants(false) #=> []
       if Module.method(:const_defined?).arity == 1
         def const_defined_on?(mod, const_name)
+          begin
+            mod.const_get(const_name)
+          rescue NameError
+            return false
+          end
+
           mod.const_defined?(const_name)
         end
 
@@ -44,6 +50,12 @@ module RSpec
         end
       else
         def const_defined_on?(mod, const_name)
+          begin
+            mod.const_get(const_name)
+          rescue NameError
+            return false
+          end
+
           mod.const_defined?(const_name, false)
         end
 
