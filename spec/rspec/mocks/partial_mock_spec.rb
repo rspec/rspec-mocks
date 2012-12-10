@@ -94,7 +94,7 @@ module RSpec
 
       it "includes the class name in the error when mocking a class method that is called an extra time with the wrong args" do
         klass = Class.new do
-          def self.to_s
+          def self.inspect
             "MyClass"
           end
         end
