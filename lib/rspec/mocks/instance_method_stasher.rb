@@ -30,14 +30,29 @@ module RSpec
       end
 
       # @private
-      def method_defined_on_klass?
-        @klass.method_defined?(@method) || @klass.private_method_defined?(@method)
+      def method_defined_on_klass?(klass = @klass)
+        klass.method_defined?(@method) || klass.private_method_defined?(@method)
       end
 
       if ::UnboundMethod.method_defined?(:owner)
         # @private
         def method_owned_by_klass?
-          @klass.instance_method(@method).owner == @klass
+          owner = @klass.instance_method(@method).owner
+          # On 1.8 (and some 1.9s -- e.g. rubinius) aliased methods
+          # can report the wrong owner. Example:
+          # class MyClass
+          #   class << self
+          #     alias alternate_new new
+          #   end
+          # end
+          #
+          # MyClass.owner(:alternate_new) returns `Class` on 1.8,
+          # but we need to consider the owner to be `MyClass` because
+          # it is not actually available on `Class` but is on `MyClass`.
+          # Hence, we verify that the owner actually has the method defined.
+          # If the given owner does not have the method defined, we assume
+          # that the method is actually owned by @klass.
+          owner == @klass || !(method_defined_on_klass?(owner))
         end
       else
         # @private
