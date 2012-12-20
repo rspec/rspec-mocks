@@ -96,6 +96,17 @@ describe "and_call_original" do
       expect(inst.meth_1).to eq(:original)
     end
 
+    it 'works for aliased methods' do
+      klass = Class.new do
+        class << self
+          alias alternate_new new
+        end
+      end
+
+      klass.should_receive(:alternate_new).and_call_original
+      expect(klass.alternate_new).to be_an_instance_of(klass)
+    end
+
     context 'on an object that defines method_missing' do
       before do
         klass.class_eval do
