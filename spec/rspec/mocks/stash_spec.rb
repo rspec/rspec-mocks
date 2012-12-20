@@ -11,6 +11,7 @@ module RSpec
           end
         end
       end
+
       it "keeps the original method intact after multiple expectations are added on the same method" do
         klass.should_receive(:foo).with(:fizbaz).and_return(:wowwow)
         klass.should_receive(:foo).with(:bazbar).and_return(:okay)
@@ -21,6 +22,32 @@ module RSpec
 
         klass.rspec_reset
         klass.foo(:yeah).should equal(:original_value)
+      end
+    end
+
+    describe "when a class method is aliased on a subclass and the method is mocked" do
+      let(:klass) do
+        Class.new do
+          class << self
+            alias alternate_new new
+          end
+        end
+      end
+
+      it "restores the original aliased public method" do
+        klass = Class.new do
+          class << self
+            alias alternate_new new
+          end
+        end
+
+        klass.should_receive(:alternate_new)
+        expect(klass.alternate_new).to be_nil
+
+        klass.rspec_verify
+
+        klass.rspec_reset
+        expect(klass.alternate_new).to be_an_instance_of(klass)
       end
     end
   end
