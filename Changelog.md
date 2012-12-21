@@ -1,11 +1,12 @@
 ### dev
-[full
-changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.0...master)
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.0...master)
 
-Enhancements
+Bug fixes
 
-* Add support for `and_call_original` to an `any_instance` partial mock.
+* Fix `any_instance` to support `and_call_original`.
   (Myron Marston)
+* Properly restore stubbed aliased methods on rubies
+  that report the incorrect owner (Myron Marston and Andy Lindeman).
 
 ### 2.12.0 / 2012-11-12
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.11.3...v2.12.0)
