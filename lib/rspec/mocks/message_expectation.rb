@@ -20,7 +20,6 @@ module RSpec
         @expected_received_count = expected_received_count
         @argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
         @consecutive = false
-        @args_to_throw = []
         @order_group = expectation_ordering
         @at_least = @at_most = @exactly = nil
         @args_to_yield = []
@@ -156,8 +155,8 @@ module RSpec
       #
       #   car.stub(:go).and_throw(:out_of_gas)
       #   car.stub(:go).and_throw(:out_of_gas, :level => 0.1)
-      def and_throw(symbol, object = nil)
-        @args_to_throw = [symbol, object].compact
+      def and_throw(*args)
+        self.implementation = Proc.new { throw *args }
       end
 
       # Tells the object to yield one or more args to a block when the message
@@ -194,8 +193,6 @@ module RSpec
         @order_group.handle_order_constraint self
 
         begin
-          Kernel::throw(*@args_to_throw) unless @args_to_throw.empty?
-
           default_return_val = call_with_yield(&block) if !@args_to_yield.empty? || @eval_context
 
           if @consecutive
