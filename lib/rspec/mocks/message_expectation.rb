@@ -20,7 +20,6 @@ module RSpec
         @expected_received_count = expected_received_count
         @argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
         @consecutive = false
-        @exception_to_raise = nil
         @args_to_throw = []
         @order_group = expectation_ordering
         @at_least = @at_most = @exactly = nil
@@ -141,10 +140,10 @@ module RSpec
       #   car.stub(:go).and_raise(OutOfGas.new(2, :oz))
       def and_raise(exception = RuntimeError, message = nil)
         if exception.respond_to?(:exception)
-          @exception_to_raise = message ? exception.exception(message) : exception.exception
-        else
-          @exception_to_raise = exception
+          exception = message ? exception.exception(message) : exception.exception
         end
+
+        self.implementation = Proc.new { raise exception }
       end
 
       # @overload and_throw(symbol)
@@ -195,7 +194,6 @@ module RSpec
         @order_group.handle_order_constraint self
 
         begin
-          raise(@exception_to_raise) unless @exception_to_raise.nil?
           Kernel::throw(*@args_to_throw) unless @args_to_throw.empty?
 
           default_return_val = call_with_yield(&block) if !@args_to_yield.empty? || @eval_context
