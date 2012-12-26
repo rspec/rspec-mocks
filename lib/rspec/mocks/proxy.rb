@@ -64,7 +64,7 @@ module RSpec
       end
 
       # @private
-      def add_message_expectation(location, method_name, opts={}, &block)        
+      def add_message_expectation(location, method_name, opts={}, &block)
         meth_double = method_double[method_name]
 
         if null_object? && !block

@@ -6,7 +6,7 @@ describe RSpec::Mocks::Mock do
 
   describe "#and_yield" do
     context "with eval context as block argument" do
-      
+
       it "evaluates the supplied block as it is read" do
         evaluated = false
         obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
