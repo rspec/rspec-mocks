@@ -488,7 +488,7 @@ module RSpec
       def and_return(*)
         # no-op
         # @deprecated and_return is not supported with negative message expectations.
-        RSpec.warn_deprecation <<-MSG
+        RSpec::Mocks.warn_deprecation <<-MSG
 
 DEPRECATION: `and_return` with `should_not_receive` is deprecated. Called from #{caller(0)[1]}
 MSG

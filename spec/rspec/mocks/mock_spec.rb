@@ -43,7 +43,7 @@ module RSpec
       end
 
       it "warns when should_not_receive is followed by and_return" do
-        RSpec.should_receive(:warn_deprecation).
+        RSpec::Mocks.should_receive(:warn_deprecation).
           with(/`and_return` with `should_not_receive` is deprecated/)
 
         @double.should_not_receive(:do_something).and_return(1)

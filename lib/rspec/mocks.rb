@@ -27,6 +27,14 @@ module RSpec
         @configuration ||= Configuration.new
       end
 
+      # @api private
+      # Used internally by RSpec to display custom deprecation warnings.  This
+      # is also defined in rspec-core, but we can't assume it's loaded since
+      # rspec-expectations should be usable w/o rspec-core.
+      def warn_deprecation(message)
+        warn(message)
+      end
+
     private
 
       def add_extensions
