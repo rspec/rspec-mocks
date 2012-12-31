@@ -12,9 +12,9 @@ module RSpec
 
       it 'still reports mock failures' do
         Foo.should_not_receive :bar
-        lambda do
+        expect {
           Foo.foo
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
     end
   end

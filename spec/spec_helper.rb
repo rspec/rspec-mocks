@@ -19,6 +19,10 @@ RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.filter_run_including :focus
 
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = :expect
+  end
+
   old_verbose = nil
   config.before(:each, :silence_warnings) do
     old_verbose = $VERBOSE

@@ -15,7 +15,7 @@ describe RSpec::Mocks do
         RSpec::Mocks::setup(Object.new)
         space = RSpec::Mocks::space
         RSpec::Mocks::setup(Object.new)
-        RSpec::Mocks::space.should equal(space)
+        expect(RSpec::Mocks::space).to equal(space)
       end
     end
 
@@ -23,7 +23,7 @@ describe RSpec::Mocks do
       it "initializes a Mock::Space" do
         RSpec::Mocks::space = nil
         RSpec::Mocks::setup(Object.new)
-        RSpec::Mocks::space.should_not be_nil
+        expect(RSpec::Mocks::space).not_to be_nil
       end
     end
   end
@@ -51,8 +51,8 @@ describe RSpec::Mocks do
 
   describe ".configuration" do
     it 'returns a memoized configuration instance' do
-      RSpec::Mocks.configuration.should be_a(RSpec::Mocks::Configuration)
-      RSpec::Mocks.configuration.should be(RSpec::Mocks.configuration)
+      expect(RSpec::Mocks.configuration).to be_a(RSpec::Mocks::Configuration)
+      expect(RSpec::Mocks.configuration).to be(RSpec::Mocks.configuration)
     end
   end
 

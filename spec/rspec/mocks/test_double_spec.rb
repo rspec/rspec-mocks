@@ -23,7 +23,7 @@ module RSpec
 
         double = Module.new { TestDouble.extend_onto(self) }
         double.should_receive(:use).and_return(:ok)
-        double.use.should be(:ok)
+        expect(double.use).to be(:ok)
       end
 
       it 'sets the test double name when a name is passed' do
@@ -36,8 +36,8 @@ module RSpec
           TestDouble.extend_onto(self, "MyDouble", :a => 5, :b => 10)
         end
 
-        double.a.should eq(5)
-        double.b.should eq(10)
+        expect(double.a).to eq(5)
+        expect(double.b).to eq(10)
       end
 
       it 'indicates what type of test double it is in error messages' do

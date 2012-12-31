@@ -32,33 +32,33 @@ module RSpec
         @double.should_receive(:do_something).twice
         @double.do_something
         @double.do_something
-        lambda do
+        expect {
           @double.do_something
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when call count is lower than expected" do
         @double.should_receive(:do_something).twice
         @double.do_something
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when called wrong args on the first call" do
         @double.should_receive(:do_something).twice.with("1", 1)
-        lambda do
+        expect {
           @double.do_something(1, "1")
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
         @double.rspec_reset
       end
 
       it "fails when called with wrong args on the second call" do
         @double.should_receive(:do_something).twice.with("1", 1)
         @double.do_something("1", 1)
-        lambda do
+        expect {
           @double.do_something(1, "1")
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
         @double.rspec_reset
       end
     end

@@ -4,27 +4,27 @@ describe "a double receiving to_ary" do
   shared_examples "to_ary" do
     it "returns nil" do
       expect do
-        obj.to_ary.should be_nil
+        expect(obj.to_ary).to be_nil
       end.to raise_error(NoMethodError)
     end
 
     it "doesn't respond" do
-      obj.should_not respond_to(:to_ary)
+      expect(obj).not_to respond_to(:to_ary)
     end
 
     it "can be overridden with a stub" do
       obj.stub(:to_ary) { :non_nil_value }
-      obj.to_ary.should be(:non_nil_value)
+      expect(obj.to_ary).to be(:non_nil_value)
     end
 
     it "responds when overriden" do
       obj.stub(:to_ary) { :non_nil_value }
-      obj.should respond_to(:to_ary)
+      expect(obj).to respond_to(:to_ary)
     end
 
     it "supports Array#flatten" do
       obj = double('foo')
-      [obj].flatten.should eq([obj])
+      expect([obj].flatten).to eq([obj])
     end
   end
 

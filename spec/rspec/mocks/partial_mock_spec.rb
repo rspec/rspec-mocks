@@ -14,9 +14,9 @@ module RSpec
 
       it "names the class in the failure message when expectation is on class" do
         Object.should_receive(:foo)
-        lambda do
+        expect {
           Object.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError, /<Object \(class\)>/)
+        }.to raise_error(RSpec::Mocks::MockExpectationError, /<Object \(class\)>/)
       end
 
       it "does not conflict with @options in the object" do
@@ -36,35 +36,35 @@ module RSpec
       end
 
       it "should_not_receive returns a negative message expectation" do
-        object.should_not_receive(:foobar).should be_kind_of(RSpec::Mocks::NegativeMessageExpectation)
+        expect(object.should_not_receive(:foobar)).to be_kind_of(RSpec::Mocks::NegativeMessageExpectation)
       end
 
       it "should_receive mocks out the method" do
         object.should_receive(:foobar).with(:test_param).and_return(1)
-        object.foobar(:test_param).should equal(1)
+        expect(object.foobar(:test_param)).to equal(1)
       end
 
       it "should_receive handles a hash" do
         object.should_receive(:foobar).with(:key => "value").and_return(1)
-        object.foobar(:key => "value").should equal(1)
+        expect(object.foobar(:key => "value")).to equal(1)
       end
 
       it "should_receive handles an inner hash" do
         hash = {:a => {:key => "value"}}
         object.should_receive(:foobar).with(:key => "value").and_return(1)
-        object.foobar(hash[:a]).should equal(1)
+        expect(object.foobar(hash[:a])).to equal(1)
       end
 
       it "should_receive returns a message expectation" do
-        object.should_receive(:foobar).should be_kind_of(RSpec::Mocks::MessageExpectation)
+        expect(object.should_receive(:foobar)).to be_kind_of(RSpec::Mocks::MessageExpectation)
         object.foobar
       end
 
       it "should_receive verifies method was called" do
         object.should_receive(:foobar).with(:test_param).and_return(1)
-        lambda do
+        expect {
           object.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "should_receive also takes a String argument" do
@@ -74,9 +74,9 @@ module RSpec
 
       it "should_not_receive also takes a String argument" do
         object.should_not_receive('foobar')
-        lambda do
+        expect {
           object.foobar
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "uses reports nil in the error message" do
@@ -175,19 +175,19 @@ module RSpec
 
       it 'keeps public methods public' do
         object.should_receive(:public_method)
-        object.public_methods.should include_method(:public_method)
+        expect(object.public_methods).to include_method(:public_method)
         object.public_method
       end
 
       it 'keeps private methods private' do
         object.should_receive(:private_method)
-        object.private_methods.should include_method(:private_method)
+        expect(object.private_methods).to include_method(:private_method)
         object.public_method
       end
 
       it 'keeps protected methods protected' do
         object.should_receive(:protected_method)
-        object.protected_methods.should include_method(:protected_method)
+        expect(object.protected_methods).to include_method(:protected_method)
         object.public_method
       end
 

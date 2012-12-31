@@ -7,7 +7,7 @@ module RSpec
         it "execs the block when called" do
           obj = stub()
           obj.stub(:foo) { :bar }
-          obj.foo.should eq :bar
+          expect(obj.foo).to eq :bar
         end
       end
 
@@ -15,7 +15,7 @@ module RSpec
         it "execs the block with that arg when called" do
           obj = stub()
           obj.stub(:foo) {|given| given}
-          obj.foo(:bar).should eq :bar
+          expect(obj.foo(:bar)).to eq :bar
         end
       end
 
@@ -23,7 +23,7 @@ module RSpec
         it "execs the block when called" do
           obj = stub()
           obj.stub(:foo) {|*given| given.first}
-          obj.foo(:bar).should eq :bar
+          expect(obj.foo(:bar)).to eq :bar
         end
       end
     end
@@ -35,7 +35,7 @@ module RSpec
         def obj.foo; :original; end
         obj.stub(:foo)
         obj.unstub(:foo)
-        obj.foo.should eq :original
+        expect(obj.foo).to eq :original
       end
 
       it "removes all stubs with the supplied method name" do
@@ -44,7 +44,7 @@ module RSpec
         obj.stub(:foo).with(1)
         obj.stub(:foo).with(2)
         obj.unstub(:foo)
-        obj.foo.should eq :original
+        expect(obj.foo).to eq :original
       end
 
       it "does not remove any expectations with the same method name" do
@@ -54,7 +54,7 @@ module RSpec
         obj.stub(:foo).with(1)
         obj.stub(:foo).with(2)
         obj.unstub(:foo)
-        obj.foo(3).should eq :three
+        expect(obj.foo(3)).to eq :three
       end
 
       it "restores the correct implementations when stubbed and unstubbed on a parent and child class" do
@@ -66,15 +66,15 @@ module RSpec
         parent.unstub(:new)
         child.unstub(:new)
 
-        parent.new.should be_an_instance_of parent
-        child.new.should be_an_instance_of child
+        expect(parent.new).to be_an_instance_of parent
+        expect(child.new).to be_an_instance_of child
       end
 
       it "raises a MockExpectationError if the method has not been stubbed" do
         obj = Object.new
-        lambda do
+        expect {
           obj.unstub(:foo)
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
     end
   end

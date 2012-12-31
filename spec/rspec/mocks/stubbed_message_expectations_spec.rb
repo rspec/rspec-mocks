@@ -5,7 +5,7 @@ describe "expection set on previously stubbed method" do
     double = double(:msg => nil)
     double.msg
     double.should_receive(:msg)
-    lambda { double.rspec_verify }.should raise_error(RSpec::Mocks::MockExpectationError)
+    expect { double.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
   end
 
   it "outputs arguments of similar calls" do
@@ -13,9 +13,9 @@ describe "expection set on previously stubbed method" do
     double.should_receive(:foo).with('first')
     double.foo('second')
     double.foo('third')
-    lambda do
+    expect {
       double.rspec_verify
-    end.should raise_error(%Q|Double "double" received :foo with unexpected arguments\n  expected: ("first")\n       got: ("second"), ("third")|)
+    }.to raise_error(%Q|Double "double" received :foo with unexpected arguments\n  expected: ("first")\n       got: ("second"), ("third")|)
     double.rspec_reset
   end
 

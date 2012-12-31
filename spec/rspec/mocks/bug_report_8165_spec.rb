@@ -16,16 +16,16 @@ describe "An object where respond_to? is true and does not have method" do
     obj = Object.new
     obj.should_receive(:respond_to?).with(:foobar).and_return(true)
     obj.should_receive(:foobar).and_return(:baz)
-    obj.respond_to?(:foobar).should be_true
-    obj.foobar.should eq :baz
+    expect(obj.respond_to?(:foobar)).to be_true
+    expect(obj.foobar).to eq :baz
   end
 
   it "does not raise an exception for mock" do
     obj = double("obj")
     obj.should_receive(:respond_to?).with(:foobar).and_return(true)
     obj.should_receive(:foobar).and_return(:baz)
-    obj.respond_to?(:foobar).should be_true
-    obj.foobar.should eq :baz
+    expect(obj.respond_to?(:foobar)).to be_true
+    expect(obj.foobar).to eq :baz
   end
 
 end
