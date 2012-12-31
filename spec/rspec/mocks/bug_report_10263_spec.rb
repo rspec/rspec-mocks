@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe "Double" do
   let(:test_double) { double }
 
