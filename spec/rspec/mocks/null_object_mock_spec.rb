@@ -89,7 +89,7 @@ module RSpec
         ("%i" % @double).should eq("0")
       end
     end
-    
+
     describe "#as_null_object" do
       it "sets the object to null_object" do
         obj = double('anything').as_null_object

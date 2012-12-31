@@ -21,7 +21,7 @@ module RSpec
           m.rspec_verify
         }.should raise_error("recebi nada")
       end
-      
+
       it "uses the message supplied with :message after a similar stub" do
         lambda {
           m = RSpec::Mocks::Mock.new("a mock")

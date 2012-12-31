@@ -40,7 +40,7 @@ module RSpec
           @double.do_something
         end.should raise_error(RSpec::Mocks::MockExpectationError)
       end
-      
+
       it "fails when not called" do
         @double.should_receive(:do_something).once
         lambda do

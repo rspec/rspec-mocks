@@ -10,7 +10,7 @@ describe "Double" do
     rescue Exception
     end
   end
-  
+
   specify "then the next example should behave as expected instead of saying" do
     test_double.should_receive(:foobar)
     test_double.foobar
@@ -20,6 +20,6 @@ describe "Double" do
     rescue Exception => e
       e.message.should eq "Double received unexpected message :foobar with (no args)"
     end
-  end 
+  end
 end
 
