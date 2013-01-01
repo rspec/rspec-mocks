@@ -27,25 +27,25 @@ module RSpec
 
       it "fails when called with wrong args" do
         @double.should_receive(:do_something).once.with("a", "b", "c")
-        lambda do
+        expect {
           @double.do_something("d", "e", "f")
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
         @double.rspec_reset
       end
 
       it "fails fast when called twice" do
         @double.should_receive(:do_something).once
         @double.do_something
-        lambda do
+        expect {
           @double.do_something
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when not called" do
         @double.should_receive(:do_something).once
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
     end
   end

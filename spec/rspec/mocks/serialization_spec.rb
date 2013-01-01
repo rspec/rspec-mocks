@@ -87,9 +87,9 @@ module RSpec
 
       without_yaml_loaded do
         it 'does not add #to_yaml to the stubbed object' do
-          serializable_object.should_not respond_to(:to_yaml)
+          expect(serializable_object).not_to respond_to(:to_yaml)
           set_stub
-          serializable_object.should_not respond_to(:to_yaml)
+          expect(serializable_object).not_to respond_to(:to_yaml)
         end
       end
 
@@ -102,7 +102,7 @@ module RSpec
 
         it 'does not interfere with its marshalling' do
           marshalled_copy = Marshal.load(Marshal.dump(serializable_object))
-          marshalled_copy.should eq serializable_object
+          expect(marshalled_copy).to eq serializable_object
         end
       end
     end

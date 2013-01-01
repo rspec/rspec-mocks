@@ -7,9 +7,9 @@ module RSpec
 
       it "fails if method is never called" do
         @double.should_receive(:do_something).at_least(4).times
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when called less than n times" do
@@ -17,31 +17,31 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when at least once method is never called" do
         @double.should_receive(:do_something).at_least(:once)
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when at least twice method is called once" do
         @double.should_receive(:do_something).at_least(:twice)
         @double.do_something
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when at least twice method is never called" do
         @double.should_receive(:do_something).at_least(:twice)
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "passes when at least n times method is called exactly n times" do
@@ -93,7 +93,7 @@ module RSpec
 
       it "returns the value given by a block when the at least once method is called" do
         @double.should_receive(:to_s).at_least(:once) { "testing" }
-        @double.to_s.should eq "testing"
+        expect(@double.to_s).to eq "testing"
         @double.rspec_verify
       end
 
@@ -127,15 +127,15 @@ module RSpec
       it "uses a stub value if no value set" do
         @double.stub(:do_something => 'foo')
         @double.should_receive(:do_something).at_least(:once)
-        @double.do_something.should eq 'foo'
-        @double.do_something.should eq 'foo'
+        expect(@double.do_something).to eq 'foo'
+        expect(@double.do_something).to eq 'foo'
       end
 
       it "prefers its own return value over a stub" do
         @double.stub(:do_something => 'foo')
         @double.should_receive(:do_something).at_least(:once).and_return('bar')
-        @double.do_something.should eq 'bar'
-        @double.do_something.should eq 'bar'
+        expect(@double.do_something).to eq 'bar'
+        expect(@double.do_something).to eq 'bar'
       end
     end
   end

@@ -10,25 +10,25 @@ module RSpec
           mock.rspec_verify
         rescue Exception => e
         ensure
-          e.backtrace.to_s.should =~ /\/path\/to\/blah.ext:37/m
+          expect(e.backtrace.to_s).to match /\/path\/to\/blah.ext:37/m
         end
       end
 
       it "uses the message supplied with :message" do
-        lambda {
+        expect {
           m = RSpec::Mocks::Mock.new("a mock")
           m.should_receive(:message, :message => "recebi nada")
           m.rspec_verify
-        }.should raise_error("recebi nada")
+        }.to raise_error("recebi nada")
       end
 
       it "uses the message supplied with :message after a similar stub" do
-        lambda {
+        expect {
           m = RSpec::Mocks::Mock.new("a mock")
           m.stub(:message)
           m.should_receive(:message, :message => "from mock")
           m.rspec_verify
-        }.should raise_error("from mock")
+        }.to raise_error("from mock")
       end
     end
   end

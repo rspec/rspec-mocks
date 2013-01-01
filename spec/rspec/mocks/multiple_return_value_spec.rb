@@ -10,18 +10,18 @@ module RSpec
       end
 
       it "returns values in order" do
-        @double.do_something.should eq @return_values[0]
-        @double.do_something.should eq @return_values[1]
-        @double.do_something.should eq @return_values[2]
+        expect(@double.do_something).to eq @return_values[0]
+        expect(@double.do_something).to eq @return_values[1]
+        expect(@double.do_something).to eq @return_values[2]
         @double.rspec_verify
       end
 
       it "falls back to a previously stubbed value" do
         @double.stub :do_something => :stub_result
-        @double.do_something.should eq @return_values[0]
-        @double.do_something.should eq @return_values[1]
-        @double.do_something.should eq @return_values[2]
-        @double.do_something.should eq :stub_result
+        expect(@double.do_something).to eq @return_values[0]
+        expect(@double.do_something).to eq @return_values[1]
+        expect(@double.do_something).to eq @return_values[2]
+        expect(@double.do_something).to eq :stub_result
       end
 
       it "fails when there are too few calls (if there is no stub)" do
@@ -47,9 +47,9 @@ module RSpec
       end
 
       it "returns values in order to consecutive calls" do
-        @double.do_something.should eq @return_values[0]
-        @double.do_something.should eq @return_values[1]
-        @double.do_something.should eq @return_values[2]
+        expect(@double.do_something).to eq @return_values[0]
+        expect(@double.do_something).to eq @return_values[1]
+        expect(@double.do_something).to eq @return_values[2]
         @double.rspec_verify
       end
     end
@@ -61,14 +61,14 @@ module RSpec
       end
 
       it "uses the last return value for subsequent calls" do
-        @double.do_something.should equal(11)
-        @double.do_something.should equal(22)
-        @double.do_something.should equal(22)
+        expect(@double.do_something).to equal(11)
+        expect(@double.do_something).to equal(22)
+        expect(@double.do_something).to equal(22)
         @double.rspec_verify
       end
 
       it "fails when called less than the specified number" do
-        @double.do_something.should equal(11)
+        expect(@double.do_something).to equal(11)
         expect { @double.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -76,14 +76,14 @@ module RSpec
         before { @double.stub(:do_something).and_return :stub_result }
 
         it "uses the last value for subsequent calls" do
-          @double.do_something.should equal(11)
-          @double.do_something.should equal(22)
-          @double.do_something.should equal(22)
+          expect(@double.do_something).to equal(11)
+          expect(@double.do_something).to equal(22)
+          expect(@double.do_something).to equal(22)
           @double.rspec_verify
         end
 
         it "fails when called less than the specified number" do
-          @double.do_something.should equal(11)
+          expect(@double.do_something).to equal(11)
           expect { @double.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
       end
@@ -96,9 +96,9 @@ module RSpec
       end
 
       it "uses the last return value for subsequent calls" do
-        @double.do_something.should equal(11)
-        @double.do_something.should equal(22)
-        @double.do_something.should equal(22)
+        expect(@double.do_something).to equal(11)
+        expect(@double.do_something).to equal(22)
+        expect(@double.do_something).to equal(22)
         @double.rspec_verify
       end
 

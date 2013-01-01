@@ -30,9 +30,9 @@ module RSpec
       it "fails when messages are received out of order (2nd message 1st)" do
         @double.should_receive(:one).ordered
         @double.should_receive(:two).ordered
-        lambda do
+        expect {
           @double.two
-        end.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :two out of order")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :two out of order")
       end
 
       it "fails when messages are received out of order (3rd message 1st)" do
@@ -40,9 +40,9 @@ module RSpec
         @double.should_receive(:two).ordered
         @double.should_receive(:three).ordered
         @double.one
-        lambda do
+        expect {
           @double.three
-        end.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
       end
 
       it "fails when messages are received out of order (3rd message 2nd)" do
@@ -50,9 +50,9 @@ module RSpec
         @double.should_receive(:two).ordered
         @double.should_receive(:three).ordered
         @double.one
-        lambda do
+        expect {
           @double.three
-        end.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
       end
 
       it "fails when messages are out of order across objects" do
@@ -62,9 +62,9 @@ module RSpec
         b.should_receive(:two).ordered
         a.should_receive(:three).ordered
         a.one
-        lambda do
+        expect {
           a.three
-        end.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
         a.rspec_reset
         b.rspec_reset
       end

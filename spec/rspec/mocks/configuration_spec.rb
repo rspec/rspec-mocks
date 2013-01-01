@@ -12,13 +12,13 @@ module RSpec
       end
 
       it 'adds stub and should_receive to the given modules' do
-        instance_methods_of(mod_1).should_not include(:stub, :should_receive)
-        instance_methods_of(mod_2).should_not include(:stub, :should_receive)
+        expect(instance_methods_of(mod_1)).not_to include(:stub, :should_receive)
+        expect(instance_methods_of(mod_2)).not_to include(:stub, :should_receive)
 
         config.add_stub_and_should_receive_to(mod_1, mod_2)
 
-        instance_methods_of(mod_1).should include(:stub, :should_receive)
-        instance_methods_of(mod_2).should include(:stub, :should_receive)
+        expect(instance_methods_of(mod_1)).to include(:stub, :should_receive)
+        expect(instance_methods_of(mod_2)).to include(:stub, :should_receive)
       end
     end
   end

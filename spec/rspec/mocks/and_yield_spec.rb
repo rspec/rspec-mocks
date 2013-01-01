@@ -12,12 +12,12 @@ describe RSpec::Mocks::Mock do
         obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
           evaluated = true
         end
-        evaluated.should be_true
+        expect(evaluated).to be_true
       end
 
       it "passes an eval context object to the supplied block" do
         obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
-          eval_context.should_not be_nil
+          expect(eval_context).not_to be_nil
         end
       end
 
@@ -33,7 +33,7 @@ describe RSpec::Mocks::Mock do
           actual_eval_context = self
         end
 
-        actual_eval_context.should equal(expected_eval_context)
+        expect(actual_eval_context).to equal(expected_eval_context)
       end
 
       context "and no yielded arguments" do
@@ -63,7 +63,7 @@ describe RSpec::Mocks::Mock do
             # foo is not called here
           end
 
-          lambda {configured_eval_context.rspec_verify}.should raise_error(RSpec::Mocks::MockExpectationError)
+          expect { configured_eval_context.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
 
       end
@@ -102,8 +102,8 @@ describe RSpec::Mocks::Mock do
             # foo is not called here
           end
 
-          lambda {configured_eval_context.rspec_verify}.should raise_error(RSpec::Mocks::MockExpectationError)
-          lambda {yielded_arg.rspec_verify}.should raise_error(RSpec::Mocks::MockExpectationError)
+          expect { configured_eval_context.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { yielded_arg.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
 
       end

@@ -5,7 +5,7 @@ describe "Double" do
 
   specify "when one example has an expectation inside the block passed to should_receive" do
     test_double.should_receive(:msg) do |arg|
-      arg.should be_true #this call exposes the problem
+      expect(arg).to be_true #this call exposes the problem
     end
     begin
       test_double.msg(false)
@@ -20,7 +20,7 @@ describe "Double" do
     begin
       test_double.foobar
     rescue Exception => e
-      e.message.should eq "Double received unexpected message :foobar with (no args)"
+      expect(e.message).to eq "Double received unexpected message :foobar with (no args)"
     end
   end
 end

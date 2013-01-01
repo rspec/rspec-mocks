@@ -26,7 +26,7 @@ describe 'should_receive' do
   end
   
   it 'cleans up after itself' do
-    (class << LiarLiarPantsOnFire; self; end).instance_methods.should_not include("something")
+    expect((class << LiarLiarPantsOnFire; self; end).instance_methods).not_to include("something")
   end
 end
 

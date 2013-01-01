@@ -5,7 +5,7 @@ describe "a double declaration with a block handed to:" do
     it "returns the value of executing the block" do
       obj = Object.new
       obj.should_receive(:foo) { 'bar' }
-      obj.foo.should eq('bar')
+      expect(obj.foo).to eq('bar')
     end
 
     it "works when a multi-return stub has already been set" do
@@ -13,7 +13,7 @@ describe "a double declaration with a block handed to:" do
       return_value = Object.new
       obj.stub(:foo).and_return(return_value, nil)
       obj.should_receive(:foo) { return_value }
-      obj.foo.should be(return_value)
+      expect(obj.foo).to be(return_value)
     end
   end
 
@@ -21,7 +21,7 @@ describe "a double declaration with a block handed to:" do
     it "returns the value of executing the block" do
       obj = Object.new
       obj.stub(:foo) { 'bar' }
-      obj.foo.should eq('bar')
+      expect(obj.foo).to eq('bar')
     end
   end
 
@@ -29,7 +29,7 @@ describe "a double declaration with a block handed to:" do
     it "returns the value of executing the block" do
       obj = Object.new
       obj.stub(:foo).with('baz') { 'bar' }
-      obj.foo('baz').should eq('bar')
+      expect(obj.foo('baz')).to eq('bar')
     end
   end
 
@@ -38,7 +38,7 @@ describe "a double declaration with a block handed to:" do
       it "returns the value of executing the block" do
         obj = Object.new
         obj.stub(:foo).send(method) { 'bar' }
-        obj.foo.should eq('bar')
+        expect(obj.foo).to eq('bar')
       end
     end
   end
@@ -47,7 +47,7 @@ describe "a double declaration with a block handed to:" do
     it "returns the value of executing the block" do
       obj = Object.new
       obj.stub(:foo).at_least(1).times { 'bar' }
-      obj.foo('baz').should eq('bar')
+      expect(obj.foo('baz')).to eq('bar')
     end
   end
 end
