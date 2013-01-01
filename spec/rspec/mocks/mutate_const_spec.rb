@@ -51,88 +51,94 @@ module RSpec
         end
 
         it 'allows it to be stubbed' do
-          const.should_not eq(7)
+          expect(const).not_to eq(7)
           stub_const(const_name, 7)
-          const.should eq(7)
+          expect(const).to eq(7)
         end
 
         it 'resets it to its original value when rspec clears its mocks' do
           original_value = const
-          original_value.should_not eq(:a)
+          expect(original_value).not_to eq(:a)
           stub_const(const_name, :a)
           reset_rspec_mocks
-          const.should be(original_value)
+          expect(const).to be(original_value)
         end
 
         it 'returns the stubbed value' do
-          stub_const(const_name, 7).should eq(7)
+          expect(stub_const(const_name, 7)).to eq(7)
         end
       end
 
       shared_examples_for "loaded constant hiding" do |const_name|
-        before { recursive_const_defined?(const_name).should be_true }
+        before do
+          expect(recursive_const_defined?(const_name)).to be_true
+        end
 
         it 'allows it to be hidden' do
           hide_const(const_name)
-          recursive_const_defined?(const_name).should be_false
+          expect(recursive_const_defined?(const_name)).to be_false
         end
 
         it 'resets the constant when rspec clear its mocks' do
           hide_const(const_name)
           reset_rspec_mocks
-          recursive_const_defined?(const_name).should be_true
+          expect(recursive_const_defined?(const_name)).to be_true
         end
 
         it 'returns nil' do
-          hide_const(const_name).should be_nil
+          expect(hide_const(const_name)).to be_nil
         end
       end
 
       shared_examples_for "unloaded constant stubbing" do |const_name|
         include_context "constant example methods", const_name
 
-        before { recursive_const_defined?(const_name).should be_false }
+        before do
+          expect(recursive_const_defined?(const_name)).to be_false
+        end
 
         it 'allows it to be stubbed' do
           stub_const(const_name, 7)
-          const.should eq(7)
+          expect(const).to eq(7)
         end
 
         it 'removes the constant when rspec clears its mocks' do
           stub_const(const_name, 7)
           reset_rspec_mocks
-          recursive_const_defined?(const_name).should be_false
+          expect(recursive_const_defined?(const_name)).to be_false
         end
 
         it 'returns the stubbed value' do
-          stub_const(const_name, 7).should eq(7)
+          expect(stub_const(const_name, 7)).to eq(7)
         end
 
         it 'ignores the :transfer_nested_constants option if passed' do
           stub = Module.new
           stub_const(const_name, stub, :transfer_nested_constants => true)
-          stub.constants.should eq([])
+          expect(stub.constants).to eq([])
         end
       end
 
       shared_examples_for "unloaded constant hiding" do |const_name|
         include_context "constant example methods", const_name
 
-        before { recursive_const_defined?(const_name).should be_false }
+        before do
+          expect(recursive_const_defined?(const_name)).to be_false
+        end
 
         it 'allows it to be hidden, though the operation has no effect' do
           hide_const(const_name)
-          recursive_const_defined?(const_name).should be_false
+          expect(recursive_const_defined?(const_name)).to be_false
         end
 
         it 'remains undefined after rspec clears its mocks' do
           hide_const(const_name)
           reset_rspec_mocks
-          recursive_const_defined?(const_name).should be_false
+          expect(recursive_const_defined?(const_name)).to be_false
         end
 
         it 'returns nil' do
-          hide_const(const_name).should be_nil
+          expect(hide_const(const_name)).to be_nil
         end
       end
 
@@ -181,20 +187,20 @@ module RSpec
           hide_const("TestClass")
 
           reset_rspec_mocks
-          TestClass.should be(orig_value)
+          expect(TestClass).to be(orig_value)
         end
 
         it 'allows a constant to be hidden, then stubbed, restoring it to its original value properly' do
           orig_value = TOP_LEVEL_VALUE_CONST
 
           hide_const("TOP_LEVEL_VALUE_CONST")
-          recursive_const_defined?("TOP_LEVEL_VALUE_CONST").should be_false
+          expect(recursive_const_defined?("TOP_LEVEL_VALUE_CONST")).to be_false
 
           stub_const("TOP_LEVEL_VALUE_CONST", 12345)
-          TOP_LEVEL_VALUE_CONST.should == 12345
+          expect(TOP_LEVEL_VALUE_CONST).to eq 12345
 
           reset_rspec_mocks
-          TOP_LEVEL_VALUE_CONST.should == orig_value
+          expect(TOP_LEVEL_VALUE_CONST).to eq orig_value
         end
       end
 
@@ -209,24 +215,24 @@ module RSpec
             stub_const("TestClass", stub2)
 
             reset_rspec_mocks
-            TestClass.should be(orig_value)
+            expect(TestClass).to be(orig_value)
           end
 
           it 'allows nested constants to be transferred to a stub module' do
             tc_nested = TestClass::Nested
             stub = Module.new
             stub_const("TestClass", stub, :transfer_nested_constants => true)
-            stub::M.should eq(:m)
-            stub::N.should eq(:n)
-            stub::Nested.should be(tc_nested)
+            expect(stub::M).to eq(:m)
+            expect(stub::N).to eq(:n)
+            expect(stub::Nested).to be(tc_nested)
           end
 
           it 'does not transfer nested constants that are inherited from a superclass' do
             stub = Module.new
             stub_const("TestSubClass", stub, :transfer_nested_constants => true)
-            stub::P.should eq(:p)
-            defined?(stub::M).should be_false
-            defined?(stub::N).should be_false
+            expect(stub::P).to eq(:p)
+            expect(defined?(stub::M)).to be_false
+            expect(defined?(stub::N)).to be_false
           end
 
           it 'raises an error when asked to transfer a nested inherited constant' do
@@ -236,15 +242,15 @@ module RSpec
               stub_const("TestSubClass", Module.new, :transfer_nested_constants => [:M])
             }.to raise_error(ArgumentError)
 
-            TestSubClass.should be(original_tsc)
+            expect(TestSubClass).to be(original_tsc)
           end
 
           it 'allows nested constants to be selectively transferred to a stub module' do
             stub = Module.new
             stub_const("TestClass", stub, :transfer_nested_constants => [:M, :N])
-            stub::M.should eq(:m)
-            stub::N.should eq(:n)
-            defined?(stub::Nested).should be_false
+            expect(stub::M).to eq(:m)
+            expect(stub::N).to eq(:n)
+            expect(defined?(stub::Nested)).to be_false
           end
 
           it 'raises an error if asked to transfer nested constants but given an object that does not support them' do
@@ -254,13 +260,13 @@ module RSpec
               stub_const("TestClass", stub, :transfer_nested_constants => true)
             }.to raise_error(ArgumentError)
 
-            TestClass.should be(original_tc)
+            expect(TestClass).to be(original_tc)
 
             expect {
               stub_const("TestClass", stub, :transfer_nested_constants => [:M])
             }.to raise_error(ArgumentError)
 
-            TestClass.should be(original_tc)
+            expect(TestClass).to be(original_tc)
           end
 
           it 'raises an error if asked to transfer nested constants on a constant that does not support nested constants' do
@@ -269,25 +275,25 @@ module RSpec
               stub_const("TOP_LEVEL_VALUE_CONST", stub, :transfer_nested_constants => true)
             }.to raise_error(ArgumentError)
 
-            TOP_LEVEL_VALUE_CONST.should eq(7)
+            expect(TOP_LEVEL_VALUE_CONST).to eq(7)
 
             expect {
               stub_const("TOP_LEVEL_VALUE_CONST", stub, :transfer_nested_constants => [:M])
             }.to raise_error(ArgumentError)
 
-            TOP_LEVEL_VALUE_CONST.should eq(7)
+            expect(TOP_LEVEL_VALUE_CONST).to eq(7)
           end
 
           it 'raises an error if asked to transfer a nested constant that is not defined' do
             original_tc = TestClass
-            defined?(TestClass::V).should be_false
+            expect(defined?(TestClass::V)).to be_false
             stub = Module.new
 
             expect {
               stub_const("TestClass", stub, :transfer_nested_constants => [:V])
             }.to raise_error(/cannot transfer nested constant.*V/i)
 
-            TestClass.should be(original_tc)
+            expect(TestClass).to be(original_tc)
           end
         end
 
@@ -315,10 +321,10 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "X::Y"
 
           it 'removes the root constant when rspec clears its mocks' do
-            defined?(X).should be_false
+            expect(defined?(X)).to be_false
             stub_const("X::Y", 7)
             reset_rspec_mocks
-            defined?(X).should be_false
+            expect(defined?(X)).to be_false
           end
         end
 
@@ -326,10 +332,10 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "X::Y::Z"
 
           it 'removes the root constant when rspec clears its mocks' do
-            defined?(X).should be_false
+            expect(defined?(X)).to be_false
             stub_const("X::Y::Z", 7)
             reset_rspec_mocks
-            defined?(X).should be_false
+            expect(defined?(X)).to be_false
           end
         end
 
@@ -337,16 +343,16 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "TestClass::X"
 
           it 'removes the unloaded constant but leaves the loaded constant when rspec resets its mocks' do
-            defined?(TestClass).should be_true
-            defined?(TestClass::X).should be_false
+            expect(defined?(TestClass)).to be_true
+            expect(defined?(TestClass::X)).to be_false
             stub_const("TestClass::X", 7)
             reset_rspec_mocks
-            defined?(TestClass).should be_true
-            defined?(TestClass::X).should be_false
+            expect(defined?(TestClass)).to be_true
+            expect(defined?(TestClass::X)).to be_false
           end
 
           it 'raises a helpful error if it cannot be stubbed due to an intermediary constant that is not a module' do
-            TestClass::M.should be_a(Symbol)
+            expect(TestClass::M).to be_a(Symbol)
             expect { stub_const("TestClass::M::X", 5) }.to raise_error(/cannot stub/i)
           end
         end
@@ -355,12 +361,12 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "TestClass::Nested::NestedEvenMore::X::Y::Z"
 
           it 'removes the first unloaded constant but leaves the loaded nested constant when rspec resets its mocks' do
-            defined?(TestClass::Nested::NestedEvenMore).should be_true
-            defined?(TestClass::Nested::NestedEvenMore::X).should be_false
+            expect(defined?(TestClass::Nested::NestedEvenMore)).to be_true
+            expect(defined?(TestClass::Nested::NestedEvenMore::X)).to be_false
             stub_const("TestClass::Nested::NestedEvenMore::X::Y::Z", 7)
             reset_rspec_mocks
-            defined?(TestClass::Nested::NestedEvenMore).should be_true
-            defined?(TestClass::Nested::NestedEvenMore::X).should be_false
+            expect(defined?(TestClass::Nested::NestedEvenMore)).to be_true
+            expect(defined?(TestClass::Nested::NestedEvenMore::X)).to be_false
           end
         end
       end
@@ -371,47 +377,47 @@ module RSpec
         context 'for a previously defined unstubbed constant' do
           let(:const) { Constant.original("TestClass::M") }
 
-          it("exposes its name")                    { const.name.should eq("TestClass::M") }
-          it("indicates it was previously defined") { const.should be_previously_defined }
-          it("indicates it has not been mutated")   { const.should_not be_mutated }
-          it("indicates it has not been stubbed")   { const.should_not be_stubbed }
-          it("indicates it has not been hidden")    { const.should_not be_hidden }
-          it("exposes its original value")          { const.original_value.should eq(:m) }
+          it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates it was previously defined") { expect(const).to be_previously_defined }
+          it("indicates it has not been mutated")   { expect(const).not_to be_mutated }
+          it("indicates it has not been stubbed")   { expect(const).not_to be_stubbed }
+          it("indicates it has not been hidden")    { expect(const).not_to be_hidden }
+          it("exposes its original value")          { expect(const.original_value).to eq(:m) }
         end
 
         context 'for a previously defined stubbed constant' do
           before { stub_const("TestClass::M", :other) }
           let(:const) { Constant.original("TestClass::M") }
 
-          it("exposes its name")                    { const.name.should eq("TestClass::M") }
-          it("indicates it was previously defined") { const.should be_previously_defined }
-          it("indicates it has been mutated")       { const.should be_mutated }
-          it("indicates it has been stubbed")       { const.should be_stubbed }
-          it("indicates it has not been hidden")    { const.should_not be_hidden }
-          it("exposes its original value")          { const.original_value.should eq(:m) }
+          it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates it was previously defined") { expect(const).to be_previously_defined }
+          it("indicates it has been mutated")       { expect(const).to be_mutated }
+          it("indicates it has been stubbed")       { expect(const).to be_stubbed }
+          it("indicates it has not been hidden")    { expect(const).not_to be_hidden }
+          it("exposes its original value")          { expect(const.original_value).to eq(:m) }
         end
 
         context 'for a previously undefined stubbed constant' do
           before { stub_const("TestClass::Undefined", :other) }
           let(:const) { Constant.original("TestClass::Undefined") }
 
-          it("exposes its name")                        { const.name.should eq("TestClass::Undefined") }
-          it("indicates it was not previously defined") { const.should_not be_previously_defined }
-          it("indicates it has been mutated")           { const.should be_mutated }
-          it("indicates it has been stubbed")           { const.should be_stubbed }
-          it("indicates it has not been hidden")        { const.should_not be_hidden }
-          it("returns nil for the original value")      { const.original_value.should be_nil }
+          it("exposes its name")                        { expect(const.name).to eq("TestClass::Undefined") }
+          it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
+          it("indicates it has been mutated")           { expect(const).to be_mutated }
+          it("indicates it has been stubbed")           { expect(const).to be_stubbed }
+          it("indicates it has not been hidden")        { expect(const).not_to be_hidden }
+          it("returns nil for the original value")      { expect(const.original_value).to be_nil }
         end
 
         context 'for a previously undefined unstubbed constant' do
           let(:const) { Constant.original("TestClass::Undefined") }
 
-          it("exposes its name")                        { const.name.should eq("TestClass::Undefined") }
-          it("indicates it was not previously defined") { const.should_not be_previously_defined }
-          it("indicates it has not been mutated")       { const.should_not be_mutated }
-          it("indicates it has not been stubbed")       { const.should_not be_stubbed }
-          it("indicates it has not been hidden")        { const.should_not be_hidden }
-          it("returns nil for the original value")      { const.original_value.should be_nil }
+          it("exposes its name")                        { expect(const.name).to eq("TestClass::Undefined") }
+          it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
+          it("indicates it has not been mutated")       { expect(const).not_to be_mutated }
+          it("indicates it has not been stubbed")       { expect(const).not_to be_stubbed }
+          it("indicates it has not been hidden")        { expect(const).not_to be_hidden }
+          it("returns nil for the original value")      { expect(const.original_value).to be_nil }
         end
 
         context 'for a previously defined constant that has been stubbed twice' do
@@ -419,12 +425,12 @@ module RSpec
           before { stub_const("TestClass::M", 2) }
           let(:const) { Constant.original("TestClass::M") }
 
-          it("exposes its name")                    { const.name.should eq("TestClass::M") }
-          it("indicates it was previously defined") { const.should be_previously_defined }
-          it("indicates it has been mutated")       { const.should be_mutated }
-          it("indicates it has been stubbed")       { const.should be_stubbed }
-          it("indicates it has not been hidden")    { const.should_not be_hidden }
-          it("exposes its original value")          { const.original_value.should eq(:m) }
+          it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates it was previously defined") { expect(const).to be_previously_defined }
+          it("indicates it has been mutated")       { expect(const).to be_mutated }
+          it("indicates it has been stubbed")       { expect(const).to be_stubbed }
+          it("indicates it has not been hidden")    { expect(const).not_to be_hidden }
+          it("exposes its original value")          { expect(const.original_value).to eq(:m) }
         end
 
         context 'for a previously undefined constant that has been stubbed twice' do
@@ -432,24 +438,24 @@ module RSpec
           before { stub_const("TestClass::Undefined", 2) }
           let(:const) { Constant.original("TestClass::Undefined") }
 
-          it("exposes its name")                        { const.name.should eq("TestClass::Undefined") }
-          it("indicates it was not previously defined") { const.should_not be_previously_defined }
-          it("indicates it has been mutated")           { const.should be_mutated }
-          it("indicates it has been stubbed")           { const.should be_stubbed }
-          it("indicates it has not been hidden")        { const.should_not be_hidden }
-          it("returns nil for the original value")      { const.original_value.should be_nil }
+          it("exposes its name")                        { expect(const.name).to eq("TestClass::Undefined") }
+          it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
+          it("indicates it has been mutated")           { expect(const).to be_mutated }
+          it("indicates it has been stubbed")           { expect(const).to be_stubbed }
+          it("indicates it has not been hidden")        { expect(const).not_to be_hidden }
+          it("returns nil for the original value")      { expect(const.original_value).to be_nil }
         end
 
         context 'for a previously defined hidden constant' do
           before { hide_const("TestClass::M") }
           let(:const) { Constant.original("TestClass::M") }
 
-          it("exposes its name")                    { const.name.should eq("TestClass::M") }
-          it("indicates it was previously defined") { const.should be_previously_defined }
-          it("indicates it has been mutated")       { const.should be_mutated }
-          it("indicates it has not been stubbed")   { const.should_not be_stubbed }
-          it("indicates it has been hidden")        { const.should be_hidden }
-          it("exposes its original value")          { const.original_value.should eq(:m) }
+          it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates it was previously defined") { expect(const).to be_previously_defined }
+          it("indicates it has been mutated")       { expect(const).to be_mutated }
+          it("indicates it has not been stubbed")   { expect(const).not_to be_stubbed }
+          it("indicates it has been hidden")        { expect(const).to be_hidden }
+          it("exposes its original value")          { expect(const.original_value).to eq(:m) }
         end
 
         context 'for a previously defined constant that has been hidden twice' do
@@ -457,12 +463,12 @@ module RSpec
           before { hide_const("TestClass::M") }
           let(:const) { Constant.original("TestClass::M") }
 
-          it("exposes its name")                    { const.name.should eq("TestClass::M") }
-          it("indicates it was previously defined") { const.should be_previously_defined }
-          it("indicates it has been mutated")       { const.should be_mutated }
-          it("indicates it has not been stubbed")   { const.should_not be_stubbed }
-          it("indicates it has been hidden")        { const.should be_hidden }
-          it("exposes its original value")          { const.original_value.should eq(:m) }
+          it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates it was previously defined") { expect(const).to be_previously_defined }
+          it("indicates it has been mutated")       { expect(const).to be_mutated }
+          it("indicates it has not been stubbed")   { expect(const).not_to be_stubbed }
+          it("indicates it has been hidden")        { expect(const).to be_hidden }
+          it("exposes its original value")          { expect(const.original_value).to eq(:m) }
         end
       end
     end

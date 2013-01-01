@@ -8,12 +8,12 @@ module RSpec
       end
 
       it "says it does not respond to messages it doesn't understand" do
-        @double.should_not respond_to(:foo)
+        expect(@double).not_to respond_to(:foo)
       end
 
       it "says it responds to messages it does understand" do
         @double.stub(:foo)
-        @double.should respond_to(:foo)
+        expect(@double).to respond_to(:foo)
       end
 
       it "raises an error when interpolated in a string as an integer" do
@@ -33,12 +33,12 @@ module RSpec
       end
 
       it "says it responds to everything" do
-        @double.should respond_to(:any_message_it_gets)
+        expect(@double).to respond_to(:any_message_it_gets)
       end
 
       it "allows explicit stubs" do
         @double.stub(:foo) { "bar" }
-        @double.foo.should eq("bar")
+        expect(@double.foo).to eq("bar")
       end
 
       it "allows explicit expectation" do
@@ -48,20 +48,20 @@ module RSpec
 
       it 'continues to return self from an explicit expectation' do
         @double.should_receive(:bar)
-        @double.foo.bar.should be(@double)
+        expect(@double.foo.bar).to be(@double)
       end
 
       it 'returns an explicitly stubbed value from an expectation with no implementation' do
         @double.stub(:foo => "bar")
         @double.should_receive(:foo)
-        @double.foo.should eq("bar")
+        expect(@double.foo).to eq("bar")
       end
 
       it "fails verification when explicit exception not met" do
-        lambda do
+        expect {
           @double.should_receive(:something)
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "ignores unexpected methods" do
@@ -86,21 +86,21 @@ module RSpec
         # @double.to_int.to_int.to_int...etc until it gets an integer,
         # and thus gets stuck in an infinite loop unless our double
         # returns an int value from #to_int.
-        ("%i" % @double).should eq("0")
+        expect(("%i" % @double)).to eq("0")
       end
     end
 
     describe "#as_null_object" do
       it "sets the object to null_object" do
         obj = double('anything').as_null_object
-        obj.should be_null_object
+        expect(obj).to be_null_object
       end
     end
 
     describe "#null_object?" do
       it "defaults to false" do
         obj = double('anything')
-        obj.should_not be_null_object
+        expect(obj).not_to be_null_object
       end
     end
   end

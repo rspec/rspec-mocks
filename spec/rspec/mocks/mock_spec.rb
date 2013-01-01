@@ -7,11 +7,11 @@ module RSpec
       after(:each)  { @double.rspec_reset }
 
       it "has method_missing as private" do
-        RSpec::Mocks::Mock.private_instance_methods.should include_method(:method_missing)
+        expect(RSpec::Mocks::Mock.private_instance_methods).to include_method(:method_missing)
       end
 
       it "does not respond_to? method_missing (because it's private)" do
-        RSpec::Mocks::Mock.new.should_not respond_to(:method_missing)
+        expect(RSpec::Mocks::Mock.new).not_to respond_to(:method_missing)
       end
 
       it "reports line number of expectation of unreceived message" do
@@ -21,7 +21,7 @@ module RSpec
           violated
         rescue RSpec::Mocks::MockExpectationError => e
           # NOTE - this regexp ended w/ $, but jruby adds extra info at the end of the line
-          e.backtrace[0].should match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
+          expect(e.backtrace[0]).to match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
         end
       end
 
@@ -33,7 +33,7 @@ module RSpec
           violated
         rescue RSpec::Mocks::MockExpectationError => e
           # NOTE - this regexp ended w/ $, but jruby adds extra info at the end of the line
-          e.backtrace[0].should match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
+          expect(e.backtrace[0]).to match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
         end
       end
 
@@ -86,64 +86,64 @@ module RSpec
 
       it "allows block to calculate return values" do
         @double.should_receive(:something).with("a","b","c").and_return { |a,b,c| c+b+a }
-        @double.something("a","b","c").should eq "cba"
+        expect(@double.something("a","b","c")).to eq "cba"
         @double.rspec_verify
       end
 
       it "allows parameter as return value" do
         @double.should_receive(:something).with("a","b","c").and_return("booh")
-        @double.something("a","b","c").should eq "booh"
+        expect(@double.something("a","b","c")).to eq "booh"
         @double.rspec_verify
       end
 
       it "returns the previously stubbed value if no return value is set" do
         @double.stub(:something).with("a","b","c").and_return(:stubbed_value)
         @double.should_receive(:something).with("a","b","c")
-        @double.something("a","b","c").should eq :stubbed_value
+        expect(@double.something("a","b","c")).to eq :stubbed_value
         @double.rspec_verify
       end
 
       it "returns nil if no return value is set and there is no previously stubbed value" do
         @double.should_receive(:something).with("a","b","c")
-        @double.something("a","b","c").should be_nil
+        expect(@double.something("a","b","c")).to be_nil
         @double.rspec_verify
       end
 
       it "raises exception if args don't match when method called" do
         @double.should_receive(:something).with("a","b","c").and_return("booh")
-        lambda {
+        expect {
           @double.something("a","d","c")
           violated
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
       end
 
       describe "even when a similar expectation with different arguments exist" do
         it "raises exception if args don't match when method called, correctly reporting the offending arguments" do
           @double.should_receive(:something).with("a","b","c").once
           @double.should_receive(:something).with("z","x","c").once
-          lambda {
+          expect {
             @double.something("a","b","c")
             @double.something("z","x","g")
-          }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"z\", \"x\", \"c\")\n       got: (\"z\", \"x\", \"g\")")
+          }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"z\", \"x\", \"c\")\n       got: (\"z\", \"x\", \"g\")")
         end
       end
 
       it "raises exception if args don't match when method called even when the method is stubbed" do
         @double.stub(:something)
         @double.should_receive(:something).with("a","b","c")
-        lambda {
+        expect {
           @double.something("a","d","c")
           @double.rspec_verify
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
       end
 
       it "raises exception if args don't match when method called even when using null_object" do
         @double = double("test double").as_null_object
         @double.should_receive(:something).with("a","b","c")
-        lambda {
+        expect {
           @double.something("a","d","c")
           @double.rspec_verify
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
       end
 
       describe 'with a method that has a default argument' do
@@ -159,24 +159,27 @@ module RSpec
       end
 
       it "fails if unexpected method called" do
-        lambda {
+        expect {
           @double.something("a","b","c")
           violated
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received unexpected message :something with (\"a\", \"b\", \"c\")")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received unexpected message :something with (\"a\", \"b\", \"c\")")
       end
 
       it "uses block for expectation if provided" do
         @double.should_receive(:something) do | a, b |
-          a.should eq "a"
-          b.should eq "b"
+          expect(a).to eq "a"
+          expect(b).to eq "b"
           "booh"
         end
-        @double.something("a", "b").should eq "booh"
+        expect(@double.something("a", "b")).to eq "booh"
         @double.rspec_verify
       end
 
       it "fails if expectation block fails" do
-        @double.should_receive(:something) {| bool | bool.should be_true}
+        @double.should_receive(:something) do |bool|
+          expect(bool).to be_true
+        end
+
         expect {
           @double.something false
         }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
@@ -186,22 +189,22 @@ module RSpec
         it "passes proc to expectation block without an argument" do
           # We eval this because Ruby 1.8.6's syntax parser barfs on { |&block| ... }
           # and prevents the entire spec suite from running.
-          eval("@double.should_receive(:foo) {|&block| block.call.should eq(:bar)}")
+          eval("@double.should_receive(:foo) {|&block| expect(block.call).to eq(:bar)}")
           @double.foo { :bar }
         end
 
         it "passes proc to expectation block with an argument" do
-          eval("@double.should_receive(:foo) {|arg, &block| block.call.should eq(:bar)}")
+          eval("@double.should_receive(:foo) {|arg, &block| expect(block.call).to eq(:bar)}")
           @double.foo(:arg) { :bar }
         end
 
         it "passes proc to stub block without an argurment" do
-          eval("@double.stub(:foo) {|&block| block.call.should eq(:bar)}")
+          eval("@double.stub(:foo) {|&block| expect(block.call).to eq(:bar)}")
           @double.foo { :bar }
         end
 
         it "passes proc to stub block with an argument" do
-          eval("@double.stub(:foo) {|arg, &block| block.call.should eq(:bar)}")
+          eval("@double.stub(:foo) {|arg, &block| expect(block.call).to eq(:bar)}")
           @double.foo(:arg) { :bar }
         end
       end
@@ -254,23 +257,23 @@ module RSpec
           @double.something
           fail "OutOfGas was not raised"
         rescue OutOfGas => e
-          e.amount.should == 2
-          e.units.should  == :oz
+          expect(e.amount).to eq 2
+          expect(e.units).to eq :oz
         end
       end
 
       it "does not raise when told to if args dont match" do
         @double.should_receive(:something).with(2).and_raise(RuntimeError)
-        lambda {
+        expect {
           @double.something 1
-        }.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "throws when told to" do
         @double.should_receive(:something).and_throw(:blech)
-        lambda {
+        expect {
           @double.something
-        }.should throw_symbol(:blech)
+        }.to throw_symbol(:blech)
       end
 
       it "ignores args on any args" do
@@ -284,21 +287,22 @@ module RSpec
 
       it "fails on no args if any args received" do
         @double.should_receive(:something).with(no_args())
-        lambda {
+        expect {
           @double.something 1
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (no args)\n       got: (1)")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (no args)\n       got: (1)")
       end
 
       it "fails when args are expected but none are received" do
         @double.should_receive(:something).with(1)
-        lambda {
+        expect {
           @double.something
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (1)\n       got: (no args)")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (1)\n       got: (no args)")
       end
 
       it "returns value from block by default" do
         @double.stub(:method_that_yields).and_yield
-        @double.method_that_yields { :returned_obj }.should eq :returned_obj
+        value = @double.method_that_yields { :returned_obj }
+        expect(value).to eq :returned_obj
         @double.rspec_verify
       end
 
@@ -306,7 +310,7 @@ module RSpec
         @double.should_receive(:yield_back).with(no_args()).once.and_yield
         a = nil
         @double.yield_back {|*x| a = x}
-        a.should eq []
+        expect(a).to eq []
         @double.rspec_verify
       end
 
@@ -315,7 +319,7 @@ module RSpec
                                                                     and_yield
         b = []
         @double.yield_back {|*a| b << a}
-        b.should eq [ [], [] ]
+        expect(b).to eq [ [], [] ]
         @double.rspec_verify
       end
 
@@ -323,7 +327,7 @@ module RSpec
         @double.should_receive(:yield_back).with(no_args()).once.and_yield(99)
         a = nil
         @double.yield_back {|*x| a = x}
-        a.should eq [99]
+        expect(a).to eq [99]
         @double.rspec_verify
       end
 
@@ -333,7 +337,7 @@ module RSpec
                                                                     and_yield("something fruity")
         b = []
         @double.yield_back {|*a| b << a}
-        b.should eq [[99], [43], ["something fruity"]]
+        expect(b).to eq [[99], [43], ["something fruity"]]
         @double.rspec_verify
       end
 
@@ -341,7 +345,7 @@ module RSpec
         @double.should_receive(:yield_back).with(no_args()).once.and_yield(99, 27, "go")
         a = nil
         @double.yield_back {|*x| a = x}
-        a.should eq [99, 27, "go"]
+        expect(a).to eq [99, 27, "go"]
         @double.rspec_verify
       end
 
@@ -351,7 +355,7 @@ module RSpec
                                                                     and_yield("stop", 12, :red)
         b = []
         @double.yield_back {|*a| b << a}
-        b.should eq [[99, :green, "go"], ["wait", :amber], ["stop", 12, :red]]
+        expect(b).to eq [[99, :green, "go"], ["wait", :amber], ["stop", 12, :red]]
         @double.rspec_verify
       end
 
@@ -359,7 +363,7 @@ module RSpec
         @double.should_receive(:yield_back).with(no_args()).once.and_yield(99)
         a = nil
         @double.yield_back {|x| a = x}
-        a.should eq 99
+        expect(a).to eq 99
         @double.rspec_verify
       end
 
@@ -369,7 +373,7 @@ module RSpec
                                                                     and_yield("something fruity")
         b = []
         @double.yield_back {|a| b << a}
-        b.should eq [99, 43, "something fruity"]
+        expect(b).to eq [99, 43, "something fruity"]
         @double.rspec_verify
       end
 
@@ -377,8 +381,8 @@ module RSpec
         @double.should_receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
         a, b = nil
         @double.yield_back {|x,y| a=x; b=y}
-        a.should eq 'wha'
-        b.should eq 'zup'
+        expect(a).to eq 'wha'
+        expect(b).to eq 'zup'
         @double.rspec_verify
       end
 
@@ -388,32 +392,32 @@ module RSpec
                                                                     and_yield(14, 65)
         c = []
         @double.yield_back {|a,b| c << [a, b]}
-        c.should eq [['wha', 'zup'], ['not', 'down'], [14, 65]]
+        expect(c).to eq [['wha', 'zup'], ['not', 'down'], [14, 65]]
         @double.rspec_verify
       end
 
       it "fails when calling yielding method with wrong arity" do
         @double.should_receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
-        lambda {
+        expect {
           @double.yield_back {|a|}
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" yielded |\"wha\", \"zup\"| to block with arity of 1")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" yielded |\"wha\", \"zup\"| to block with arity of 1")
       end
 
       it "fails when calling yielding method consecutively with wrong arity" do
         @double.should_receive(:yield_back).once.with(no_args()).once.and_yield('wha', 'zup').
                                                                     and_yield('down').
                                                                     and_yield(14, 65)
-        lambda {
+        expect {
           c = []
           @double.yield_back {|a,b| c << [a, b]}
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" yielded |\"down\"| to block with arity of 2")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" yielded |\"down\"| to block with arity of 2")
       end
 
       it "fails when calling yielding method without block" do
         @double.should_receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
-        lambda {
+        expect {
           @double.yield_back
-        }.should raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" asked to yield |[\"wha\", \"zup\"]| but no block was passed")
+        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" asked to yield |[\"wha\", \"zup\"]| but no block was passed")
       end
 
       it "is able to double send" do
@@ -425,11 +429,11 @@ module RSpec
       it "is able to raise from method calling yielding double" do
         @double.should_receive(:yield_me).and_yield 44
 
-        lambda {
+        expect {
           @double.yield_me do |x|
             raise "Bang"
           end
-        }.should raise_error(StandardError, "Bang")
+        }.to raise_error(StandardError, "Bang")
 
         @double.rspec_verify
       end
@@ -438,9 +442,9 @@ module RSpec
         @double.should_receive(:foobar)
         @double.foobar
         @double.rspec_verify
-        lambda {
+        expect {
           @double.foobar
-        }.should raise_error(RSpec::Mocks::MockExpectationError, %q|Double "test double" received unexpected message :foobar with (no args)|)
+        }.to raise_error(RSpec::Mocks::MockExpectationError, %q|Double "test double" received unexpected message :foobar with (no args)|)
       end
 
       it "restores objects to their original state on rspec_reset" do
@@ -475,25 +479,25 @@ module RSpec
         @double.foobar
         @double.rspec_verify
 
-        lambda { @double.foobar }.should_not raise_error(NameError)
-        lambda { @double.foobar }.should raise_error(RSpec::Mocks::MockExpectationError)
+        expect { @double.foobar }.to_not raise_error(NameError)
+        expect { @double.foobar }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "temporarily replaces a method stub on a double" do
         @double.stub(:msg).and_return(:stub_value)
         @double.should_receive(:msg).with(:arg).and_return(:double_value)
-        @double.msg(:arg).should equal(:double_value)
-        @double.msg.should equal(:stub_value)
-        @double.msg.should equal(:stub_value)
+        expect(@double.msg(:arg)).to equal(:double_value)
+        expect(@double.msg).to equal(:stub_value)
+        expect(@double.msg).to equal(:stub_value)
         @double.rspec_verify
       end
 
       it "does not require a different signature to replace a method stub" do
         @double.stub(:msg).and_return(:stub_value)
         @double.should_receive(:msg).and_return(:double_value)
-        @double.msg(:arg).should equal(:double_value)
-        @double.msg.should equal(:stub_value)
-        @double.msg.should equal(:stub_value)
+        expect(@double.msg(:arg)).to equal(:double_value)
+        expect(@double.msg).to equal(:stub_value)
+        expect(@double.msg).to equal(:stub_value)
         @double.rspec_verify
       end
 
@@ -507,31 +511,31 @@ module RSpec
         non_double = Object.new
         non_double.stub(:msg).and_return(:stub_value)
         non_double.should_receive(:msg).with(:arg).and_return(:double_value)
-        non_double.msg(:arg).should equal(:double_value)
-        non_double.msg.should equal(:stub_value)
-        non_double.msg.should equal(:stub_value)
+        expect(non_double.msg(:arg)).to equal(:double_value)
+        expect(non_double.msg).to equal(:stub_value)
+        expect(non_double.msg).to equal(:stub_value)
         non_double.rspec_verify
       end
 
       it "returns the stubbed value when no new value specified" do
         @double.stub(:msg).and_return(:stub_value)
         @double.should_receive(:msg)
-        @double.msg.should equal(:stub_value)
+        expect(@double.msg).to equal(:stub_value)
         @double.rspec_verify
       end
 
       it "returns the stubbed value when stubbed with args and no new value specified" do
         @double.stub(:msg).with(:arg).and_return(:stub_value)
         @double.should_receive(:msg).with(:arg)
-        @double.msg(:arg).should equal(:stub_value)
+        expect(@double.msg(:arg)).to equal(:stub_value)
         @double.rspec_verify
       end
 
       it "does not mess with the stub's yielded values when also doubleed" do
         @double.stub(:yield_back).and_yield(:stub_value)
         @double.should_receive(:yield_back).and_yield(:double_value)
-        @double.yield_back{|v| v.should eq :double_value }
-        @double.yield_back{|v| v.should eq :stub_value }
+        @double.yield_back{|v| expect(v).to eq :double_value }
+        @double.yield_back{|v| expect(v).to eq :stub_value }
         @double.rspec_verify
       end
 
@@ -540,14 +544,14 @@ module RSpec
         File.should_receive(:open).and_yield(:first_call).and_yield(:second_call)
         yielded_args = []
         File.open {|v| yielded_args << v }
-        yielded_args.should eq [:first_call, :second_call]
-        File.open {|v| v.should eq :stub_value }
+        expect(yielded_args).to eq [:first_call, :second_call]
+        File.open {|v| expect(v).to eq :stub_value }
         File.rspec_verify
       end
 
       it "assigns stub return values" do
         double = RSpec::Mocks::Mock.new('name', :message => :response)
-        double.message.should eq :response
+        expect(double.message).to eq :response
       end
 
     end
@@ -567,7 +571,7 @@ module RSpec
 
         @double.foo
 
-        @calls.should eq 1
+        expect(@calls).to eq 1
       end
 
       it "calls the block after #should_receive after a similar stub" do
@@ -576,7 +580,7 @@ module RSpec
 
         @double.foo
 
-        @calls.should eq 1
+        expect(@calls).to eq 1
       end
 
       it "calls the block after #once" do
@@ -584,7 +588,7 @@ module RSpec
 
         @double.foo
 
-        @calls.should eq 1
+        expect(@calls).to eq 1
       end
 
       it "calls the block after #twice" do
@@ -593,7 +597,7 @@ module RSpec
         @double.foo
         @double.foo
 
-        @calls.should eq 2
+        expect(@calls).to eq 2
       end
 
       it "calls the block after #times" do
@@ -601,7 +605,7 @@ module RSpec
 
         (1..10).each { @double.foo }
 
-        @calls.should eq 10
+        expect(@calls).to eq 10
       end
 
       it "calls the block after #any_number_of_times" do
@@ -609,7 +613,7 @@ module RSpec
 
         (1..7).each { @double.foo }
 
-        @calls.should eq 7
+        expect(@calls).to eq 7
       end
 
       it "calls the block after #ordered" do
@@ -619,7 +623,7 @@ module RSpec
         @double.foo
         @double.bar
 
-        @calls.should eq 2
+        expect(@calls).to eq 2
       end
     end
 
@@ -627,14 +631,14 @@ module RSpec
       it 'does not contain < because that might lead to invalid HTML in some situations' do
         double = double("Dog")
         valid_html_str = "#{double}"
-        valid_html_str.should_not include('<')
+        expect(valid_html_str).not_to include('<')
       end
     end
 
     describe "string representation generated by #to_str" do
       it "looks the same as #to_s" do
         double = double("Foo")
-        double.to_str.should eq double.to_s
+        expect(double.to_str).to eq double.to_s
       end
     end
 
@@ -646,8 +650,8 @@ module RSpec
 
       it "does respond to initially stubbed methods" do
         double = double(:foo => "woo", :bar => "car")
-        double.foo.should eq "woo"
-        double.bar.should eq "car"
+        expect(double.foo).to eq "woo"
+        expect(double.bar).to eq "car"
       end
     end
 
@@ -710,7 +714,7 @@ module RSpec
         context "with matching args" do
           it "returns the result of the block" do
             @double.should_receive(:foo).with('bar') { 'baz' }
-            @double.foo('bar').should eq('baz')
+            expect(@double.foo('bar')).to eq('baz')
           end
         end
 
@@ -718,7 +722,7 @@ module RSpec
           it "fails" do
             @double.should_receive(:foo).with('bar') { 'baz' }
             expect do
-              @double.foo('wrong').should eq('baz')
+              expect(@double.foo('wrong')).to eq('baz')
             end.to raise_error(/received :foo with unexpected arguments/)
             @double.rspec_reset
           end

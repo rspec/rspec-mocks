@@ -9,7 +9,7 @@ module RSpec
         obj = double("matcher")
         obj.stub(:respond_to?).with(:matches?).and_return(true)
         obj.stub(:respond_to?).with(:failure_message_for_should).and_return(true)
-        argument_expectation.send(:is_matcher?, obj).should be_true
+        expect(argument_expectation.send(:is_matcher?, obj)).to be_true
       end
 
       it "considers an object that responds to #matches? and #failure_message to be a matcher for backward compatibility" do
@@ -18,7 +18,7 @@ module RSpec
         obj.stub(:respond_to?).with(:matches?).and_return(true)
         obj.stub(:respond_to?).with(:failure_message_for_should).and_return(false)
         obj.stub(:respond_to?).with(:failure_message).and_return(true)
-        argument_expectation.send(:is_matcher?, obj).should be_true
+        expect(argument_expectation.send(:is_matcher?, obj)).to be_true
       end
 
       it "does NOT consider an object that only responds to #matches? to be a matcher" do
@@ -27,7 +27,7 @@ module RSpec
         obj.stub(:respond_to?).with(:matches?).and_return(true)
         obj.stub(:respond_to?).with(:failure_message_for_should).and_return(false)
         obj.stub(:respond_to?).with(:failure_message).and_return(false)
-        argument_expectation.send(:is_matcher?, obj).should be_false
+        expect(argument_expectation.send(:is_matcher?, obj)).to be_false
       end
     end
   end

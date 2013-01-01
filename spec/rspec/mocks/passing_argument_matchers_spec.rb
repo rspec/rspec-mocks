@@ -87,11 +87,11 @@ module RSpec
       context "handling block matchers" do
         it "matches arguments against RSpec expectations" do
           @double.should_receive(:random_call).with {|arg1, arg2, arr, *rest|
-            arg1.should eq 5
-            arg2.should have_at_least(3).characters
-            arg2.should have_at_most(10).characters
-            arr.map {|i| i * 2}.should eq [2,4,6]
-            rest.should eq [:fee, "fi", 4]
+            expect(arg1).to eq 5
+            expect(arg2).to have_at_least(3).characters
+            expect(arg2).to have_at_most(10).characters
+            expect(arr.map {|i| i * 2}).to eq [2,4,6]
+            expect(rest).to eq [:fee, "fi", 4]
           }
           @double.random_call 5, "hello", [1,2,3], :fee, "fi", 4
         end
@@ -100,7 +100,7 @@ module RSpec
           eval_count = 0
           @double.should_receive(:msg).with {|a| eval_count += 1}
           @double.msg(:ignore)
-          eval_count.should eq(1)
+          expect(eval_count).to eq(1)
         end
       end
 

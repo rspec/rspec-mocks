@@ -27,8 +27,8 @@ module RSpec
         @space.add(@m1)
         @space.add(@m2)
         @space.verify_all
-        @m1.should be_verified
-        @m2.should be_verified
+        expect(@m1).to be_verified
+        expect(@m2).to be_verified
       end
       it "resets all mocks within" do
         @space.add(m1 = double("mock1"))
@@ -40,11 +40,11 @@ module RSpec
       it "clears internal mocks on reset_all" do
         @space.add(double("mock"))
         @space.reset_all
-        @space.instance_eval { receivers.empty? }.should be_true
+        expect(@space.instance_eval { receivers.empty? }).to be_true
       end
       it "resets the ordering" do
         @space.reset_all
-        @space.expectation_ordering.should be_empty
+        expect(@space.expectation_ordering).to be_empty
       end
       it "only adds an instance once" do
         @space.add(m1 = double("mock1"))

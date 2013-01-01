@@ -11,9 +11,9 @@ module RSpec
         @double.should_receive(:do_something).exactly(3).times
         @double.do_something
         @double.do_something
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails fast when exactly n times method is called more than n times" do
@@ -21,16 +21,16 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        lambda do
+        expect {
           @double.do_something
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when exactly n times method is never called" do
         @double.should_receive(:do_something).exactly(3).times
-        lambda do
+        expect {
           @double.rspec_verify
-        end.should raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "passes if exactly n times method is called exactly n times" do
@@ -43,7 +43,7 @@ module RSpec
 
       it "returns the value given by a block when the exactly once method is called" do
         @double.should_receive(:to_s).exactly(:once) { "testing" }
-        @double.to_s.should eq "testing"
+        expect(@double.to_s).to eq "testing"
         @double.rspec_verify
       end
 

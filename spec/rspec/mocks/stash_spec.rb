@@ -21,7 +21,7 @@ module RSpec
         klass.rspec_verify
 
         klass.rspec_reset
-        klass.foo(:yeah).should equal(:original_value)
+        expect(klass.foo(:yeah)).to equal(:original_value)
       end
     end
 

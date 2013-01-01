@@ -19,41 +19,41 @@ module RSpec
       context "invocation order" do
         context "#stub" do
           it "raises an error if 'stub' follows 'with'" do
-            lambda{ klass.any_instance.with("1").stub(:foo) }.should raise_error(NoMethodError)
+            expect { klass.any_instance.with("1").stub(:foo) }.to raise_error(NoMethodError)
           end
 
           it "raises an error if 'with' follows 'and_return'" do
-            lambda{ klass.any_instance.stub(:foo).and_return(1).with("1") }.should raise_error(NoMethodError)
+            expect { klass.any_instance.stub(:foo).and_return(1).with("1") }.to raise_error(NoMethodError)
           end
 
           it "raises an error if 'with' follows 'and_raise'" do
-            lambda{ klass.any_instance.stub(:foo).and_raise(1).with("1") }.should raise_error(NoMethodError)
+            expect { klass.any_instance.stub(:foo).and_raise(1).with("1") }.to raise_error(NoMethodError)
           end
 
           it "raises an error if 'with' follows 'and_yield'" do
-            lambda{ klass.any_instance.stub(:foo).and_yield(1).with("1") }.should raise_error(NoMethodError)
+            expect { klass.any_instance.stub(:foo).and_yield(1).with("1") }.to raise_error(NoMethodError)
           end
         end
 
         context "#stub_chain" do
           it "raises an error if 'stub_chain' follows 'any_instance'" do
-            lambda{ klass.any_instance.and_return("1").stub_chain(:foo, :bar) }.should raise_error(NoMethodError)
+            expect { klass.any_instance.and_return("1").stub_chain(:foo, :bar) }.to raise_error(NoMethodError)
           end
         end
 
         context "#should_receive" do
           it "raises an error if 'should_receive' follows 'with'" do
-            lambda{ klass.any_instance.with("1").should_receive(:foo) }.should raise_error(NoMethodError)
+            expect { klass.any_instance.with("1").should_receive(:foo) }.to raise_error(NoMethodError)
           end
 
           it "raises an error if 'with' follows 'and_return'" do
             pending "see Github issue #42"
-            lambda{ klass.any_instance.should_receive(:foo).and_return(1).with("1") }.should raise_error(NoMethodError)
+            expect { klass.any_instance.should_receive(:foo).and_return(1).with("1") }.to raise_error(NoMethodError)
           end
 
           it "raises an error if 'with' follows 'and_raise'" do
             pending "see Github issue #42"
-            lambda{ klass.any_instance.should_receive(:foo).and_raise(1).with("1") }.should raise_error(NoMethodError)
+            expect { klass.any_instance.should_receive(:foo).and_raise(1).with("1") }.to raise_error(NoMethodError)
           end
         end
       end
@@ -61,36 +61,36 @@ module RSpec
       context "with #stub" do
         it "does not suppress an exception when a method that doesn't exist is invoked" do
           klass.any_instance.stub(:foo)
-          lambda{ klass.new.bar }.should raise_error(NoMethodError)
+          expect { klass.new.bar }.to raise_error(NoMethodError)
         end
 
         context 'multiple methods' do
           it "allows multiple methods to be stubbed in a single invocation" do
             klass.any_instance.stub(:foo => 'foo', :bar => 'bar')
             instance = klass.new
-            instance.foo.should eq('foo')
-            instance.bar.should eq('bar')
+            expect(instance.foo).to eq('foo')
+            expect(instance.bar).to eq('bar')
           end
 
           it "adheres to the contract of multiple method stubbing withou any instance" do
-            Object.new.stub(:foo => 'foo', :bar => 'bar').should eq(:foo => 'foo', :bar => 'bar')
-            klass.any_instance.stub(:foo => 'foo', :bar => 'bar').should eq(:foo => 'foo', :bar => 'bar')
+            expect(Object.new.stub(:foo => 'foo', :bar => 'bar')).to eq(:foo => 'foo', :bar => 'bar')
+            expect(klass.any_instance.stub(:foo => 'foo', :bar => 'bar')).to eq(:foo => 'foo', :bar => 'bar')
           end
 
           context "allows a chain of methods to be stubbed using #stub_chain" do
             it "given symbols representing the methods" do
               klass.any_instance.stub_chain(:one, :two, :three).and_return(:four)
-              klass.new.one.two.three.should eq(:four)
+              expect(klass.new.one.two.three).to eq(:four)
             end
 
             it "given a hash as the last argument uses the value as the expected return value" do
               klass.any_instance.stub_chain(:one, :two, :three => :four)
-              klass.new.one.two.three.should eq(:four)
+              expect(klass.new.one.two.three).to eq(:four)
             end
 
             it "given a string of '.' separated method names representing the chain" do
               klass.any_instance.stub_chain('one.two.three').and_return(:four)
-              klass.new.one.two.three.should eq(:four)
+              expect(klass.new.one.two.three).to eq(:four)
             end
           end
         end
@@ -98,14 +98,14 @@ module RSpec
         context "behaves as 'every instance'" do
           it "stubs every instance in the spec" do
             klass.any_instance.stub(:foo).and_return(result = Object.new)
-            klass.new.foo.should eq(result)
-            klass.new.foo.should eq(result)
+            expect(klass.new.foo).to eq(result)
+            expect(klass.new.foo).to eq(result)
           end
 
           it "stubs instance created before any_instance was called" do
             instance = klass.new
             klass.any_instance.stub(:foo).and_return(result = Object.new)
-            instance.foo.should eq(result)
+            expect(instance.foo).to eq(result)
           end
         end
 
@@ -117,8 +117,8 @@ module RSpec
 
           it "returns the stubbed value when arguments match" do
             instance = klass.new
-            instance.foo(:param_one, :param_two).should eq(:result_one)
-            instance.foo(:param_three, :param_four).should eq(:result_two)
+            expect(instance.foo(:param_one, :param_two)).to eq(:result_one)
+            expect(instance.foo(:param_three, :param_four)).to eq(:result_two)
           end
 
           it "fails the spec with an expectation error when the arguments do not match" do
@@ -136,32 +136,32 @@ module RSpec
 
           it "stubs a method" do
             instance = klass.new
-            instance.foo.should eq(1)
-            instance.bar.should eq(2)
+            expect(instance.foo).to eq(1)
+            expect(instance.bar).to eq(2)
           end
 
           it "returns the same value for calls on different instances" do
-            klass.new.foo.should eq(klass.new.foo)
-            klass.new.bar.should eq(klass.new.bar)
+            expect(klass.new.foo).to eq(klass.new.foo)
+            expect(klass.new.bar).to eq(klass.new.bar)
           end
         end
 
         context "with #and_return" do
           it "stubs a method that doesn't exist" do
             klass.any_instance.stub(:foo).and_return(1)
-            klass.new.foo.should eq(1)
+            expect(klass.new.foo).to eq(1)
           end
 
           it "stubs a method that exists" do
             klass.any_instance.stub(:existing_method).and_return(1)
-            klass.new.existing_method.should eq(1)
+            expect(klass.new.existing_method).to eq(1)
           end
 
           it "returns the same object for calls on different instances" do
             return_value = Object.new
             klass.any_instance.stub(:foo).and_return(return_value)
-            klass.new.foo.should be(return_value)
-            klass.new.foo.should be(return_value)
+            expect(klass.new.foo).to be(return_value)
+            expect(klass.new.foo).to be(return_value)
           end
         end
 
@@ -169,70 +169,70 @@ module RSpec
           it "yields the value specified" do
             yielded_value = Object.new
             klass.any_instance.stub(:foo).and_yield(yielded_value)
-            klass.new.foo{|value| value.should be(yielded_value)}
+            klass.new.foo{|value| expect(value).to be(yielded_value)}
           end
         end
 
         context "with #and_raise" do
           it "stubs a method that doesn't exist" do
             klass.any_instance.stub(:foo).and_raise(CustomErrorForAnyInstanceSpec)
-            lambda{ klass.new.foo}.should raise_error(CustomErrorForAnyInstanceSpec)
+            expect { klass.new.foo}.to raise_error(CustomErrorForAnyInstanceSpec)
           end
 
           it "stubs a method that exists" do
             klass.any_instance.stub(:existing_method).and_raise(CustomErrorForAnyInstanceSpec)
-            lambda{ klass.new.existing_method}.should raise_error(CustomErrorForAnyInstanceSpec)
+            expect { klass.new.existing_method}.to raise_error(CustomErrorForAnyInstanceSpec)
           end
         end
 
         context "with a block" do
           it "stubs a method" do
             klass.any_instance.stub(:foo) { 1 }
-            klass.new.foo.should eq(1)
+            expect(klass.new.foo).to eq(1)
           end
 
           it "returns the same computed value for calls on different instances" do
             klass.any_instance.stub(:foo) { 1 + 2 }
-            klass.new.foo.should eq(klass.new.foo)
+            expect(klass.new.foo).to eq(klass.new.foo)
           end
         end
 
         context "core ruby objects" do
           it "works uniformly across *everything*" do
             Object.any_instance.stub(:foo).and_return(1)
-            Object.new.foo.should eq(1)
+            expect(Object.new.foo).to eq(1)
           end
 
           it "works with the non-standard constructor []" do
             Array.any_instance.stub(:foo).and_return(1)
-            [].foo.should eq(1)
+            expect([].foo).to eq(1)
           end
 
           it "works with the non-standard constructor {}" do
             Hash.any_instance.stub(:foo).and_return(1)
-            {}.foo.should eq(1)
+            expect({}.foo).to eq(1)
           end
 
           it "works with the non-standard constructor \"\"" do
             String.any_instance.stub(:foo).and_return(1)
-            "".foo.should eq(1)
+            expect("".foo).to eq(1)
           end
 
           it "works with the non-standard constructor \'\'" do
             String.any_instance.stub(:foo).and_return(1)
-            ''.foo.should eq(1)
+            expect(''.foo).to eq(1)
           end
 
           it "works with the non-standard constructor module" do
             Module.any_instance.stub(:foo).and_return(1)
             module RSpec::SampleRspecTestModule;end
-            RSpec::SampleRspecTestModule.foo.should eq(1)
+            expect(RSpec::SampleRspecTestModule.foo).to eq(1)
           end
 
           it "works with the non-standard constructor class" do
             Class.any_instance.stub(:foo).and_return(1)
             class RSpec::SampleRspecTestClass;end
-            RSpec::SampleRspecTestClass.foo.should eq(1)
+            expect(RSpec::SampleRspecTestClass.foo).to eq(1)
           end
         end
       end
@@ -249,14 +249,14 @@ module RSpec
         it "replaces the stubbed method with the original method" do
           klass.any_instance.stub(:existing_method)
           klass.any_instance.unstub(:existing_method)
-          klass.new.existing_method.should eq(:existing_method_return_value)
+          expect(klass.new.existing_method).to eq(:existing_method_return_value)
         end
 
         it "removes all stubs with the supplied method name" do
           klass.any_instance.stub(:existing_method).with(1)
           klass.any_instance.stub(:existing_method).with(2)
           klass.any_instance.unstub(:existing_method)
-          klass.new.existing_method.should eq(:existing_method_return_value)
+          expect(klass.new.existing_method).to eq(:existing_method_return_value)
         end
 
         it "does not remove any expectations with the same method name" do
@@ -264,42 +264,42 @@ module RSpec
           klass.any_instance.stub(:existing_method_with_arguments).with(1)
           klass.any_instance.stub(:existing_method_with_arguments).with(2)
           klass.any_instance.unstub(:existing_method_with_arguments)
-          klass.new.existing_method_with_arguments(3).should eq(:three)
+          expect(klass.new.existing_method_with_arguments(3)).to eq(:three)
         end
 
         it "raises a MockExpectationError if the method has not been stubbed" do
-          lambda do
+          expect {
             klass.any_instance.unstub(:existing_method)
-          end.should raise_error(RSpec::Mocks::MockExpectationError, 'The method `existing_method` was not stubbed or was already unstubbed')
+          }.to raise_error(RSpec::Mocks::MockExpectationError, 'The method `existing_method` was not stubbed or was already unstubbed')
         end
       end
 
       context "with #should_not_receive" do
         it "fails if the method is called" do
           klass.any_instance.should_not_receive(:existing_method)
-          lambda { klass.new.existing_method }.should raise_error(RSpec::Mocks::MockExpectationError)
+          expect { klass.new.existing_method }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
 
         it "passes if no method is called" do
-          lambda { klass.any_instance.should_not_receive(:existing_method) }.should_not raise_error
+          expect { klass.any_instance.should_not_receive(:existing_method) }.to_not raise_error
         end
 
         it "passes if only a different method is called" do
           klass.any_instance.should_not_receive(:existing_method)
-          lambda { klass.new.another_existing_method }.should_not raise_error
+          expect { klass.new.another_existing_method }.to_not raise_error
         end
 
         context "with constraints" do
           it "fails if the method is called with the specified parameters" do
             klass.any_instance.should_not_receive(:existing_method_with_arguments).with(:argument_one, :argument_two)
-            lambda do
+            expect {
               klass.new.existing_method_with_arguments(:argument_one, :argument_two)
-            end.should raise_error(RSpec::Mocks::MockExpectationError)
+            }.to raise_error(RSpec::Mocks::MockExpectationError)
           end
 
           it "passes if the method is called with different parameters" do
             klass.any_instance.should_not_receive(:existing_method_with_arguments).with(:argument_one, :argument_two)
-            lambda { klass.new.existing_method_with_arguments(:argument_three, :argument_four) }.should_not raise_error
+            expect { klass.new.existing_method_with_arguments(:argument_three, :argument_four) }.to_not raise_error
           end
         end
       end
@@ -311,7 +311,7 @@ module RSpec
         context "with an expectation is set on a method which does not exist" do
           it "returns the expected value" do
             klass.any_instance.should_receive(:foo).and_return(1)
-            klass.new.foo(1).should eq(1)
+            expect(klass.new.foo(1)).to eq(1)
           end
 
           it "fails if an instance is created but no invocation occurs" do
@@ -343,7 +343,7 @@ module RSpec
 
             instance = klass.new
             instance.should_receive(:foo).and_return(result = Object.new)
-            instance.foo.should eq(result)
+            expect(instance.foo).to eq(result)
           end
 
           context "behaves as 'exactly one instance'" do
@@ -373,7 +373,7 @@ module RSpec
                 klass.new.foo
                 klass.rspec_verify
               end.to(raise_error(RSpec::Mocks::MockExpectationError) do |error|
-                error.message.should_not eq(existing_method_expectation_error_message)
+                expect(error.message).not_to eq(existing_method_expectation_error_message)
               end)
             end
 
@@ -382,7 +382,7 @@ module RSpec
               klass.any_instance.should_receive(:foo)
               klass.should_receive(:woot).and_return(result = Object.new)
               klass.new.foo
-              klass.woot.should eq(result)
+              expect(klass.woot).to eq(result)
             end
           end
         end
@@ -390,7 +390,7 @@ module RSpec
         context "with an expectation is set on a method that exists" do
           it "returns the expected value" do
             klass.any_instance.should_receive(:existing_method).and_return(1)
-            klass.new.existing_method(1).should eq(1)
+            expect(klass.new.existing_method(1)).to eq(1)
           end
 
           it "fails if an instance is created but no invocation occurs" do
@@ -444,15 +444,15 @@ module RSpec
 
           it "returns the expected value when arguments match" do
             instance = klass.new
-            instance.foo(:param_one, :param_two).should eq(:result_one)
-            instance.foo(:param_three, :param_four).should eq(:result_two)
+            expect(instance.foo(:param_one, :param_two)).to eq(:result_one)
+            expect(instance.foo(:param_three, :param_four)).to eq(:result_two)
           end
 
           it "fails when the arguments match but different instances are used" do
             instances = Array.new(2) { klass.new }
             expect do
-              instances[0].foo(:param_one, :param_two).should eq(:result_one)
-              instances[1].foo(:param_three, :param_four).should eq(:result_two)
+              expect(instances[0].foo(:param_one, :param_two)).to eq(:result_one)
+              expect(instances[1].foo(:param_three, :param_four)).to eq(:result_two)
             end.to raise_error(RSpec::Mocks::MockExpectationError)
 
             # ignore the fact that should_receive expectations were not met
@@ -460,10 +460,10 @@ module RSpec
           end
 
           it "is not affected by the invocation of existing methods on other instances" do
-            klass.new.existing_method_with_arguments(:param_one, :param_two).should eq(:existing_method_with_arguments_return_value)
+            expect(klass.new.existing_method_with_arguments(:param_one, :param_two)).to eq(:existing_method_with_arguments_return_value)
             instance = klass.new
-            instance.foo(:param_one, :param_two).should eq(:result_one)
-            instance.foo(:param_three, :param_four).should eq(:result_two)
+            expect(instance.foo(:param_one, :param_two)).to eq(:result_one)
+            expect(instance.foo(:param_three, :param_four)).to eq(:result_two)
           end
 
           it "fails when arguments do not match" do
@@ -615,7 +615,7 @@ module RSpec
               it "passes when the other expecations are met" do
                 klass.any_instance.should_receive(:foo).never
                 klass.any_instance.should_receive(:existing_method).and_return(5)
-                klass.new.existing_method.should eq(5)
+                expect(klass.new.existing_method).to eq(5)
               end
 
               it "fails when the other expecations are not met" do
@@ -644,14 +644,14 @@ module RSpec
             it "does not interfere with other expectations" do
               klass.any_instance.should_receive(:foo).any_number_of_times
               klass.any_instance.should_receive(:existing_method).and_return(5)
-              klass.new.existing_method.should eq(5)
+              expect(klass.new.existing_method).to eq(5)
             end
 
             context "when combined with other expectations" do
               it "passes when the other expecations are met" do
                 klass.any_instance.should_receive(:foo).any_number_of_times
                 klass.any_instance.should_receive(:existing_method).and_return(5)
-                klass.new.existing_method.should eq(5)
+                expect(klass.new.existing_method).to eq(5)
               end
 
               it "fails when the other expecations are not met" do
@@ -678,14 +678,14 @@ module RSpec
             context "public methods" do
               before(:each) do
                 klass.any_instance.stub(:existing_method).and_return(1)
-                klass.method_defined?(:__existing_method_without_any_instance__).should be_true
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_true
               end
 
               it "restores the class to its original state after each example when no instance is created" do
                 space.verify_all
 
-                klass.method_defined?(:__existing_method_without_any_instance__).should be_false
-                klass.new.existing_method.should eq(existing_method_return_value)
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
 
               it "restores the class to its original state after each example when one instance is created" do
@@ -693,8 +693,8 @@ module RSpec
 
                 space.verify_all
 
-                klass.method_defined?(:__existing_method_without_any_instance__).should be_false
-                klass.new.existing_method.should eq(existing_method_return_value)
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
 
               it "restores the class to its original state after each example when more than one instance is created" do
@@ -703,8 +703,8 @@ module RSpec
 
                 space.verify_all
 
-                klass.method_defined?(:__existing_method_without_any_instance__).should be_false
-                klass.new.existing_method.should eq(existing_method_return_value)
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
             end
 
@@ -715,15 +715,15 @@ module RSpec
               end
 
               it "cleans up the backed up method" do
-                klass.method_defined?(:__existing_method_without_any_instance__).should be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
               end
 
               it "restores a stubbed private method after the spec is run" do
-                klass.private_method_defined?(:private_method).should be_true
+                expect(klass.private_method_defined?(:private_method)).to be_true
               end
 
               it "ensures that the restored method behaves as it originally did" do
-                klass.new.send(:private_method).should eq(:private_method_return_value)
+                expect(klass.new.send(:private_method)).to eq(:private_method_return_value)
               end
             end
           end
@@ -737,15 +737,15 @@ module RSpec
               end
 
               it "cleans up the backed up method" do
-                klass.method_defined?(:__existing_method_without_any_instance__).should be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
               end
 
               it "restores a stubbed private method after the spec is run" do
-                klass.private_method_defined?(:private_method).should be_true
+                expect(klass.private_method_defined?(:private_method)).to be_true
               end
 
               it "ensures that the restored method behaves as it originally did" do
-                klass.new.send(:private_method).should eq(:private_method_return_value)
+                expect(klass.new.send(:private_method)).to eq(:private_method_return_value)
               end
             end
 
@@ -757,7 +757,7 @@ module RSpec
                 end
 
                 it "second spec" do
-                  klass.new.existing_method.should eq(existing_method_return_value)
+                  expect(klass.new.existing_method).to eq(existing_method_return_value)
                 end
               end
 
@@ -772,7 +772,7 @@ module RSpec
                 end
 
                 it "second spec" do
-                  @instance.existing_method.should eq(existing_method_return_value)
+                  expect(@instance.existing_method).to eq(existing_method_return_value)
                 end
               end
             end
@@ -782,7 +782,7 @@ module RSpec
               klass.new.existing_method
               space.verify_all
 
-              klass.new.existing_method.should eq(existing_method_return_value)
+              expect(klass.new.existing_method).to eq(existing_method_return_value)
             end
           end
         end
@@ -793,21 +793,21 @@ module RSpec
             klass.any_instance.stub(:existing_method).and_return(true)
 
             klass.rspec_verify
-            klass.new.should respond_to(:existing_method)
-            klass.new.existing_method.should eq(existing_method_return_value)
+            expect(klass.new).to respond_to(:existing_method)
+            expect(klass.new.existing_method).to eq(existing_method_return_value)
           end
         end
 
         it "adds an class to the current space when #any_instance is invoked" do
           klass.any_instance
-          RSpec::Mocks::space.send(:receivers).should include(klass)
+          expect(RSpec::Mocks::space.send(:receivers)).to include(klass)
         end
 
         it "adds an instance to the current space when stubbed method is invoked" do
           klass.any_instance.stub(:foo)
           instance = klass.new
           instance.foo
-          RSpec::Mocks::space.send(:receivers).should include(instance)
+          expect(RSpec::Mocks::space.send(:receivers)).to include(instance)
         end
       end
 
@@ -816,7 +816,7 @@ module RSpec
           Object.any_instance.stub(:some_method)
           o = Object.new
           o.some_method
-          lambda { o.dup.some_method }.should_not raise_error(SystemStackError)
+          expect { o.dup.some_method }.to_not raise_error(SystemStackError)
         end
 
         it "doesn't bomb if the object doesn't support `dup`" do
@@ -834,7 +834,7 @@ module RSpec
 
           klass.any_instance
 
-          lambda { klass.new.dup('Dup dup dup') }.should_not raise_error(ArgumentError)
+          expect { klass.new.dup('Dup dup dup') }.to_not raise_error(ArgumentError)
         end
       end
 
@@ -843,7 +843,7 @@ module RSpec
 
         it "stubs the method correctly" do
           klass.any_instance.stub(:existing_method).and_return("foo")
-          sub_klass.new.existing_method.should == "foo"
+          expect(sub_klass.new.existing_method).to eq "foo"
         end
 
         it "mocks the method correctly" do
@@ -862,12 +862,12 @@ module RSpec
 
         it "stubs the method correctly" do
           http_request_class.any_instance.stub(:existing_method).and_return("foo")
-          http_request_class.new.existing_method.should == "foo"
+          expect(http_request_class.new.existing_method).to eq "foo"
         end
 
         it "mocks the method correctly" do
           http_request_class.any_instance.should_receive(:existing_method).and_return("foo")
-          http_request_class.new.existing_method.should == "foo"
+          expect(http_request_class.new.existing_method).to eq "foo"
         end
       end
 
@@ -876,11 +876,11 @@ module RSpec
           klass.any_instance.stub(:existing_method).and_return(:stubbed_return_value)
 
           instance = klass.new
-          instance.existing_method.should == :stubbed_return_value
+          expect(instance.existing_method).to eq :stubbed_return_value
 
           RSpec::Mocks.verify
 
-          instance.existing_method.should == :existing_method_return_value
+          expect(instance.existing_method).to eq :existing_method_return_value
         end
       end
     end
