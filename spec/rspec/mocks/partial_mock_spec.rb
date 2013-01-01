@@ -129,7 +129,7 @@ module RSpec
 
       it 'works properly' do
         instance.should_receive(:proxied?).and_return(false)
-        instance.should_not be_proxied
+        expect(instance).not_to be_proxied
       end
     end
 
