@@ -37,6 +37,28 @@ describe "and_call_original" do
       expect(instance.foo).to eq(:bar)
     end
 
+    it 'works for methods added through an extended module' do
+      instance.extend Module.new { def foo; :bar; end }
+      instance.should_receive(:foo).and_call_original
+      expect(instance.foo).to eq(:bar)
+    end
+
+    it "works for method added through an extended module onto a class's ancestor" do
+      sub_sub_klass = Class.new(Class.new(klass))
+      klass.extend Module.new { def foo; :bar; end }
+      sub_sub_klass.should_receive(:foo).and_call_original
+      expect(sub_sub_klass.foo).to eq(:bar)
+    end
+
+    it "finds the method on the most direct ancestor even if the method " +
+       "is available on more distant ancestors" do
+      klass.extend Module.new { def foo; :klass_bar; end }
+      sub_klass = Class.new(klass)
+      sub_klass.extend Module.new { def foo; :sub_klass_bar; end }
+      sub_klass.should_receive(:foo).and_call_original
+      expect(sub_klass.foo).to eq(:sub_klass_bar)
+    end
+
     context 'when using any_instance' do
       it 'works for instance methods defined on the class' do
         klass.any_instance.should_receive(:meth_1).and_call_original

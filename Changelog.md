@@ -1,3 +1,11 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...master)
+
+Bug fixes
+
+* Fix `and_call_original` to work properly for methods defined
+  on a module extended onto an object instance (Myron Marston).
+
 ### 2.12.1 / 2012-12-21
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.0...v2.12.1)
 
