@@ -56,8 +56,8 @@ module RSpec
           meth
         else
           begin
-            # Example: an instance method defined on @object's class.
-            @object.class.instance_method(@method_name).bind(@object)
+            # Example: an instance method defined on one of @object's ancestors.
+            original_method_from_ancestor(object_singleton_class.ancestors)
           rescue NameError
             raise unless @object.respond_to?(:superclass)
 
@@ -95,6 +95,14 @@ module RSpec
         superklass = klass.superclass
         return false if superklass.nil?
         any_instance_class_recorder_observing_method?(superklass)
+      end
+
+      def original_method_from_ancestor(ancestors)
+        klass, *rest = ancestors
+        klass.instance_method(@method_name).bind(@object)
+      rescue NameError
+        raise if rest.empty?
+        original_method_from_ancestor(rest)
       end
 
       if RUBY_VERSION.to_f > 1.8
