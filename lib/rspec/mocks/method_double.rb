@@ -174,13 +174,15 @@ module RSpec
 
         object_singleton_class.__send__(:remove_method, @method_name)
         @method_stasher.restore
-        object_singleton_class.class_eval <<-EOF, __FILE__, __LINE__ + 1
-          if method_defined?(:#{@method_name}) || private_method_defined?(:#{@method_name})
-            #{@original_visibility}
-          end
-        EOF
+        restore_original_visibility
 
         @method_is_proxied = false
+      end
+
+      # @private
+      def restore_original_visibility
+        return unless object_singleton_class.method_defined?(@method_name) || object_singleton_class.private_method_defined?(@method_name)
+        object_singleton_class.class_eval(@original_visibility, __FILE__, __LINE__)
       end
 
       # @private
