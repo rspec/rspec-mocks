@@ -153,6 +153,7 @@ module RSpec
       def configure_method
         RSpec::Mocks::space.add(@object) if RSpec::Mocks::space
         warn_if_nil_class
+        @original_visibility = visibility_for_method
         @method_stasher.stash unless @method_is_proxied
         define_proxy_method
       end
@@ -181,7 +182,15 @@ module RSpec
 
         object_singleton_class.__send__(:remove_method, @method_name)
         @method_stasher.restore
+        restore_original_visibility
+
         @method_is_proxied = false
+      end
+
+      # @private
+      def restore_original_visibility
+        return unless object_singleton_class.method_defined?(@method_name) || object_singleton_class.private_method_defined?(@method_name)
+        object_singleton_class.class_eval(@original_visibility, __FILE__, __LINE__)
       end
 
       # @private
