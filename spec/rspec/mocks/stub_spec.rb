@@ -121,6 +121,25 @@ module RSpec
 
           expect(@instance.existing_instance_method).to eq(:original_value)
         end
+
+        it "correctly restores the visibility of methods whose visibility has been tweaked on the singleton class" do
+          # hello is a private method when mixed in, but public on the module
+          # itself
+          mod = Module.new {
+            extend self
+            def hello; :hello; end
+
+            private :hello
+            class << self; public :hello; end;
+          }
+
+          expect(mod.hello).to eq(:hello)
+
+          mod.stub(:hello) { :stub }
+          mod.rspec_reset
+
+          expect(mod.hello).to eq(:hello)
+        end
       end
 
       it "returns values in order to consecutive calls" do
