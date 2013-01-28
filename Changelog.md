@@ -1,5 +1,5 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...master)
+### 2.12.2 / 2013-01-27
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...v.2.12.2)
 
 Bug fixes
 
@@ -8,6 +8,10 @@ Bug fixes
 * Fix `stub_const` with an undefined constnat name to work properly
   with constant strings that are prefixed with `::` -- and edge case
   I missed in the bug fix in the 2.12.1 release (Myron Marston).
+* Ensure method visibility on a partial mock is restored after reseting
+  method stubs, even on a singleton module (created via `extend self`)
+  when the method visibility differs between the instance and singleton
+  versions (Andy Lindeman).
 
 ### 2.12.1 / 2012-12-21
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.0...v2.12.1)
