@@ -199,7 +199,7 @@ module RSpec
         attr_reader :original_value, :full_constant_name
 
         def initialize(full_constant_name, mutated_value, transfer_nested_constants)
-          @full_constant_name        = full_constant_name
+          @full_constant_name        = normalize_const_name(full_constant_name)
           @mutated_value             = mutated_value
           @transfer_nested_constants = transfer_nested_constants
           @context_parts             = @full_constant_name.split('::')

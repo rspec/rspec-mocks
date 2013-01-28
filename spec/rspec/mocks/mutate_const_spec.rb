@@ -305,6 +305,10 @@ module RSpec
           it_behaves_like 'loaded constant stubbing', "::TestClass"
         end
 
+        context 'for an unloaded constant prefixed with ::' do
+          it_behaves_like 'unloaded constant stubbing', "::SomeUndefinedConst"
+        end
+
         context 'for an unloaded constant with nested name that matches a top-level constant' do
           it_behaves_like "unloaded constant stubbing", "TestClass::Hash"
         end
