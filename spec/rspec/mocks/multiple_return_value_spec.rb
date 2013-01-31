@@ -2,6 +2,19 @@ require 'spec_helper'
 
 module RSpec
   module Mocks
+    describe "a double stubbed with multiple return values" do
+      let(:a_double) { double }
+
+      before do
+        a_double.stub(:foo).and_return(:val_1, nil)
+      end
+
+      it 'can still set a message expectation with a single return value' do
+        a_double.should_receive(:foo).once.and_return(:val_1)
+        expect(a_double.foo).to eq(:val_1)
+      end
+    end
+
     describe "a message expectation with multiple return values and no specified count" do
       before(:each) do
         @double = double
