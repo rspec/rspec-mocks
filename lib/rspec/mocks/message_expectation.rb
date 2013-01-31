@@ -3,10 +3,10 @@ module RSpec
 
     class MessageExpectation
       # @private
-      attr_accessor :error_generator
+      attr_accessor :error_generator, :implementation
       attr_reader :message
       attr_writer :expected_received_count, :expected_from, :argument_list_matcher
-      protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=
+      protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
       # @private
       def initialize(error_generator, expectation_ordering, expected_from, method_double,
@@ -19,7 +19,6 @@ module RSpec
         @actual_received_count = 0
         @expected_received_count = expected_received_count
         @argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
-        @consecutive = false
         @order_group = expectation_ordering
         @at_least = @at_most = @exactly = nil
         @args_to_yield = []
@@ -28,12 +27,6 @@ module RSpec
         @eval_context = nil
         @implementation = implementation
       end
-
-      def implementation=(implementation)
-        @consecutive = false
-        @implementation = implementation
-      end
-      protected :implementation=
 
       # @private
       def build_child(expected_from, expected_received_count, opts={}, &implementation)
@@ -93,7 +86,6 @@ module RSpec
       #   counter.count # => 1
       def and_return(*values, &implementation)
         @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
-        @consecutive = true if values.size > 1
         @implementation = implementation || build_implementation(values)
       end
 
@@ -112,7 +104,7 @@ module RSpec
         if @method_double.object.is_a?(RSpec::Mocks::TestDouble)
           @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
         else
-          self.implementation = @method_double.original_method
+          @implementation = @method_double.original_method
         end
       end
 
@@ -142,7 +134,7 @@ module RSpec
           exception = message ? exception.exception(message) : exception.exception
         end
 
-        self.implementation = Proc.new { raise exception }
+        @implementation = Proc.new { raise exception }
       end
 
       # @overload and_throw(symbol)
@@ -156,7 +148,7 @@ module RSpec
       #   car.stub(:go).and_throw(:out_of_gas)
       #   car.stub(:go).and_throw(:out_of_gas, :level => 0.1)
       def and_throw(*args)
-        self.implementation = Proc.new { throw *args }
+        @implementation = Proc.new { throw *args }
       end
 
       # Tells the object to yield one or more args to a block when the message
@@ -195,9 +187,7 @@ module RSpec
         begin
           default_return_val = call_with_yield(&block) if !@args_to_yield.empty? || @eval_context
 
-          if @consecutive
-            call_implementation_consecutive(*args, &block)
-          elsif @implementation
+          if @implementation
             call_implementation(*args, &block)
           else
             default_return_val
@@ -437,11 +427,6 @@ module RSpec
         value
       end
 
-      def call_implementation_consecutive(*args, &block)
-        @value ||= call_implementation(*args, &block)
-        @value[[@actual_received_count, @value.size-1].min]
-      end
-
       def call_implementation(*args, &block)
         @implementation.arity == 0 ? @implementation.call(&block) : @implementation.call(*args, &block)
       end
@@ -473,8 +458,7 @@ module RSpec
       private
 
       def build_implementation(values)
-        value = values.size == 1 ? values.first : values
-        lambda { value }
+        lambda { values.size > 1 ? values.shift : values.first }
       end
     end
 
