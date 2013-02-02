@@ -436,6 +436,15 @@ module RSpec
           end
         end
 
+        it 'works with a BasicObject subclass' do
+          klass = Class.new(BasicObject) do
+            def foo; end
+          end
+
+          klass.any_instance.should_receive(:foo)
+          klass.new.foo
+        end
+
         context "with argument matching" do
           before do
             klass.any_instance.should_receive(:foo).with(:param_one, :param_two).and_return(:result_one)
