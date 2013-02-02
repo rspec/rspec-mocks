@@ -8,6 +8,12 @@ Bug fixes
   `obj.stub(:foo).and_return(1, 2)`) was later mocked with a
   single return value (e.g. `obj.should_receive(:foo).once.and_return(1)`).
   (Myron Marston)
+* Fix bug related to a mock expectation for a method that already had
+  multiple stubs with different `with` constraints. Previously, the
+  first stub was used, even though it may not have matched the passed
+  args. The fix defers this decision until the message is received so
+  that the proper stub response can be chosen based on the passed
+  arguments (Myron Marston).
 
 ### 2.12.2 / 2013-01-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...v.2.12.2)

@@ -5,6 +5,19 @@ describe RSpec::Mocks::Mock do
   let(:obj) { double }
 
   describe "#and_yield" do
+    context 'when the method double has been constrained by `with`' do
+      it 'uses the default stub if the provided args do not match' do
+        obj.stub(:foo) { 15 }
+        obj.stub(:foo).with(:yield).and_yield
+
+        # should_receive is required to trigger the bug:
+        # https://github.com/rspec/rspec-mocks/issues/127
+        obj.should_receive(:foo)
+
+        expect(obj.foo(:dont_yield)).to eq(15)
+      end
+    end
+
     context "with eval context as block argument" do
 
       it "evaluates the supplied block as it is read" do
