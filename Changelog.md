@@ -1,3 +1,14 @@
+### Dev
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.2...master)
+
+Bug fixes
+
+* Fix bug that caused weird behavior when a method that had
+  previously been stubbed with multiple return values (e.g.
+  `obj.stub(:foo).and_return(1, 2)`) was later mocked with a
+  single return value (e.g. `obj.should_receive(:foo).once.and_return(1)`).
+  (Myron Marston)
+
 ### 2.12.2 / 2013-01-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...v.2.12.2)
 
