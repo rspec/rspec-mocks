@@ -539,14 +539,14 @@ module RSpec
         @double.rspec_verify
       end
 
-      it "yields multiple values after a similar stub" do
-        File.stub(:open).and_yield(:stub_value)
-        File.should_receive(:open).and_yield(:first_call).and_yield(:second_call)
-        yielded_args = []
-        File.open {|v| yielded_args << v }
-        expect(yielded_args).to eq [:first_call, :second_call]
-        File.open {|v| expect(v).to eq :stub_value }
-        File.rspec_verify
+      it "can yield multiple times when told to do so" do
+        @double.stub(:foo).and_yield(:stub_value)
+        @double.should_receive(:foo).and_yield(:first_yield).and_yield(:second_yield)
+
+        expect { |b| @double.foo(&b) }.to yield_successive_args(:first_yield, :second_yield)
+        expect { |b| @double.foo(&b) }.to yield_with_args(:stub_value)
+
+        @double.rspec_verify
       end
 
       it "assigns stub return values" do
