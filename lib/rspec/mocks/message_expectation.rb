@@ -10,7 +10,7 @@ module RSpec
 
       # @private
       def initialize(error_generator, expectation_ordering, expected_from, method_double,
-                     expected_received_count=1, opts={}, &implementation)
+                     expected_received_count=1, opts={}, parent_stubs = [], &implementation)
         @error_generator = error_generator
         @error_generator.opts = opts
         @expected_from = expected_from
@@ -23,25 +23,13 @@ module RSpec
         @at_least = @at_most = @exactly = nil
         @args_to_yield = []
         @failed_fast = nil
-        @args_to_yield_were_cloned = false
         @eval_context = nil
+        @parent_stubs = parent_stubs
         @implementation = implementation
+        @values_to_return = nil
       end
 
       # @private
-      def build_child(expected_from, expected_received_count, opts={}, &implementation)
-        child = clone
-        child.expected_from = expected_from
-        child.implementation = implementation if implementation
-        child.expected_received_count = expected_received_count
-        child.clear_actual_received_count!
-        new_gen = error_generator.clone
-        new_gen.opts = opts
-        child.error_generator = new_gen
-        child.clone_args_to_yield(*@args_to_yield)
-        child.argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
-        child
-      end
 
       # @private
       def expected_args
@@ -86,7 +74,14 @@ module RSpec
       #   counter.count # => 1
       def and_return(*values, &implementation)
         @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
-        @implementation = implementation || build_implementation(values)
+
+        if implementation
+          # TODO: deprecate `and_return { value }`
+          @implementation = implementation
+        else
+          @values_to_return = values
+          @implementation = build_implementation
+        end
       end
 
       # Tells the object to delegate to the original unmodified method
@@ -158,14 +153,9 @@ module RSpec
       #
       #   stream.stub(:open).and_yield(StringIO.new)
       def and_yield(*args, &block)
-        if @args_to_yield_were_cloned
-          @args_to_yield.clear
-          @args_to_yield_were_cloned = false
-        end
-
         yield @eval_context = Object.new.extend(RSpec::Mocks::InstanceExec) if block
-
         @args_to_yield << args
+        @implementation = build_implementation
         self
       end
 
@@ -185,16 +175,18 @@ module RSpec
         @order_group.handle_order_constraint self
 
         begin
-          default_return_val = call_with_yield(&block) if !@args_to_yield.empty? || @eval_context
-
           if @implementation
             call_implementation(*args, &block)
-          else
-            default_return_val
+          elsif (parent_stub = find_matching_parent_stub(*args))
+            parent_stub.invoke(*args, &block)
           end
         ensure
           @actual_received_count += 1
         end
+      end
+
+      def find_matching_parent_stub(*args)
+        @parent_stubs.find { |stub| stub.matches?(@message, *args) }
       end
 
       # @private
@@ -415,25 +407,12 @@ module RSpec
 
       protected
 
-      def call_with_yield(&block)
-        @error_generator.raise_missing_block_error @args_to_yield unless block
-        value = nil
-        @args_to_yield.each do |args|
-          if block.arity > -1 && args.length != block.arity
-            @error_generator.raise_wrong_arity_error args, block.arity
-          end
-          value = @eval_context ? @eval_context.instance_exec(*args, &block) : block.call(*args)
-        end
-        value
-      end
-
       def call_implementation(*args, &block)
-        @implementation.arity == 0 ? @implementation.call(&block) : @implementation.call(*args, &block)
-      end
-
-      def clone_args_to_yield(*args)
-        @args_to_yield = args.clone
-        @args_to_yield_were_cloned = true
+        if @implementation.arity.zero?
+          @implementation.call(&block)
+        else
+          @implementation.call(*args, &block)
+        end
       end
 
       def failed_fast?
@@ -451,14 +430,13 @@ module RSpec
                                    end
       end
 
-      def clear_actual_received_count!
-        @actual_received_count = 0
-      end
-
       private
 
-      def build_implementation(values)
-        lambda { values.size > 1 ? values.shift : values.first }
+      def build_implementation
+        MessageImplementation.new(
+          @values_to_return, @args_to_yield,
+          @eval_context, @error_generator
+        ).method(:call)
       end
     end
 
@@ -481,6 +459,43 @@ MSG
       # @private
       def negative_expectation_for?(message)
         return @message == message
+      end
+    end
+
+    # Represents a configured implementation. Takes into account
+    # `and_return` and `and_yield` instructions.
+    # @private
+    class MessageImplementation
+      def initialize(values_to_return, args_to_yield, eval_context, error_generator)
+        @values_to_return = values_to_return
+        @args_to_yield = args_to_yield
+        @eval_context = eval_context
+        @error_generator = error_generator
+      end
+
+      def call(&block)
+        default_return_value = perform_yield(&block)
+        return default_return_value unless @values_to_return
+
+        if @values_to_return.size > 1
+          @values_to_return.shift
+        else
+          @values_to_return.first
+        end
+      end
+
+      def perform_yield(&block)
+        return if @args_to_yield.empty? && @eval_context.nil?
+
+        @error_generator.raise_missing_block_error @args_to_yield unless block
+        value = nil
+        @args_to_yield.each do |args|
+          if block.arity > -1 && args.length != block.arity
+            @error_generator.raise_wrong_arity_error args, block.arity
+          end
+          value = @eval_context ? @eval_context.instance_exec(*args, &block) : block.call(*args)
+        end
+        value
       end
     end
   end
