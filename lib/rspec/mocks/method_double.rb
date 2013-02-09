@@ -214,12 +214,8 @@ module RSpec
       # @private
       def add_expectation(error_generator, expectation_ordering, expected_from, opts, &implementation)
         configure_method
-        expectation = if existing_stub = stubs.first
-                        existing_stub.build_child(expected_from, 1, opts, &implementation)
-                      else
-                        MessageExpectation.new(error_generator, expectation_ordering,
-                                               expected_from, self, 1, opts, &implementation)
-                      end
+        expectation = MessageExpectation.new(error_generator, expectation_ordering,
+                                             expected_from, self, 1, opts, stubs, &implementation)
         expectations << expectation
         expectation
       end

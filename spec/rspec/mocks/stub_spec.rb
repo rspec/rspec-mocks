@@ -260,6 +260,19 @@ module RSpec
       it "supports options" do
         @stub.stub(:foo, :expected_from => "bar")
       end
+
+      it 'uses the correct stubbed response when responding to a mock expectation' do
+        @stub.stub(:bar) { 15 }
+        @stub.stub(:bar).with(:eighteen) { 18 }
+        @stub.stub(:bar).with(:thirteen) { 13 }
+
+        @stub.should_receive(:bar).exactly(4).times
+
+        expect(@stub.bar(:blah)).to eq(15)
+        expect(@stub.bar(:thirteen)).to eq(13)
+        expect(@stub.bar(:eighteen)).to eq(18)
+        expect(@stub.bar).to eq(15)
+      end
     end
 
   end
