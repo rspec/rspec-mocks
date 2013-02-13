@@ -1,4 +1,4 @@
-# RSpec Mocks [![Build Status](https://secure.travis-ci.org/rspec/rspec-mocks.png?branch=master)](http://travis-ci.org/rspec/rspec-mocks) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/rspec/rspec-mocks)
+# RSpec Mocks [![Build Status](https://secure.travis-ci.org/rspec/rspec-mocks.png?branch=master)](http://travis-ci.org/rspec/rspec-mocks) [![Code Climate](https://codeclimate.com/github/rspec/rspec-mocks.png)](https://codeclimate.com/github/rspec/rspec-mocks)
 
 rspec-mocks is a test-double framework for rspec with support for method stubs,
 fakes, and message expectations on generated test-doubles and real objects
@@ -233,7 +233,7 @@ double.should_receive(:msg) do |arg|
 end
 ```
 
-If the method being stubbed itself takes a block, and you need to yield to it 
+If the method being stubbed itself takes a block, and you need to yield to it
 in some special way, you can use this:
 
 ```ruby
