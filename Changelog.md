@@ -14,6 +14,8 @@ Bug fixes
   args. The fix defers this decision until the message is received so
   that the proper stub response can be chosen based on the passed
   arguments (Myron Marston).
+* Do not call `nil?` extra times on a mocked object, in case `nil?`
+  itself is expected a set number of times (Myron Marston).
 
 ### 2.12.2 / 2013-01-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...v.2.12.2)
