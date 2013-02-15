@@ -34,6 +34,12 @@ module RSpec
         nil.should_not_receive(:bar)
         nil.foo
       end
+
+      it 'does not call #nil? on a double extra times' do
+        dbl = double
+        dbl.should_receive(:nil?).once.and_return(false)
+        dbl.nil?
+      end
     end
 
     describe "#allow_message_expectations_on_nil" do

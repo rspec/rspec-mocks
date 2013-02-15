@@ -252,7 +252,7 @@ module RSpec
 
       # @private
       def proxy_for_nil_class?
-        @object.nil?
+        NilClass === @object
       end
 
       # @private
