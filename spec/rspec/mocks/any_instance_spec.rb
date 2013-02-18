@@ -245,6 +245,14 @@ module RSpec
         end
       end
 
+      context "with #unstub!" do
+        it "raises with a message instructing the user to use unstub instead" do
+          expect do
+            klass.any_instance.unstub!(:foo)
+          end.to raise_error(/Use unstub instead/)
+        end
+      end
+
       context "unstub implementation" do
         it "replaces the stubbed method with the original method" do
           klass.any_instance.stub(:existing_method)
