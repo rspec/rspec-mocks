@@ -444,7 +444,7 @@ module RSpec
           end
         end
 
-        it 'works with a BasicObject subclass' do
+        it 'works with a BasicObject subclass', :if => defined?(BasicObject) do
           klass = Class.new(BasicObject) do
             include ::Kernel # to make #method available, just like Delegator
             def foo; end
