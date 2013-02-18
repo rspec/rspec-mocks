@@ -43,5 +43,16 @@ describe "expection set on previously stubbed method" do
       double.foo(3)
       expect { double.rspec_verify }.to raise_error(/expected: \(4\)\s+got: \(3\)/)
     end
+
+    it 'distinguishes between individual values and arrays properly' do
+      dbl = double
+      dbl.stub(:foo).with('a', ['b'])
+
+      expect {
+        dbl.foo(['a'], 'b')
+      }.to raise_error { |e|
+        expect(e.message).to include('expected: ("a", ["b"])', 'got: (["a"], "b")')
+      }
+    end
   end
 end
