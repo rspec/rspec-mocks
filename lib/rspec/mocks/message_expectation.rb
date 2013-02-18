@@ -428,7 +428,7 @@ module RSpec
       private
 
       def build_implementation
-        MessageImplementation.new(
+        Implementation.new(
           @values_to_return, @args_to_yield,
           @eval_context, @error_generator
         ).method(:call)
@@ -460,7 +460,7 @@ MSG
     # Represents a configured implementation. Takes into account
     # `and_return` and `and_yield` instructions.
     # @private
-    class MessageImplementation
+    class Implementation
       def initialize(values_to_return, args_to_yield, eval_context, error_generator)
         @values_to_return = values_to_return
         @args_to_yield = args_to_yield
