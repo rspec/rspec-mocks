@@ -44,7 +44,7 @@ module RSpec
       def original_method
         if @method_stasher.method_is_stashed?
           # Example: a singleton method defined on @object
-          method_handle_for(@object, @method_stasher.stashed_method_name)
+          ::RSpec::Mocks.method_handle_for(@object, @method_stasher.stashed_method_name)
         elsif meth = original_unrecorded_any_instance_method
           # Example: a method that has been mocked through
           #   klass.any_instance.should_receive(:msg).and_call_original
@@ -135,15 +135,6 @@ module RSpec
           @object.superclass.method(@method_name)
         end
       end
-
-      # @private
-      OBJECT_METHOD_METHOD = ::Object.instance_method(:method)
-
-      # @private
-      def method_handle_for(object, method_name)
-        OBJECT_METHOD_METHOD.bind(object).call(method_name)
-      end
-
       # @private
       def object_singleton_class
         class << @object; self; end

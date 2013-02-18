@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'delegate'
 
 module RSpec
   module Mocks
@@ -444,14 +445,23 @@ module RSpec
           end
         end
 
-        it 'works with a BasicObject subclass', :if => defined?(BasicObject) do
+        it 'works with a BasicObject subclass that mixes in Kernel', :if => defined?(BasicObject) do
           klass = Class.new(BasicObject) do
-            include ::Kernel # to make #method available, just like Delegator
+            include ::Kernel
             def foo; end
           end
 
           klass.any_instance.should_receive(:foo)
           klass.new.foo
+        end
+
+        it 'works with a SimpleDelegator subclass', :if => (RUBY_VERSION.to_f > 1.8) do
+          klass = Class.new(SimpleDelegator) do
+            def foo; end
+          end
+
+          klass.any_instance.should_receive(:foo)
+          klass.new(Object.new).foo
         end
 
         context "with argument matching" do

@@ -21,6 +21,8 @@ Bug fixes
 * Explicitly disallow `any_instance.unstub!` (Ryan Jones).
 * Fix `any_instance` stubbing so that it works with `Delegator`
   subclasses (Myron Marston).
+* Fix `and_call_original` so that it works with `Delegator` subclasses
+  (Myron Marston).
 
 ### 2.12.2 / 2013-01-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...v.2.12.2)

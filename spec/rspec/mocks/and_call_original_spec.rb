@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'delegate'
 
 describe "and_call_original" do
   context "on a partial mock object" do
@@ -31,10 +32,19 @@ describe "and_call_original" do
       expect(value).to eq([:submitted_arg, :additional_yielded_arg])
     end
 
-    it 'works for singleton methods' do
-      def instance.foo; :bar; end
-      instance.should_receive(:foo).and_call_original
-      expect(instance.foo).to eq(:bar)
+    context "for singleton methods" do
+      it 'works' do
+        def instance.foo; :bar; end
+        instance.should_receive(:foo).and_call_original
+        expect(instance.foo).to eq(:bar)
+      end
+
+      it 'works for SimpleDelegator subclasses', :if => (RUBY_VERSION.to_f > 1.8) do
+        instance = Class.new(SimpleDelegator).new(1)
+        def instance.foo; :bar; end
+        instance.should_receive(:foo).and_call_original
+        expect(instance.foo).to eq(:bar)
+      end
     end
 
     it 'works for methods added through an extended module' do
