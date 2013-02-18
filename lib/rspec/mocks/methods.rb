@@ -82,7 +82,7 @@ module RSpec
         if chain.length > 1
           if matching_stub = __mock_proxy.__send__(:find_matching_method_stub, chain[0].to_sym)
             chain.shift
-            matching_stub.invoke.stub_chain(*chain, &blk)
+            matching_stub.invoke(nil).stub_chain(*chain, &blk)
           else
             next_in_chain = Mock.new
             stub(chain.shift) { next_in_chain }

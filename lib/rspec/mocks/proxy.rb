@@ -128,9 +128,9 @@ module RSpec
           if expectation = find_almost_matching_expectation(message, *args)
             expectation.advise(*args) unless expectation.expected_messages_received?
           end
-          stub.invoke(*args, &block)
+          stub.invoke(nil, *args, &block)
         elsif expectation
-          expectation.invoke(*args, &block)
+          expectation.invoke(stub, *args, &block)
         elsif expectation = find_almost_matching_expectation(message, *args)
           expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
           raise_unexpected_message_args_error(expectation, *args) unless (has_negative_expectation?(message) or null_object?)

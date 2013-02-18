@@ -10,7 +10,7 @@ module RSpec
 
       # @private
       def initialize(error_generator, expectation_ordering, expected_from, method_double,
-                     expected_received_count=1, opts={}, parent_stubs = [], &implementation)
+                     expected_received_count=1, opts={}, &implementation)
         @error_generator = error_generator
         @error_generator.opts = opts
         @expected_from = expected_from
@@ -24,7 +24,6 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @eval_context = nil
-        @parent_stubs = parent_stubs
         @implementation = implementation
         @values_to_return = nil
       end
@@ -165,7 +164,7 @@ module RSpec
       end
 
       # @private
-      def invoke(*args, &block)
+      def invoke(parent_stub, *args, &block)
         if (@expected_received_count == 0 && !@at_least) || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += 1
           @failed_fast = true
@@ -177,16 +176,12 @@ module RSpec
         begin
           if @implementation
             call_implementation(*args, &block)
-          elsif (parent_stub = find_matching_parent_stub(*args))
-            parent_stub.invoke(*args, &block)
+          elsif parent_stub
+            parent_stub.invoke(nil, *args, &block)
           end
         ensure
           @actual_received_count += 1
         end
-      end
-
-      def find_matching_parent_stub(*args)
-        @parent_stubs.find { |stub| stub.matches?(@message, *args) }
       end
 
       # @private

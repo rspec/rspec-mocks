@@ -215,7 +215,7 @@ module RSpec
       def add_expectation(error_generator, expectation_ordering, expected_from, opts, &implementation)
         configure_method
         expectation = MessageExpectation.new(error_generator, expectation_ordering,
-                                             expected_from, self, 1, opts, stubs, &implementation)
+                                             expected_from, self, 1, opts, &implementation)
         expectations << expectation
         expectation
       end
