@@ -23,6 +23,10 @@ Bug fixes
   subclasses (Myron Marston).
 * Fix `and_call_original` so that it works with `Delegator` subclasses
   (Myron Marston).
+* Fix `any_instance.should_not_receive` when `any_instance.should_receive`
+  is used on the same class in the same example. Previously it would
+  wrongly report a failure even when the message was not received
+  (Myron Marston).
 
 ### 2.12.2 / 2013-01-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.1...v.2.12.2)

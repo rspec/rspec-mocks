@@ -311,6 +311,15 @@ module RSpec
             expect { klass.new.existing_method_with_arguments(:argument_three, :argument_four) }.to_not raise_error
           end
         end
+
+        context 'when used in combination with should_receive' do
+          it 'passes if only the expected message is received' do
+            klass.any_instance.should_receive(:foo)
+            klass.any_instance.should_not_receive(:bar)
+            klass.new.foo
+            klass.rspec_verify
+          end
+        end
       end
 
       context "with #should_receive" do

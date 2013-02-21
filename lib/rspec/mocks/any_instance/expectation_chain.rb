@@ -41,6 +41,15 @@ module RSpec
           super(:should_not_receive, *args, &block)
         end
 
+        # `should_not_receive` causes a failure at the point in time the
+        # message is wrongly received, rather than during `rspec_verify`
+        # at the end of an example. Thus, we should always consider a
+        # negative expectation fulfilled for the purposes of end-of-example
+        # verification (which is where this is used).
+        def expectation_fulfilled?
+          true
+        end
+
         private
 
         def invocation_order
