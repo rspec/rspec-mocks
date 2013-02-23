@@ -137,7 +137,7 @@ double.should_receive(:msg).with(*args)
 double.should_not_receive(:msg).with(*args)
 ```
 
-You can set muliple expectations for the same message if you need to:
+You can set multiple expectations for the same message if you need to:
 
 ```ruby
 double.should_receive(:msg).with("A", 1, 3)
