@@ -137,6 +137,13 @@ double.should_receive(:msg).with(*args)
 double.should_not_receive(:msg).with(*args)
 ```
 
+You can set muliple expectations for the same message if you need to:
+
+```ruby
+double.should_receive(:msg).with("A", 1, 3)
+double.should_receive(:msg).with("B", 2, 4)
+```
+
 ## Argument Matchers
 
 Arguments that are passed to `with` are compared with actual arguments
