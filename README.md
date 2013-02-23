@@ -190,6 +190,13 @@ double.should_receive(:other_msg).ordered
   #This will fail if the messages are received out of order
 ```
 
+This can include the same message with different arguments:
+
+```ruby
+double.should_receive(:msg).with("A", 1, 3).ordered
+double.should_receive(:msg).with("B", 2, 4).ordered
+```
+
 ## Setting Responses
 
 Whether you are setting a message expectation or a method stub, you can
