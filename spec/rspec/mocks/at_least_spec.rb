@@ -101,7 +101,7 @@ module RSpec
         before { RSpec::Mocks.stub(:warn_deprecation) }
 
         it "outputs a deprecation warning" do
-          RSpec::Mocks.should_receive(:warn_deprecation)
+          RSpec::Mocks.should_receive(:warn_deprecation).with(/at_least\(0\) is deprecated/)
           @double.should_receive(:do_something).at_least(0).times
         end
 
