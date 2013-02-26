@@ -98,7 +98,11 @@ module RSpec
       end
 
       context "when sent with 0" do
-        before { RSpec::Mocks.should_receive(:warn_deprecation) }
+        before { RSpec::Mocks.stub(:warn_deprecation) }
+        it "outputs a deprecation warning" do
+          RSpec::Mocks.should_receive(:warn_deprecation)
+          @double.should_receive(:do_something).at_least(0).times
+        end
 
         it "passes with at_least(0) with no return if called once" do
           @double.should_receive(:do_something).at_least(0).times
