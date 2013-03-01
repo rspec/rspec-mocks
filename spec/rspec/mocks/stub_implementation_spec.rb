@@ -5,7 +5,7 @@ module RSpec
     describe "stub implementation" do
       describe "with no args" do
         it "execs the block when called" do
-          obj = stub()
+          obj = double()
           obj.stub(:foo) { :bar }
           expect(obj.foo).to eq :bar
         end
@@ -13,7 +13,7 @@ module RSpec
 
       describe "with one arg" do
         it "execs the block with that arg when called" do
-          obj = stub()
+          obj = double()
           obj.stub(:foo) {|given| given}
           expect(obj.foo(:bar)).to eq :bar
         end
@@ -21,7 +21,7 @@ module RSpec
 
       describe "with variable args" do
         it "execs the block when called" do
-          obj = stub()
+          obj = double()
           obj.stub(:foo) {|*given| given.first}
           expect(obj.foo(:bar)).to eq :bar
         end
