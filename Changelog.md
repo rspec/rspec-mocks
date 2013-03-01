@@ -1,3 +1,12 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...master)
+
+Deprecations
+
+* Deprecate `stub` and `mock` as aliases for `double`. `double` is the
+  best term for creating a test double, and it reduces confusion to
+  have only one term (Michi Huber).
+
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.2...v2.13.0)
 
