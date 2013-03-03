@@ -135,7 +135,7 @@ module RSpec
           mp
         end
       end
-      
+
       def __remove_mock_proxy
         @mock_proxy = nil
       end
