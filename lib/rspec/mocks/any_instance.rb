@@ -57,8 +57,9 @@ module RSpec
         if method_defined?(:dup) and !method_defined?(:__rspec_original_dup)
           class_eval do
             def __rspec_dup(*arguments, &block)
-              __remove_mock_proxy
-              __rspec_original_dup(*arguments, &block)
+              clone = __rspec_original_dup(*arguments, &block)
+              clone.send :__reset_mock_proxy
+              clone
             end
 
             alias_method  :__rspec_original_dup, :dup

@@ -139,6 +139,10 @@ module RSpec
       def __remove_mock_proxy
         @mock_proxy = nil
       end
+      def __reset_mock_proxy
+        __remove_mock_proxy
+        __mock_proxy
+      end
 
       def format_chain(*chain, &blk)
         if Hash === chain.last
