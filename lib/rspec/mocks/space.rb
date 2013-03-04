@@ -25,7 +25,7 @@ module RSpec
       end
 
     private
-    
+
       def receivers
         @receivers ||= []
       end

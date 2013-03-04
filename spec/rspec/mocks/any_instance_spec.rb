@@ -108,6 +108,13 @@ module RSpec
             klass.any_instance.stub(:foo).and_return(result = Object.new)
             expect(instance.foo).to eq(result)
           end
+
+          it 'handles freeze and duplication correctly' do
+            String.any_instance.stub(:any_method)
+
+            foo = 'foo'.freeze
+            expect(foo.dup.concat 'bar').to eq 'foobar'
+          end
         end
 
         context "with argument matching" do
