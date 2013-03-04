@@ -58,7 +58,7 @@ module RSpec
           class_eval do
             def __rspec_dup(*arguments, &block)
               clone = __rspec_original_dup(*arguments, &block)
-              clone.send :__reset_mock_proxy
+              clone.send :__remove_mock_proxy
               clone
             end
 
