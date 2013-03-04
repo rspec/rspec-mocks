@@ -6,6 +6,8 @@ Deprecations
 * Deprecate `stub` and `mock` as aliases for `double`. `double` is the
   best term for creating a test double, and it reduces confusion to
   have only one term (Michi Huber).
+* Fix `any_instance` so that a frozen object can be `dup`'d when methods
+  have been stubbed on that type using `any_instance` (Jon Rowe).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.2...v2.13.0)
