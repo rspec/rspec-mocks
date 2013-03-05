@@ -442,9 +442,9 @@ module RSpec
         super(error_generator, expectation_ordering, expected_from, method_double, 0, {}, &implementation)
       end
 
+      # no-op
+      # @deprecated and_return is not supported with negative message expectations.
       def and_return(*)
-        # no-op
-        # @deprecated and_return is not supported with negative message expectations.
         RSpec::Mocks.warn_deprecation <<-MSG
 
 DEPRECATION: `and_return` with `should_not_receive` is deprecated. Called from #{caller(0)[1]}
