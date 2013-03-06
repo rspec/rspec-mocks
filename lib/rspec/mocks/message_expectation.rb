@@ -25,7 +25,9 @@ module RSpec
         @failed_fast = nil
         @eval_context = nil
         @implementation = implementation
-        @values_to_return = nil
+
+        @initial_implementation_logic = nil
+        @terminal_implementation_logic = nil
       end
 
       # @private
@@ -78,8 +80,7 @@ module RSpec
           # TODO: deprecate `and_return { value }`
           @implementation = implementation
         else
-          @values_to_return = values
-          @implementation = build_implementation
+          self.terminal_implementation_logic = AndReturnImplementation.new(values)
         end
       end
 
@@ -154,7 +155,7 @@ module RSpec
       def and_yield(*args, &block)
         yield @eval_context = Object.new.extend(RSpec::Mocks::InstanceExec) if block
         @args_to_yield << args
-        @implementation = build_implementation
+        self.initial_implementation_logic = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
         self
       end
 
@@ -400,7 +401,7 @@ module RSpec
         @actual_received_count += 1
       end
 
-      protected
+    private
 
       def call_implementation(*args, &block)
         if @implementation.arity.zero?
@@ -425,12 +426,20 @@ module RSpec
                                    end
       end
 
-      private
+      def initial_implementation_logic=(logic)
+        @initial_implementation_logic = logic
+        update_implementation
+      end
 
-      def build_implementation
-        Implementation.new(
-          @values_to_return, @args_to_yield,
-          @eval_context, @error_generator
+      def terminal_implementation_logic=(logic)
+        @terminal_implementation_logic = logic
+        update_implementation
+      end
+
+      def update_implementation
+        @implementation = Implementation.new(
+          @initial_implementation_logic,
+          @terminal_implementation_logic
         ).method(:call)
       end
     end
@@ -457,29 +466,16 @@ MSG
       end
     end
 
-    # Represents a configured implementation. Takes into account
-    # `and_return` and `and_yield` instructions.
+    # Handles the implementation of an `and_yield` declaration.
     # @private
-    class Implementation
-      def initialize(values_to_return, args_to_yield, eval_context, error_generator)
-        @values_to_return = values_to_return
+    class AndYieldImplementation
+      def initialize(args_to_yield, eval_context, error_generator)
         @args_to_yield = args_to_yield
         @eval_context = eval_context
         @error_generator = error_generator
       end
 
-      def call(&block)
-        default_return_value = perform_yield(&block)
-        return default_return_value unless @values_to_return
-
-        if @values_to_return.size > 1
-          @values_to_return.shift
-        else
-          @values_to_return.first
-        end
-      end
-
-      def perform_yield(&block)
+      def call(block)
         return if @args_to_yield.empty? && @eval_context.nil?
 
         @error_generator.raise_missing_block_error @args_to_yield unless block
@@ -491,6 +487,35 @@ MSG
           value = @eval_context ? @eval_context.instance_exec(*args, &block) : block.call(*args)
         end
         value
+      end
+    end
+
+    # Handles the implementation of an `and_return` implementation.
+    # @private
+    class AndReturnImplementation
+      def initialize(values_to_return)
+        @values_to_return = values_to_return
+      end
+
+      def call(block)
+        if @values_to_return.size > 1
+          @values_to_return.shift
+        else
+          @values_to_return.first
+        end
+      end
+    end
+
+    # Represents a configured implementation. Takes into account
+    # any number of sub-implementations.
+    # @private
+    class Implementation
+      def initialize(*implementations)
+        @implementations = implementations.compact
+      end
+
+      def call(&block)
+        @implementations.map { |i| i.call(block) }.last
       end
     end
   end
