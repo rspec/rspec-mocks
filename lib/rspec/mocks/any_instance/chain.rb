@@ -35,6 +35,7 @@ module RSpec
         record :never
         record :at_least
         record :at_most
+        record :using_self
 
         # @private
         def playback!(instance)
