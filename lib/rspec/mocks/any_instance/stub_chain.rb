@@ -19,6 +19,7 @@ module RSpec
         def invocation_order
           @invocation_order ||= {
             :stub => [nil],
+            :using_self => [:stub],
             :with => [:stub],
             :and_return => [:with, :stub],
             :and_raise => [:with, :stub],

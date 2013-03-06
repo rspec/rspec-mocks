@@ -385,6 +385,17 @@ module RSpec
         self
       end
 
+      def using_self(&block)
+        @in_self_context = true
+
+        definition = block ? block : @implementation
+        context = @method_double.object
+
+        if definition
+          @implementation = proc_to_method(definition.to_proc, context)
+        end
+      end
+
       # @private
       def negative_expectation_for?(message)
         return false
@@ -403,10 +414,18 @@ module RSpec
       protected
 
       def call_implementation(*args, &block)
-        if @implementation.arity.zero?
-          @implementation.call(&block)
+        if @in_self_context
+          if @implementation.arity.zero?
+            @implementation.bind(@method_double.object).call(&block)
+          else
+            @implementation.bind(@method_double.object).call(*args, &block)
+          end
         else
-          @implementation.call(*args, &block)
+          if @implementation.arity.zero?
+            @implementation.call(&block)
+          else
+            @implementation.call(*args, &block)
+          end
         end
       end
 
@@ -423,6 +442,17 @@ module RSpec
                                    when :once   then 1
                                    when :twice  then 2
                                    end
+      end
+
+      def proc_to_method(procedure, object)
+        block, time = procedure, Time.now
+        (class << object; self end).class_eval do
+          method_name = "__bind_#{time.to_i}_#{time.usec}"
+          define_method(method_name, &block)
+          method = instance_method(method_name)
+          remove_method(method_name)
+          method
+        end
       end
 
       private
