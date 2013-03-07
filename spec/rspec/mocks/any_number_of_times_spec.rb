@@ -3,6 +3,12 @@ require 'spec_helper'
 describe "AnyNumberOfTimes" do
   before(:each) do
     @mock = RSpec::Mocks::Mock.new("test mock")
+    RSpec::Mocks.stub(:warn_deprecation)
+  end
+
+  it "outputs a deprecation warning" do
+    RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: `#any_number_of_times` is deprecated/)
+    @mock.should_receive(:random_call).any_number_of_times
   end
 
   it "passes if any number of times method is called many times" do
