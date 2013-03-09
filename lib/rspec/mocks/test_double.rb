@@ -12,15 +12,15 @@ module RSpec
       #   module = Module.new
       #   RSpec::Mocks::TestDouble.extend_onto(module, "MyMixin", :foo => "bar")
       #   module.foo  #=> "bar"
-      def self.extend_onto(object, name=nil, stubs_and_options={})
+      def self.extend_onto(object, name=nil, stubs={})
         object.extend self
-        object.send(:__initialize_as_test_double, name, stubs_and_options)
+        object.send(:__initialize_as_test_double, name, stubs)
       end
 
       # Creates a new test double with a `name` (that will be used in error
       # messages only)
-      def initialize(name=nil, stubs_and_options={})
-        __initialize_as_test_double(name, stubs_and_options)
+      def initialize(name=nil, stubs={})
+        __initialize_as_test_double(name, stubs)
       end
 
       # Tells the object to respond to all messages. If specific stub values
@@ -62,20 +62,19 @@ module RSpec
 
       # @private
       def __build_mock_proxy
-        Proxy.new(self, @name, @options || {})
+        Proxy.new(self, @name)
       end
 
     private
 
-      def __initialize_as_test_double(name=nil, stubs_and_options={})
-        if name.is_a?(Hash) && stubs_and_options.empty?
-          stubs_and_options = name
+      def __initialize_as_test_double(name=nil, stubs={})
+        if name.is_a?(Hash) && stubs.empty?
+          stubs = name
           @name = nil
         else
           @name = name
         end
-        @options = extract_options(stubs_and_options)
-        assign_stubs(stubs_and_options)
+        assign_stubs(stubs)
       end
 
       def method_missing(message, *args, &block)
@@ -96,31 +95,11 @@ module RSpec
         end
       end
 
-      def extract_options(stubs_and_options)
-        if stubs_and_options[:null_object]
-          @null_object = stubs_and_options.delete(:null_object)
-          RSpec.deprecate("double('name', :null_object => true)", :replacement => "double('name').as_null_object")
-        end
-        options = {}
-        extract_option(stubs_and_options, options, :__declared_as, 'Mock')
-        options
-      end
-
-      def extract_option(source, target, key, default=nil)
-        if source[key]
-          target[key] = source.delete(key)
-        elsif default
-          target[key] = default
-        end
-      end
-
       def assign_stubs(stubs)
         stubs.each_pair do |message, response|
           Mocks.allow_message(self, message).and_return(response)
         end
       end
-
-    private
 
       def __mock_proxy
         ::RSpec::Mocks.proxy_for(self)

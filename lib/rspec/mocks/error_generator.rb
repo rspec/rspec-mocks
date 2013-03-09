@@ -4,8 +4,7 @@ module RSpec
     class ErrorGenerator
       attr_writer :opts
 
-      def initialize(target, name, options={})
-        @declared_as = options[:__declared_as] || 'Mock'
+      def initialize(target, name)
         @target = target
         @name = name
       end
@@ -127,9 +126,9 @@ module RSpec
 
       def intro
         if @name
-          "#{@declared_as} #{@name.inspect}"
+          "Double #{@name.inspect}"
         elsif TestDouble === @target
-          @declared_as
+          "Double"
         elsif Class === @target
           "<#{@target.inspect} (class)>"
         elsif @target

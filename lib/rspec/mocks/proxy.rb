@@ -7,7 +7,7 @@ module RSpec
       def initialize(object, name=nil, options={})
         @object = object
         @name = name
-        @error_generator = ErrorGenerator.new object, name, options
+        @error_generator = ErrorGenerator.new(object, name)
         @expectation_ordering = RSpec::Mocks::space.expectation_ordering
         @messages_received = []
         @options = options
