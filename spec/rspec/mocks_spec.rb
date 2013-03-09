@@ -56,4 +56,17 @@ describe RSpec::Mocks do
     end
   end
 
+  describe "ArgumentMatchers not overriding let definitions" do
+    WithMatchers = Class.new { include RSpec::Mocks::ArgumentMatchers }
+    methods = WithMatchers.new.methods - Object.new.methods
+
+    methods.each do |method|
+      let(method) { :a_thing }
+
+      it "doesn't override a let named #{ method }" do
+        expect(send(method)).to be(:a_thing)
+      end
+    end
+  end
 end
+
