@@ -25,22 +25,9 @@ module RSpec
       #   card.suit  #=> "Spades"
       #   card.rank  #=> "A"
       #
-      # @see #mock
-      # @see #stub
       def double(*args)
-        declare_double('Double', *args)
-      end
-
-      # Deprecated: Use [double](#double-instance_method).
-      def mock(*args)
-        RSpec.deprecate "mock", :replacement => "double"
-        declare_double('Mock', *args)
-      end
-
-      # Deprecated: Use [double](#double-instance_method).
-      def stub(*args)
-        RSpec.deprecate "stub", :replacement => "double"
-        declare_double('Stub', *args)
+        args << {} unless Hash === args.last
+        RSpec::Mocks::Mock.new(*args)
       end
 
       # Disables warning messages about expectations being set on nil.
@@ -140,13 +127,6 @@ module RSpec
       end
 
     private
-
-      def declare_double(declared_as, *args)
-        args << {} unless Hash === args.last
-        args.last[:__declared_as] = declared_as
-        RSpec::Mocks::Mock.new(*args)
-      end
-
       # This module exists to host the `expect` method for cases where
       # rspec-mocks is used w/o rspec-expectations.
       module ExpectHost

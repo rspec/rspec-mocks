@@ -28,7 +28,7 @@ module RSpec
 
       it 'sets the test double name when a name is passed' do
         double = Module.new { TestDouble.extend_onto(self, "MyDouble") }
-        expect { double.foo }.to raise_error(/Mock "MyDouble" received/)
+        expect { double.foo }.to raise_error(/Double "MyDouble" received/)
       end
 
       [[:should, :expect], [:expect], [:should]].each do |syntax|
@@ -43,23 +43,6 @@ module RSpec
             expect(double.b).to eq(10)
           end
         end
-      end
-
-      it 'indicates what type of test double it is in error messages' do
-        double = Module.new do
-          TestDouble.extend_onto(self, "A", :__declared_as => "ModuleMock")
-        end
-        expect { double.foo }.to raise_error(/ModuleMock "A"/)
-      end
-
-      it 'is declared as a mock by default' do
-        double = Module.new { TestDouble.extend_onto(self) }
-        expect { double.foo }.to raise_error(/Mock received/)
-      end
-
-      it 'warns of deprecation of :null_object => true' do
-        expect(RSpec).to receive(:deprecate)
-        Class.new { TestDouble.extend_onto self, 'name', :null_object => true }
       end
     end
   end

@@ -2,6 +2,7 @@
 
 Breaking Changes for 3.0.0:
 
+* Removed `double`-aliases `stub` and `mock`. (Michi Huber)
 * Raise an explicit error if `should_not_receive(...).and_return` is used. (Sam
   Phippen)
 * Remove 1.8.6 workarounds (Jon Rowe)
