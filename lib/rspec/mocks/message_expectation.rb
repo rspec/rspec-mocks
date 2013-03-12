@@ -10,7 +10,7 @@ module RSpec
 
       # @private
       def initialize(error_generator, expectation_ordering, expected_from, method_double,
-                     expected_received_count=1, opts={}, &implementation)
+                     expected_received_count=1, opts={}, &implementation_block)
         @error_generator = error_generator
         @error_generator.opts = opts
         @expected_from = expected_from
@@ -24,10 +24,9 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @eval_context = nil
-        @implementation = implementation
 
-        @initial_implementation_logic = nil
-        @terminal_implementation_logic = nil
+        @implementation = Implementation.new
+        self.inner_implementation_action = implementation_block
       end
 
       # @private
@@ -78,10 +77,12 @@ module RSpec
 
         if implementation
           # TODO: deprecate `and_return { value }`
-          @implementation = implementation
+          self.inner_implementation_action = implementation
         else
-          self.terminal_implementation_logic = AndReturnImplementation.new(values)
+          self.terminal_implementation_action = AndReturnImplementation.new(values)
         end
+
+        nil
       end
 
       # Tells the object to delegate to the original unmodified method
@@ -99,7 +100,7 @@ module RSpec
         if @method_double.object.is_a?(RSpec::Mocks::TestDouble)
           @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
         else
-          @implementation = @method_double.original_method
+          @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
         end
       end
 
@@ -129,7 +130,8 @@ module RSpec
           exception = message ? exception.exception(message) : exception.exception
         end
 
-        @implementation = Proc.new { raise exception }
+        self.terminal_implementation_action = Proc.new { raise exception }
+        nil
       end
 
       # @overload and_throw(symbol)
@@ -143,7 +145,8 @@ module RSpec
       #   car.stub(:go).and_throw(:out_of_gas)
       #   car.stub(:go).and_throw(:out_of_gas, :level => 0.1)
       def and_throw(*args)
-        @implementation = Proc.new { throw *args }
+        self.terminal_implementation_action = Proc.new { throw *args }
+        nil
       end
 
       # Tells the object to yield one or more args to a block when the message
@@ -155,7 +158,7 @@ module RSpec
       def and_yield(*args, &block)
         yield @eval_context = Object.new.extend(RSpec::Mocks::InstanceExec) if block
         @args_to_yield << args
-        self.initial_implementation_logic = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
+        self.initial_implementation_action = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
         self
       end
 
@@ -175,8 +178,8 @@ module RSpec
         @order_group.handle_order_constraint self
 
         begin
-          if @implementation
-            call_implementation(*args, &block)
+          if implementation.present?
+            implementation.call(*args, &block)
           elsif parent_stub
             parent_stub.invoke(nil, *args, &block)
           end
@@ -279,7 +282,7 @@ module RSpec
       #   cart.add(Book.new(:isbn => 1934356379))
       #   # => passes
       def with(*args, &block)
-        @implementation = block if block_given? unless args.empty?
+        self.inner_implementation_action = block if block_given? unless args.empty?
         @argument_list_matcher = ArgumentListMatcher.new(*args, &block)
         self
       end
@@ -291,7 +294,7 @@ module RSpec
       #
       #   dealer.should_receive(:deal_card).exactly(10).times
       def exactly(n, &block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         set_expected_received_count :exactly, n
         self
       end
@@ -303,7 +306,7 @@ module RSpec
       #
       #   dealer.should_receive(:deal_card).at_least(9).times
       def at_least(n, &block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         set_expected_received_count :at_least, n
         self
       end
@@ -315,7 +318,7 @@ module RSpec
       #
       #   dealer.should_receive(:deal_card).at_most(10).times
       def at_most(n, &block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         set_expected_received_count :at_most, n
         self
       end
@@ -328,14 +331,14 @@ module RSpec
       #   dealer.should_receive(:deal_card).at_least(10).times
       #   dealer.should_receive(:deal_card).at_most(10).times
       def times(&block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         self
       end
 
 
       # Allows an expected message to be received any number of times.
       def any_number_of_times(&block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         @expected_received_count = :any
         self
       end
@@ -356,7 +359,7 @@ module RSpec
       #
       #   car.should_receive(:go).once
       def once(&block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         set_expected_received_count :exactly, 1
         self
       end
@@ -367,7 +370,7 @@ module RSpec
       #
       #   car.should_receive(:go).twice
       def twice(&block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         set_expected_received_count :exactly, 2
         self
       end
@@ -380,7 +383,7 @@ module RSpec
       #   api.should_receive(:run).ordered
       #   api.should_receive(:finish).ordered
       def ordered(&block)
-        @implementation = block if block
+        self.inner_implementation_action = block
         @order_group.register(self)
         @ordered = true
         self
@@ -403,14 +406,6 @@ module RSpec
 
     private
 
-      def call_implementation(*args, &block)
-        if @implementation.arity.zero?
-          @implementation.call(&block)
-        else
-          @implementation.call(*args, &block)
-        end
-      end
-
       def failed_fast?
         @failed_fast
       end
@@ -426,21 +421,16 @@ module RSpec
                                    end
       end
 
-      def initial_implementation_logic=(logic)
-        @initial_implementation_logic = logic
-        update_implementation
+      def initial_implementation_action=(action)
+        implementation.initial_action = action
       end
 
-      def terminal_implementation_logic=(logic)
-        @terminal_implementation_logic = logic
-        update_implementation
+      def inner_implementation_action=(action)
+        implementation.inner_action = action if action
       end
 
-      def update_implementation
-        @implementation = Implementation.new(
-          @initial_implementation_logic,
-          @terminal_implementation_logic
-        ).method(:call)
+      def terminal_implementation_action=(action)
+        implementation.terminal_action = action
       end
     end
 
@@ -475,7 +465,11 @@ MSG
         @error_generator = error_generator
       end
 
-      def call(block)
+      def arity
+        0
+      end
+
+      def call(&block)
         return if @args_to_yield.empty? && @eval_context.nil?
 
         @error_generator.raise_missing_block_error @args_to_yield unless block
@@ -497,7 +491,11 @@ MSG
         @values_to_return = values_to_return
       end
 
-      def call(block)
+      def arity
+        0
+      end
+
+      def call(&block)
         if @values_to_return.size > 1
           @values_to_return.shift
         else
@@ -510,12 +508,59 @@ MSG
     # any number of sub-implementations.
     # @private
     class Implementation
-      def initialize(*implementations)
-        @implementations = implementations.compact
+      attr_accessor :initial_action, :inner_action, :terminal_action
+
+      def call(*args, &block)
+        actions.map do |action|
+          action.arity.zero? ? action.call(&block) : action.call(*args, &block)
+        end.last
       end
 
-      def call(&block)
-        @implementations.map { |i| i.call(block) }.last
+      def present?
+        actions.any?
+      end
+
+    private
+
+      def actions
+        [initial_action, inner_action, terminal_action].compact
+      end
+    end
+
+    # Represents an `and_call_original` implementation.
+    # @private
+    class AndCallOriginalImplementation
+      def initialize(method)
+        @method = method
+      end
+
+      CannotModifyFurtherError = Class.new(StandardError)
+
+      def initial_action=(value)
+        raise cannot_modify_further_error
+      end
+
+      def inner_action=(value)
+        raise cannot_modify_further_error
+      end
+
+      def terminal_action=(value)
+        raise cannot_modify_further_error
+      end
+
+      def present?
+        true
+      end
+
+      def call(*args, &block)
+        @method.call(*args, &block)
+      end
+
+    private
+
+      def cannot_modify_further_error
+        CannotModifyFurtherError.new "This method has already been configured " +
+          "to call the original implementation, and cannot be modified further."
       end
     end
   end

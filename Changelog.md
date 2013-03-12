@@ -5,6 +5,8 @@ Bug fixes
 
 * Fix `any_instance` so that a frozen object can be `dup`'d when methods
   have been stubbed on that type using `any_instance` (Jon Rowe).
+* Allow a block implementation to be used in combination with
+  `and_yield`, `and_raise`, `and_return` or `and_throw` (Myron Marston).
 
 Deprecations
 
