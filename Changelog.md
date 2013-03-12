@@ -1,3 +1,11 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...master)
+
+Bug fixes
+
+* Allow a block implementation to be used in combination with
+  `and_yield`, `and_raise`, `and_return` or `and_throw` (Myron Marston).
+
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.2...v2.13.0)
 
