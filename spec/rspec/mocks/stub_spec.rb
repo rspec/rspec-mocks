@@ -29,13 +29,37 @@ module RSpec
         @stub = Object.new
       end
 
-      [:stub!, :stub].each do |method|
-        describe "using #{method}" do
-          it "returns declared value when message is received" do
-            @instance.send(method, :msg).and_return(:return_value)
-            expect(@instance.msg).to equal(:return_value)
-            @instance.rspec_verify
-          end
+      describe "using stub" do
+        it "returns declared value when message is received" do
+          @instance.stub(:msg).and_return(:return_value)
+          expect(@instance.msg).to equal(:return_value)
+          @instance.rspec_verify
+        end
+      end
+
+      describe "using stub!" do
+        it "warns of deprecation if #stub! is used but still returns the declared value when message is received" do
+          RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #stub instead of #stub!/)
+          @instance.stub!(:msg).and_return(:return_value)
+          expect(@instance.msg).to equal(:return_value)
+          @instance.rspec_verify
+        end
+      end
+
+      describe 'using unstub' do
+        it 'removes the message stub' do
+          @instance.stub(:msg)
+          @instance.unstub(:msg)
+          expect { @instance.msg }.to raise_error NoMethodError
+        end
+      end
+
+      describe 'using unstub!' do
+        it 'removes the message stub but warns about deprecation' do
+          @instance.stub(:msg)
+          RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #unstub instead of #unstub!/)
+          @instance.unstub!(:msg)
+          expect { @instance.msg }.to raise_error NoMethodError
         end
       end
 
