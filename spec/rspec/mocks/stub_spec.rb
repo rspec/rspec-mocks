@@ -29,15 +29,23 @@ module RSpec
         @stub = Object.new
       end
 
-      [:stub!, :stub].each do |method|
-        describe "using #{method}" do
-          it "returns declared value when message is received" do
-            @instance.send(method, :msg).and_return(:return_value)
-            expect(@instance.msg).to equal(:return_value)
-            @instance.rspec_verify
-          end
+      describe "using stub" do
+        it "returns declared value when message is received" do
+          @instance.stub(:msg).and_return(:return_value)
+          expect(@instance.msg).to equal(:return_value)
+          @instance.rspec_verify
         end
       end
+
+      describe "using stub!" do
+        it "warns of deprecation if #stub! is used but still returns the declared value when message is received" do
+          RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #stub instead of #stub!/)
+          @instance.stub!(:msg).and_return(:return_value)
+          expect(@instance.msg).to equal(:return_value)
+          @instance.rspec_verify
+        end
+      end
+
 
       it "instructs an instance to respond_to the message" do
         @instance.stub(:msg)

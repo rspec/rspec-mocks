@@ -47,7 +47,11 @@ module RSpec
         __mock_proxy.remove_stub(message)
       end
 
-      alias_method :stub!, :stub
+      def stub!(message_or_hash, opts={}, &block)
+        RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #stub instead of #stub!.  #{caller(0)[1]}\n"
+        stub(message_or_hash, opts={}, &block)
+      end
+
       alias_method :unstub!, :unstub
 
       # @overload stub_chain(method1, method2)
