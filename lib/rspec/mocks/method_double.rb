@@ -221,6 +221,12 @@ module RSpec
       end
 
       # @private
+      def build_expectation(error_generator, expectation_ordering)
+        expected_from = caller(1)[0]
+        MessageExpectation.new(error_generator, expectation_ordering, expected_from, self)
+      end
+
+      # @private
       def add_stub(error_generator, expectation_ordering, expected_from, opts={}, &implementation)
         configure_method
         stub = MessageExpectation.new(error_generator, expectation_ordering, expected_from,

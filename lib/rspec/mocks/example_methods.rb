@@ -109,6 +109,20 @@ module RSpec
         ConstantMutator.hide(constant_name)
       end
 
+      # Spy on the given double after expected invocations have occurred.
+      #
+      # @param method_name [Symbol] name of the method expected to have been
+      #   called.
+      #
+      # @example
+      #
+      #   invitation = double('invitation', accept: true)
+      #   user.accept_invitation(invitation)
+      #   expect(invitation).to have_received(:accept)
+      def have_received(method_name)
+        HaveReceived.new(method_name)
+      end
+
     private
 
       def declare_double(declared_as, *args)
