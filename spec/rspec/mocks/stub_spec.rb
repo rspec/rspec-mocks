@@ -46,6 +46,22 @@ module RSpec
         end
       end
 
+      describe 'using unstub' do
+        it 'removes the message stub' do
+          @instance.stub(:msg)
+          @instance.unstub(:msg)
+          expect { @instance.msg }.to raise_error NoMethodError
+        end
+      end
+
+      describe 'using unstub!' do
+        it 'removes the message stub but warns about deprecation' do
+          @instance.stub(:msg)
+          RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #unstub instead of #unstub!/)
+          @instance.unstub!(:msg)
+          expect { @instance.msg }.to raise_error NoMethodError
+        end
+      end
 
       it "instructs an instance to respond_to the message" do
         @instance.stub(:msg)

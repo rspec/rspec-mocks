@@ -52,7 +52,10 @@ module RSpec
         stub(message_or_hash, opts={}, &block)
       end
 
-      alias_method :unstub!, :unstub
+      def unstub!(message)
+        RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #unstub instead of #unstub!.  #{caller(0)[1]}\n"
+        unstub(message)
+      end
 
       # @overload stub_chain(method1, method2)
       # @overload stub_chain("method1.method2")
