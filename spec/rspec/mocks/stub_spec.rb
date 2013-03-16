@@ -38,7 +38,7 @@ module RSpec
       end
 
       describe "using stub!" do
-        it "warns of deprecation if #stub! is used but still returns the declared value when message is received" do
+        it "warns of deprecation but still returns the declared value when message is received" do
           RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #stub instead of #stub!/)
           @instance.stub!(:msg).and_return(:return_value)
           expect(@instance.msg).to equal(:return_value)
