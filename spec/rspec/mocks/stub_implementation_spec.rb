@@ -26,6 +26,15 @@ module RSpec
           expect(obj.foo(:bar)).to eq :bar
         end
       end
+
+      it 'works with proxies that erroneously copied from other objects' do
+        obj1 = Object.new
+        obj1.stub(:foo).and_return('foo')
+        obj2 = Object.new
+        obj2.instance_variable_set('@mock_proxy', obj1.instance_variable_get('@mock_proxy'))
+        obj2.stub(:bar).and_return('bar')
+        expect(obj2.bar).to eq('bar')
+      end
     end
 
 
