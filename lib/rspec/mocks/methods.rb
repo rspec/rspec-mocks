@@ -12,13 +12,15 @@ module RSpec
       #     logger.should_receive(:log)
       #     thing_that_logs.do_something_that_logs_a_message
       def should_receive(message, opts={}, &block)
-        __mock_proxy.add_message_expectation(opts[:expected_from] || caller(1)[0], message.to_sym, opts, &block)
+        mock_proxy = ::RSpec::Mocks.space.mock_proxy_for(self)
+        mock_proxy.add_message_expectation(opts[:expected_from] || caller(1)[0], message.to_sym, opts, &block)
       end
 
       # Sets and expectation that this object should _not_ receive a message
       # during this example.
       def should_not_receive(message, &block)
-        __mock_proxy.add_negative_message_expectation(caller(1)[0], message.to_sym, &block)
+        mock_proxy = ::RSpec::Mocks.space.mock_proxy_for(self)
+        mock_proxy.add_negative_message_expectation(caller(1)[0], message.to_sym, &block)
       end
 
       # Tells the object to respond to the message with the specified value.
@@ -32,7 +34,7 @@ module RSpec
         if Hash === message_or_hash
           message_or_hash.each {|message, value| stub(message).and_return value }
         else
-          __mock_proxy.add_stub(caller(1)[0], message_or_hash.to_sym, opts, &block)
+          ::RSpec::Mocks.space.mock_proxy_for(self).add_stub(caller(1)[0], message_or_hash.to_sym, opts, &block)
         end
       end
 
@@ -44,7 +46,7 @@ module RSpec
       # shared `before` hook for the common case, but you want to replace it
       # for a special case.
       def unstub(message)
-        __mock_proxy.remove_stub(message)
+        ::RSpec::Mocks.space.mock_proxy_for(self).remove_stub(message)
       end
 
       def stub!(message_or_hash, opts={}, &block)
@@ -93,7 +95,7 @@ module RSpec
       # returned.
       def as_null_object
         @_null_object = true
-        __mock_proxy.as_null_object
+        ::RSpec::Mocks.space.mock_proxy_for(self).as_null_object
       end
 
       # Returns true if this object has received `as_null_object`
@@ -103,37 +105,9 @@ module RSpec
 
       # @private
       def received_message?(message, *args, &block)
-        __mock_proxy.received_message?(message, *args, &block)
-      end
-
-      # @private
-      def rspec_verify
-        __mock_proxy.verify
-      end
-
-      # @private
-      def rspec_reset
-        __mock_proxy.reset
-      end
-
-    private
-
-      def __mock_proxy
-        @mock_proxy ||= begin
-          mp = if TestDouble === self
-            Proxy.new(self, @name, @options)
-          else
-            Proxy.new(self)
-          end
-
-          Serialization.fix_for(self)
-          mp
-        end
-      end
-
-      def __remove_mock_proxy
-        @mock_proxy = nil
+        ::RSpec::Mocks.space.mock_proxy_for(self).received_message?(message, *args, &block)
       end
     end
   end
 end
+

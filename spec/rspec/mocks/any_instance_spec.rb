@@ -324,7 +324,7 @@ module RSpec
             klass.any_instance.should_receive(:foo)
             klass.any_instance.should_not_receive(:bar)
             klass.new.foo
-            verify klass
+            RSpec::Mocks.space.verify_all
           end
         end
       end
@@ -343,14 +343,14 @@ module RSpec
             expect do
               klass.any_instance.should_receive(:foo)
               klass.new
-              verify klass
+              RSpec::Mocks.space.verify_all
             end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
           end
 
           it "fails if no instance is created" do
             expect do
               klass.any_instance.should_receive(:foo).and_return(1)
-              verify klass
+              RSpec::Mocks.space.verify_all
             end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
           end
 
@@ -358,7 +358,7 @@ module RSpec
             expect do
               klass.any_instance.should_receive(:foo)
               klass.any_instance.should_receive(:bar)
-              verify klass
+              RSpec::Mocks.space.verify_all
             end.to raise_error(RSpec::Mocks::MockExpectationError, 'Exactly one instance should have received the following message(s) but didn\'t: bar, foo')
           end
 
@@ -396,7 +396,7 @@ module RSpec
                 klass.any_instance.should_receive(:foo)
                 klass.should_receive(:woot)
                 klass.new.foo
-                verify klass
+                RSpec::Mocks.space.verify_all
               end.to(raise_error(RSpec::Mocks::MockExpectationError) do |error|
                 expect(error.message).not_to eq(existing_method_expectation_error_message)
               end)
@@ -422,14 +422,14 @@ module RSpec
             expect do
               klass.any_instance.should_receive(:existing_method)
               klass.new
-              verify klass
+              RSpec::Mocks.space.verify_all
             end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
           end
 
           it "fails if no instance is created" do
             expect do
               klass.any_instance.should_receive(:existing_method)
-              verify klass
+              RSpec::Mocks.space.verify_all
             end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
           end
 
@@ -437,7 +437,7 @@ module RSpec
             expect do
               klass.any_instance.should_receive(:existing_method)
               klass.any_instance.should_receive(:another_existing_method)
-              verify klass
+              RSpec::Mocks.space.verify_all
             end.to raise_error(RSpec::Mocks::MockExpectationError, 'Exactly one instance should have received the following message(s) but didn\'t: another_existing_method, existing_method')
           end
 
@@ -531,7 +531,7 @@ module RSpec
             it "fails when no instances are declared" do
               expect do
                 klass.any_instance.should_receive(:foo).once
-                verify klass
+                RSpec::Mocks.space.verify_all
               end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
             end
 
@@ -539,7 +539,7 @@ module RSpec
               expect do
                 klass.any_instance.should_receive(:foo).once
                 klass.new
-                verify klass
+                RSpec::Mocks.space.verify_all
               end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
             end
 
@@ -645,7 +645,7 @@ module RSpec
           context "the 'never' constraint" do
             it "passes for 0 invocations" do
               klass.any_instance.should_receive(:foo).never
-              verify klass
+              RSpec::Mocks.space.verify_all
             end
 
             it "fails on the first invocation" do
@@ -666,7 +666,7 @@ module RSpec
                 expect do
                   klass.any_instance.should_receive(:foo).never
                   klass.any_instance.should_receive(:existing_method).and_return(5)
-                  verify klass
+                  RSpec::Mocks.space.verify_all
                 end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
               end
             end
@@ -702,7 +702,7 @@ module RSpec
                 expect do
                   klass.any_instance.should_receive(:foo).any_number_of_times
                   klass.any_instance.should_receive(:existing_method).and_return(5)
-                  verify klass
+                  RSpec::Mocks.space.verify_all
                 end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
               end
             end
@@ -715,7 +715,7 @@ module RSpec
 
         context "existing method" do
           before(:each) do
-            space.add(klass)
+            klass.any_instance # to force it to be tracked
           end
 
           context "with stubbing" do
@@ -836,7 +836,7 @@ module RSpec
             klass.any_instance.stub(:existing_method).and_return(false)
             klass.any_instance.stub(:existing_method).and_return(true)
 
-            verify klass
+            RSpec::Mocks.space.verify_all
             expect(klass.new).to respond_to(:existing_method)
             expect(klass.new.existing_method).to eq(existing_method_return_value)
           end
@@ -844,14 +844,14 @@ module RSpec
 
         it "adds an class to the current space when #any_instance is invoked" do
           klass.any_instance
-          expect(RSpec::Mocks::space.send(:receivers)).to include(klass)
+          expect(AnyInstance.tracked_klasses).to include(klass)
         end
 
         it "adds an instance to the current space when stubbed method is invoked" do
           klass.any_instance.stub(:foo)
           instance = klass.new
           instance.foo
-          expect(RSpec::Mocks::space.send(:receivers)).to include(instance)
+          expect(RSpec::Mocks.space.mock_proxies.keys).to include(instance.object_id)
         end
       end
 

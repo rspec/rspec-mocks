@@ -345,27 +345,13 @@ module RSpec
       def self.mutate(mutator)
         register_mutator(mutator)
         mutator.mutate
-        ensure_registered_with_mocks_space
-      end
-
-      # Ensures the constant stubbing is registered with
-      # rspec-mocks space so that stubbed constants can
-      # be restored when examples finish.
-      #
-      # @api private
-      def self.ensure_registered_with_mocks_space
-        return if defined?(@registered_with_mocks_space) && @registered_with_mocks_space
-        ::RSpec::Mocks.space.add(self)
-        @registered_with_mocks_space = true
       end
 
       # Resets all stubbed constants. This is called automatically
       # by rspec-mocks when an example finishes.
       #
       # @api private
-      def self.rspec_reset
-        @registered_with_mocks_space = false
-
+      def self.reset_all
         # We use reverse order so that if the same constant
         # was stubbed multiple times, the original value gets
         # properly restored.

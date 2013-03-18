@@ -12,11 +12,11 @@ end
 
 module VerifyAndResetHelpers
   def verify(object)
-    object.rspec_verify
+    RSpec::Mocks.space.mock_proxy_for(object).verify
   end
 
   def reset(object)
-    object.rspec_reset
+    RSpec::Mocks.space.mock_proxy_for(object).reset
   end
 end
 
