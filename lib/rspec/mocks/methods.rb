@@ -136,7 +136,7 @@ module RSpec
         end
         proxy_for_obj_id = @mock_proxy.instance_eval{ @object.object_id }
         if proxy_for_obj_id != self.object_id
-          @mock_proxy = nil
+          __remove_mock_proxy
           __mock_proxy
         end
         @mock_proxy
