@@ -30,7 +30,7 @@ You can also use the block format:
     obj.stub(:message) { throw :this_symbol }
 
 ### Argument constraints
-   
+
 #### Explicit arguments
 
     obj.stub(:message).with('an argument') { ... }

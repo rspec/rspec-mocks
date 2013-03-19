@@ -1,9 +1,9 @@
 Feature: stub with argument constraints
 
   You can further specify the behavior by constraining the type,
-  format and/or number of arguments with the `#with()` method 
+  format and/or number of arguments with the `#with()` method
   chained off of `#stub()`
-  
+
   Scenario: an_instance_of argument matcher
     Given a file named "stub_an_instance_of_args_spec.rb" with:
       """ruby
@@ -24,4 +24,3 @@ Feature: stub with argument constraints
       """
     When I run `rspec stub_an_instance_of_args_spec.rb`
     Then the output should contain "1 example, 0 failures"
-
