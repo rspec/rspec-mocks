@@ -3,7 +3,7 @@ module RSpec
     # @private
     class MockExpectationError < Exception
     end
-    
+
     # @private
     class AmbiguousReturnError < StandardError
     end

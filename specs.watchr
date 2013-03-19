@@ -12,7 +12,7 @@ end
 def run_test_matching(thing_to_match)
   matches = all_test_files.grep(/#{thing_to_match}/i)
   if matches.empty?
-    puts "Sorry, thanks for playing, but there were no matches for #{thing_to_match}"  
+    puts "Sorry, thanks for playing, but there were no matches for #{thing_to_match}"
   else
     run matches.join(' ')
   end
@@ -43,7 +43,7 @@ def no_int_for_you
 end
 
 Signal.trap 'INT' do
-  if @sent_an_int then      
+  if @sent_an_int then
     puts "   A second INT?  Ok, I get the message.  Shutting down now."
     exit
   else

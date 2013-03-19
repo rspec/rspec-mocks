@@ -15,10 +15,10 @@ Feature: configure any test framework to use rspec-mocks
       should_receive
       should_not_receive
       stub
-      
+
   In order to give control to the consuming framework, none of these facilities
   are added until RSpec::Mocks::setup(self) is called. Simply requiring
-  'rspec/mocks' is not sufficient. 
+  'rspec/mocks' is not sufficient.
 
   NOTICE: the stub() method that is added to the object passed to setup is not
   the same stub() method that is added to every other object.

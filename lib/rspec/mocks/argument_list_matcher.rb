@@ -30,7 +30,7 @@ module RSpec
 
       # @api public
       # @param [Array] *expected_args a list of expected literals and/or argument matchers
-      # @param [Block] block a block with arity matching the expected 
+      # @param [Block] block a block with arity matching the expected
       #
       # Initializes an `ArgumentListMatcher` with a collection of literal
       # values and/or argument matchers, or a block that handles the evaluation

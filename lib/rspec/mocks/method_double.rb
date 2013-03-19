@@ -255,7 +255,7 @@ module RSpec
 
       # @private
       def raise_method_not_stubbed_error
-        raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed" 
+        raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
       end
 
       # @private

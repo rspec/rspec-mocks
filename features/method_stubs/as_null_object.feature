@@ -6,7 +6,7 @@ Feature: as_null_object
   EXCEPTION: `to_ary` will raise a NoMethodError unless explicitly stubbed in
   order to support `flatten` on an Array containing a double.
 
-  Scenario: double acting as_null_object 
+  Scenario: double acting as_null_object
     Given a file named "as_null_object_spec.rb" with:
       """ruby
       describe "a double with as_null_object called" do

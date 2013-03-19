@@ -1,6 +1,6 @@
 Feature: General matchers
 
-  The `anything`,  `any_args`,  and `no_args` matchers can be used to require the method 
+  The `anything`,  `any_args`,  and `no_args` matchers can be used to require the method
   to have arguments (or not) without constraining the details of the argument, such as its
   type,  pattern or value. The `anything` matcher only reflects a single argument, while
   the `any_args` matcher matches any arity.

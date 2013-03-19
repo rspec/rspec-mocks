@@ -412,4 +412,3 @@ module RSpec
     ConstantStubber = ConstantMutator
   end
 end
-

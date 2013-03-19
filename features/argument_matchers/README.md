@@ -15,7 +15,7 @@ Argument matchers can be used:
 
     #create a double
     obj = double()
-      
+
     #expect a message with given args
     obj.should_receive(:message).with('an argument')
 
