@@ -9,7 +9,7 @@ module BugReport600
         end
       end
     end
- 
+
     it "works" do
       ExampleClass.should_receive(:define_method).with("defined_method")
       ExampleClass.method_that_uses_define_method

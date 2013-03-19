@@ -37,7 +37,7 @@ You can also use the block format:
     obj.should_receive(:message) { throw :this_symbol }
 
 ### Argument constraints
-   
+
 #### Explicit arguments
 
     obj.should_receive(:message).with('an argument')
@@ -53,7 +53,7 @@ You can also use the block format:
 
     obj.should_receive(:message).with(/abc/)
 
-### Counts 
+### Counts
 
     obj.should_receive(:message).once
     obj.should_receive(:message).twice
