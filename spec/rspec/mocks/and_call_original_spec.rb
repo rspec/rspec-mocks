@@ -31,6 +31,7 @@ describe "and_call_original" do
       value = instance.meth_2(:submitted_arg) { |a, b| [a, b] }
       expect(value).to eq([:submitted_arg, :additional_yielded_arg])
     end
+
     it 'errors when you pass through the wrong number of args' do
       instance.stub(:meth_1).and_call_original
       instance.stub(:meth_2).and_call_original

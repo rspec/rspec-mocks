@@ -460,7 +460,7 @@ MSG
         @error_generator = error_generator
       end
 
-      def call(*args_to_ignore,&block)
+      def call(*args_to_ignore, &block)
         default_return_value = perform_yield(&block)
         return default_return_value unless @values_to_return
 
