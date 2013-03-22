@@ -109,7 +109,12 @@ module RSpec
         ConstantMutator.hide(constant_name)
       end
 
-      # Spy on the given double after expected invocations have occurred.
+      # Verifies that the given object received the expected message during the
+      # course of the test. The method must have previously been stubbed in
+      # order for messages to be verified.
+      #
+      # Stubbing and verifying messages received in this way implements the
+      # Test Spy pattern.
       #
       # @param method_name [Symbol] name of the method expected to have been
       #   called.

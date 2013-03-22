@@ -1,7 +1,7 @@
 Feature: Spy on an unstubbed method
 
-  Using have_received on an unstubbed method will never pass, so issue a
-  helpful error message.
+  Using have_received on an unstubbed method will never pass, so rspec-mocks
+  issues a helpful error message.
 
   Scenario: fail to verify a stubbed method
     Given a file named "failed_spy_spec.rb" with:
