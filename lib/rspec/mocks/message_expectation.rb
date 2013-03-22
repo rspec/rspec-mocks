@@ -175,7 +175,7 @@ module RSpec
 
         begin
           if @implementation
-            call_implementation(*args, &block)
+            @implementation.call(*args, &block)
           elsif parent_stub
             parent_stub.invoke(nil, *args, &block)
           end
@@ -402,14 +402,6 @@ module RSpec
 
       protected
 
-      def call_implementation(*args, &block)
-        if @implementation.arity.zero?
-          @implementation.call(&block)
-        else
-          @implementation.call(*args, &block)
-        end
-      end
-
       def failed_fast?
         @failed_fast
       end
@@ -468,7 +460,7 @@ MSG
         @error_generator = error_generator
       end
 
-      def call(&block)
+      def call(*args_to_ignore, &block)
         default_return_value = perform_yield(&block)
         return default_return_value unless @values_to_return
 
