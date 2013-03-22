@@ -1,9 +1,7 @@
 module RSpec
   module Mocks
     class HaveReceived
-      CONSTRAINTS = %w(
-        exactly at_least at_most times any_number_of_times once twice with
-      )
+      CONSTRAINTS = %w(exactly at_least at_most times once twice with)
 
       def initialize(method_name)
         @method_name = method_name
