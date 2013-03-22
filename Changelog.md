@@ -5,6 +5,8 @@ Bug fixes
 
 * Fix `any_instance` so that a frozen object can be `dup`'d when methods
   have been stubbed on that type using `any_instance` (Jon Rowe).
+* Fix `and_call_original` so that it properly raises an `ArgumentError`
+  when the wrong number of args are passed (Jon Rowe).
 
 Deprecations
 
