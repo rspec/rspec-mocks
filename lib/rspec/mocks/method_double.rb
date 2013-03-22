@@ -222,7 +222,7 @@ module RSpec
 
       # @private
       def build_expectation(error_generator, expectation_ordering)
-        expected_from = caller(1)[0]
+        expected_from = IGNORED_BACKTRACE_LINE
         MessageExpectation.new(error_generator, expectation_ordering, expected_from, self)
       end
 
@@ -268,6 +268,9 @@ module RSpec
       def reset_nil_expectations_warning
         RSpec::Mocks::Proxy.warn_about_expectations_on_nil = true if proxy_for_nil_class?
       end
+
+      # @private
+      IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
     end
   end
 end
