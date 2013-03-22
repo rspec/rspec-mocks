@@ -98,10 +98,6 @@ module RSpec
       def double_with_unmet_expectation(method_name)
         double('double', method_name => true)
       end
-
-      def have_received(method_name)
-        HaveReceived.new(method_name)
-      end
     end
   end
 end
