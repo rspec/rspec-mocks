@@ -17,6 +17,22 @@ Feature: Spy on a stubbed method
     When I run `rspec verified_spy_spec.rb`
     Then the examples should all pass
 
+  Scenario: verify a stubbed method with message expectations
+    Given a file named "verified_message_expectations_spec.rb" with:
+      """ruby
+      describe "have_received" do
+        it "passes when the expectation is met" do
+          invitation = double('invitation', deliver: true)
+          2.times { invitation.deliver(:expected, :arguments) }
+          invitation.should have_received(:deliver).
+            with(:expected, :arguments).
+            twice
+        end
+      end
+      """
+    When I run `rspec verified_message_expectations_spec.rb`
+    Then the examples should all pass
+
   Scenario: fail to verify a stubbed method
     Given a file named "failed_spy_spec.rb" with:
       """ruby
@@ -28,5 +44,20 @@ Feature: Spy on a stubbed method
       end
       """
     When I run `rspec failed_spy_spec.rb`
+    Then the output should contain "expected: 1 time"
+     And the output should contain "received: 0 times"
+
+  Scenario: fail to verify message expectations
+    Given a file named "failed_message_expectations_spec.rb" with:
+      """ruby
+      describe "have_received" do
+        it "fails when the arguments are different" do
+          invitation = double('invitation', deliver: true)
+          invitation.deliver(:unexpected)
+          invitation.should have_received(:deliver).with(:expected, :arguments)
+        end
+      end
+      """
+    When I run `rspec failed_message_expectations_spec.rb`
     Then the output should contain "expected: 1 time"
      And the output should contain "received: 0 times"
