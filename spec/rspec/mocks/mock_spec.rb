@@ -747,8 +747,9 @@ module RSpec
 
       it 'raises for an unstubbed method' do
         double = double('double')
-        expect { double.__mock_expectation(:some_method) {} }.
-          to raise_error(MockExpectationError, /some_method.*stubbed/)
+        expect {
+          double.__mock_expectation(:some_method) {}
+        }.to raise_error(MockExpectationError, /some_method.*stubbed/)
       end
     end
 
