@@ -116,11 +116,6 @@ module RSpec
         __mock_proxy.reset
       end
 
-      # @private
-      def __mock_expectation(method_name, &block)
-        __mock_proxy.build_expectation(method_name, &block)
-      end
-
     private
 
       def __mock_proxy

@@ -36,7 +36,7 @@ module RSpec
       private
 
       def expect(subject)
-        subject.__mock_expectation(@method_name) do |expectation|
+        build_expectation(subject) do |expectation|
           apply_constraints_to expectation
         end
       end
@@ -51,6 +51,11 @@ module RSpec
         @expectation.generate_error
       rescue RSpec::Mocks::MockExpectationError => error
         error.message
+      end
+
+      def build_expectation(subject, &block)
+        subject.__send__(:__mock_proxy).
+          build_expectation(@method_name, &block)
       end
     end
   end
