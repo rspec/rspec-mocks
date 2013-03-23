@@ -7,6 +7,7 @@ Bug fixes
   have been stubbed on that type using `any_instance` (Jon Rowe).
 * Fix `and_call_original` so that it properly raises an `ArgumentError`
   when the wrong number of args are passed (Jon Rowe).
+* Fix `double` on 1.9.2 so you can wrap them in an Array (Jon Rowe).
 
 Deprecations
 
