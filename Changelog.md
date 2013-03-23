@@ -1,13 +1,22 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...master)
 
+Bug fixes
+
+* Fix `any_instance` so that a frozen object can be `dup`'d when methods
+  have been stubbed on that type using `any_instance` (Jon Rowe).
+* Fix `and_call_original` so that it properly raises an `ArgumentError`
+  when the wrong number of args are passed (Jon Rowe).
+* Fix `double` on 1.9.2 so you can wrap them in an Array
+  using `Array(my_double)` (Jon Rowe).
+
 Deprecations
 
 * Deprecate `stub` and `mock` as aliases for `double`. `double` is the
   best term for creating a test double, and it reduces confusion to
   have only one term (Michi Huber).
-* Fix `any_instance` so that a frozen object can be `dup`'d when methods
-  have been stubbed on that type using `any_instance` (Jon Rowe).
+* Deprecate `stub!` and `unstub!` in favor of `stub` and `unstub`
+  (Jon Rowe).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.2...v2.13.0)

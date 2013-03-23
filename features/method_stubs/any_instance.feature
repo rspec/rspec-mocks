@@ -20,7 +20,7 @@ Feature: stub on any instance of a class
       """
     When I run `rspec example_spec.rb`
     Then the examples should all pass
-    
+
   Scenario: any_instance stub with a hash
     Given a file named "example_spec.rb" with:
       """ruby
@@ -37,8 +37,8 @@ Feature: stub on any instance of a class
       end
       """
     When I run `rspec example_spec.rb`
-    Then the examples should all pass  
-    
+    Then the examples should all pass
+
   Scenario: any_instance stub with specific arguments matchers
     Given a file named "example_spec.rb" with:
       """ruby
@@ -47,7 +47,7 @@ Feature: stub on any instance of a class
           it "returns the stubbed value when arguments match" do
             Object.any_instance.stub(:foo).with(:param_one, :param_two).and_return(:result_one)
             Object.any_instance.stub(:foo).with(:param_three, :param_four).and_return(:result_two)
-          
+
             o = Object.new
             o.foo(:param_one, :param_two).should eq(:result_one)
             o.foo(:param_three, :param_four).should eq(:result_two)
@@ -57,7 +57,7 @@ Feature: stub on any instance of a class
       """
     When I run `rspec example_spec.rb`
     Then the examples should all pass
-  
+
   Scenario: any_instance unstub
     Given a file named "example_spec.rb" with:
       """ruby
@@ -68,7 +68,7 @@ Feature: stub on any instance of a class
               :foo
             end
           end
-          
+
           Object.any_instance.stub(:foo)
           Object.any_instance.unstub(:foo)
 
@@ -77,8 +77,8 @@ Feature: stub on any instance of a class
       end
       """
     When I run `rspec example_spec.rb`
-    Then the examples should all pass  
-  
+    Then the examples should all pass
+
   Scenario: any_instance unstub
     Given a file named "example_spec.rb" with:
       """ruby
@@ -93,7 +93,7 @@ Feature: stub on any instance of a class
             Object.any_instance.should_receive(:foo).and_return(:bar)
             Object.any_instance.stub(:foo)
             Object.any_instance.unstub(:foo)
-            
+
             Object.new.foo.should eq(:bar)
           end
         end
@@ -101,7 +101,7 @@ Feature: stub on any instance of a class
       """
     When I run `rspec example_spec.rb`
     Then the examples should all pass
-    
+
   Scenario: stub a chain of methods an any instance
     Given a file named "stub_chain_spec.rb" with:
       """ruby

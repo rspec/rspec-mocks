@@ -46,7 +46,7 @@ Feature: explicit arguments
           object.foo(:this).should eq("got this")
           object.foo(:this, :that).should eq("got this and that")
         end
-        
+
         it "works on mocks" do
           object = double('foo')
           object.should_receive(:foo).with(:this, :that)
@@ -57,4 +57,3 @@ Feature: explicit arguments
       """
     When I run `rspec stub_multiple_explicit_args_spec.rb`
     Then the output should contain "2 examples, 0 failures"
-

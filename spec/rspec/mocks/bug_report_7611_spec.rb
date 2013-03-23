@@ -11,6 +11,6 @@ module Bug7611
 
     it "should" do
       expect(Bar.new.class).to eq Bar
-    end 
+    end
   end
 end

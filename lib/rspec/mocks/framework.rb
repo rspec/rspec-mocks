@@ -21,3 +21,5 @@ require 'rspec/mocks/serialization'
 require 'rspec/mocks/any_instance'
 require 'rspec/mocks/mutate_const'
 require 'rspec/mocks/have_received'
+require 'rspec/mocks/stub_chain'
+
