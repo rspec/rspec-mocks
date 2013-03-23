@@ -733,29 +733,6 @@ module RSpec
         end
       end
     end
-
-    describe '__mock_expectation' do
-      it 'returns a met expectation when expected messages are received' do
-        double = double('double', some_method: true)
-        double.some_method
-        expectation = double.__mock_expectation(:some_method) {}
-        expect(expectation.expected_messages_received?).to be_true
-      end
-
-      it 'returns an unmet expectation when expected messages are not received' do
-        double = double('double', some_method: true, other_method: true)
-        double.other_method
-        expectation = double.__mock_expectation(:some_method) {}
-        expect(expectation.expected_messages_received?).to be_false
-      end
-
-      it 'raises for an unstubbed method' do
-        double = double('double')
-        expect {
-          double.__mock_expectation(:some_method) {}
-        }.to raise_error(MockExpectationError, /some_method.*stubbed/)
-      end
-    end
-
   end
 end
+
