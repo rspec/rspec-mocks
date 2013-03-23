@@ -185,6 +185,10 @@ module RSpec
         }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
+      it "is wrappable in an array" do
+        expect( Array(@double) ).to eq([@double])
+      end
+
       context "with Ruby > 1.8.6", :unless => RUBY_VERSION.to_s == '1.8.6' do
         it "passes proc to expectation block without an argument" do
           # We eval this because Ruby 1.8.6's syntax parser barfs on { |&block| ... }
