@@ -23,6 +23,7 @@ module RSpec
         @m1 = klazz.new
         @m2 = klazz.new
       end
+
       it "verifies all mocks within" do
         @space.add(@m1)
         @space.add(@m2)
@@ -30,6 +31,7 @@ module RSpec
         expect(@m1).to be_verified
         expect(@m2).to be_verified
       end
+
       it "resets all mocks within" do
         @space.add(m1 = double("mock1"))
         @space.add(m2 = double("mock2"))
@@ -37,15 +39,18 @@ module RSpec
         m2.should_receive(:rspec_reset)
         @space.reset_all
       end
+
       it "clears internal mocks on reset_all" do
         @space.add(double("mock"))
         @space.reset_all
         expect(@space.instance_eval { receivers.empty? }).to be_true
       end
+
       it "resets the ordering" do
         @space.reset_all
         expect(@space.expectation_ordering).to be_empty
       end
+
       it "only adds an instance once" do
         @space.add(m1 = double("mock1"))
         @space.add(m1)
