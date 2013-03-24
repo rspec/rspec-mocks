@@ -5,7 +5,7 @@ describe "expection set on previously stubbed method" do
     double = double(:msg => nil)
     double.msg
     double.should_receive(:msg)
-    expect { double.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+    expect { verify double }.to raise_error(RSpec::Mocks::MockExpectationError)
   end
 
   it "outputs arguments of similar calls" do
@@ -14,9 +14,9 @@ describe "expection set on previously stubbed method" do
     double.foo('second')
     double.foo('third')
     expect {
-      double.rspec_verify
+      verify double
     }.to raise_error(%Q|Double "double" received :foo with unexpected arguments\n  expected: ("first")\n       got: ("second"), ("third")|)
-    double.rspec_reset
+    reset double
   end
 
   context "with argument constraint on stub" do
@@ -25,7 +25,7 @@ describe "expection set on previously stubbed method" do
       double.stub(:foo).with(3).and_return("stub")
       double.should_receive(:foo).at_least(:once).and_return("expectation")
       double.foo
-      double.rspec_verify
+      verify double
     end
 
     it "matches specific args set on expectation" do
@@ -33,7 +33,7 @@ describe "expection set on previously stubbed method" do
       double.stub(:foo).with(3).and_return("stub")
       double.should_receive(:foo).at_least(:once).with(4).and_return("expectation")
       double.foo(4)
-      double.rspec_verify
+      verify double
     end
 
     it "fails if expectation's arg constraint is not met" do
@@ -41,7 +41,7 @@ describe "expection set on previously stubbed method" do
       double.stub(:foo).with(3).and_return("stub")
       double.should_receive(:foo).at_least(:once).with(4).and_return("expectation")
       double.foo(3)
-      expect { double.rspec_verify }.to raise_error(/expected: \(4\)\s+got: \(3\)/)
+      expect { verify double }.to raise_error(/expected: \(4\)\s+got: \(3\)/)
     end
 
     it 'distinguishes between individual values and arrays properly' do
