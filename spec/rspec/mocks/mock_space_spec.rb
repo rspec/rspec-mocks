@@ -21,7 +21,7 @@ module RSpec
 
         space.verify_all
 
-        expect(verifies).to eq([:dbl_1, :dbl_2])
+        expect(verifies).to match_array([:dbl_1, :dbl_2])
       end
 
       it "resets all mocks within" do
@@ -32,7 +32,7 @@ module RSpec
 
         space.reset_all
 
-        expect(resets).to eq([:dbl_1, :dbl_2])
+        expect(resets).to match_array([:dbl_1, :dbl_2])
       end
 
       it "does not leak mock proxies between examples" do
