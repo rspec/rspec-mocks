@@ -38,6 +38,16 @@ module RSpec
           }.to raise_error(/method has not been stubbed/)
         end
 
+        it 'fails when the method has been mocked' do
+          dbl = double
+          dbl.should_receive(:expected_method)
+          dbl.expected_method
+
+          expect {
+            expect(dbl).to have_received(:expected_method)
+          }.to raise_error(/method has been mocked instead of stubbed/)
+        end
+
         context "with" do
           it 'passes when the given args match the args used with the message' do
             dbl = double_with_met_expectation(:expected_method, :expected, :args)
