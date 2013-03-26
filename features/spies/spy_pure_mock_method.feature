@@ -1,4 +1,4 @@
-Feature: Spy on a stubbed method
+Feature: Spy on a stubbed method on a pure mock
 
   You can use `have_received` to verify that a stubbed method was invoked,
   rather than setting an expectation for it to be invoked beforehand.
