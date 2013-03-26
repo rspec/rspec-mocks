@@ -1,7 +1,9 @@
 module RSpec
   module Mocks
     class HaveReceived
-      CONSTRAINTS = %w(exactly at_least at_most times once twice with)
+      COUNT_CONSTRAINTS = %w(exactly at_least at_most times once twice)
+      ARGS_CONSTRAINTS = %w(with)
+      CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS
 
       def initialize(method_name)
         @method_name = method_name
@@ -14,6 +16,7 @@ module RSpec
       end
 
       def does_not_match?(subject)
+        ensure_count_unconstrained
         @expectation = expect(subject).never
         @expectation.expected_messages_received?
       end
@@ -44,6 +47,19 @@ module RSpec
       def apply_constraints_to(expectation)
         @constraints.each do |constraint|
           expectation.send(*constraint)
+        end
+      end
+
+      def ensure_count_unconstrained
+        if count_constrait
+          raise RSpec::Mocks::MockExpectationError,
+            "can't use #{count_constrait} when negative"
+        end
+      end
+
+      def count_constrait
+        @constraints.map(&:first).detect do |constraint|
+          COUNT_CONSTRAINTS.include?(constraint)
         end
       end
 

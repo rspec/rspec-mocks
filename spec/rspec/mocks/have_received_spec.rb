@@ -194,7 +194,14 @@ module RSpec
           end
         end
 
-        it 'does not allow count constraints to be used because it creates confusion'
+        %w(exactly at_least at_most times once twice).each do |constraint|
+          it "does not allow #{constraint} to be used because it creates confusion" do
+            dbl = double_with_unmet_expectation(:expected_method)
+            expect {
+              expect(dbl).not_to have_received(:expected_method).send(constraint)
+            }.to raise_error(/can't use #{constraint} when negative/)
+          end
+        end
       end
 
       def double_with_met_expectation(method_name, *args)
