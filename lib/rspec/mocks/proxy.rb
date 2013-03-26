@@ -84,7 +84,7 @@ module RSpec
       # @private
       def build_expectation(method_name)
         meth_double = method_double[method_name]
-        unless meth_double.stubs.any?
+        unless null_object? || meth_double.stubs.any?
           @error_generator.raise_expectation_on_unstubbed_method(method_name)
         end
 

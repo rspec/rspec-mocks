@@ -9,8 +9,21 @@ module RSpec
           expect(dbl).to have_received(:expected_method)
         end
 
+        it 'passes when a null object has received the given message' do
+          dbl = null_object_with_met_expectation(:expected_method)
+          expect(dbl).to have_received(:expected_method)
+        end
+
         it 'fails when the double has not received the given message' do
           dbl = double_with_unmet_expectation(:expected_method)
+
+          expect {
+            expect(dbl).to have_received(:expected_method)
+          }.to raise_error(/expected: 1 time/)
+        end
+
+        it 'fails when a null object has not received the given message' do
+          dbl = double.as_null_object
 
           expect {
             expect(dbl).to have_received(:expected_method)
@@ -206,6 +219,14 @@ module RSpec
 
       def double_with_met_expectation(method_name, *args)
         double = double_with_unmet_expectation(method_name)
+        meet_expectation(double, method_name, *args)
+      end
+
+      def null_object_with_met_expectation(method_name, *args)
+        meet_expectation(double.as_null_object, method_name, *args)
+      end
+
+      def meet_expectation(double, method_name, *args)
         double.send(method_name, *args)
         double
       end
