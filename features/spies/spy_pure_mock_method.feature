@@ -8,7 +8,7 @@ Feature: Spy on a stubbed method on a pure mock
       """ruby
       describe "have_received" do
         it "passes when the expectation is met" do
-          invitation = double('invitation', deliver: true)
+          invitation = double('invitation', :deliver => true)
           invitation.deliver
           invitation.should have_received(:deliver)
         end
@@ -22,7 +22,7 @@ Feature: Spy on a stubbed method on a pure mock
       """ruby
       describe "have_received" do
         it "passes when the expectation is met" do
-          invitation = double('invitation', deliver: true)
+          invitation = double('invitation', :deliver => true)
           2.times { invitation.deliver(:expected, :arguments) }
           invitation.should have_received(:deliver).
             with(:expected, :arguments).
@@ -38,7 +38,7 @@ Feature: Spy on a stubbed method on a pure mock
       """ruby
       describe "have_received" do
         it "fails when the expectation is not met" do
-          invitation = double('invitation', deliver: true)
+          invitation = double('invitation', :deliver => true)
           invitation.should have_received(:deliver)
         end
       end
@@ -52,7 +52,7 @@ Feature: Spy on a stubbed method on a pure mock
       """ruby
       describe "have_received" do
         it "fails when the arguments are different" do
-          invitation = double('invitation', deliver: true)
+          invitation = double('invitation', :deliver => true)
           invitation.deliver(:unexpected)
           invitation.should have_received(:deliver).with(:expected, :arguments)
         end
