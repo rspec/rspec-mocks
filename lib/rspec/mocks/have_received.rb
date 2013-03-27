@@ -11,13 +11,15 @@ module RSpec
       end
 
       def matches?(subject)
-        @expectation = expect(subject)
+        @subject = subject
+        @expectation = expect
         @expectation.expected_messages_received?
       end
 
       def does_not_match?(subject)
+        @subject = subject
         ensure_count_unconstrained
-        @expectation = expect(subject).never
+        @expectation = expect.never
         @expectation.expected_messages_received?
       end
 
@@ -38,8 +40,8 @@ module RSpec
 
       private
 
-      def expect(subject)
-        build_expectation(subject) do |expectation|
+      def expect
+        build_expectation do |expectation|
           apply_constraints_to expectation
         end
       end
@@ -64,14 +66,18 @@ module RSpec
       end
 
       def generate_failure_message
+        mock_proxy.check_for_unexpected_arguments(@expectation)
         @expectation.generate_error
       rescue RSpec::Mocks::MockExpectationError => error
         error.message
       end
 
-      def build_expectation(subject, &block)
-        subject.__send__(:__mock_proxy).
-          build_expectation(@method_name, &block)
+      def build_expectation(&block)
+        mock_proxy.build_expectation(@method_name, &block)
+      end
+
+      def mock_proxy
+        @subject.__send__(:__mock_proxy)
       end
     end
   end

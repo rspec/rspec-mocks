@@ -105,6 +105,15 @@ module RSpec
       end
 
       # @private
+      def check_for_unexpected_arguments(expectation)
+        @messages_received.each do |(method_name, args, block)|
+          if expectation.matches_name_but_not_args(method_name, *args)
+            raise_unexpected_message_args_error(expectation, *args)
+          end
+        end
+      end
+
+      # @private
       def add_stub(location, method_name, opts={}, &implementation)
         method_double[method_name].add_stub @error_generator, @expectation_ordering, location, opts, &implementation
       end

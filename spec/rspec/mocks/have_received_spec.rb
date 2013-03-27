@@ -71,7 +71,7 @@ module RSpec
 
             expect {
               expect(dbl).to have_received(:expected_method).with(:unexpected, :args)
-            }.to raise_error(/expected: 1 time/) # TODO: better failure message
+            }.to raise_error(/with unexpected arguments/)
           end
         end
 

@@ -59,5 +59,5 @@ Feature: Spy on a stubbed method on a pure mock
       end
       """
     When I run `rspec failed_message_expectations_spec.rb`
-    Then the output should contain "expected: 1 time"
-     And the output should contain "received: 0 times"
+    Then the output should contain "expected: (:expected, :arguments)"
+    And the output should contain "got: (:unexpected)"
