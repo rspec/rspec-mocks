@@ -82,6 +82,38 @@ module RSpec
       end
 
       # @private
+      def build_expectation(method_name)
+        meth_double = method_double[method_name]
+
+        if meth_double.expectations.any?
+          @error_generator.raise_expectation_on_mocked_method(method_name)
+        end
+
+        unless null_object? || meth_double.stubs.any?
+          @error_generator.raise_expectation_on_unstubbed_method(method_name)
+        end
+
+        expectation = meth_double.build_expectation(
+          @error_generator,
+          @expectation_ordering
+        )
+
+        yield expectation
+
+        replay_received_message_on expectation
+        expectation
+      end
+
+      # @private
+      def check_for_unexpected_arguments(expectation)
+        @messages_received.each do |(method_name, args, block)|
+          if expectation.matches_name_but_not_args(method_name, *args)
+            raise_unexpected_message_args_error(expectation, *args)
+          end
+        end
+      end
+
+      # @private
       def add_stub(location, method_name, opts={}, &implementation)
         method_double[method_name].add_stub @error_generator, @expectation_ordering, location, opts, &implementation
       end
@@ -101,6 +133,7 @@ module RSpec
       # @private
       def reset
         method_doubles.each {|d| d.reset}
+        @messages_received.clear
       end
 
       # @private
@@ -120,6 +153,7 @@ module RSpec
 
       # @private
       def message_received(message, *args, &block)
+        record_message_received message, *args, &block
         expectation = find_matching_expectation(message, *args)
         stub = find_matching_method_stub(message, *args)
 
@@ -200,6 +234,15 @@ module RSpec
       def find_almost_matching_stub(method_name, *args)
         method_double[method_name].stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
       end
+
+      def replay_received_message_on(expectation)
+        @messages_received.each do |(method_name, args, block)|
+          if expectation.matches?(method_name, *args)
+            expectation.invoke(nil)
+          end
+        end
+      end
+
     end
   end
 end

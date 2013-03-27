@@ -733,6 +733,6 @@ module RSpec
         end
       end
     end
-
   end
 end
+
