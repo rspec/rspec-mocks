@@ -48,6 +48,18 @@ module RSpec
           }.to raise_error(/method has been mocked instead of stubbed/)
         end
 
+        it 'resets expectations on class methods when mocks are reset' do
+          dbl = Object
+          dbl.stub(:expected_method)
+          dbl.expected_method
+          dbl.__send__(:__mock_proxy).reset
+          dbl.stub(:expected_method)
+
+          expect {
+            expect(dbl).to have_received(:expected_method)
+          }.to raise_error(/0 times/)
+        end
+
         context "with" do
           it 'passes when the given args match the args used with the message' do
             dbl = double_with_met_expectation(:expected_method, :expected, :args)

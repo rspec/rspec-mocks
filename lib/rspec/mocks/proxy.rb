@@ -124,6 +124,7 @@ module RSpec
       # @private
       def reset
         method_doubles.each {|d| d.reset}
+        @messages_received.clear
       end
 
       # @private
