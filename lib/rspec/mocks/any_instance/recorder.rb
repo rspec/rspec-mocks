@@ -103,7 +103,7 @@ module RSpec
 
         # @private
         def playback!(instance, method_name)
-          RSpec::Mocks::space.add(instance)
+          RSpec::Mocks.space.ensure_registered(instance)
           message_chains.playback!(instance, method_name)
           @played_methods[method_name] = instance
           received_expected_message!(method_name) if message_chains.has_expectation?(method_name)

@@ -33,7 +33,7 @@ module RSpec
         it "returns declared value when message is received" do
           @instance.stub(:msg).and_return(:return_value)
           expect(@instance.msg).to equal(:return_value)
-          @instance.rspec_verify
+          verify @instance
         end
       end
 
@@ -42,7 +42,7 @@ module RSpec
           RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #stub instead of #stub!/)
           @instance.stub!(:msg).and_return(:return_value)
           expect(@instance.msg).to equal(:return_value)
-          @instance.rspec_verify
+          verify @instance
         end
       end
 
@@ -77,7 +77,7 @@ module RSpec
         @instance.stub(:msg)
         @instance.msg
         expect do
-          @instance.rspec_verify
+          verify @instance
         end.not_to raise_error
       end
 
@@ -85,14 +85,14 @@ module RSpec
         @instance.stub(:msg)
         @instance.msg(:an_arg)
         expect do
-          @instance.rspec_verify
+          verify @instance
         end.not_to raise_error
       end
 
       it "ignores when expected message is not received" do
         @instance.stub(:msg)
         expect do
-          @instance.rspec_verify
+          verify @instance
         end.not_to raise_error
       end
 
@@ -105,35 +105,35 @@ module RSpec
       describe "#rspec_reset" do
         it "removes stubbed methods that didn't exist" do
           @instance.stub(:non_existent_method)
-          @instance.rspec_reset
+          reset @instance
           expect(@instance).not_to respond_to(:non_existent_method)
         end
 
         it "restores existing instance methods" do
           # See bug reports 8302 adn 7805
           @instance.stub(:existing_instance_method) { :stub_value }
-          @instance.rspec_reset
+          reset @instance
           expect(@instance.existing_instance_method).to eq(:original_value)
         end
 
         it "restores existing private instance methods" do
           # See bug reports 8302 adn 7805
           @instance.stub(:existing_private_instance_method) { :stub_value }
-          @instance.rspec_reset
+          reset @instance
           expect(@instance.send(:existing_private_instance_method)).to eq(:original_value)
         end
 
         it "restores existing class methods" do
           # See bug reports 8302 adn 7805
           @class.stub(:existing_class_method) { :stub_value }
-          @class.rspec_reset
+          reset @class
           expect(@class.existing_class_method).to eq(:original_value)
         end
 
         it "restores existing private class methods" do
           # See bug reports 8302 adn 7805
           @class.stub(:existing_private_class_method) { :stub_value }
-          @class.rspec_reset
+          reset @class
           expect(@class.send(:existing_private_class_method)).to eq(:original_value)
         end
 
@@ -141,7 +141,7 @@ module RSpec
           @instance.stub(:existing_instance_method)
           @instance.stub(:existing_instance_method)
 
-          @instance.rspec_reset
+          reset @instance
 
           expect(@instance.existing_instance_method).to eq(:original_value)
         end
@@ -160,7 +160,7 @@ module RSpec
           expect(mod.hello).to eq(:hello)
 
           mod.stub(:hello) { :stub }
-          mod.rspec_reset
+          reset mod
 
           expect(mod.hello).to eq(:hello)
         end
@@ -187,7 +187,7 @@ module RSpec
         current_value = :value_before
         @instance.method_that_yields {|val| current_value = val}
         expect(current_value).to eq :yielded_obj
-        @instance.rspec_verify
+        verify @instance
       end
 
       it "yields multiple times with multiple calls to and_yield" do
@@ -196,7 +196,7 @@ module RSpec
         current_value = []
         @instance.method_that_yields_multiple_times {|val| current_value << val}
         expect(current_value).to eq [:yielded_value, :another_value]
-        @instance.rspec_verify
+        verify @instance
       end
 
       it "yields a specified object and return another specified object" do
@@ -237,7 +237,7 @@ module RSpec
       it "calculates return value by executing block passed to #and_return" do
         @stub.stub(:something).with("a","b","c").and_return { |a,b,c| c+b+a }
         expect(@stub.something("a","b","c")).to eq "cba"
-        @stub.rspec_verify
+        verify @stub
       end
     end
 
