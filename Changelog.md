@@ -1,6 +1,16 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...master)
 
+Enhancements:
+
+* Refactor internals so that the mock proxy methods and state are held
+  outside of the mocked object rather than inside it. This paves the way
+  for future syntax enhancements and removes the need for some hacky
+  work arounds for `any_instance` dup'ing and `YAML` serialization,
+  among other things. Note that the code now relies upon `object_id`
+  returning a unique, consistent value for any object you want to
+  mock or stub (Myron Marston).
+
 Bug fixes
 
 * Fix `any_instance` so that a frozen object can be `dup`'d when methods
