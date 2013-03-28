@@ -23,6 +23,10 @@ module RSpec
         space.reset_all
       end
 
+      def proxy_for(object)
+        space.proxy_for(object)
+      end
+
       def configuration
         @configuration ||= Configuration.new
       end

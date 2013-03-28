@@ -851,7 +851,7 @@ module RSpec
           klass.any_instance.stub(:foo)
           instance = klass.new
           instance.foo
-          expect(RSpec::Mocks.space.mock_proxies.keys).to include(instance.object_id)
+          expect(RSpec::Mocks.space.proxies.keys).to include(instance.object_id)
         end
       end
 

@@ -107,7 +107,7 @@ module RSpec
     private
 
       def __mock_proxy
-        ::RSpec::Mocks.space.mock_proxy_for(self)
+        ::RSpec::Mocks.proxy_for(self)
       end
     end
   end

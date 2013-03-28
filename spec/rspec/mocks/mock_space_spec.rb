@@ -16,8 +16,8 @@ module RSpec
       it "verifies all mocks within" do
         verifies = []
 
-        space.mock_proxy_for(dbl_1).stub(:verify) { verifies << :dbl_1 }
-        space.mock_proxy_for(dbl_2).stub(:verify) { verifies << :dbl_2 }
+        space.proxy_for(dbl_1).stub(:verify) { verifies << :dbl_1 }
+        space.proxy_for(dbl_2).stub(:verify) { verifies << :dbl_2 }
 
         space.verify_all
 
@@ -27,8 +27,8 @@ module RSpec
       it "resets all mocks within" do
         resets = []
 
-        space.mock_proxy_for(dbl_1).stub(:reset) { resets << :dbl_1 }
-        space.mock_proxy_for(dbl_2).stub(:reset) { resets << :dbl_2 }
+        space.proxy_for(dbl_1).stub(:reset) { resets << :dbl_1 }
+        space.proxy_for(dbl_2).stub(:reset) { resets << :dbl_2 }
 
         space.reset_all
 
@@ -38,7 +38,7 @@ module RSpec
       it "does not leak mock proxies between examples" do
         expect {
           space.reset_all
-        }.to change { space.mock_proxies.size }.to(0)
+        }.to change { space.proxies.size }.to(0)
       end
 
       it "resets the ordering" do
@@ -54,11 +54,11 @@ module RSpec
 
         expect {
           space.ensure_registered(m1)
-        }.to change { space.mock_proxies }
+        }.to change { space.proxies }
 
         expect {
           space.ensure_registered(m1)
-        }.not_to change { space.mock_proxies }
+        }.not_to change { space.proxies }
       end
     end
   end

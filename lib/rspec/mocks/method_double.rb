@@ -154,7 +154,7 @@ module RSpec
 
         object_singleton_class.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{@method_name}(*args, &block)
-            ::RSpec::Mocks.space.mock_proxy_for(self).message_received :#{@method_name}, *args, &block
+            ::RSpec::Mocks.proxy_for(self).message_received :#{@method_name}, *args, &block
           end
           #{visibility_for_method}
         EOF
