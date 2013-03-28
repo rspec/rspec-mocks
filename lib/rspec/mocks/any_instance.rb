@@ -26,7 +26,7 @@ module RSpec
       #
       # @return [Recorder]
       def any_instance
-        AnyInstance.tracked_klasses << self
+        AnyInstance.tracked_classes << self
         __recorder
       end
 
@@ -44,17 +44,17 @@ module RSpec
       end
 
       def self.verify_all
-        tracked_klasses.each do |klass|
+        tracked_classes.each do |klass|
           klass.rspec_verify
         end
       end
 
       def self.reset_all
-        tracked_klasses.clear
+        tracked_classes.clear
       end
 
-      def self.tracked_klasses
-        @tracked_klasses ||= []
+      def self.tracked_classes
+        @tracked_classes ||= []
       end
     end
   end

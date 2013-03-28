@@ -844,7 +844,7 @@ module RSpec
 
         it "adds an class to the current space when #any_instance is invoked" do
           klass.any_instance
-          expect(AnyInstance.tracked_klasses).to include(klass)
+          expect(AnyInstance.tracked_classes).to include(klass)
         end
 
         it "adds an instance to the current space when stubbed method is invoked" do
