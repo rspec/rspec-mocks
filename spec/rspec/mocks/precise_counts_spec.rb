@@ -12,7 +12,7 @@ module RSpec
         @double.do_something
         @double.do_something
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -29,7 +29,7 @@ module RSpec
       it "fails when exactly n times method is never called" do
         @double.should_receive(:do_something).exactly(3).times
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -38,13 +38,13 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "returns the value given by a block when the exactly once method is called" do
         @double.should_receive(:to_s).exactly(:once) { "testing" }
         expect(@double.to_s).to eq "testing"
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes mutiple calls with different args" do
@@ -52,7 +52,7 @@ module RSpec
         @double.should_receive(:do_something).once.with(2)
         @double.do_something(1)
         @double.do_something(2)
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes multiple calls with different args and counts" do
@@ -61,7 +61,7 @@ module RSpec
         @double.do_something(1)
         @double.do_something(2)
         @double.do_something(1)
-        @double.rspec_verify
+        verify @double
       end
     end
   end

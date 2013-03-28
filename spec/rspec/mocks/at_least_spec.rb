@@ -8,7 +8,7 @@ module RSpec
       it "fails if method is never called" do
         @double.should_receive(:do_something).at_least(4).times
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -18,14 +18,14 @@ module RSpec
         @double.do_something
         @double.do_something
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when at least once method is never called" do
         @double.should_receive(:do_something).at_least(:once)
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -33,14 +33,14 @@ module RSpec
         @double.should_receive(:do_something).at_least(:twice)
         @double.do_something
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       it "fails when at least twice method is never called" do
         @double.should_receive(:do_something).at_least(:twice)
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -50,7 +50,7 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes when at least n times method is called n plus 1 times" do
@@ -60,20 +60,20 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes when at least once method is called once" do
         @double.should_receive(:do_something).at_least(:once)
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes when at least once method is called twice" do
         @double.should_receive(:do_something).at_least(:once)
         @double.do_something
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes when at least twice method is called three times" do
@@ -81,20 +81,20 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes when at least twice method is called twice" do
         @double.should_receive(:do_something).at_least(:twice)
         @double.do_something
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "returns the value given by a block when the at least once method is called" do
         @double.should_receive(:to_s).at_least(:once) { "testing" }
         expect(@double.to_s).to eq "testing"
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes with at_least(0) with no return if called once" do

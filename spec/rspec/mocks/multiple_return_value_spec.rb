@@ -26,7 +26,7 @@ module RSpec
         expect(@double.do_something).to eq @return_values[0]
         expect(@double.do_something).to eq @return_values[1]
         expect(@double.do_something).to eq @return_values[2]
-        @double.rspec_verify
+        verify @double
       end
 
       it "falls back to a previously stubbed value" do
@@ -40,7 +40,7 @@ module RSpec
       it "fails when there are too few calls (if there is no stub)" do
         @double.do_something
         @double.do_something
-        expect { @double.rspec_verify }.to raise_error
+        expect { verify @double }.to raise_error
       end
 
       it "fails when there are too many calls (if there is no stub)" do
@@ -48,7 +48,7 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        expect { @double.rspec_verify }.to raise_error
+        expect { verify @double }.to raise_error
       end
     end
 
@@ -63,7 +63,7 @@ module RSpec
         expect(@double.do_something).to eq @return_values[0]
         expect(@double.do_something).to eq @return_values[1]
         expect(@double.do_something).to eq @return_values[2]
-        @double.rspec_verify
+        verify @double
       end
     end
 
@@ -77,12 +77,12 @@ module RSpec
         expect(@double.do_something).to equal(11)
         expect(@double.do_something).to equal(22)
         expect(@double.do_something).to equal(22)
-        @double.rspec_verify
+        verify @double
       end
 
       it "fails when called less than the specified number" do
         expect(@double.do_something).to equal(11)
-        expect { @double.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+        expect { verify @double }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
       context "when method is stubbed too" do
@@ -92,12 +92,12 @@ module RSpec
           expect(@double.do_something).to equal(11)
           expect(@double.do_something).to equal(22)
           expect(@double.do_something).to equal(22)
-          @double.rspec_verify
+          verify @double
         end
 
         it "fails when called less than the specified number" do
           expect(@double.do_something).to equal(11)
-          expect { @double.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify @double }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
       end
     end
@@ -112,13 +112,13 @@ module RSpec
         expect(@double.do_something).to equal(11)
         expect(@double.do_something).to equal(22)
         expect(@double.do_something).to equal(22)
-        @double.rspec_verify
+        verify @double
       end
 
       it "fails when called less than the specified number" do
         @double.do_something
         @double.do_something
-        expect { @double.rspec_verify }.to raise_error
+        expect { verify @double }.to raise_error
       end
 
       it "fails fast when called greater than the specified number" do

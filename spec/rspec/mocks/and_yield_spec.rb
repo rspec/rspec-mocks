@@ -62,7 +62,7 @@ describe RSpec::Mocks::Mock do
             foo
           end
 
-          configured_eval_context.rspec_verify
+          verify configured_eval_context
         end
 
         it "fails when expectations set on the eval context are not met" do
@@ -76,7 +76,7 @@ describe RSpec::Mocks::Mock do
             # foo is not called here
           end
 
-          expect { configured_eval_context.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify configured_eval_context }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
 
       end
@@ -97,8 +97,8 @@ describe RSpec::Mocks::Mock do
             foo
           end
 
-          configured_eval_context.rspec_verify
-          yielded_arg.rspec_verify
+          verify configured_eval_context
+          verify yielded_arg
         end
 
         it "fails when expectations set on the eval context and yielded arguments are not met" do
@@ -115,8 +115,8 @@ describe RSpec::Mocks::Mock do
             # foo is not called here
           end
 
-          expect { configured_eval_context.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
-          expect { yielded_arg.rspec_verify }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify configured_eval_context }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify yielded_arg }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
 
       end

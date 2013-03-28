@@ -11,21 +11,21 @@ module RSpec
         @double.should_receive(:do_something).twice
         @double.do_something
         @double.do_something
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes when called twice with specified args" do
         @double.should_receive(:do_something).twice.with("1", 1)
         @double.do_something("1", 1)
         @double.do_something("1", 1)
-        @double.rspec_verify
+        verify @double
       end
 
       it "passes when called twice with unspecified args" do
         @double.should_receive(:do_something).twice
         @double.do_something("1")
         @double.do_something(1)
-        @double.rspec_verify
+        verify @double
       end
 
       it "fails fast when call count is higher than expected" do
@@ -41,7 +41,7 @@ module RSpec
         @double.should_receive(:do_something).twice
         @double.do_something
         expect {
-          @double.rspec_verify
+          verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -50,7 +50,7 @@ module RSpec
         expect {
           @double.do_something(1, "1")
         }.to raise_error(RSpec::Mocks::MockExpectationError)
-        @double.rspec_reset
+        reset @double
       end
 
       it "fails when called with wrong args on the second call" do
@@ -59,7 +59,7 @@ module RSpec
         expect {
           @double.do_something(1, "1")
         }.to raise_error(RSpec::Mocks::MockExpectationError)
-        @double.rspec_reset
+        reset @double
       end
     end
   end

@@ -8,14 +8,14 @@ module RSpec
       it "names the class in the failure message" do
         object.should_receive(:foo)
         expect do
-          object.rspec_verify
+          verify object
         end.to raise_error(RSpec::Mocks::MockExpectationError, /\(#<Object:.*>\).foo/)
       end
 
       it "names the class in the failure message when expectation is on class" do
         Object.should_receive(:foo)
         expect {
-          Object.rspec_verify
+          verify Object
         }.to raise_error(RSpec::Mocks::MockExpectationError, /<Object \(class\)>/)
       end
 
@@ -63,7 +63,7 @@ module RSpec
       it "should_receive verifies method was called" do
         object.should_receive(:foobar).with(:test_param).and_return(1)
         expect {
-          object.rspec_verify
+          verify object
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
@@ -85,7 +85,7 @@ module RSpec
         _nil = nil
         _nil.should_receive(:foobar)
         expect {
-          _nil.rspec_verify
+          verify _nil
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
           %Q|(nil).foobar(any args)\n    expected: 1 time\n    received: 0 times|
