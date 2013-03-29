@@ -52,7 +52,7 @@ module RSpec
           dbl = Object
           dbl.stub(:expected_method)
           dbl.expected_method
-          dbl.__send__(:__mock_proxy).reset
+          reset dbl
           dbl.stub(:expected_method)
 
           expect {
