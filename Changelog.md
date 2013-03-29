@@ -10,6 +10,10 @@ Enhancements:
   among other things. Note that the code now relies upon `object_id`
   returning a unique, consistent value for any object you want to
   mock or stub (Myron Marston).
+* Add support for test spies. This allows you to verify a message
+  was received afterwards using the `have_received` matcher.
+  Note that you must first stub the method or use a null double.
+  (Joe Ferris and Joël Quenneville)
 
 Bug fixes
 
