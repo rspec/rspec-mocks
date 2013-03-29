@@ -42,8 +42,8 @@ module RSpec
       end
 
       # @private
-      def raise_expectation_error(message, expected_received_count, actual_received_count, *args)
-        __raise "(#{intro}).#{message}#{format_args(*args)}\n    expected: #{count_message(expected_received_count)}\n    received: #{count_message(actual_received_count)}"
+      def raise_expectation_error(message, expected_received_count, actual_received_count, expectation_count_type, *args)
+        __raise "(#{intro}).#{message}#{format_args(*args)}\n    expected: #{count_message(expected_received_count, expectation_count_type)}\n    received: #{count_message(actual_received_count)}"
       end
 
       # @private
@@ -117,8 +117,9 @@ module RSpec
         args.collect {|arg| arg.respond_to?(:description) ? arg.description : arg.inspect}.join(", ")
       end
 
-      def count_message(count)
-        return "at least #{pretty_print(count.abs)}" if count < 0
+      def count_message(count, expectation_count_type=nil)
+        return "at least #{pretty_print(count.abs)}" if count < 0 || expectation_count_type == :at_least
+        return "at most #{pretty_print(count)}" if expectation_count_type == :at_most
         return pretty_print(count)
       end
 
