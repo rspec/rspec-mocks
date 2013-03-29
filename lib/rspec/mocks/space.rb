@@ -9,7 +9,7 @@ module RSpec
       end
 
       def verify_all
-        proxies.values.each do |object|
+        proxies.each_value do |object|
           object.verify
         end
 
@@ -20,7 +20,7 @@ module RSpec
         ConstantMutator.reset_all
         AnyInstance.reset_all
 
-        proxies.values.each do |object|
+        proxies.each_value do |object|
           object.reset
         end
 
