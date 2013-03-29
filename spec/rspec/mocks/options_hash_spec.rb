@@ -7,7 +7,7 @@ module RSpec
         begin
           mock = RSpec::Mocks::Mock.new("a mock")
           mock.should_receive(:message, :expected_from => "/path/to/blah.ext:37")
-          mock.rspec_verify
+          verify mock
         rescue Exception => e
         ensure
           expect(e.backtrace.to_s).to match /\/path\/to\/blah.ext:37/m
@@ -18,7 +18,7 @@ module RSpec
         expect {
           m = RSpec::Mocks::Mock.new("a mock")
           m.should_receive(:message, :message => "recebi nada")
-          m.rspec_verify
+          verify m
         }.to raise_error("recebi nada")
       end
 
@@ -27,7 +27,7 @@ module RSpec
           m = RSpec::Mocks::Mock.new("a mock")
           m.stub(:message)
           m.should_receive(:message, :message => "from mock")
-          m.rspec_verify
+          verify m
         }.to raise_error("from mock")
       end
     end

@@ -16,7 +16,7 @@ describe "Double" do
   specify "then the next example should behave as expected instead of saying" do
     test_double.should_receive(:foobar)
     test_double.foobar
-    test_double.rspec_verify
+    verify test_double
     begin
       test_double.foobar
     rescue Exception => e

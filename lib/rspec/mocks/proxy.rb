@@ -17,9 +17,9 @@ module RSpec
         def allow_message_expectations_on_nil
           @warn_about_expectations_on_nil = false
 
-          # ensure nil.rspec_verify is called even if an expectation is not set in the example
+          # ensure nil is verified even if an expectation is not set in the example
           # otherwise the allowance would effect subsequent examples
-          RSpec::Mocks::space.add(nil) unless RSpec::Mocks::space.nil?
+          RSpec::Mocks.space.ensure_registered(nil) unless RSpec::Mocks.space.nil?
         end
 
         # @private

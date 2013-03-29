@@ -42,8 +42,8 @@ module RSpec
       end
 
       def find_matching_stub
-        object.__send__(:__mock_proxy).
-               __send__(:find_matching_method_stub, chain.first.to_sym)
+        ::RSpec::Mocks.proxy_for(object).
+          __send__(:find_matching_method_stub, chain.first.to_sym)
       end
     end
   end

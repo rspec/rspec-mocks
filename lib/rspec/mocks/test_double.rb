@@ -50,6 +50,11 @@ module RSpec
         __mock_proxy.null_object? && message != :to_ary ? true : super
       end
 
+      # @private
+      def __build_mock_proxy
+        Proxy.new(self, @name, @options)
+      end
+
     private
 
       def __initialize_as_test_double(name=nil, stubs_and_options={})
@@ -97,6 +102,12 @@ module RSpec
         stubs.each_pair do |message, response|
           stub(message).and_return(response)
         end
+      end
+
+    private
+
+      def __mock_proxy
+        ::RSpec::Mocks.proxy_for(self)
       end
     end
   end

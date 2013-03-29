@@ -26,25 +26,16 @@ module RSpec
       #
       # @return [Recorder]
       def any_instance
-        RSpec::Mocks::space.add(self)
-        modify_dup_to_remove_mock_proxy_when_invoked
+        AnyInstance.tracked_classes << self
         __recorder
       end
 
       # @private
       def rspec_verify
         __recorder.verify
-        super
       ensure
         __recorder.stop_all_observation!
-        restore_dup
         @__recorder = nil
-      end
-
-      # @private
-      def rspec_reset
-        restore_dup
-        __mock_proxy.reset
       end
 
       # @private
@@ -52,31 +43,20 @@ module RSpec
         @__recorder ||= AnyInstance::Recorder.new(self)
       end
 
-      private
-      def modify_dup_to_remove_mock_proxy_when_invoked
-        if method_defined?(:dup) and !method_defined?(:__rspec_original_dup)
-          class_eval do
-            def __rspec_dup(*arguments, &block)
-              clone = __rspec_original_dup(*arguments, &block)
-              clone.send :__remove_mock_proxy
-              clone
-            end
-
-            alias_method  :__rspec_original_dup, :dup
-            alias_method  :dup, :__rspec_dup
-          end
+      def self.verify_all
+        tracked_classes.each do |klass|
+          klass.rspec_verify
         end
       end
 
-      def restore_dup
-        if method_defined?(:__rspec_original_dup)
-          class_eval do
-            alias_method  :dup, :__rspec_original_dup
-            remove_method :__rspec_original_dup
-            remove_method :__rspec_dup
-          end
-        end
+      def self.reset_all
+        tracked_classes.clear
+      end
+
+      def self.tracked_classes
+        @tracked_classes ||= []
       end
     end
   end
 end
+
