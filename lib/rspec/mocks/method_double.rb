@@ -55,24 +55,8 @@ module RSpec
           # object rather than the proxy method.
           meth
         else
-          begin
-            # Example: an instance method defined on one of @object's ancestors.
-            original_method_from_ancestor(object_singleton_class.ancestors)
-          rescue NameError
-            raise unless @object.respond_to?(:superclass)
-
-            # Example: a singleton method defined on @object's superclass.
-            #
-            # Note: we have to give precedence to instance methods
-            # defined on @object's class, because in a case like:
-            #
-            # `klass.should_receive(:new).and_call_original`
-            #
-            # ...we want `Class#new` bound to `klass` (which will return
-            # an instance of `klass`), not `klass.superclass.new` (which
-            # would return an instance of `klass.superclass`).
-            original_method_from_superclass
-          end
+          # Example: an instance method defined on one of @object's ancestors.
+          original_method_from_ancestry
         end
       rescue NameError
         # We have no way of knowing if the object's method_missing
@@ -95,6 +79,25 @@ module RSpec
         superklass = klass.superclass
         return false if superklass.nil?
         any_instance_class_recorder_observing_method?(superklass)
+      end
+
+      # @private
+      def original_method_from_ancestry
+        original_method_from_ancestor(object_singleton_class.ancestors)
+      rescue NameError
+        raise unless @object.respond_to?(:superclass)
+
+        # Example: a singleton method defined on @object's superclass.
+        #
+        # Note: we have to give precedence to instance methods
+        # defined on @object's class, because in a case like:
+        #
+        # `klass.should_receive(:new).and_call_original`
+        #
+        # ...we want `Class#new` bound to `klass` (which will return
+        # an instance of `klass`), not `klass.superclass.new` (which
+        # would return an instance of `klass.superclass`).
+        original_method_from_superclass
       end
 
       def original_method_from_ancestor(ancestors)
