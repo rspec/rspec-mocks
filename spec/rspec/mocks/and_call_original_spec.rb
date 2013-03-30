@@ -77,6 +77,15 @@ describe "and_call_original" do
       expect(sub_klass.foo).to eq(:sub_klass_bar)
     end
 
+    it "finds the method on the most direct singleton class ancestors even if the method " +
+       "is available on more distant ancestors" do
+      klass.extend Module.new { def foo; :klass_bar; end }
+      sub_klass = Class.new(klass) { def self.foo; :sub_klass_bar; end }
+      sub_sub_klass = Class.new(sub_klass)
+      sub_sub_klass.should_receive(:foo).and_call_original
+      expect(sub_sub_klass.foo).to eq(:sub_klass_bar)
+    end
+
     context 'when using any_instance' do
       it 'works for instance methods defined on the class' do
         klass.any_instance.should_receive(:meth_1).and_call_original
