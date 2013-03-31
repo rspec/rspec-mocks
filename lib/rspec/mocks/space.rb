@@ -45,7 +45,7 @@ module RSpec
       alias ensure_registered proxy_for
 
       def registered?(object)
-        proxies.has_key?(object.object_id)
+        proxies.has_key?(object.__id__)
       end
     end
   end
