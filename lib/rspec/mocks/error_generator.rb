@@ -43,7 +43,9 @@ module RSpec
 
       # @private
       def raise_expectation_error(message, expected_received_count, actual_received_count, expectation_count_type, *args)
-        __raise "(#{intro}).#{message}#{format_args(*args)}\n    expected: #{count_message(expected_received_count, expectation_count_type)}\n    received: #{count_message(actual_received_count)}"
+        expected_part = "expected: #{count_message(expected_received_count, expectation_count_type)}"
+        received_part = "received: #{count_message(actual_received_count)}"
+        __raise "(#{intro}).#{message}#{format_args(*args)}\n    #{expected_part}\n    #{received_part}"
       end
 
       # @private
