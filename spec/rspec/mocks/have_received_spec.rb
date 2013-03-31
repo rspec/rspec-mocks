@@ -114,7 +114,7 @@ module RSpec
             it 'fails when the message was received fewer times' do
               expect {
                 expect(dbl).to have_received(:expected_method).at_least(4).times
-              }.to raise_error(/expected: at least 4 times.*received: 3 times/m) # TODO: better message
+              }.to raise_error(/expected: at least 4 times.*received: 3 times/m)
             end
           end
 
@@ -130,7 +130,7 @@ module RSpec
             it 'fails when the message was received more times' do
               expect {
                 expect(dbl).to have_received(:expected_method).at_most(2).times
-              }.to raise_error(/expected: at most 2 times.*received: 3 times/m) # TODO: better message
+              }.to raise_error(/expected: at most 2 times.*received: 3 times/m)
             end
           end
 
