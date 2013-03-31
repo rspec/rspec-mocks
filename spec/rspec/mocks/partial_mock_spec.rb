@@ -125,11 +125,20 @@ module RSpec
         end
       end
 
-      let(:instance) { proxy_class.new(Object.new) }
+      let(:wrapped_object) { Object.new }
+      let(:proxy) { proxy_class.new(wrapped_object) }
 
       it 'works properly' do
-        instance.should_receive(:proxied?).and_return(false)
-        expect(instance).not_to be_proxied
+        proxy.should_receive(:proxied?).and_return(false)
+        expect(proxy).not_to be_proxied
+      end
+
+      it 'does not confuse the proxy and the proxied object' do
+        proxy.stub(:foo).and_return(:proxy_foo)
+        wrapped_object.stub(:foo).and_return(:wrapped_foo)
+
+        expect(proxy.foo).to eq(:proxy_foo)
+        expect(wrapped_object.foo).to eq(:wrapped_foo)
       end
     end
 

@@ -33,12 +33,12 @@ module RSpec
       end
 
       def proxy_for(object)
-        proxies.fetch(object.object_id) do
-          proxies[object.object_id] = if TestDouble === object
-                                        object.__build_mock_proxy
-                                      else
-                                        Proxy.new(object)
-                                      end
+        proxies.fetch(object.__id__) do
+          proxies[object.__id__] = if TestDouble === object
+                                      object.__build_mock_proxy
+                                    else
+                                      Proxy.new(object)
+                                    end
         end
       end
 
