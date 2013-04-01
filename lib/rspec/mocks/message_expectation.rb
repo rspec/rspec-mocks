@@ -142,7 +142,7 @@ module RSpec
       #   car.stub(:go).and_throw(:out_of_gas)
       #   car.stub(:go).and_throw(:out_of_gas, :level => 0.1)
       def and_throw(*args)
-        @implementation = Proc.new { throw *args }
+        @implementation = Proc.new { throw(*args) }
       end
 
       # Tells the object to yield one or more args to a block when the message
