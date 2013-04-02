@@ -862,7 +862,7 @@ module RSpec
           Object.any_instance.stub(:some_method)
           o = Object.new
           o.some_method
-          expect { o.dup.some_method }.to_not raise_error(SystemStackError)
+          expect { o.dup.some_method }.to_not raise_error
         end
 
         it "doesn't bomb if the object doesn't support `dup`" do
@@ -880,7 +880,7 @@ module RSpec
 
           klass.any_instance
 
-          expect { klass.new.dup('Dup dup dup') }.to_not raise_error(ArgumentError)
+          expect { klass.new.dup('Dup dup dup') }.to_not raise_error
         end
       end
 
