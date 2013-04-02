@@ -26,6 +26,12 @@ describe "and_call_original" do
       expect(instance.meth_1).to eq(:original)
     end
 
+    it 'ignores prior declared stubs' do
+      instance.stub(:meth_1).and_return(:stubbed_value)
+      instance.should_receive(:meth_1).and_call_original
+      expect(instance.meth_1).to eq(:original)
+    end
+
     it 'passes args and blocks through to the original method' do
       instance.should_receive(:meth_2).and_call_original
       value = instance.meth_2(:submitted_arg) { |a, b| [a, b] }
@@ -104,33 +110,16 @@ describe "and_call_original" do
       end
     end
 
-    if RUBY_VERSION.to_f > 1.8
-      it 'works for class methods defined on a superclass' do
-        subclass = Class.new(klass)
-        subclass.should_receive(:new_instance).and_call_original
-        expect(subclass.new_instance).to be_a(subclass)
-      end
+    it 'works for class methods defined on a superclass' do
+      subclass = Class.new(klass)
+      subclass.should_receive(:new_instance).and_call_original
+      expect(subclass.new_instance).to be_a(subclass)
+    end
 
-      it 'works for class methods defined on a grandparent class' do
-        sub_subclass = Class.new(Class.new(klass))
-        sub_subclass.should_receive(:new_instance).and_call_original
-        expect(sub_subclass.new_instance).to be_a(sub_subclass)
-      end
-    else
-      it 'attempts to work for class methods defined on a superclass but ' +
-         'executes the method with `self` as the superclass' do
-        ::Kernel.stub(:warn)
-        subclass = Class.new(klass)
-        subclass.should_receive(:new_instance).and_call_original
-        expect(subclass.new_instance).to be_an_instance_of(klass)
-       end
-
-      it 'prints a warning to notify users that `self` will not be correct' do
-        subclass = Class.new(klass)
-        ::Kernel.should_receive(:warn).with(/may not work correctly/)
-        subclass.should_receive(:new_instance).and_call_original
-        subclass.new_instance
-      end
+    it 'works for class methods defined on a grandparent class' do
+      sub_subclass = Class.new(Class.new(klass))
+      sub_subclass.should_receive(:new_instance).and_call_original
+      expect(sub_subclass.new_instance).to be_a(sub_subclass)
     end
 
     it 'works for class methods defined on the Class class' do
