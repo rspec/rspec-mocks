@@ -106,7 +106,7 @@ module RSpec
 
       # @private
       def check_for_unexpected_arguments(expectation)
-        @messages_received.each do |(method_name, args, block)|
+        @messages_received.each do |(method_name, args, _)|
           if expectation.matches_name_but_not_args(method_name, *args)
             raise_unexpected_message_args_error(expectation, *args)
           end
@@ -236,7 +236,7 @@ module RSpec
       end
 
       def replay_received_message_on(expectation)
-        @messages_received.each do |(method_name, args, block)|
+        @messages_received.each do |(method_name, args, _)|
           if expectation.matches?(method_name, *args)
             expectation.invoke(nil)
           end

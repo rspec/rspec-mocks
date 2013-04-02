@@ -83,6 +83,9 @@ module RSpec
       # @api private
       def initialize(name)
         @name = name
+        @previously_defined = false
+        @stubbed = false
+        @hidden = false
       end
 
       # @return [String] The fully qualified name of the constant.

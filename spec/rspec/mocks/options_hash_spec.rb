@@ -10,7 +10,7 @@ module RSpec
           verify mock
         rescue Exception => e
         ensure
-          expect(e.backtrace.to_s).to match /\/path\/to\/blah.ext:37/m
+          expect(e.backtrace.to_s).to match(/\/path\/to\/blah.ext:37/m)
         end
       end
 
