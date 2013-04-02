@@ -14,6 +14,9 @@ Enhancements:
   was received afterwards using the `have_received` matcher.
   Note that you must first stub the method or use a null double.
   (Joe Ferris and Joël Quenneville)
+* Make `at_least` and `at_most` style receive expectations print that they were
+  expecting at least or at most some number of calls, rather than just the
+  number of calls given in the expectation (Sam Phippen)
 
 Bug fixes
 
