@@ -176,7 +176,7 @@ Feature: receive counts
       end
       """
     When I run `rspec spec/account_spec.rb`
-    Then the output should contain "expected: 1 time"
+    Then the output should contain "expected: at most 1 time"
      And the output should contain "received: 2 times"
 
   Scenario: expect a message at most (n) times

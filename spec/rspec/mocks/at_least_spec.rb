@@ -9,7 +9,7 @@ module RSpec
         @double.should_receive(:do_something).at_least(4).times
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(/expected: at least 4 times.*received: 0 times/m)
       end
 
       it "fails when called less than n times" do
@@ -19,14 +19,14 @@ module RSpec
         @double.do_something
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(/expected: at least 4 times.*received: 3 times/m)
       end
 
       it "fails when at least once method is never called" do
         @double.should_receive(:do_something).at_least(:once)
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(/expected: at least 1 time.*received: 0 times/m)
       end
 
       it "fails when at least twice method is called once" do
@@ -34,14 +34,14 @@ module RSpec
         @double.do_something
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(/expected: at least 2 times.*received: 1 time/m)
       end
 
       it "fails when at least twice method is never called" do
         @double.should_receive(:do_something).at_least(:twice)
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to raise_error(/expected: at least 2 times.*received: 0 times/m)
       end
 
       it "passes when at least n times method is called exactly n times" do
