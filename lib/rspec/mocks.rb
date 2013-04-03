@@ -27,6 +27,10 @@ module RSpec
         space.proxy_for(object)
       end
 
+      def any_instance_recorder_for(klass)
+        space.any_instance_recorder_for(klass)
+      end
+
       def configuration
         @configuration ||= Configuration.new
       end

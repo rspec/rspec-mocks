@@ -70,12 +70,12 @@ module RSpec
 
       def original_unrecorded_any_instance_method
         return nil unless any_instance_class_recorder_observing_method?(@object.class)
-        alias_name = @object.class.__recorder.build_alias_method_name(@method_name)
+        alias_name = ::RSpec::Mocks.any_instance_recorder_for(@object.class).build_alias_method_name(@method_name)
         @object.method(alias_name)
       end
 
       def any_instance_class_recorder_observing_method?(klass)
-        return true if klass.__recorder.already_observing?(@method_name)
+        return true if ::RSpec::Mocks.any_instance_recorder_for(klass).already_observing?(@method_name)
         superklass = klass.superclass
         return false if superklass.nil?
         any_instance_class_recorder_observing_method?(superklass)

@@ -84,6 +84,9 @@ module RSpec
           if @expectation_set && !message_chains.all_expectations_fulfilled?
             raise RSpec::Mocks::MockExpectationError, "Exactly one instance should have received the following message(s) but didn't: #{message_chains.unfulfilled_expectations.sort.join(', ')}"
           end
+        ensure
+          stop_all_observation!
+          ::RSpec::Mocks.space.remove_any_instance_recorder_for(@klass)
         end
 
         # @private
@@ -181,7 +184,7 @@ module RSpec
           @klass.class_eval(<<-EOM, __FILE__, __LINE__ + 1)
             def #{method_name}(*args, &blk)
               klass = ::RSpec::Mocks.method_handle_for(self, :#{method_name}).owner
-              klass.__recorder.playback!(self, :#{method_name})
+              ::RSpec::Mocks.any_instance_recorder_for(klass).playback!(self, :#{method_name})
               self.__send__(:#{method_name}, *args, &blk)
             end
           EOM
@@ -193,7 +196,7 @@ module RSpec
             def #{method_name}(*args, &blk)
               method_name = :#{method_name}
               klass = ::RSpec::Mocks.method_handle_for(self, :#{method_name}).owner
-              invoked_instance = klass.__recorder.instance_that_received(method_name)
+              invoked_instance = ::RSpec::Mocks.any_instance_recorder_for(klass).instance_that_received(method_name)
               raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by \#{self.inspect} but has already been received by \#{invoked_instance}"
             end
           EOM
