@@ -24,6 +24,25 @@ module RSpec
         expect(verifies).to match_array([:dbl_1, :dbl_2])
       end
 
+      def define_singleton_method_on_recorder_for(klass, name, &block)
+        recorder = space.any_instance_recorder_for(klass)
+        (class << recorder; self; end).send(:define_method, name, &block)
+      end
+
+      it 'verifies all any_instance recorders within' do
+        klass_1, klass_2 = Class.new, Class.new
+
+        verifies = []
+
+        # We can't `stub` a method on the recorder because it defines its own `stub`...
+        define_singleton_method_on_recorder_for(klass_1, :verify) { verifies << :klass_1 }
+        define_singleton_method_on_recorder_for(klass_2, :verify) { verifies << :klass_2 }
+
+        space.verify_all
+
+        expect(verifies).to match_array([:klass_1, :klass_2])
+      end
+
       it "resets all mocks within" do
         resets = []
 
@@ -39,6 +58,13 @@ module RSpec
         expect {
           space.reset_all
         }.to change { space.proxies.size }.to(0)
+      end
+
+      it 'does not leak any instance recorders between examples' do
+        space.any_instance_recorder_for(Class.new)
+        expect {
+          space.reset_all
+        }.to change { space.any_instance_recorders.size }.to(0)
       end
 
       it "resets the ordering" do
@@ -59,6 +85,27 @@ module RSpec
         expect {
           space.ensure_registered(m1)
         }.not_to change { space.proxies }
+      end
+
+      it 'returns a consistent any_instance_recorder for a given class' do
+        klass_1, klass_2 = Class.new, Class.new
+
+        r1 = space.any_instance_recorder_for(klass_1)
+        r2 = space.any_instance_recorder_for(klass_1)
+        r3 = space.any_instance_recorder_for(klass_2)
+
+        expect(r1).to be(r2)
+        expect(r1).not_to be(r3)
+      end
+
+      it 'removes an any_instance_recorder when requested' do
+        klass = Class.new
+
+        space.any_instance_recorder_for(klass)
+
+        expect {
+          space.remove_any_instance_recorder_for(klass)
+        }.to change { space.any_instance_recorders.size }.by(-1)
       end
     end
   end

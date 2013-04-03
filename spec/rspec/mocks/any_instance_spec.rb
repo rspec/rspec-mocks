@@ -711,7 +711,7 @@ module RSpec
       end
 
       context "when resetting post-verification" do
-        let(:space) { RSpec::Mocks::Space.new }
+        let(:space) { RSpec::Mocks.space }
 
         context "existing method" do
           before(:each) do
@@ -843,8 +843,9 @@ module RSpec
         end
 
         it "adds an class to the current space when #any_instance is invoked" do
-          klass.any_instance
-          expect(AnyInstance.tracked_classes).to include(klass)
+          expect {
+            klass.any_instance
+          }.to change { space.any_instance_recorders.size }.by(1)
         end
 
         it "adds an instance to the current space when stubbed method is invoked" do

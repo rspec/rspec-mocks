@@ -26,35 +26,7 @@ module RSpec
       #
       # @return [Recorder]
       def any_instance
-        AnyInstance.tracked_classes << self
-        __recorder
-      end
-
-      # @private
-      def rspec_verify
-        __recorder.verify
-      ensure
-        __recorder.stop_all_observation!
-        @__recorder = nil
-      end
-
-      # @private
-      def __recorder
-        @__recorder ||= AnyInstance::Recorder.new(self)
-      end
-
-      def self.verify_all
-        tracked_classes.each do |klass|
-          klass.rspec_verify
-        end
-      end
-
-      def self.reset_all
-        tracked_classes.clear
-      end
-
-      def self.tracked_classes
-        @tracked_classes ||= []
+        ::RSpec::Mocks.any_instance_recorder_for(self)
       end
     end
   end
