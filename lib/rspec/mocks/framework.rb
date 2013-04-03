@@ -21,5 +21,7 @@ require 'rspec/mocks/extensions/marshal'
 require 'rspec/mocks/any_instance'
 require 'rspec/mocks/mutate_const'
 require 'rspec/mocks/matchers/have_received'
+require 'rspec/mocks/matchers/receive'
 require 'rspec/mocks/stub_chain'
+require 'rspec/mocks/targets'
 

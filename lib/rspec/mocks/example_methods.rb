@@ -131,6 +131,22 @@ module RSpec
         Matchers::HaveReceived.new(method_name)
       end
 
+      def receive(method_name, &block)
+        Matchers::Receive.new(method_name, block)
+      end
+
+      def allow(target)
+        AllowanceTarget.new(target)
+      end
+
+      def expect_any_instance_of(klass)
+        AnyInstanceExpectationTarget.new(klass)
+      end
+
+      def allow_any_instance_of(klass)
+        AnyInstanceAllowanceTarget.new(klass)
+      end
+
     private
 
       def declare_double(declared_as, *args)
