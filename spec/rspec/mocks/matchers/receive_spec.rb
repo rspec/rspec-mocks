@@ -3,6 +3,8 @@ require 'spec_helper'
 module RSpec
   module Mocks
     describe Matchers::Receive do
+      include_context "with syntax", [:wrapped, :direct]
+
       def verify_all
         ::RSpec::Mocks.space.verify_all
       end

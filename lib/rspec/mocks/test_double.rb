@@ -4,8 +4,6 @@ module RSpec
     # includes this module, and it is provided for cases where you want a
     # pure test double without subclassing RSpec::Mocks::Mock.
     module TestDouble
-      include Methods
-
       # Extends the TestDouble module onto the given object and
       # initializes it as a test double.
       #
