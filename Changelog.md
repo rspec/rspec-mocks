@@ -26,6 +26,8 @@ Bug fixes
   when the wrong number of args are passed (Jon Rowe).
 * Fix `double` on 1.9.2 so you can wrap them in an Array
   using `Array(my_double)` (Jon Rowe).
+* Allow a block implementation to be used in combination with
+  `and_yield`, `and_raise`, `and_return` or `and_throw` (Myron Marston).
 
 Deprecations
 
