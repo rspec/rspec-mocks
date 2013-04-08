@@ -6,7 +6,14 @@ module RSpec
           @message                 = message
           @block                   = block
           @recorded_customizations = []
-          @backtrace_line          = caller[2]
+
+          # MRI, JRuby and RBX report the caller inconsistently; MRI
+          # reports an extra "in `new'" line in the backtrace that the
+          # others do not include. The safest way to find the right
+          # line is to search for the first line BEFORE rspec/mocks/syntax.rb.
+          @backtrace_line          = caller.find do |line|
+            !line.split(':').first.end_with?('rspec/mocks/syntax.rb')
+          end
         end
 
         def setup_expectation(subject, &block)
