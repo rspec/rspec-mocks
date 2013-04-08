@@ -22,7 +22,7 @@ module RSpec
           end
 
           def stub(message_or_hash, opts={}, &block)
-            if Hash === message_or_hash
+            if ::Hash === message_or_hash
               message_or_hash.each {|message, value| stub(message).and_return value }
             else
               ::RSpec::Mocks.proxy_for(self).add_stub(caller(1)[0], message_or_hash.to_sym, opts, &block)
@@ -34,17 +34,17 @@ module RSpec
           end
 
           def stub!(message_or_hash, opts={}, &block)
-            RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #stub instead of #stub!.  #{caller(0)[1]}\n"
+            ::RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #stub instead of #stub!.  #{caller(0)[1]}\n"
             stub(message_or_hash, opts={}, &block)
           end
 
           def unstub!(message)
-            RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #unstub instead of #unstub!.  #{caller(0)[1]}\n"
+            ::RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #unstub instead of #unstub!.  #{caller(0)[1]}\n"
             unstub(message)
           end
 
           def stub_chain(*chain, &blk)
-            StubChain.stub_chain_on(self, *chain, &blk)
+            ::RSpec::Mocks::StubChain.stub_chain_on(self, *chain, &blk)
           end
 
           def as_null_object
