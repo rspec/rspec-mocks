@@ -5,24 +5,24 @@ module RSpec
       class StubChain < Chain
 
         # @private
-        def initialize(*args, &block)
-          record(:stub, *args, &block)
-        end
-
-        # @private
         def expectation_fulfilled?
           true
         end
 
         private
 
+        def create_message_expectation_on(instance)
+          proxy = ::RSpec::Mocks.proxy_for(instance)
+          expected_from = IGNORED_BACKTRACE_LINE
+          proxy.add_stub(expected_from, *@expectation_args, &@expectation_block)
+        end
+
         def invocation_order
           @invocation_order ||= {
-            :stub => [nil],
-            :with => [:stub],
-            :and_return => [:with, :stub],
-            :and_raise => [:with, :stub],
-            :and_yield => [:with, :stub]
+            :with => [nil],
+            :and_return => [:with, nil],
+            :and_raise => [:with, nil],
+            :and_yield => [:with, nil]
           }
         end
 

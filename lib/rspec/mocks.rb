@@ -56,6 +56,9 @@ module RSpec
         end
       end
     end
+
+    # @private
+    IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
   end
 end
 
