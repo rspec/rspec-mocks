@@ -9,7 +9,7 @@ module RSpec
         host = Class.new
         orig_instance_methods = host.instance_methods
         Syntax.enable_direct(host)
-        host.instance_methods - orig_instance_methods
+        (host.instance_methods - orig_instance_methods).map(&:to_sym)
       end
 
       it 'limits the number of methods that get added to all objects' do
