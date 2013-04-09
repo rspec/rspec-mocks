@@ -131,6 +131,21 @@ module RSpec
         Matchers::HaveReceived.new(method_name)
       end
 
+      def self.included(klass)
+        klass.class_eval do
+          unless method_defined?(:expect)
+            # We define `expect` in a superclass module so that if `RSpec::Matchers`
+            # is included in `klass` later, it's definition of `expect` will take
+            # precedence.
+            include Module.new {
+              def expect(target)
+                ::RSpec::Mocks::ExpectationTarget.new(target)
+              end
+            }
+          end
+        end
+      end
+
     private
 
       def declare_double(declared_as, *args)

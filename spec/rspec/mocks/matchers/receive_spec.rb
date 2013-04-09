@@ -194,6 +194,114 @@ module RSpec
           let(:receiver) { klass.new }
         end
       end
+
+      shared_examples "using rspec-mocks in another test framework" do
+        it 'can use the `expect` syntax' do
+          dbl = double
+
+          framework.new.instance_eval do
+            expect(dbl).to receive(:foo).and_return(3)
+          end
+
+          expect(dbl.foo).to eq(3)
+        end
+
+        it 'expects the method to be called when `expect` is used' do
+          dbl = double
+
+          framework.new.instance_eval do
+            expect(dbl).to receive(:foo)
+          end
+
+          expect { verify dbl }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
+
+        it 'supports `expect(...).not_to receive`' do
+          dbl = double
+
+          framework.new.instance_eval do
+            expect(dbl).not_to receive(:foo)
+          end
+
+          expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
+
+        it 'supports `expect(...).to_not receive`' do
+          dbl = double
+
+          framework.new.instance_eval do
+            expect(dbl).to_not receive(:foo)
+          end
+
+          expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
+      end
+
+      context "when used in a test framework without rspec-expectations" do
+        let(:framework) do
+          Class.new do
+            include RSpec::Mocks::ExampleMethods
+
+            def eq(value)
+              double("MyMatcher")
+            end
+          end
+        end
+
+        include_examples "using rspec-mocks in another test framework"
+
+        it 'cannot use `expect` with another matcher' do
+          expect {
+            framework.new.instance_eval do
+              expect(3).to eq(3)
+            end
+          }.to raise_error(/only the `receive` matcher is supported/)
+        end
+      end
+
+      context "when rspec-expectations is included in the test framework first" do
+        before do
+          # the examples here assume `expect` is define in RSpec::Matchers...
+          expect(RSpec::Matchers.method_defined?(:expect)).to be_true
+        end
+
+        let(:framework) do
+          Class.new do
+            include RSpec::Matchers
+            include RSpec::Mocks::ExampleMethods
+          end
+        end
+
+        include_examples "using rspec-mocks in another test framework"
+
+        it 'can use `expect` with any matcher' do
+          framework.new.instance_eval do
+            expect(3).to eq(3)
+          end
+        end
+      end
+
+      context "when rspec-expectations is included in the test framework last" do
+        before do
+          # the examples here assume `expect` is define in RSpec::Matchers...
+          expect(RSpec::Matchers.method_defined?(:expect)).to be_true
+        end
+
+        let(:framework) do
+          Class.new do
+            include RSpec::Mocks::ExampleMethods
+            include RSpec::Matchers
+          end
+        end
+
+        include_examples "using rspec-mocks in another test framework"
+
+        it 'can use `expect` with any matcher' do
+          framework.new.instance_eval do
+            expect(3).to eq(3)
+          end
+        end
+      end
     end
   end
 end

@@ -42,6 +42,13 @@ module RSpec
       disallow_negation :to_not
     end
 
+    class ExpectationTarget < TargetBase
+      EXPRESSION = :expect
+      delegate_to :setup_expectation
+      delegate_to :setup_negative_expectation, :from => :not_to
+      delegate_to :setup_negative_expectation, :from => :to_not
+    end
+
     class AnyInstanceAllowanceTarget < TargetBase
       EXPRESSION = :expect_any_instance_of
       delegate_to :setup_any_instance_allowance
