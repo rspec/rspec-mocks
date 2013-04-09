@@ -31,7 +31,7 @@ module RSpec
           object.fuhbar
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
-          /expected\: 0 times\n    received\: 1 time/
+          /expected\: 0 times with any arguments\n    received\: 1 time/
         )
       end
 
@@ -88,7 +88,7 @@ module RSpec
           verify _nil
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
-          %Q|(nil).foobar(any args)\n    expected: 1 time\n    received: 0 times|
+          %Q|(nil).foobar(any args)\n    expected: 1 time with any arguments\n    received: 0 times with any arguments|
         )
       end
 

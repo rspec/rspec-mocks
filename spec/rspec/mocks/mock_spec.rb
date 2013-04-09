@@ -63,7 +63,7 @@ module RSpec
           violated
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
-          %Q|(Double "test double").not_expected(no args)\n    expected: 0 times\n    received: 1 time|
+          %Q|(Double "test double").not_expected(no args)\n    expected: 0 times with any arguments\n    received: 1 time|
         )
       end
 
@@ -74,7 +74,7 @@ module RSpec
           violated
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
-          %Q|(Double "test double").not_expected("unexpected text")\n    expected: 0 times\n    received: 1 time|
+          %Q|(Double "test double").not_expected("unexpected text")\n    expected: 0 times with arguments: ("unexpected text")\n    received: 1 time with arguments: ("unexpected text")|
         )
       end
 
@@ -217,7 +217,7 @@ module RSpec
         @double.should_receive(:not_expected).never
         expect { @double.not_expected }.
           to raise_error(RSpec::Mocks::MockExpectationError,
-                         %Q|(Double "test double").not_expected(no args)\n    expected: 0 times\n    received: 1 time|
+                         %Q|(Double "test double").not_expected(no args)\n    expected: 0 times with any arguments\n    received: 1 time|
         )
       end
 
