@@ -17,6 +17,8 @@ Enhancements:
 * Make `at_least` and `at_most` style receive expectations print that they were
   expecting at least or at most some number of calls, rather than just the
   number of calls given in the expectation (Sam Phippen)
+* Make `with` style receive expectations print the args they were expecting, and
+  the args that they got (Sam Phippen)
 
 Bug fixes
 
