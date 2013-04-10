@@ -64,9 +64,9 @@ module RSpec
 
       # @private
       def method_call_args_description(args)
-        if args.length == 1 && args.first.is_a?(ArgumentMatchers::AnyArgsMatcher)
+        if args.first.is_a?(ArgumentMatchers::AnyArgsMatcher)
           " with any arguments"
-        elsif args.length == 1 && args.first.is_a?(ArgumentMatchers::NoArgsMatcher)
+        elsif args.first.is_a?(ArgumentMatchers::NoArgsMatcher)
           " with no arguments"
         elsif args.length > 0
           " with arguments: #{args.inspect.gsub("[", "(").gsub("]", ")")}"
