@@ -69,7 +69,7 @@ module RSpec
         elsif args.first.is_a?(ArgumentMatchers::NoArgsMatcher)
           " with no arguments"
         elsif args.length > 0
-          " with arguments: #{args.inspect.gsub("[", "(").gsub("]", ")")}"
+          " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
         else
           ""
         end

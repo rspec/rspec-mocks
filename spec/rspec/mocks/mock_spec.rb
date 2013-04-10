@@ -78,6 +78,17 @@ module RSpec
         )
       end
 
+      it "fails when array arguments do not match" do
+        @double.should_not_receive(:not_expected).with(["do not want"])
+        expect {
+          @double.not_expected(["do not want"])
+          violated
+        }.to raise_error(
+          RSpec::Mocks::MockExpectationError,
+          %Q|(Double "test double").not_expected(["do not want"])\n    expected: 0 times with arguments: (["do not want"])\n    received: 1 time with arguments: (["do not want"])|
+        )
+      end
+
       it "passes when receiving message specified as not to be received with wrong args" do
         @double.should_not_receive(:not_expected).with("unexpected text")
         @double.not_expected "really unexpected text"
