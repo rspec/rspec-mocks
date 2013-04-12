@@ -26,6 +26,7 @@ module RSpec
         @eval_context = nil
         @implementation = implementation
         @values_to_return = nil
+        @cycle_return = false
       end
 
       # @private
@@ -81,6 +82,37 @@ module RSpec
           @values_to_return = values
           @implementation = build_implementation
         end
+      end
+
+      # @overload and_cycle_return(value)
+      # @overload and_cycle_return(first_value, second_value)
+      #
+      # Tells the object to return a value when it receives the message.  Given
+      # more than one value, the first value is returned the first time the
+      # message is received, the second value is returned the next time, etc,
+      # etc.
+      #
+      # Cycles through values of an array every time it is called.
+      #
+      #
+      # @example
+      #
+      #   counter.stub(:count).and_cycle_return(1)
+      #   counter.count # => 1
+      #   counter.count # => 1
+      #
+      #   counter.stub(:count).and_cycle_return(1,2,3)
+      #   counter.count # => 1
+      #   counter.count # => 2
+      #   counter.count # => 3
+      #   counter.count # => 1
+      #   counter.count # => 2
+      #   counter.count # => 3
+      #   # etc
+      #
+      def and_cycle_return(*values)
+        @cycle_return = true
+        and_return(*values)
       end
 
       # Tells the object to delegate to the original unmodified method
@@ -428,7 +460,7 @@ module RSpec
       def build_implementation
         Implementation.new(
           @values_to_return, @args_to_yield,
-          @eval_context, @error_generator
+          @eval_context, @error_generator, @cycle_return
         ).method(:call)
       end
     end
@@ -459,21 +491,24 @@ MSG
     # `and_return` and `and_yield` instructions.
     # @private
     class Implementation
-      def initialize(values_to_return, args_to_yield, eval_context, error_generator)
+      def initialize(values_to_return, args_to_yield, eval_context, error_generator, cycle_return=false)
         @values_to_return = values_to_return
-        @args_to_yield = args_to_yield
-        @eval_context = eval_context
-        @error_generator = error_generator
+        @args_to_yield    = args_to_yield
+        @eval_context     = eval_context
+        @error_generator  = error_generator
+        @cycle_return     = cycle_return
+        @cycle_index      = -1
       end
 
       def call(*args_to_ignore, &block)
         default_return_value = perform_yield(&block)
         return default_return_value unless @values_to_return
 
-        if @values_to_return.size > 1
-          @values_to_return.shift
+        if @cycle_return
+          @cycle_index = (@cycle_index + 1) % @values_to_return.size
+          @values_to_return.fetch(@cycle_index)
         else
-          @values_to_return.first
+          @values_to_return.size > 1 ? @values_to_return.shift : @values_to_return.first
         end
       end
 

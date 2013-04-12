@@ -166,6 +166,16 @@ module RSpec
         end
       end
 
+      it "cyclical returns value in consecutive calls" do
+        @instance.stub(:msg).and_cycle_return("1",2,:three)
+        expect(@instance.msg).to eq("1")
+        expect(@instance.msg).to eq(2)
+        expect(@instance.msg).to eq(:three)
+        expect(@instance.msg).to eq("1")
+        expect(@instance.msg).to eq(2)
+        expect(@instance.msg).to eq(:three)
+      end
+
       it "returns values in order to consecutive calls" do
         @instance.stub(:msg).and_return("1",2,:three)
         expect(@instance.msg).to eq("1")
