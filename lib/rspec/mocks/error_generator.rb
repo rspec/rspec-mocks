@@ -42,10 +42,35 @@ module RSpec
       end
 
       # @private
-      def raise_expectation_error(message, expected_received_count, actual_received_count, expectation_count_type, *args)
-        expected_part = "expected: #{count_message(expected_received_count, expectation_count_type)}"
-        received_part = "received: #{count_message(actual_received_count)}"
+      def raise_expectation_error(message, expected_received_count, argument_list_matcher, actual_received_count, expectation_count_type, *args)
+        expected_part = expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
+        received_part = received_part_of_expectation_error(actual_received_count, *args)
         __raise "(#{intro}).#{message}#{format_args(*args)}\n    #{expected_part}\n    #{received_part}"
+      end
+
+      # @private
+      def received_part_of_expectation_error(actual_received_count, *args)
+        result = "received: #{count_message(actual_received_count)}" +
+          method_call_args_description(args)
+      end
+
+      # @private
+      def expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
+        result = "expected: #{count_message(expected_received_count, expectation_count_type)}" +
+          method_call_args_description(argument_list_matcher.expected_args)
+      end
+
+      # @private
+      def method_call_args_description(args)
+        if args.first.is_a?(ArgumentMatchers::AnyArgsMatcher)
+          " with any arguments"
+        elsif args.first.is_a?(ArgumentMatchers::NoArgsMatcher)
+          " with no arguments"
+        elsif args.length > 0
+          " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
+        else
+          ""
+        end
       end
 
       # @private
