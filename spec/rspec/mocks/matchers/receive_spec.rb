@@ -257,6 +257,16 @@ module RSpec
             end
           }.to raise_error(/only the `receive` matcher is supported/)
         end
+
+        it 'can toggle the available syntax' do
+          expect(framework.new).to respond_to(:expect)
+          RSpec::Mocks.configuration.syntax = :direct
+          expect(framework.new).not_to respond_to(:expect)
+          RSpec::Mocks.configuration.syntax = :wrapped
+          expect(framework.new).to respond_to(:expect)
+        end
+
+        after { RSpec::Mocks.configuration.syntax = :wrapped }
       end
 
       context "when rspec-expectations is included in the test framework first" do

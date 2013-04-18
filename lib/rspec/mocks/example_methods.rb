@@ -133,16 +133,9 @@ module RSpec
 
       def self.included(klass)
         klass.class_eval do
-          unless method_defined?(:expect)
-            # We define `expect` in a superclass module so that if `RSpec::Matchers`
-            # is included in `klass` later, it's definition of `expect` will take
-            # precedence.
-            include Module.new {
-              def expect(target)
-                ::RSpec::Mocks::ExpectationTarget.new(target)
-              end
-            }
-          end
+          # This gets mixed in so that if `RSpec::Matchers` is included in
+          # `klass` later, it's definition of `expect` will take precedence.
+          include ExpectHost unless method_defined?(:expect)
         end
       end
 
@@ -154,6 +147,10 @@ module RSpec
         RSpec::Mocks::Mock.new(*args)
       end
 
+      # This module exists to host the `expect` method for cases where
+      # rspec-mocks is used w/o rspec-expectations.
+      module ExpectHost
+      end
     end
   end
 end

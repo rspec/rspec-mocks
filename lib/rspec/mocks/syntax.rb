@@ -113,6 +113,12 @@ module RSpec
             AnyInstanceAllowanceTarget.new(klass)
           end
         end
+
+        RSpec::Mocks::ExampleMethods::ExpectHost.class_eval do
+          def expect(target)
+            ExpectationTarget.new(target)
+          end
+        end
       end
 
       # @api private
@@ -125,6 +131,10 @@ module RSpec
           undef allow
           undef expect_any_instance_of
           undef allow_any_instance_of
+        end
+
+        RSpec::Mocks::ExampleMethods::ExpectHost.class_eval do
+          undef expect
         end
       end
 
