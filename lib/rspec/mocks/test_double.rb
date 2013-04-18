@@ -23,6 +23,18 @@ module RSpec
         __initialize_as_test_double(name, stubs_and_options)
       end
 
+      # Tells the object to respond to all messages. If specific stub values
+      # are declared, they'll work as expected. If not, the receiver is
+      # returned.
+      def as_null_object
+        __mock_proxy.as_null_object
+      end
+
+      # Returns true if this object has received `as_null_object`
+      def null_object?
+        __mock_proxy.null_object?
+      end
+
       # This allows for comparing the mock to other objects that proxy such as
       # ActiveRecords belongs_to proxy objects. By making the other object run
       # the comparison, we're sure the call gets delegated to the proxy
