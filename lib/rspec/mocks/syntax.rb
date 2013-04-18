@@ -256,6 +256,61 @@ module RSpec
       # @return [Recorder]
       #
       # @note This is only available when you have enabled the `direct` syntax.
+
+      # @method expect
+      # Used to wrap an object in preparation for setting a mock expectation
+      # on it.
+      #
+      # @example
+      #
+      #   expect(obj).to receive(:foo).with(5).and_return(:return_value)
+      #
+      # @note This method is usually provided by rspec-expectations, unless
+      #   you are using rspec-mocks w/o rspec-expectations, in which case it
+      #   is only made available if you enable the `wrapped` syntax.
+
+      # @method allow
+      # Used to wrap an object in preparation for stubbing a method
+      # on it.
+      #
+      # @example
+      #
+      #   allow(dbl).to receive(:foo).with(5).and_return(:return_value)
+      #
+      # @note This is only available when you have enabled the `wrapped` syntax.
+
+      # @method expect_any_instance_of
+      # Used to wrap a class in preparation for setting a mock expectation
+      # on instances of it.
+      #
+      # @example
+      #
+      #   expect_any_instance_of(MyClass).to receive(:foo)
+      #
+      # @note This is only available when you have enabled the `wrapped` syntax.
+
+      # @method allow_any_instance_of
+      # Used to wrap a class in preparation for stubbing a method
+      # on instances of it.
+      #
+      # @example
+      #
+      #   allow_any_instance_of(MyClass).to receive(:foo)
+      #
+      # @note This is only available when you have enabled the `wrapped` syntax.
+
+      # @method receive
+      # Used to specify a message that you expect or allow an object
+      # to receive. The object returned by `receive` supports the same
+      # fluent interface that `should_receive` and `stub` have always
+      # supported, allowing you to constrain the arguments or number of
+      # times, and configure how the object should respond to the message.
+      #
+      # @example
+      #
+      #   expect(obj).to receive(:hello).with("world").exactly(3).times
+      #
+      # @note This is only available when you have enabled the `wrapped` syntax.
     end
   end
 end
