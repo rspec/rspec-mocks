@@ -74,6 +74,11 @@ module RSpec
       end
 
       # @private
+      def describe_expectation(message, expected_received_count, actual_received_count, *args)
+        "have received #{message}#{format_args(*args)} #{count_message(expected_received_count)}"
+      end
+
+      # @private
       def raise_out_of_order_error(message)
         __raise "#{intro} received :#{message} out of order"
       end

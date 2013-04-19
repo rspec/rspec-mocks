@@ -257,6 +257,11 @@ module RSpec
         return nil
       end
 
+      # @private
+      def description
+        @error_generator.describe_expectation(@message, @expected_received_count, @actual_received_count, *expected_args)
+      end
+
       def raise_out_of_order_error
         @error_generator.raise_out_of_order_error @message
       end

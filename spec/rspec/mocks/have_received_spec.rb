@@ -75,6 +75,11 @@ module RSpec
           end
         end
 
+        it 'generates a useful description' do
+          matcher = have_received(:expected_method).with(:expected_args).once
+          expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
+        end
+
         context "counts" do
           let(:dbl) { double(:expected_method => nil) }
 
