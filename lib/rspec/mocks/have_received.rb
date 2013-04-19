@@ -13,14 +13,14 @@ module RSpec
       def matches?(subject)
         @subject = subject
         @expectation = expect
-        @expectation.expected_messages_received?
+        expected_messages_received?
       end
 
       def does_not_match?(subject)
         @subject = subject
         ensure_count_unconstrained
         @expectation = expect.never
-        @expectation.expected_messages_received?
+        expected_messages_received?
       end
 
       def failure_message
@@ -29,6 +29,10 @@ module RSpec
 
       def negative_failure_message
         generate_failure_message
+      end
+
+      def description
+        expect.description
       end
 
       CONSTRAINTS.each do |expectation|
@@ -41,9 +45,9 @@ module RSpec
       private
 
       def expect
-        build_expectation do |expectation|
-          apply_constraints_to expectation
-        end
+        expectation = mock_proxy.build_expectation(@method_name)
+        apply_constraints_to expectation
+        expectation
       end
 
       def apply_constraints_to(expectation)
@@ -72,8 +76,9 @@ module RSpec
         error.message
       end
 
-      def build_expectation(&block)
-        mock_proxy.build_expectation(@method_name, &block)
+      def expected_messages_received?
+        mock_proxy.replay_received_message_on @expectation
+        @expectation.expected_messages_received?
       end
 
       def mock_proxy

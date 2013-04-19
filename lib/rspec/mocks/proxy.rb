@@ -85,6 +85,17 @@ module RSpec
       def build_expectation(method_name)
         meth_double = method_double[method_name]
 
+        meth_double.build_expectation(
+          @error_generator,
+          @expectation_ordering
+        )
+      end
+
+      # @private
+      def replay_received_message_on(expectation)
+        method_name = expectation.message
+        meth_double = method_double[method_name]
+
         if meth_double.expectations.any?
           @error_generator.raise_expectation_on_mocked_method(method_name)
         end
@@ -93,15 +104,11 @@ module RSpec
           @error_generator.raise_expectation_on_unstubbed_method(method_name)
         end
 
-        expectation = meth_double.build_expectation(
-          @error_generator,
-          @expectation_ordering
-        )
-
-        yield expectation
-
-        replay_received_message_on expectation
-        expectation
+        @messages_received.each do |(method_name, args, _)|
+          if expectation.matches?(method_name, *args)
+            expectation.invoke(nil)
+          end
+        end
       end
 
       # @private
@@ -234,15 +241,6 @@ module RSpec
       def find_almost_matching_stub(method_name, *args)
         method_double[method_name].stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
       end
-
-      def replay_received_message_on(expectation)
-        @messages_received.each do |(method_name, args, _)|
-          if expectation.matches?(method_name, *args)
-            expectation.invoke(nil)
-          end
-        end
-      end
-
     end
   end
 end
