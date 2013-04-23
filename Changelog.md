@@ -30,6 +30,8 @@ Bug fixes
   using `Array(my_double)` (Jon Rowe).
 * Fix `stub_const` and `hide_const` to handle constants that redefine `send`
   (Sam Phippen).
+* Fix `Marshal.dump` extension so that it correctly handles nil.
+  (Luke Imhoff, Jon Rowe)
 
 Deprecations
 
