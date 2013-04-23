@@ -59,7 +59,7 @@ module RSpec
 
       it 'doesnt error when marshalled' do
         allow_message_expectations_on_nil
-        expect { Marshal.dump(nil) }.to_not raise_error
+        expect(Marshal.dump(nil)).to eq Marshal.dump_without_mocks(nil)
       end
     end
   end

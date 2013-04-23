@@ -3,7 +3,7 @@ module Marshal
     def dump_with_mocks(*args)
       object = args.shift
 
-      if ( ::RSpec::Mocks.space && !::RSpec::Mocks.space.registered?(object) ) || object === nil
+      if ( ::RSpec::Mocks.space && !::RSpec::Mocks.space.registered?(object) ) || NilClass === object
         return dump_without_mocks(*args.unshift(object))
       end
 
