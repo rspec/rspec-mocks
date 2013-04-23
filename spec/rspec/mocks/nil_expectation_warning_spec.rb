@@ -56,6 +56,11 @@ module RSpec
 
         example_group
       end
+
+      it 'doesnt error when marshalled' do
+        allow_message_expectations_on_nil
+        expect { Marshal.dump(nil) }.to_not raise_error
+      end
     end
   end
 end
