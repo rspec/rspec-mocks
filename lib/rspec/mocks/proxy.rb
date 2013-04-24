@@ -139,7 +139,6 @@ module RSpec
 
       # @private
       def reset
-        reset_nil_expectations_warning
         method_doubles.each {|d| d.reset}
         @messages_received.clear
       end
@@ -202,14 +201,6 @@ module RSpec
       end
 
       private
-
-      def reset_nil_expectations_warning
-        RSpec::Mocks::Proxy.warn_about_expectations_on_nil = true if proxy_for_nil_class?
-      end
-
-      def proxy_for_nil_class?
-        NilClass === @object
-      end
 
       def method_double
         @method_double ||= Hash.new {|h,k| h[k] = MethodDouble.new(@object, k, self) }
