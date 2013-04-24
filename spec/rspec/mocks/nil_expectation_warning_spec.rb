@@ -43,7 +43,7 @@ module RSpec
     end
 
     describe "#allow_message_expectations_on_nil" do
-      specify "does not effect subsequent examples" do
+      it "does not affect subsequent examples" do
         example_group = ::RSpec::Core::ExampleGroup.describe
         reporter      = ::RSpec.configuration.reporter
         example_group.it("when called in one example that doesn't end up setting an expectation on nil") do
