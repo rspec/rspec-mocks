@@ -202,7 +202,6 @@ module RSpec
 
       # @private
       def reset
-        reset_nil_expectations_warning
         restore_original_method
         clear
       end
@@ -273,11 +272,6 @@ module RSpec
       # @private
       def raise_method_not_stubbed_error
         raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
-      end
-
-      # @private
-      def reset_nil_expectations_warning
-        RSpec::Mocks::Proxy.warn_about_expectations_on_nil = true if proxy_for_nil_class?
       end
 
       # @private
