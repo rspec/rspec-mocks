@@ -154,7 +154,6 @@ module RSpec
 
       # @private
       def configure_method
-        warn_if_nil_class
         @original_visibility = visibility_for_method
         @method_stasher.stash unless @method_is_proxied
         define_proxy_method
@@ -255,18 +254,6 @@ module RSpec
       def remove_stub
         raise_method_not_stubbed_error if stubs.empty?
         expectations.empty? ? reset : stubs.clear
-      end
-
-      # @private
-      def proxy_for_nil_class?
-        NilClass === @object
-      end
-
-      # @private
-      def warn_if_nil_class
-        if proxy_for_nil_class? & RSpec::Mocks::Proxy.warn_about_expectations_on_nil
-          Kernel.warn("An expectation of :#{@method_name} was set on nil. Called from #{caller[4]}. Use allow_message_expectations_on_nil to disable warnings.")
-        end
       end
 
       # @private
