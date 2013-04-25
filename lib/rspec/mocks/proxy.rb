@@ -2,27 +2,6 @@ module RSpec
   module Mocks
     # @private
     class Proxy
-      class << self
-        # @private
-        def warn_about_expectations_on_nil
-          RSpec::Mocks.space.proxy_for(nil).warn_about_expectations
-        end
-
-        # @private
-        def warn_about_expectations_on_nil=(new_value)
-          RSpec::Mocks.space.proxy_for(nil).warn_about_expectations = new_value
-        end
-
-        # @private
-        def allow_message_expectations_on_nil
-          RSpec::Mocks.space.proxy_for(nil).warn_about_expectations = false
-        end
-
-        # @private
-        def allow_message_expectations_on_nil?
-          !warn_about_expectations_on_nil
-        end
-      end
 
       # @private
       def initialize(object, name=nil, options={})
