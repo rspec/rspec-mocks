@@ -2,31 +2,6 @@ module RSpec
   module Mocks
     # @private
     class Proxy
-      class << self
-        # @private
-        def warn_about_expectations_on_nil
-          defined?(@warn_about_expectations_on_nil) ? @warn_about_expectations_on_nil : true
-        end
-
-        # @private
-        def warn_about_expectations_on_nil=(new_value)
-          @warn_about_expectations_on_nil = new_value
-        end
-
-        # @private
-        def allow_message_expectations_on_nil
-          @warn_about_expectations_on_nil = false
-
-          # ensure nil is verified even if an expectation is not set in the example
-          # otherwise the allowance would effect subsequent examples
-          RSpec::Mocks.space.ensure_registered(nil) unless RSpec::Mocks.space.nil?
-        end
-
-        # @private
-        def allow_message_expectations_on_nil?
-          !warn_about_expectations_on_nil
-        end
-      end
 
       # @private
       def initialize(object, name=nil, options={})

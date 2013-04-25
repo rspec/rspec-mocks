@@ -32,6 +32,7 @@ Bug fixes
   (Sam Phippen).
 * Fix `Marshal.dump` extension so that it correctly handles nil.
   (Luke Imhoff, Jon Rowe)
+* Fix isolation of `allow_message_expectations_on_nil` (Jon Rowe)
 
 Deprecations
 
