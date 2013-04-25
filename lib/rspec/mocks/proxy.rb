@@ -5,21 +5,17 @@ module RSpec
       class << self
         # @private
         def warn_about_expectations_on_nil
-          defined?(@warn_about_expectations_on_nil) ? @warn_about_expectations_on_nil : true
+          RSpec::Mocks.space.proxy_for(nil).warn_about_expectations
         end
 
         # @private
         def warn_about_expectations_on_nil=(new_value)
-          @warn_about_expectations_on_nil = new_value
+          RSpec::Mocks.space.proxy_for(nil).warn_about_expectations = new_value
         end
 
         # @private
         def allow_message_expectations_on_nil
-          @warn_about_expectations_on_nil = false
-
-          # ensure nil is verified even if an expectation is not set in the example
-          # otherwise the allowance would effect subsequent examples
-          RSpec::Mocks.space.ensure_registered(nil) unless RSpec::Mocks.space.nil?
+          RSpec::Mocks.space.proxy_for(nil).warn_about_expectations = false
         end
 
         # @private
