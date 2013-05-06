@@ -494,7 +494,6 @@ module RSpec
         @double.foobar
         verify @double
 
-        expect { @double.foobar }.to_not raise_error(NameError)
         expect { @double.foobar }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
