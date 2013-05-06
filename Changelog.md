@@ -19,6 +19,7 @@ Enhancements:
   number of calls given in the expectation (Sam Phippen)
 * Make `with` style receive expectations print the args they were expecting, and
   the args that they got (Sam Phippen)
+* Fix some warnings seen under ruby 2.0.0p0 (Sam Phippen).
 
 Bug fixes
 
