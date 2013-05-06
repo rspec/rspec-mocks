@@ -68,19 +68,19 @@ module RSpec
 
       # @private
       def replay_received_message_on(expectation)
-        method_name = expectation.message
-        meth_double = method_double[method_name]
+        expected_method_name = expectation.message
+        meth_double = method_double[expected_method_name]
 
         if meth_double.expectations.any?
-          @error_generator.raise_expectation_on_mocked_method(method_name)
+          @error_generator.raise_expectation_on_mocked_method(expected_method_name)
         end
 
         unless null_object? || meth_double.stubs.any?
-          @error_generator.raise_expectation_on_unstubbed_method(method_name)
+          @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
         end
 
-        @messages_received.each do |(method_name, args, _)|
-          if expectation.matches?(method_name, *args)
+        @messages_received.each do |(actual_method_name, args, _)|
+          if expectation.matches?(actual_method_name, *args)
             expectation.invoke(nil)
           end
         end
