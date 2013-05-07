@@ -1,7 +1,7 @@
 Feature: the expect syntax for message expectations
 
-  Use `expect(receiver).to receive(:message)` to set an expectation that
-  `receiver` should receive the message `:message` before the example is
+  Use `expect(object).to receive(:message)` to set an expectation that
+  `object` should receive the message `:message` before the example is
   completed.
 
   Background:
@@ -17,15 +17,14 @@ Feature: the expect syntax for message expectations
   Scenario: expect a message
     Given a file named "spec/account_spec.rb" with:
       """ruby
-      require "spec_helper"
       require "account"
+      require "spec_helper"
 
       describe Account do
         context "when closed" do
           it "logs an account closed message" do
             logger = double("logger")
-            account = Account.new
-            account.logger = logger
+            account = Account.new logger
 
             expect(logger).to receive(:account_closed)
 
@@ -36,9 +35,7 @@ Feature: the expect syntax for message expectations
       """
     And a file named "lib/account.rb" with:
       """ruby
-      class Account
-        attr_accessor :logger
-
+      Account = Struct.new(:logger) do
         def close
           logger.account_closed
         end
@@ -57,8 +54,7 @@ Feature: the expect syntax for message expectations
         context "when closed" do
           it "logs an account closed message" do
             logger = double("logger")
-            account = Account.new
-            account.logger = logger
+            account = Account.new logger
 
             expect(logger).to receive(:account_closed).with(account)
 
@@ -69,9 +65,7 @@ Feature: the expect syntax for message expectations
       """
     And a file named "lib/account.rb" with:
       """ruby
-      class Account
-        attr_accessor :logger
-
+      Account = Struct.new(:logger) do
         def close
           logger.account_closed(self)
         end
@@ -84,22 +78,21 @@ Feature: the expect syntax for message expectations
     Given a file named "spec/message_expectation_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "a message expectation" do
-        context "with a return value" do
-          context "specified in a block" do
-            it "returns the specified value" do
-              receiver = double("receiver")
-              expect(receiver).to receive(:message) { :return_value }
-              receiver.message.should eq(:return_value)
-            end
-          end
 
-          context "specified with and_return" do
-            it "returns the specified value" do
-              receiver = double("receiver")
-              expect(receiver).to receive(:message).and_return(:return_value)
-              receiver.message.should eq(:return_value)
-            end
+      describe "a message expectation with a return value" do
+        context "specified in a block" do
+          it "returns the specified value" do
+            object = double("object")
+            expect(object).to receive(:message) { :return_value }
+            object.message.should eq(:return_value)
+          end
+        end
+
+        context "specified with and_return" do
+          it "returns the specified value" do
+            object = double("object")
+            expect(object).to receive(:message).and_return(:return_value)
+            object.message.should eq(:return_value)
           end
         end
       end
@@ -111,12 +104,13 @@ Feature: the expect syntax for message expectations
     Given a file named "spec/message_count_spec.rb" with:
       """ruby
       require "spec_helper"
+
       describe "a message expectation with a count" do
         it "passes if the expected number of calls happen" do
-          receiver = "hi"
-          expect(receiver).to receive(:length).exactly(3).times
+          string = "hi"
+          expect(string).to receive(:length).exactly(3).times
 
-          3.times { receiver.length }
+          3.times { string.length }
         end
       end
       """
