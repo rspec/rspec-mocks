@@ -4,6 +4,16 @@ Feature: the expect syntax for message expectations
   `receiver` should receive the message `:message` before the example is
   completed.
 
+  Background:
+    Given a file named "spec/spec_helper.rb" with:
+      """ruby
+      RSpec.configure do |config|
+        config.mock_with :rspec do |mocks|
+          mocks.syntax = :expect
+        end
+      end
+      """
+
   Scenario: expect a message
     Given a file named "spec/account_spec.rb" with:
       """ruby
@@ -34,14 +44,6 @@ Feature: the expect syntax for message expectations
         end
       end
       """
-    And a file named "spec/spec_helper.rb" with:
-    """ruby
-    RSpec.configure do |config|
-      config.mock_with :rspec do |mocks|
-        mocks.syntax = :expect
-      end
-    end
-    """
     When I run `rspec spec/account_spec.rb`
     Then the output should contain "1 example, 0 failures"
 
@@ -75,14 +77,6 @@ Feature: the expect syntax for message expectations
         end
       end
       """
-    And a file named "spec/spec_helper.rb" with:
-    """ruby
-    RSpec.configure do |config|
-      config.mock_with :rspec do |mocks|
-        mocks.syntax = :expect
-      end
-    end
-    """
     When I run `rspec spec/account_spec.rb`
     Then the output should contain "1 example, 0 failures"
 
@@ -110,14 +104,6 @@ Feature: the expect syntax for message expectations
         end
       end
       """
-    And a file named "spec/spec_helper.rb" with:
-      """ruby
-      RSpec.configure do |config|
-        config.mock_with :rspec do |mocks|
-          mocks.syntax = :expect
-        end
-      end
-      """
     When I run `rspec spec/message_expectation_spec.rb`
     Then the output should contain "2 examples, 0 failures"
 
@@ -131,14 +117,6 @@ Feature: the expect syntax for message expectations
           expect(receiver).to receive(:length).exactly(3).times
 
           3.times { receiver.length }
-        end
-      end
-      """
-    And a file named "spec/spec_helper.rb" with:
-      """ruby
-      RSpec.configure do |config|
-        config.mock_with :rspec do |mocks|
-          mocks.syntax = :expect
         end
       end
       """
