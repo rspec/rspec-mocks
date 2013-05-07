@@ -1,7 +1,7 @@
 Feature: the expect syntax for message expectations
 
-  Use expect(receiver).to receive(:message) to set an expectation that
-  `receiver` should recieve the message `:message` before the example is
+  Use `expect(receiver).to receive(:message)` to set an expectation that
+  `receiver` should receive the message `:message` before the example is
   completed.
 
   Scenario: expect a message
@@ -41,7 +41,6 @@ Feature: the expect syntax for message expectations
         mocks.syntax = :expect
       end
     end
-
     """
     When I run `rspec spec/account_spec.rb`
     Then the output should contain "1 example, 0 failures"
@@ -83,7 +82,6 @@ Feature: the expect syntax for message expectations
         mocks.syntax = :expect
       end
     end
-
     """
     When I run `rspec spec/account_spec.rb`
     Then the output should contain "1 example, 0 failures"
