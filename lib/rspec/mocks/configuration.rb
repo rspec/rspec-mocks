@@ -19,28 +19,28 @@ module RSpec
       #
       def add_stub_and_should_receive_to(*modules)
         modules.each do |mod|
-          Syntax.enable_direct(mod)
+          Syntax.enable_should(mod)
         end
       end
 
       def syntax=(values)
-        if Array(values).include?(:wrapped)
-          Syntax.enable_wrapped
+        if Array(values).include?(:expect)
+          Syntax.enable_expect
         else
-          Syntax.disable_wrapped
+          Syntax.disable_expect
         end
 
-        if Array(values).include?(:direct)
-          Syntax.enable_direct
+        if Array(values).include?(:should)
+          Syntax.enable_should
         else
-          Syntax.disable_direct
+          Syntax.disable_should
         end
       end
 
       def syntax
         syntaxes = []
-        syntaxes << :direct  if Syntax.direct_enabled?
-        syntaxes << :wrapped if Syntax.wrapped_enabled?
+        syntaxes << :should  if Syntax.should_enabled?
+        syntaxes << :expect if Syntax.expect_enabled?
         syntaxes
       end
     end
@@ -49,7 +49,7 @@ module RSpec
       @configuration ||= Configuration.new
     end
 
-    configuration.syntax = :direct
+    configuration.syntax = :should
   end
 end
 

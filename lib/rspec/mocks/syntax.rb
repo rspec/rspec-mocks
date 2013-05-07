@@ -6,9 +6,9 @@ module RSpec
     module Syntax
 
       # @api private
-      # Enables the direct syntax (`dbl.stub`, `dbl.should_receive`, etc).
-      def self.enable_direct(syntax_host = default_direct_syntax_host)
-        return if direct_enabled?(syntax_host)
+      # Enables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
+      def self.enable_should(syntax_host = default_should_syntax_host)
+        return if should_enabled?(syntax_host)
 
         syntax_host.class_eval do
           def should_receive(message, opts={}, &block)
@@ -69,9 +69,9 @@ module RSpec
       end
 
       # @api private
-      # Disables the direct syntax (`dbl.stub`, `dbl.should_receive`, etc).
-      def self.disable_direct(syntax_host = default_direct_syntax_host)
-        return unless direct_enabled?(syntax_host)
+      # Disables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
+      def self.disable_should(syntax_host = default_should_syntax_host)
+        return unless should_enabled?(syntax_host)
 
         syntax_host.class_eval do
           undef should_receive
@@ -92,9 +92,9 @@ module RSpec
       end
 
       # @api private
-      # Enables the wrapped syntax (`expect(dbl).to receive`, `allow(dbl).to receive`, etc).
-      def self.enable_wrapped(syntax_host = ::RSpec::Mocks::ExampleMethods)
-        return if wrapped_enabled?(syntax_host)
+      # Enables the expect syntax (`expect(dbl).to receive`, `allow(dbl).to receive`, etc).
+      def self.enable_expect(syntax_host = ::RSpec::Mocks::ExampleMethods)
+        return if expect_enabled?(syntax_host)
 
         syntax_host.class_eval do
           def receive(method_name, &block)
@@ -122,9 +122,9 @@ module RSpec
       end
 
       # @api private
-      # Disables the wrapped syntax (`expect(dbl).to receive`, `allow(dbl).to receive`, etc).
-      def self.disable_wrapped(syntax_host = ::RSpec::Mocks::ExampleMethods)
-        return unless wrapped_enabled?(syntax_host)
+      # Disables the expect syntax (`expect(dbl).to receive`, `allow(dbl).to receive`, etc).
+      def self.disable_expect(syntax_host = ::RSpec::Mocks::ExampleMethods)
+        return unless expect_enabled?(syntax_host)
 
         syntax_host.class_eval do
           undef receive
@@ -139,20 +139,20 @@ module RSpec
       end
 
       # @api private
-      # Indicates whether or not the direct syntax is enabled.
-      def self.direct_enabled?(syntax_host = default_direct_syntax_host)
+      # Indicates whether or not the should syntax is enabled.
+      def self.should_enabled?(syntax_host = default_should_syntax_host)
         syntax_host.method_defined?(:should_receive)
       end
 
       # @api private
-      # Indicates whether or not the wrapped syntax is enabled.
-      def self.wrapped_enabled?(syntax_host = ::RSpec::Mocks::ExampleMethods)
+      # Indicates whether or not the expect syntax is enabled.
+      def self.expect_enabled?(syntax_host = ::RSpec::Mocks::ExampleMethods)
         syntax_host.method_defined?(:allow)
       end
 
       # @api private
       # Determines where the methods like `should_receive`, and `stub` are added.
-      def self.default_direct_syntax_host
+      def self.default_should_syntax_host
         # On 1.8.7, Object.ancestors.last == Kernel but
         # things blow up if we include `RSpec::Mocks::Methods`
         # into Kernel...not sure why.
@@ -175,7 +175,7 @@ module RSpec
       #     logger.should_receive(:log)
       #     thing_that_logs.do_something_that_logs_a_message
       #
-      # @note This is only available when you have enabled the `direct` syntax.
+      # @note This is only available when you have enabled the `should` syntax.
 
       # @method should_not_receive
       # Sets and expectation that this object should _not_ receive a message
@@ -190,7 +190,7 @@ module RSpec
       #     counter.stub(:count => 37)
       #     counter.stub(:count) { 37 }
       #
-      # @note This is only available when you have enabled the `direct` syntax.
+      # @note This is only available when you have enabled the `should` syntax.
 
       # @method unstub
       # Removes a stub. On a double, the object will no longer respond to
@@ -201,7 +201,7 @@ module RSpec
       # shared `before` hook for the common case, but you want to replace it
       # for a special case.
       #
-      # @note This is only available when you have enabled the `direct` syntax.
+      # @note This is only available when you have enabled the `should` syntax.
 
       # @method stub_chain
       # @overload stub_chain(method1, method2)
@@ -232,19 +232,19 @@ module RSpec
       #     # Common use in Rails/ActiveRecord:
       #     Article.stub_chain("recent.published") { [Article.new] }
       #
-      # @note This is only available when you have enabled the `direct` syntax.
+      # @note This is only available when you have enabled the `should` syntax.
 
       # @method as_null_object
       # Tells the object to respond to all messages. If specific stub values
       # are declared, they'll work as expected. If not, the receiver is
       # returned.
       #
-      # @note This is only available when you have enabled the `direct` syntax.
+      # @note This is only available when you have enabled the `should` syntax.
 
       # @method null_object?
       # Returns true if this object has received `as_null_object`
       #
-      # @note This is only available when you have enabled the `direct` syntax.
+      # @note This is only available when you have enabled the `should` syntax.
 
       # @method any_instance
       # Used to set stubs and message expectations on any instance of a given
@@ -265,7 +265,7 @@ module RSpec
       #
       # @return [Recorder]
       #
-      # @note This is only available when you have enabled the `direct` syntax.
+      # @note This is only available when you have enabled the `should` syntax.
 
       # @method expect
       # Used to wrap an object in preparation for setting a mock expectation
@@ -277,7 +277,7 @@ module RSpec
       #
       # @note This method is usually provided by rspec-expectations, unless
       #   you are using rspec-mocks w/o rspec-expectations, in which case it
-      #   is only made available if you enable the `wrapped` syntax.
+      #   is only made available if you enable the `expect` syntax.
 
       # @method allow
       # Used to wrap an object in preparation for stubbing a method
@@ -287,7 +287,7 @@ module RSpec
       #
       #   allow(dbl).to receive(:foo).with(5).and_return(:return_value)
       #
-      # @note This is only available when you have enabled the `wrapped` syntax.
+      # @note This is only available when you have enabled the `expect` syntax.
 
       # @method expect_any_instance_of
       # Used to wrap a class in preparation for setting a mock expectation
@@ -297,7 +297,7 @@ module RSpec
       #
       #   expect_any_instance_of(MyClass).to receive(:foo)
       #
-      # @note This is only available when you have enabled the `wrapped` syntax.
+      # @note This is only available when you have enabled the `expect` syntax.
 
       # @method allow_any_instance_of
       # Used to wrap a class in preparation for stubbing a method
@@ -307,7 +307,7 @@ module RSpec
       #
       #   allow_any_instance_of(MyClass).to receive(:foo)
       #
-      # @note This is only available when you have enabled the `wrapped` syntax.
+      # @note This is only available when you have enabled the `expect` syntax.
 
       # @method receive
       # Used to specify a message that you expect or allow an object
@@ -320,7 +320,7 @@ module RSpec
       #
       #   expect(obj).to receive(:hello).with("world").exactly(3).times
       #
-      # @note This is only available when you have enabled the `wrapped` syntax.
+      # @note This is only available when you have enabled the `expect` syntax.
     end
   end
 end

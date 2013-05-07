@@ -3,7 +3,7 @@ require 'spec_helper'
 module RSpec
   module Mocks
     describe Matchers::Receive do
-      include_context "with syntax", :wrapped
+      include_context "with syntax", :expect
 
       def verify_all
         ::RSpec::Mocks.space.verify_all
@@ -53,7 +53,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "a wrapped allowance" do |*options|
+      shared_examples_for "an expect syntax allowance" do |*options|
         include_examples "a receive matcher", *options
 
         it 'does not expect the message to be received' do
@@ -62,7 +62,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "a wrapped negative allowance" do
+      shared_examples_for "an expect syntax negative allowance" do
         it 'is disabled since this expression is confusing' do
           expect {
             wrapped.not_to receive(:foo)
@@ -74,7 +74,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "a wrapped expectation" do |*options|
+      shared_examples_for "an expect syntax expectation" do |*options|
         include_examples "a receive matcher", *options
 
         it 'sets up a message expectation that passes if the message is received' do
@@ -102,7 +102,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "a wrapped negative expectation" do
+      shared_examples_for "an expect syntax negative expectation" do
         it 'sets up a negaive message expectation that passes if the message is not received' do
           wrapped.not_to receive(:foo)
           verify_all
@@ -139,20 +139,20 @@ module RSpec
       end
 
       describe "allow(...).to receive" do
-        include_examples "a wrapped allowance" do
+        include_examples "an expect syntax allowance" do
           let(:receiver) { double }
           let(:wrapped)  { allow(receiver) }
         end
       end
 
       describe "allow(...).not_to receive" do
-        include_examples "a wrapped negative allowance" do
+        include_examples "an expect syntax negative allowance" do
           let(:wrapped) { allow(double) }
         end
       end
 
       describe "allow_any_instance_of(...).to receive" do
-        include_examples "a wrapped allowance" do
+        include_examples "an expect syntax allowance" do
           let(:klass)    { Class.new }
           let(:wrapped)  { allow_any_instance_of(klass) }
           let(:receiver) { klass.new }
@@ -160,20 +160,20 @@ module RSpec
       end
 
       describe "allow_any_instance_of(...).not_to receive" do
-        include_examples "a wrapped negative allowance" do
+        include_examples "an expect syntax negative allowance" do
           let(:wrapped) { allow_any_instance_of(Class.new) }
         end
       end
 
       describe "expect(...).to receive" do
-        include_examples "a wrapped expectation", :allow_other_matchers do
+        include_examples "an expect syntax expectation", :allow_other_matchers do
           let(:receiver) { double }
           let(:wrapped)  { expect(receiver) }
         end
       end
 
       describe "expect_any_instance_of(...).to receive" do
-        include_examples "a wrapped expectation", :does_not_report_line_num do
+        include_examples "an expect syntax expectation", :does_not_report_line_num do
           let(:klass)    { Class.new }
           let(:wrapped)  { expect_any_instance_of(klass) }
           let(:receiver) { klass.new }
@@ -181,14 +181,14 @@ module RSpec
       end
 
       describe "expect(...).not_to receive" do
-        include_examples "a wrapped negative expectation" do
+        include_examples "an expect syntax negative expectation" do
           let(:receiver) { double }
           let(:wrapped)  { expect(receiver) }
         end
       end
 
       describe "expect_any_instance_of(...).not_to receive" do
-        include_examples "a wrapped negative expectation" do
+        include_examples "an expect syntax negative expectation" do
           let(:klass)    { Class.new }
           let(:wrapped)  { expect_any_instance_of(klass) }
           let(:receiver) { klass.new }
@@ -260,13 +260,13 @@ module RSpec
 
         it 'can toggle the available syntax' do
           expect(framework.new).to respond_to(:expect)
-          RSpec::Mocks.configuration.syntax = :direct
+          RSpec::Mocks.configuration.syntax = :should
           expect(framework.new).not_to respond_to(:expect)
-          RSpec::Mocks.configuration.syntax = :wrapped
+          RSpec::Mocks.configuration.syntax = :expect
           expect(framework.new).to respond_to(:expect)
         end
 
-        after { RSpec::Mocks.configuration.syntax = :wrapped }
+        after { RSpec::Mocks.configuration.syntax = :expect }
       end
 
       context "when rspec-expectations is included in the test framework first" do

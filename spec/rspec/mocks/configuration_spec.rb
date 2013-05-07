@@ -31,84 +31,84 @@ module RSpec
 
         around(:each) { |ex| sandboxed(&ex) }
         let(:dbl) { double }
-        let(:direct_methods)       { [:should_receive, :stub, :should_not_receive] }
-        let(:direct_class_methods) { [:any_instance] }
-        let(:wrapped_methods)      { [:receive, :allow, :expect_any_instance_of, :allow_any_instance_of] }
+        let(:should_methods)       { [:should_receive, :stub, :should_not_receive] }
+        let(:should_class_methods) { [:any_instance] }
+        let(:expect_methods)      { [:receive, :allow, :expect_any_instance_of, :allow_any_instance_of] }
 
-        it 'defaults to only enabling the :direct syntax' do
-          expect(dbl).to respond_to(*direct_methods)
-          expect(self).not_to respond_to(*wrapped_methods)
+        it 'defaults to only enabling the :should syntax' do
+          expect(dbl).to respond_to(*should_methods)
+          expect(self).not_to respond_to(*expect_methods)
         end
 
-        context 'when configured to :wrapped' do
-          before { configure_syntax :wrapped }
+        context 'when configured to :expect' do
+          before { configure_syntax :expect }
 
-          it 'removes the direct methods from every object' do
-            expect(dbl).not_to respond_to(*direct_methods)
+          it 'removes the should methods from every object' do
+            expect(dbl).not_to respond_to(*should_methods)
           end
 
           it 'removes `any_instance` from every class' do
-            expect(Class.new).not_to respond_to(*direct_class_methods)
+            expect(Class.new).not_to respond_to(*should_class_methods)
           end
 
-          it 'adds the wrapped methods to the example group context' do
-            expect(self).to respond_to(*wrapped_methods)
+          it 'adds the expect methods to the example group context' do
+            expect(self).to respond_to(*expect_methods)
           end
 
-          it 'reports that the syntax is :wrapped' do
-            expect(configured_syntax).to eq([:wrapped])
+          it 'reports that the syntax is :expect' do
+            expect(configured_syntax).to eq([:expect])
           end
 
           it 'is a no-op when configured a second time' do
-            expect(Syntax.default_direct_syntax_host).not_to receive(:method_undefined)
+            expect(Syntax.default_should_syntax_host).not_to receive(:method_undefined)
             expect(::RSpec::Mocks::ExampleMethods).not_to receive(:method_added)
-            configure_syntax :wrapped
+            configure_syntax :expect
           end
         end
 
-        context 'when configured to :direct' do
-          before { configure_syntax :direct }
+        context 'when configured to :should' do
+          before { configure_syntax :should }
 
-          it 'adds the direct methods to every object' do
-            expect(dbl).to respond_to(*direct_methods)
+          it 'adds the should methods to every object' do
+            expect(dbl).to respond_to(*should_methods)
           end
 
           it 'adds `any_instance` to every class' do
-            expect(Class.new).to respond_to(*direct_class_methods)
+            expect(Class.new).to respond_to(*should_class_methods)
           end
 
-          it 'removes the wrapped methods from the example group context' do
-            expect(self).not_to respond_to(*wrapped_methods)
+          it 'removes the expect methods from the example group context' do
+            expect(self).not_to respond_to(*expect_methods)
           end
 
-          it 'reports that the syntax is :direct' do
-            expect(configured_syntax).to eq([:direct])
+          it 'reports that the syntax is :should' do
+            expect(configured_syntax).to eq([:should])
           end
 
           it 'is a no-op when configured a second time' do
-            Syntax.default_direct_syntax_host.should_not_receive(:method_added)
+            Syntax.default_should_syntax_host.should_not_receive(:method_added)
             ::RSpec::Mocks::ExampleMethods.should_not_receive(:method_undefined)
-            configure_syntax :direct
+            configure_syntax :should
           end
         end
 
-        context 'when configured to [:direct, :wrapped]' do
-          before { configure_syntax [:direct, :wrapped] }
+        context 'when configured to [:should, :expect]' do
+          before { configure_syntax [:should, :expect] }
 
-          it 'adds the direct methods to every object' do
-            expect(dbl).to respond_to(*direct_methods)
+          it 'adds the should methods to every object' do
+            expect(dbl).to respond_to(*should_methods)
           end
 
           it 'adds `any_instance` to every class' do
-            expect(Class.new).to respond_to(*direct_class_methods)
+            expect(Class.new).to respond_to(*should_class_methods)
           end
 
-          it 'adds the wrapped methods to the example group context' do
-            expect(self).to respond_to(*wrapped_methods)
+          it 'adds the expect methods to the example group context' do
+            expect(self).to respond_to(*expect_methods)
           end
 
           it 'reports that both syntaxes are enabled' do
-            expect(configured_syntax).to eq([:direct, :wrapped])
+            expect(configured_syntax).to eq([:should, :expect])
           end
         end
       end
