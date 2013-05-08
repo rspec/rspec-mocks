@@ -1,6 +1,6 @@
-Feature: the expect syntax for message expectations
+Feature: expect message using `should_receive`
 
-  Use `expect(object).to receive(:message)` to set an expectation that
+  Use `object.should_receive(:message)` to set an expectation that
   `object` should receive the message `:message` before the example is
   completed.
 
@@ -9,7 +9,7 @@ Feature: the expect syntax for message expectations
       """ruby
       RSpec.configure do |config|
         config.mock_with :rspec do |mocks|
-          mocks.syntax = :expect
+          mocks.syntax = :should
         end
       end
       """
@@ -26,7 +26,7 @@ Feature: the expect syntax for message expectations
             logger = double("logger")
             account = Account.new logger
 
-            expect(logger).to receive(:account_closed)
+            logger.should_receive(:account_closed)
 
             account.close
           end
@@ -56,7 +56,7 @@ Feature: the expect syntax for message expectations
             logger = double("logger")
             account = Account.new logger
 
-            expect(logger).to receive(:account_closed).with(account)
+            logger.should_receive(:account_closed).with(account)
 
             account.close
           end
@@ -83,7 +83,7 @@ Feature: the expect syntax for message expectations
         context "specified in a block" do
           it "returns the specified value" do
             object = double("object")
-            expect(object).to receive(:message) { :return_value }
+            object.should_receive(:message) { :return_value }
             object.message.should eq(:return_value)
           end
         end
@@ -91,7 +91,7 @@ Feature: the expect syntax for message expectations
         context "specified with and_return" do
           it "returns the specified value" do
             object = double("object")
-            expect(object).to receive(:message).and_return(:return_value)
+            object.should_receive(:message).and_return(:return_value)
             object.message.should eq(:return_value)
           end
         end
@@ -108,7 +108,7 @@ Feature: the expect syntax for message expectations
       describe "a message expectation with a count" do
         it "passes if the expected number of calls happen" do
           string = "hi"
-          expect(string).to receive(:length).exactly(3).times
+          string.should_receive(:length).exactly(3).times
 
           3.times { string.length }
         end
