@@ -49,7 +49,7 @@ module RSpec
       # nil.  This is to prevent false-positives and to catch potential bugs
       # early on.
       def allow_message_expectations_on_nil
-        Proxy.allow_message_expectations_on_nil
+        RSpec::Mocks.space.proxy_for(nil).warn_about_expectations = false
       end
 
       # Stubs the named constant with the given value.

@@ -154,7 +154,6 @@ module RSpec
 
       # @private
       def configure_method
-        warn_if_nil_class
         @original_visibility = visibility_for_method
         @method_stasher.stash unless @method_is_proxied
         define_proxy_method
@@ -202,7 +201,6 @@ module RSpec
 
       # @private
       def reset
-        reset_nil_expectations_warning
         restore_original_method
         clear
       end
@@ -259,26 +257,12 @@ module RSpec
       end
 
       # @private
-      def proxy_for_nil_class?
-        NilClass === @object
-      end
-
-      # @private
-      def warn_if_nil_class
-        if proxy_for_nil_class? & RSpec::Mocks::Proxy.warn_about_expectations_on_nil
-          Kernel.warn("An expectation of :#{@method_name} was set on nil. Called from #{caller[4]}. Use allow_message_expectations_on_nil to disable warnings.")
-        end
-      end
-
-      # @private
       def raise_method_not_stubbed_error
         raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
       end
 
       # @private
-      def reset_nil_expectations_warning
-        RSpec::Mocks::Proxy.warn_about_expectations_on_nil = true if proxy_for_nil_class?
-      end
+      IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
     end
   end
 end

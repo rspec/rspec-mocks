@@ -63,7 +63,7 @@ module RSpec
           violated
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
-          %Q|(Double "test double").not_expected(no args)\n    expected: 0 times\n    received: 1 time|
+          %Q|(Double "test double").not_expected(no args)\n    expected: 0 times with any arguments\n    received: 1 time|
         )
       end
 
@@ -74,7 +74,18 @@ module RSpec
           violated
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
-          %Q|(Double "test double").not_expected("unexpected text")\n    expected: 0 times\n    received: 1 time|
+          %Q|(Double "test double").not_expected("unexpected text")\n    expected: 0 times with arguments: ("unexpected text")\n    received: 1 time with arguments: ("unexpected text")|
+        )
+      end
+
+      it "fails when array arguments do not match" do
+        @double.should_not_receive(:not_expected).with(["do not want"])
+        expect {
+          @double.not_expected(["do not want"])
+          violated
+        }.to raise_error(
+          RSpec::Mocks::MockExpectationError,
+          %Q|(Double "test double").not_expected(["do not want"])\n    expected: 0 times with arguments: (["do not want"])\n    received: 1 time with arguments: (["do not want"])|
         )
       end
 
@@ -217,7 +228,7 @@ module RSpec
         @double.should_receive(:not_expected).never
         expect { @double.not_expected }.
           to raise_error(RSpec::Mocks::MockExpectationError,
-                         %Q|(Double "test double").not_expected(no args)\n    expected: 0 times\n    received: 1 time|
+                         %Q|(Double "test double").not_expected(no args)\n    expected: 0 times with any arguments\n    received: 1 time|
         )
       end
 
@@ -483,7 +494,6 @@ module RSpec
         @double.foobar
         verify @double
 
-        expect { @double.foobar }.to_not raise_error(NameError)
         expect { @double.foobar }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 

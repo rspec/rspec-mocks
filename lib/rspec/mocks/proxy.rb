@@ -2,31 +2,6 @@ module RSpec
   module Mocks
     # @private
     class Proxy
-      class << self
-        # @private
-        def warn_about_expectations_on_nil
-          defined?(@warn_about_expectations_on_nil) ? @warn_about_expectations_on_nil : true
-        end
-
-        # @private
-        def warn_about_expectations_on_nil=(new_value)
-          @warn_about_expectations_on_nil = new_value
-        end
-
-        # @private
-        def allow_message_expectations_on_nil
-          @warn_about_expectations_on_nil = false
-
-          # ensure nil is verified even if an expectation is not set in the example
-          # otherwise the allowance would effect subsequent examples
-          RSpec::Mocks.space.ensure_registered(nil) unless RSpec::Mocks.space.nil?
-        end
-
-        # @private
-        def allow_message_expectations_on_nil?
-          !warn_about_expectations_on_nil
-        end
-      end
 
       # @private
       def initialize(object, name=nil, options={})
@@ -85,23 +60,30 @@ module RSpec
       def build_expectation(method_name)
         meth_double = method_double[method_name]
 
-        if meth_double.expectations.any?
-          @error_generator.raise_expectation_on_mocked_method(method_name)
-        end
-
-        unless null_object? || meth_double.stubs.any?
-          @error_generator.raise_expectation_on_unstubbed_method(method_name)
-        end
-
-        expectation = meth_double.build_expectation(
+        meth_double.build_expectation(
           @error_generator,
           @expectation_ordering
         )
+      end
 
-        yield expectation
+      # @private
+      def replay_received_message_on(expectation)
+        expected_method_name = expectation.message
+        meth_double = method_double[expected_method_name]
 
-        replay_received_message_on expectation
-        expectation
+        if meth_double.expectations.any?
+          @error_generator.raise_expectation_on_mocked_method(expected_method_name)
+        end
+
+        unless null_object? || meth_double.stubs.any?
+          @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
+        end
+
+        @messages_received.each do |(actual_method_name, args, _)|
+          if expectation.matches?(actual_method_name, *args)
+            expectation.invoke(nil)
+          end
+        end
       end
 
       # @private
@@ -234,15 +216,6 @@ module RSpec
       def find_almost_matching_stub(method_name, *args)
         method_double[method_name].stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
       end
-
-      def replay_received_message_on(expectation)
-        @messages_received.each do |(method_name, args, _)|
-          if expectation.matches?(method_name, *args)
-            expectation.invoke(nil)
-          end
-        end
-      end
-
     end
   end
 end

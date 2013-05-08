@@ -168,7 +168,9 @@ module RSpec
         if (@expected_received_count == 0 && !@at_least) || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += 1
           @failed_fast = true
-          @error_generator.raise_expectation_error(@message, @expected_received_count, @actual_received_count, expectation_count_type, *args)
+          #args are the args we actually received, @argument_list_matcher is the
+          #list of args we were expecting
+          @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *args)
         end
 
         @order_group.handle_order_constraint self
@@ -243,7 +245,7 @@ module RSpec
       # @private
       def generate_error
         if similar_messages.empty?
-          @error_generator.raise_expectation_error(@message, @expected_received_count, @actual_received_count, expectation_count_type, *expected_args)
+          @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *expected_args)
         else
           @error_generator.raise_similar_message_args_error(self, *@similar_messages)
         end
@@ -253,6 +255,11 @@ module RSpec
         return :at_least if @at_least
         return :at_most if @at_most
         return nil
+      end
+
+      # @private
+      def description
+        @error_generator.describe_expectation(@message, @expected_received_count, @actual_received_count, *expected_args)
       end
 
       def raise_out_of_order_error

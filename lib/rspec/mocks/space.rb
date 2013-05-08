@@ -49,8 +49,9 @@ module RSpec
       def proxy_for(object)
         id = id_for(object)
         proxies.fetch(id) do
-          proxies[id] = if TestDouble === object
-                          object.__build_mock_proxy
+          proxies[id] = case object
+                        when NilClass   then ProxyForNil.new
+                        when TestDouble then object.__build_mock_proxy
                         else
                           Proxy.new(object)
                         end

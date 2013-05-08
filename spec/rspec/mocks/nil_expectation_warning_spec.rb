@@ -43,18 +43,24 @@ module RSpec
     end
 
     describe "#allow_message_expectations_on_nil" do
-      it "does not effect subsequent examples" do
-        example_group = empty_example_group
+      it "does not affect subsequent examples" do
+        example_group = ::RSpec::Core::ExampleGroup.describe
+        reporter      = ::RSpec.configuration.reporter
         example_group.it("when called in one example that doesn't end up setting an expectation on nil") do
                         allow_message_expectations_on_nil
                       end
-        example_group.it("should not effect the next exapmle ran") do
+        example_group.it("should not effect the next example ran") do
                         Kernel.should_receive(:warn)
                         nil.should_receive(:foo)
                         nil.foo
                       end
 
-        example_group
+        expect(example_group.run reporter).to eq true
+      end
+
+      it 'doesnt error when marshalled' do
+        allow_message_expectations_on_nil
+        expect(Marshal.dump(nil)).to eq Marshal.dump_without_mocks(nil)
       end
     end
   end

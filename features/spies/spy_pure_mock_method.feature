@@ -61,3 +61,16 @@ Feature: Spy on a stubbed method on a pure mock
     When I run `rspec failed_message_expectations_spec.rb`
     Then the output should contain "expected: (:expected, :arguments)"
     And the output should contain "got: (:unexpected)"
+
+  Scenario: generate a spy message
+    Given a file named "spy_message_spec.rb" with:
+      """ruby
+      describe "have_received" do
+      subject(:invitation) { double('invitation', :deliver => true) }
+        before { invitation.deliver }
+
+        it { should have_received(:deliver) }
+      end
+      """
+    When I run `rspec --format documentation spy_message_spec.rb`
+    Then the output should contain "should have received deliver"
