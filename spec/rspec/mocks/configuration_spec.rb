@@ -35,9 +35,9 @@ module RSpec
         let(:should_class_methods) { [:any_instance] }
         let(:expect_methods)      { [:receive, :allow, :expect_any_instance_of, :allow_any_instance_of] }
 
-        it 'defaults to only enabling the :should syntax' do
+        it 'defaults to enabling both the :should and :expect syntaxes' do
           expect(dbl).to respond_to(*should_methods)
-          expect(self).not_to respond_to(*expect_methods)
+          expect(self).to respond_to(*expect_methods)
         end
 
         context 'when configured to :expect' do

@@ -49,7 +49,7 @@ module RSpec
       @configuration ||= Configuration.new
     end
 
-    configuration.syntax = :should
+    configuration.syntax = [:should, :expect]
   end
 end
 

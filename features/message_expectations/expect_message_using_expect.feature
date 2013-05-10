@@ -4,21 +4,10 @@ Feature: expect message using `expect`
   `object` should receive the message `:message` before the example is
   completed.
 
-  Background:
-    Given a file named "spec/spec_helper.rb" with:
-      """ruby
-      RSpec.configure do |config|
-        config.mock_with :rspec do |mocks|
-          mocks.syntax = :expect
-        end
-      end
-      """
-
   Scenario: expect a message
     Given a file named "spec/account_spec.rb" with:
       """ruby
       require "account"
-      require "spec_helper"
 
       describe Account do
         context "when closed" do
@@ -48,7 +37,6 @@ Feature: expect message using `expect`
     Given a file named "spec/account_spec.rb" with:
       """ruby
       require "account"
-      require "spec_helper"
 
       describe Account do
         context "when closed" do
@@ -77,7 +65,6 @@ Feature: expect message using `expect`
   Scenario: provide a return value
     Given a file named "spec/message_expectation_spec.rb" with:
       """ruby
-      require "spec_helper"
 
       describe "a message expectation with a return value" do
         context "specified in a block" do
@@ -103,8 +90,6 @@ Feature: expect message using `expect`
   Scenario: expect a specific number of calls
     Given a file named "spec/message_count_spec.rb" with:
       """ruby
-      require "spec_helper"
-
       describe "a message expectation with a count" do
         it "passes if the expected number of calls happen" do
           string = "hi"
