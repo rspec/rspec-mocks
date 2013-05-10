@@ -8,8 +8,8 @@ module RSpec
         end
 
         def initialize(*args, &block)
-          record(*args, &block)
           @expectation_fulfilled = false
+          super
         end
 
         private
@@ -19,28 +19,26 @@ module RSpec
 
       # @api private
       class PositiveExpectationChain < ExpectationChain
-        def initialize(*args, &block)
-          super(:should_receive, *args, &block)
-        end
 
         private
 
+        def create_message_expectation_on(instance)
+          proxy = ::RSpec::Mocks.proxy_for(instance)
+          expected_from = IGNORED_BACKTRACE_LINE
+          proxy.add_message_expectation(expected_from, *@expectation_args, &@expectation_block)
+        end
+
         def invocation_order
           @invocation_order ||= {
-            :should_receive => [nil],
-            :with => [:should_receive],
-            :and_return => [:with, :should_receive],
-            :and_raise => [:with, :should_receive]
+            :with => [nil],
+            :and_return => [:with, nil],
+            :and_raise => [:with, nil]
           }
         end
       end
 
       # @api private
       class NegativeExpectationChain < ExpectationChain
-        def initialize(*args, &block)
-          super(:should_not_receive, *args, &block)
-        end
-
         # `should_not_receive` causes a failure at the point in time the
         # message is wrongly received, rather than during `rspec_verify`
         # at the end of an example. Thus, we should always consider a
@@ -52,12 +50,17 @@ module RSpec
 
         private
 
+        def create_message_expectation_on(instance)
+          proxy = ::RSpec::Mocks.proxy_for(instance)
+          expected_from = IGNORED_BACKTRACE_LINE
+          proxy.add_negative_message_expectation(expected_from, *@expectation_args, &@expectation_block)
+        end
+
         def invocation_order
           @invocation_order ||= {
-            :should_not_receive => [nil],
-            :with => [:should_receive],
-            :and_return => [:with, :should_receive],
-            :and_raise => [:with, :should_receive]
+            :with => [nil],
+            :and_return => [:with, nil],
+            :and_raise => [:with, nil]
           }
         end
       end

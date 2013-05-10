@@ -4,8 +4,6 @@ module RSpec
     # includes this module, and it is provided for cases where you want a
     # pure test double without subclassing RSpec::Mocks::Mock.
     module TestDouble
-      include Methods
-
       # Extends the TestDouble module onto the given object and
       # initializes it as a test double.
       #
@@ -23,6 +21,18 @@ module RSpec
       # messages only)
       def initialize(name=nil, stubs_and_options={})
         __initialize_as_test_double(name, stubs_and_options)
+      end
+
+      # Tells the object to respond to all messages. If specific stub values
+      # are declared, they'll work as expected. If not, the receiver is
+      # returned.
+      def as_null_object
+        __mock_proxy.as_null_object
+      end
+
+      # Returns true if this object has received `as_null_object`
+      def null_object?
+        __mock_proxy.null_object?
       end
 
       # This allows for comparing the mock to other objects that proxy such as

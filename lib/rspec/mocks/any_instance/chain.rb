@@ -2,6 +2,11 @@ module RSpec
   module Mocks
     module AnyInstance
       class Chain
+        def initialize(*args, &block)
+          @expectation_args  = args
+          @expectation_block = block
+        end
+
         class << self
           private
 
@@ -38,8 +43,9 @@ module RSpec
 
         # @private
         def playback!(instance)
-          messages.inject(instance) do |_instance, message|
-            _instance.__send__(*message.first, &message.last)
+          message_expectation = create_message_expectation_on(instance)
+          messages.inject(message_expectation) do |object, message|
+            object.__send__(*message.first, &message.last)
           end
         end
 

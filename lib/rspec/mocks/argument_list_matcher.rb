@@ -73,8 +73,12 @@ module RSpec
         return ArgumentMatchers::EqualityProxy.new(arg)
       end
 
-      def is_matcher?(obj)
-        !obj.null_object? & obj.respond_to?(:matches?) & [:failure_message_for_should, :failure_message].any? { |m| obj.respond_to?(m) }
+      def is_matcher?(object)
+        return false if object.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
+
+        [:failure_message_for_should, :failure_message].any? do |msg|
+          object.respond_to?(msg)
+        end && object.respond_to?(:matches?)
       end
 
       def block_passes?(*args)
