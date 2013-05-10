@@ -104,8 +104,8 @@ module RSpec
       end
     end
 
-    describe "when using the :wrapped syntax" do
-      include_context "with syntax", :wrapped
+    describe "when using the :expect syntax" do
+      include_context "with syntax", :expect
 
       it 'still supports null object doubles' do
         obj = double("foo").as_null_object
