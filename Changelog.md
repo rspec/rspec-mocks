@@ -20,6 +20,8 @@ Enhancements:
 * Make `with` style receive expectations print the args they were expecting, and
   the args that they got (Sam Phippen)
 * Fix some warnings seen under ruby 2.0.0p0 (Sam Phippen).
+* Add a new `:expect` syntax for message expectations
+  (Myron Marston and Sam Phippen).
 
 Bug fixes
 

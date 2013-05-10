@@ -24,7 +24,6 @@ RSpec.configure do |config|
   config.mock_with :rspec
   config.color_enabled = true
   config.order = :random
-  config.include(RSpec::Mocks::Methods)
   config.run_all_when_everything_filtered = true
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.filter_run_including :focus
@@ -44,5 +43,18 @@ RSpec.configure do |config|
   end
 
   config.include VerifyAndResetHelpers
+end
+
+shared_context "with syntax" do |syntax|
+  orig_syntax = nil
+
+  before(:all) do
+    orig_syntax = RSpec::Mocks.configuration.syntax
+    RSpec::Mocks.configuration.syntax = syntax
+  end
+
+  after(:all) do
+    RSpec::Mocks.configuration.syntax = orig_syntax
+  end
 end
 
