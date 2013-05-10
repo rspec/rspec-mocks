@@ -3,7 +3,7 @@ require 'spec_helper'
 module RSpec
   module Mocks
     describe "Methods added to every object" do
-      include_context "with syntax", :wrapped
+      include_context "with syntax", :expect
 
       def added_methods
         host = Class.new
