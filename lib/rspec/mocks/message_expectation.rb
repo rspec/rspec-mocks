@@ -353,6 +353,9 @@ MSG
 
       # Allows an expected message to be received any number of times.
       def any_number_of_times(&block)
+        RSpec::Mocks.warn_deprecation <<-MSG
+DEPRECATION: `#any_number_of_times` is deprecated, use `#stub` instead. Called from #{caller(0)[1]}
+MSG
         @implementation = block if block
         @expected_received_count = :any
         self
