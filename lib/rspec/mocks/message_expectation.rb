@@ -315,6 +315,12 @@ module RSpec
       #
       #   dealer.should_receive(:deal_card).at_least(9).times
       def at_least(n, &block)
+        if n == 0
+          RSpec::Mocks.warn_deprecation <<-MSG
+DEPRECATION: at_least(0) is deprecated. Use #stub instead of #should_receive. Called from #{caller(0)[1]}
+MSG
+        end
+
         @implementation = block if block
         set_expected_received_count :at_least, n
         self
