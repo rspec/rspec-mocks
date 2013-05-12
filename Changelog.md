@@ -44,6 +44,7 @@ Deprecations
   have only one term (Michi Huber).
 * Deprecate `stub!` and `unstub!` in favor of `stub` and `unstub`
   (Jon Rowe).
+* Deprecate `at_least(0).times` and `any_number_of_times` (Michi Huber).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.2...v2.13.0)
