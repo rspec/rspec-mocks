@@ -9,6 +9,7 @@ module RSpec
         def initialize(method_name)
           @method_name = method_name
           @constraints = []
+          @subject = nil
         end
 
         def matches?(subject)
