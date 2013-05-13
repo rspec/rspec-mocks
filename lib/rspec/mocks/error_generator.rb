@@ -23,21 +23,21 @@ module RSpec
       # @private
       def raise_unexpected_message_args_error(expectation, *args)
         expected_args = format_args(*expectation.expected_args)
-        actual_args = format_args(*args)
+        actual_args = format_received_args(*args)
         __raise "#{intro} received #{expectation.message.inspect} with unexpected arguments\n  expected: #{expected_args}\n       got: #{actual_args}"
       end
 
       # @private
       def raise_missing_default_stub_error(expectation, *args)
         expected_args = format_args(*expectation.expected_args)
-        actual_args = format_args(*args)
+        actual_args = format_received_args(*args)
         __raise "#{intro} received #{expectation.message.inspect} with unexpected arguments\n  expected: #{expected_args}\n       got: #{actual_args}\n Please stub a default value first if message might be received with other args as well. \n"
       end
 
       # @private
       def raise_similar_message_args_error(expectation, *args_for_multiple_calls)
         expected_args = format_args(*expectation.expected_args)
-        actual_args = args_for_multiple_calls.collect {|a| format_args(*a)}.join(", ")
+        actual_args = args_for_multiple_calls.collect {|a| format_received_args(*a)}.join(", ")
         __raise "#{intro} received #{expectation.message.inspect} with unexpected arguments\n  expected: #{expected_args}\n       got: #{actual_args}"
       end
 
@@ -147,6 +147,14 @@ module RSpec
 
       def arg_list(*args)
         args.collect {|arg| arg.respond_to?(:description) ? arg.description : arg.inspect}.join(", ")
+      end
+
+      def format_received_args(*args)
+        args.empty? ? "(no args)" : "(" + received_arg_list(*args) + ")"
+      end
+
+      def received_arg_list(*args)
+        args.collect(&:inspect).join(", ")
       end
 
       def count_message(count, expectation_count_type=nil)
