@@ -63,8 +63,18 @@ module RSpec
         # will handle this message or not...but we can at least try.
         # If it's not handled, a `NoMethodError` will be raised, just
         # like normally.
-        Proc.new do |*args, &block|
-          @object.__send__(:method_missing, @method_name, *args, &block)
+        if RUBY_VERSION == "1.8.6"
+          eval """
+          Proc.new do |*args|
+            @object.__send__(:method_missing, @method_name, *args)
+          end
+          """
+        else
+          eval """
+          Proc.new do |*args, &block|
+            @object.__send__(:method_missing, @method_name, *args, &block)
+          end
+          """
         end
       end
 
