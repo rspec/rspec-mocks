@@ -89,6 +89,22 @@ module RSpec
           @double.msg :no_msg_for_you
         end.to raise_error(RSpec::Expectations::ExpectationNotMetError, /expected: :received.*\s*.*got: :no_msg_for_you/)
       end
+
+      it "fails with sensible message when args respond to #description" do
+        arg = Class.new do
+          def description
+          end
+
+          def inspect
+            "my_thing"
+          end
+        end.new
+
+        expect do
+          @double.should_receive(:msg).with(3)
+          @double.msg arg
+        end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (3)\n       got: (my_thing)")
+      end
     end
   end
 end

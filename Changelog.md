@@ -36,6 +36,7 @@ Bug fixes
 * Fix `Marshal.dump` extension so that it correctly handles nil.
   (Luke Imhoff, Jon Rowe)
 * Fix isolation of `allow_message_expectations_on_nil` (Jon Rowe)
+* Use inspect to format actual arguments on expectations in failure messages (#280, Ben Langfeld)
 
 Deprecations
 
