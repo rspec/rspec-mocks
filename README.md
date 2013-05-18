@@ -50,7 +50,7 @@ This is particularly nice when providing a list of test doubles to a method
 that iterates through them:
 
 ```ruby
-order.calculate_total_price(stub(:price => 1.99),stub(:price => 2.99))
+order.calculate_total_price(double(:price => 1.99),double(:price => 2.99))
 ```
 
 ## Consecutive return values
