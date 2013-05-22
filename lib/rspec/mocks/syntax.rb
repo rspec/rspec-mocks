@@ -60,9 +60,11 @@ module RSpec
             ::RSpec::Mocks.proxy_for(self).received_message?(message, *args, &block)
           end
 
-          Class.class_eval do
-            def any_instance
-              ::RSpec::Mocks.any_instance_recorder_for(self)
+          unless Class.respond_to? :any_instance
+            Class.class_eval do
+              def any_instance
+                ::RSpec::Mocks.any_instance_recorder_for(self)
+              end
             end
           end
         end
