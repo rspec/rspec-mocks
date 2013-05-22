@@ -679,6 +679,8 @@ module RSpec
             end
 
             it "passes for a non-zero number of invocations" do
+              RSpec.should_receive(:warn_deprecation).with(/any_number_of_times/)
+
               klass.any_instance.should_receive(:foo).any_number_of_times
               instance = klass.new
               instance.foo

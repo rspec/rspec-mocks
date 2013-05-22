@@ -98,10 +98,10 @@ module RSpec
       end
 
       context "when sent with 0" do
-        before { RSpec::Mocks.stub(:warn_deprecation) }
+        before { RSpec.stub(:warn_deprecation) }
 
         it "outputs a deprecation warning" do
-          RSpec::Mocks.should_receive(:warn_deprecation).with(/at_least\(0\) is deprecated/)
+          RSpec.should_receive(:warn_deprecation).with(/at_least\(0\) with should_receive is deprecated/)
           @double.should_receive(:do_something).at_least(0).times
         end
 

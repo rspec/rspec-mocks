@@ -43,8 +43,8 @@ module RSpec
       end
 
       it "warns when should_not_receive is followed by and_return" do
-        RSpec::Mocks.should_receive(:warn_deprecation).
-          with(/`and_return` with `should_not_receive` is deprecated/)
+        RSpec.should_receive(:warn_deprecation).
+          with(/and_return with should_not_receive is deprecated/)
 
         @double.should_not_receive(:do_something).and_return(1)
       end
@@ -623,6 +623,8 @@ module RSpec
       end
 
       it "calls the block after #any_number_of_times" do
+        RSpec.should_receive(:warn_deprecation).with(/any_number_of_times/)
+
         @double.should_receive(:foo).any_number_of_times { add_call }
 
         (1..7).each { @double.foo }

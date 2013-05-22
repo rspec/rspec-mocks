@@ -39,7 +39,7 @@ module RSpec
 
       describe "using stub!" do
         it "warns of deprecation but still returns the declared value when message is received" do
-          RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #stub instead of #stub!/)
+          RSpec.should_receive(:warn_deprecation).with(/DEPRECATION: stub! is deprecated.*use stub instead/m)
           @instance.stub!(:msg).and_return(:return_value)
           expect(@instance.msg).to equal(:return_value)
           verify @instance
@@ -57,7 +57,7 @@ module RSpec
       describe 'using unstub!' do
         it 'removes the message stub but warns about deprecation' do
           @instance.stub(:msg)
-          RSpec::Mocks.should_receive(:warn_deprecation).with(/DEPRECATION: use #unstub instead of #unstub!/)
+          RSpec.should_receive(:warn_deprecation).with(/DEPRECATION: unstub! is deprecated.*use unstub instead/m)
           @instance.unstub!(:msg)
           expect { @instance.msg }.to raise_error NoMethodError
         end
