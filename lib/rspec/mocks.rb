@@ -30,14 +30,6 @@ module RSpec
       end
 
       # @api private
-      # Used internally by RSpec to display custom deprecation warnings.  This
-      # is also defined in rspec-core, but we can't assume it's loaded since
-      # rspec-expectations should be usable w/o rspec-core.
-      def warn_deprecation(message)
-        warn(message)
-      end
-
-      # @api private
       KERNEL_METHOD_METHOD = ::Kernel.instance_method(:method)
 
       # @api private
