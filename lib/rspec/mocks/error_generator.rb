@@ -5,7 +5,7 @@ module RSpec
       attr_writer :opts
 
       def initialize(target, name, options={})
-        @declared_as = options[:__declared_as] || 'Mock'
+        @declared_as = (options && options[:__declared_as]) || 'Mock'
         @target = target
         @name = name
       end
