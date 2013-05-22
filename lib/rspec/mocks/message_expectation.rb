@@ -316,9 +316,7 @@ module RSpec
       #   dealer.should_receive(:deal_card).at_least(9).times
       def at_least(n, &block)
         if n == 0
-          RSpec::Mocks.warn_deprecation <<-MSG
-DEPRECATION: at_least(0) is deprecated. Use #stub instead of #should_receive. Called from #{caller(0)[1]}
-MSG
+          Rspec.deprecate "at_least(0) with should_receive", "stub"
         end
 
         @implementation = block if block
@@ -353,9 +351,7 @@ MSG
 
       # Allows an expected message to be received any number of times.
       def any_number_of_times(&block)
-        RSpec::Mocks.warn_deprecation <<-MSG
-DEPRECATION: `#any_number_of_times` is deprecated, use `#stub` instead. Called from #{caller(0)[1]}
-MSG
+        RSpec.deprecate "any_number_of_times", "stub"
         @implementation = block if block
         @expected_received_count = :any
         self
@@ -459,10 +455,7 @@ MSG
       # no-op
       # @deprecated and_return is not supported with negative message expectations.
       def and_return(*)
-        RSpec::Mocks.warn_deprecation <<-MSG
-
-DEPRECATION: `and_return` with `should_not_receive` is deprecated. Called from #{caller(0)[1]}
-MSG
+        RSpec.deprecate "and_return with should_not_receive"
       end
 
       # @private

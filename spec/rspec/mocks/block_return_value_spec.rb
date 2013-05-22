@@ -33,7 +33,7 @@ describe "a double declaration with a block handed to:" do
     end
   end
 
-  %w[once twice any_number_of_times ordered and_return].each do |method|
+  %w[once twice ordered and_return].each do |method|
     describe method do
       it "returns the value of executing the block" do
         obj = Object.new
@@ -42,6 +42,17 @@ describe "a double declaration with a block handed to:" do
       end
     end
   end
+
+  describe "any_number_of_times" do
+    it "returns the value of executing the block" do
+      RSpec.should_receive(:warn_deprecation).with(/DEPRECATION: any_number_of_times is deprecated/)
+
+      obj = Object.new
+      obj.stub(:foo).any_number_of_times { 'bar' }
+      expect(obj.foo).to eq('bar')
+    end
+  end
+
 
   describe "times" do
     it "returns the value of executing the block" do

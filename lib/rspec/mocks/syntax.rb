@@ -34,12 +34,12 @@ module RSpec
           end
 
           def stub!(message_or_hash, opts={}, &block)
-            ::RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #stub instead of #stub!.  #{caller(0)[1]}\n"
+            ::RSpec.deprecate "stub!", "stub"
             stub(message_or_hash, opts={}, &block)
           end
 
           def unstub!(message)
-            ::RSpec::Mocks.warn_deprecation "\nDEPRECATION: use #unstub instead of #unstub!.  #{caller(0)[1]}\n"
+            ::RSpec.deprecate "unstub!", "unstub"
             unstub(message)
           end
 
