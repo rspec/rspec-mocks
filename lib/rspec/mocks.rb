@@ -3,16 +3,6 @@ require 'rspec/mocks/version'
 
 module RSpec
 
-  # @api private
-  # Used internally by RSpec to display custom deprecation warnings.  This
-  # is also defined in rspec-core, but we can't assume it's loaded since
-  # rspec-expectations should be usable w/o rspec-core.
-  unless RSpec.respond_to? :warn_deprecation
-    def warn_deprecation(message)
-      warn(message)
-    end
-  end
-
   module Mocks
     class << self
       attr_accessor :space
