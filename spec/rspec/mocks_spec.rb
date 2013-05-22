@@ -58,7 +58,7 @@ describe RSpec::Mocks do
 
   context 'when requiring spec/mocks (as was valid for rspec 1)' do
     it 'prints a deprecation warning' do
-      ::RSpec::Mocks.should_receive(:warn_deprecation).
+      ::RSpec.should_receive(:warn_deprecation).
         with(%r|spec/mocks|)
 
       load "spec/mocks.rb"
