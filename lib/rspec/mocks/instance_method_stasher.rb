@@ -75,6 +75,9 @@ module RSpec
       def restore
         return unless @method_is_stashed
 
+        if @klass.__send__(:method_defined?, @method)
+          @klass.__send__(:undef_method, @method)
+        end
         @klass.__send__(:alias_method, @method, stashed_method_name)
         @klass.__send__(:remove_method, stashed_method_name)
         @method_is_stashed = false
