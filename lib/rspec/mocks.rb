@@ -2,6 +2,7 @@ require 'rspec/mocks/framework'
 require 'rspec/mocks/version'
 
 module RSpec
+
   module Mocks
     class << self
       attr_accessor :space
