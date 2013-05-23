@@ -50,12 +50,12 @@ describe "a double declaration with a block handed to:" do
 
     it "warns about deprecation" do
       expect(RSpec).to receive(:deprecate).with("any_number_of_times", :replacement => "stub")
-      Object.new.stub(:foo).send(:any_number_of_times) { 'bar' }
+      Object.new.stub(:foo).any_number_of_times { 'bar' }
     end
 
     it "returns the value of executing the block" do
       obj = Object.new
-      obj.stub(:foo).send(:any_number_of_times) { 'bar' }
+      obj.stub(:foo).any_number_of_times { 'bar' }
       expect(obj.foo).to eq('bar')
     end
   end
