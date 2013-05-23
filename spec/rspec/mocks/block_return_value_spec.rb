@@ -45,7 +45,7 @@ describe "a double declaration with a block handed to:" do
 
   describe 'any_number_of_times' do
     before do
-      RSpec.stub(:warn_deprecation)
+      RSpec.stub(:deprecate)
     end
 
     it "warns about deprecation" do
