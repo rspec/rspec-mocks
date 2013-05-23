@@ -679,7 +679,7 @@ module RSpec
             end
 
             it "passes for a non-zero number of invocations" do
-              RSpec.should_receive(:warn_deprecation).with(/any_number_of_times/)
+              allow(RSpec).to receive(:deprecate).with("any_number_of_times", :replacement => "stub")
 
               klass.any_instance.should_receive(:foo).any_number_of_times
               instance = klass.new

@@ -93,7 +93,7 @@ module RSpec
       def extract_options(stubs_and_options)
         if stubs_and_options[:null_object]
           @null_object = stubs_and_options.delete(:null_object)
-          RSpec.deprecate(%Q["double('name', :null_object => true)"], %Q["double('name').as_null_object"])
+          RSpec.deprecate("double('name', :null_object => true)", :replacement => "double('name').as_null_object")
         end
         options = {}
         extract_option(stubs_and_options, options, :__declared_as, 'Mock')

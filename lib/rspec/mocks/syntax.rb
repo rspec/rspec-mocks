@@ -34,12 +34,12 @@ module RSpec
           end
 
           def stub!(message_or_hash, opts={}, &block)
-            ::RSpec.deprecate "stub!", "stub"
+            ::RSpec.deprecate "stub!", :replacement => "stub"
             stub(message_or_hash, opts={}, &block)
           end
 
           def unstub!(message)
-            ::RSpec.deprecate "unstub!", "unstub"
+            ::RSpec.deprecate "unstub!", :replacement => "unstub"
             unstub(message)
           end
 

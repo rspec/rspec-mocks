@@ -12,12 +12,12 @@ describe "double" do
 
   describe "deprecated aliases" do
     it "warns if #stub is used" do
-      RSpec.should_receive(:warn_deprecation).with(/DEPRECATION: stub is deprecated.*use double instead/m)
+      expect(RSpec).to receive(:deprecate).with("stub", :replacement => "double")
       stub("TestDouble")
     end
 
     it "warns if #mock is used" do
-      RSpec.should_receive(:warn_deprecation).with(/DEPRECATION: mock is deprecated.*use double instead/m)
+      expect(RSpec).to receive(:deprecate).with("mock", :replacement => "double")
       mock("TestDouble")
     end
   end
