@@ -2,4 +2,3 @@
 require 'rspec/mocks'
 
 RSpec.deprecate "require 'spec/mocks'", :replacement => "require 'rspec/mocks'"
-
