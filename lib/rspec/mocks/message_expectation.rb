@@ -316,7 +316,7 @@ module RSpec
       #   dealer.should_receive(:deal_card).at_least(9).times
       def at_least(n, &block)
         if n == 0
-          Rspec.deprecate "at_least(0) with should_receive", "stub"
+          RSpec.deprecate "at_least(0) with should_receive", :replacement => "stub"
         end
 
         @implementation = block if block
@@ -351,7 +351,7 @@ module RSpec
 
       # Allows an expected message to be received any number of times.
       def any_number_of_times(&block)
-        RSpec.deprecate "any_number_of_times", "stub"
+        RSpec.deprecate "any_number_of_times", :replacement => "stub"
         @implementation = block if block
         @expected_received_count = :any
         self

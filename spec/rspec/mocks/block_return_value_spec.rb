@@ -45,7 +45,7 @@ describe "a double declaration with a block handed to:" do
 
   describe "any_number_of_times" do
     it "returns the value of executing the block" do
-      RSpec.should_receive(:warn_deprecation).with(/DEPRECATION: any_number_of_times is deprecated/)
+      expect(RSpec).to receive(:deprecate).with("any_number_of_times", :replacement => "stub")
 
       obj = Object.new
       obj.stub(:foo).any_number_of_times { 'bar' }
