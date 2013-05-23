@@ -98,11 +98,11 @@ module RSpec
       end
 
       context "when sent with 0" do
-        before { RSpec.stub(:warn_deprecation) }
+        before { RSpec.stub(:deprecate) }
 
         it "outputs a deprecation warning" do
-          RSpec.should_receive(:warn_deprecation).with(/at_least\(0\) with should_receive is deprecated/)
-          @double.should_receive(:do_something).at_least(0).times
+          expect(RSpec).to receive(:deprecate).with("at_least\(0\) with should_receive", :replacement => "stub")
+          expect(@double).to receive(:do_something).at_least(0).times
         end
 
         it "passes with no return if called once" do

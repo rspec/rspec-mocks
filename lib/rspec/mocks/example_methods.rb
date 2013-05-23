@@ -33,13 +33,13 @@ module RSpec
 
       # Deprecated: Use [double](#double-instance_method).
       def mock(*args)
-        RSpec.deprecate "mock", "double"
+        RSpec.deprecate "mock", :replacement => "double"
         declare_double('Mock', *args)
       end
 
       # Deprecated: Use [double](#double-instance_method).
       def stub(*args)
-        RSpec.deprecate "stub", "double"
+        RSpec.deprecate "stub", :replacement => "double"
         declare_double('Stub', *args)
       end
 
