@@ -40,6 +40,16 @@ module RSpec
         end
       end
 
+      class ProcWithBlock
+        def initialize(object,method)
+          @object, @method = object, method
+        end
+
+        def call(*args,&block)
+          @object.__send__(:method_missing, @method, *args, &block)
+        end
+      end
+
       # @private
       def original_method
         if @method_stasher.method_is_stashed?
@@ -63,19 +73,7 @@ module RSpec
         # will handle this message or not...but we can at least try.
         # If it's not handled, a `NoMethodError` will be raised, just
         # like normally.
-        if RUBY_VERSION == "1.8.6"
-          eval """
-          Proc.new do |*args|
-            @object.__send__(:method_missing, @method_name, *args)
-          end
-          """
-        else
-          eval """
-          Proc.new do |*args, &block|
-            @object.__send__(:method_missing, @method_name, *args, &block)
-          end
-          """
-        end
+        ProcWithBlock.new(@object,@method_name)
       end
 
       def original_unrecorded_any_instance_method
