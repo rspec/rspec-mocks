@@ -40,6 +40,14 @@ module RSpec
         end
       end
 
+      class ProcWithBlock < Struct.new(:object, :method_name)
+
+        def call(*args, &block)
+          self.object.__send__(:method_missing, self.method_name, *args, &block)
+        end
+
+      end
+
       # @private
       def original_method
         if @method_stasher.method_is_stashed?
@@ -63,9 +71,7 @@ module RSpec
         # will handle this message or not...but we can at least try.
         # If it's not handled, a `NoMethodError` will be raised, just
         # like normally.
-        Proc.new do |*args, &block|
-          @object.__send__(:method_missing, @method_name, *args, &block)
-        end
+        ProcWithBlock.new(@object,@method_name)
       end
 
       def original_unrecorded_any_instance_method
