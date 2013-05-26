@@ -40,14 +40,12 @@ module RSpec
         end
       end
 
-      class ProcWithBlock
-        def initialize(object,method)
-          @object, @method = object, method
+      class ProcWithBlock < Struct.new(:object, :method_name)
+
+        def call(*args, &block)
+          self.object.__send__(:method_missing, self.method_name, *args, &block)
         end
 
-        def call(*args,&block)
-          @object.__send__(:method_missing, @method, *args, &block)
-        end
       end
 
       # @private
