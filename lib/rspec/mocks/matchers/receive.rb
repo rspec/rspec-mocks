@@ -45,10 +45,12 @@ module RSpec
         MessageExpectation.public_instance_methods(false).each do |method|
           next if method_defined?(method)
 
-          define_method method do |*args, &block|
-            @recorded_customizations << Customization.new(method, args, block)
-            self
-          end
+          class_eval(<<-RUBY)
+            def #{method}(*args, &block)
+              @recorded_customizations << Customization.new(#{method.inspect}, args, block)
+              self
+            end
+          RUBY
         end
 
       private
