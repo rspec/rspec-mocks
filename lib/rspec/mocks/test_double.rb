@@ -62,7 +62,7 @@ module RSpec
 
       # @private
       def __build_mock_proxy
-        Proxy.new(self, @name, @options)
+        Proxy.new(self, @name, @options || {})
       end
 
     private
