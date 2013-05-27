@@ -51,6 +51,11 @@ module RSpec
         double = Module.new { TestDouble.extend_onto(self) }
         expect { double.foo }.to raise_error(/Mock received/)
       end
+
+      it 'warns of deprecation of :null_object => true' do
+        RSpec.should_receive :deprecate
+        double = Class.new { TestDouble.extend_onto self, 'name', :null_object => true }
+      end
     end
   end
 end
