@@ -87,6 +87,26 @@ zipcode = Zipcode.new("02134", validator)
 zipcode.valid?
 ```
 
+## Test Spies
+
+Verifies the given object received the expected message during the course of the
+test. The method must have previously been stubbed in order for messages to be
+verified.
+
+Stubbing and verifying messages received in this way implements the Test Spy
+pattern.
+
+```ruby
+  invitation = double('invitation', accept: true)
+
+  user.accept_invitation(invitation)
+
+  expect(invitation).to have_received(:accept)
+
+  # You can also use most message expectations:
+  expect(invitation).to have_received(:accept).with(mailer).once
+```
+
 ## Nomenclature
 
 ### Mock Objects and Test Stubs
