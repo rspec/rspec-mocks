@@ -103,8 +103,10 @@ pattern.
 
   expect(invitation).to have_received(:accept)
 
-  # You can also use most message expectations:
-  expect(invitation).to have_received(:accept).with(mailer).once
+  # You can also use other common message expectations. For example:
+  expect(invitation).to have_received(:accept).with(mailer)
+  expect(invitation).to have_received(:accept).twice
+  expect(invitation).to have_received(:accept).with(mailer).never
 ```
 
 ## Nomenclature
