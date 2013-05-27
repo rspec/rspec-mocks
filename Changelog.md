@@ -1,5 +1,5 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...master)
+### 2.14.0.rc1 / 2013-05-27
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...v2.14.0.rc1)
 
 Enhancements:
 
@@ -7,7 +7,7 @@ Enhancements:
   outside of the mocked object rather than inside it. This paves the way
   for future syntax enhancements and removes the need for some hacky
   work arounds for `any_instance` dup'ing and `YAML` serialization,
-  among other things. Note that the code now relies upon `object_id`
+  among other things. Note that the code now relies upon `__id__`
   returning a unique, consistent value for any object you want to
   mock or stub (Myron Marston).
 * Add support for test spies. This allows you to verify a message
