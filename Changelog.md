@@ -37,6 +37,7 @@ Bug fixes
   (Luke Imhoff, Jon Rowe)
 * Fix isolation of `allow_message_expectations_on_nil` (Jon Rowe)
 * Use inspect to format actual arguments on expectations in failure messages (#280, Ben Langfeld)
+* Protect against improperly initialised test doubles (#293) (Joseph Shraibman and Jon Rowe)
 
 Deprecations
 
