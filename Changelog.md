@@ -1,5 +1,10 @@
 ### Development
 
+Breaking Changes for 3.0.0:
+
+* Raise an explicit error if `should_not_receive(...).and_return` is used. (Sam
+  Phippen)
+
 Enhancements:
 
 * Document test spies in the readme. (Adarsh Pandit)

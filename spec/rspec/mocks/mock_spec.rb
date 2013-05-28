@@ -43,9 +43,7 @@ module RSpec
       end
 
       it "warns when should_not_receive is followed by and_return" do
-        expect(RSpec).to receive(:deprecate).with("and_return with should_not_receive")
-
-        @double.should_not_receive(:do_something).and_return(1)
+        expect { @double.should_not_receive(:do_something).and_return(1) }.to raise_error(/not supported/)
       end
 
       it "passes when receiving message specified as not to be received with different args" do
