@@ -212,7 +212,7 @@ module RSpec
       # @example
       #
       #   object.should_receive(:message).with(array_including(1,2,3))
-      #   object.should_receive(:message).with(hash_including([1,2,3]))
+      #   object.should_receive(:message).with(array_including([1,2,3]))
       def array_including(*args)
         actually_an_array = args.first.is_a?(Array) && args.count == 1 ? args.first : args
         ArrayIncludingMatcher.new(actually_an_array)
