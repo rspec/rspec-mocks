@@ -41,6 +41,9 @@ You can also use the block format:
     obj.stub(:message).with(anything()) { ... }
     obj.stub(:message).with(an_instance_of(Money)) { ... }
     obj.stub(:message).with(hash_including(:a => 'b')) { ... }
+    obj.stub(:message).with(array_including(1,2,3)) { ... }
+    # or
+    obj.stub(:message).with(array_including([1,2,3])) { ... }
 
 #### Regular expressions
 

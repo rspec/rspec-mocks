@@ -82,6 +82,11 @@ module RSpec
           @double.should_receive(:random_call).with(hash_including(:a => 1))
           @double.random_call(:a => 1)
         end
+
+        it "matches array with array_including same array" do
+          @double.should_receive(:random_call).with(array_including(1,2))
+          @double.random_call([1,2])
+        end
       end
 
       context "handling block matchers" do
