@@ -83,6 +83,20 @@ module RSpec
         end
       end
 
+      class ArrayIncludingMatcher
+        def initialize(expected)
+          @expected = expected
+        end
+
+        def ==(actual)
+          Set.new(actual).superset?(Set.new(@expected))
+        end
+
+        def description
+          "array_including(#{@expected.join(",")})"
+        end
+      end
+
       class DuckTypeMatcher
         def initialize(*methods_to_respond_to)
           @methods_to_respond_to = methods_to_respond_to
@@ -190,6 +204,18 @@ module RSpec
       #   object.should_receive(:message).with(hash_including(:key, :key2 => val2))
       def hash_including(*args)
         HashIncludingMatcher.new(anythingize_lonely_keys(*args))
+      end
+
+      # Matches an array that includes the specified items at least once.
+      # Ignores duplicates and additional values
+      #
+      # @example
+      #
+      #   object.should_receive(:message).with(array_including(1,2,3))
+      #   object.should_receive(:message).with(hash_including([1,2,3]))
+      def array_including(*args)
+        actually_an_array = args.first.is_a?(Array) && args.count == 1 ? args.first : args
+        ArrayIncludingMatcher.new(actually_an_array)
       end
 
       # Matches a hash that doesn't include the specified key(s) or key/value.

@@ -83,6 +83,20 @@ module RSpec
          end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (hash_including(:a=>1))\n       got: ({})")
       end
 
+      it "fails array_including when args aren't array" do
+         expect do
+           @double.should_receive(:msg).with(array_including(1,2,3))
+           @double.msg(1,2,3)
+         end.to raise_error(/array_including\(1,2,3\)/)
+      end
+
+      it "fails array_including when arg doesn't contain all elements" do
+         expect do
+           @double.should_receive(:msg).with(array_including(1,2,3))
+           @double.msg(1,2)
+         end.to raise_error(/array_including\(1,2,3\)/)
+      end
+
       it "fails with block matchers" do
         expect do
           @double.should_receive(:msg).with {|arg| expect(arg).to eq :received }
