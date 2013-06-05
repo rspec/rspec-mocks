@@ -53,8 +53,8 @@ module RSpec
       end
 
       it 'warns of deprecation of :null_object => true' do
-        RSpec.should_receive :deprecate
-        double = Class.new { TestDouble.extend_onto self, 'name', :null_object => true }
+        expect(RSpec).to receive(:deprecate)
+        Class.new { TestDouble.extend_onto self, 'name', :null_object => true }
       end
     end
   end
