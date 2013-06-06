@@ -4,10 +4,14 @@ begin
 rescue LoadError
 end
 
-require 'simplecov' if RUBY_VERSION.to_f > 1.8
-require 'coveralls'
-Coveralls.wear! do
-  add_filter '/bundle/'
+begin
+  require 'simplecov'
+  require 'coveralls'
+  Coveralls.wear_merged! do
+    add_filter '/bundle/'
+  end
+rescue
+  warn "Coveralls failed to initialise"
 end
 
 RSpec::Matchers.define :include_method do |expected|

@@ -11,7 +11,12 @@ Aruba.configure do |config|
   end
 end if RUBY_PLATFORM == 'java'
 
-require 'coveralls'
-Coveralls.wear! do
-  add_filter '/bundle/'
+begin
+  require 'simplecov'
+  require 'coveralls'
+  Coveralls.wear_merged! do
+    add_filter '/bundle/'
+  end
+rescue
+  warn "Coveralls failed to initialise"
 end
