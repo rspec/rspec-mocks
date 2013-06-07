@@ -4,6 +4,16 @@ begin
 rescue LoadError
 end
 
+begin
+  require 'simplecov'
+  require 'coveralls'
+  Coveralls.wear_merged! do
+    add_filter '/bundle/'
+  end
+rescue Exception => e
+  warn "Coveralls failed to initialise"
+end
+
 RSpec::Matchers.define :include_method do |expected|
   match do |actual|
     actual.map { |m| m.to_s }.include?(expected.to_s)
