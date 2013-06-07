@@ -10,7 +10,7 @@ begin
   Coveralls.wear_merged! do
     add_filter '/bundle/'
   end
-rescue
+rescue Exception => e
   warn "Coveralls failed to initialise"
 end
 
