@@ -10,13 +10,3 @@ Aruba.configure do |config|
     set_env('JRUBY_OPTS', "-X-C #{ENV['JRUBY_OPTS']}") # disable JIT since these processes are so short lived
   end
 end if RUBY_PLATFORM == 'java'
-
-begin
-  require 'simplecov'
-  require 'coveralls'
-  Coveralls.wear_merged! do
-    add_filter '/bundle/'
-  end
-rescue
-  warn "Coveralls failed to initialise"
-end
