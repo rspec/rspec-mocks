@@ -34,7 +34,7 @@ You can also use this shortcut, which creates a test double and declares a
 method stub in one statement:
 
 ```ruby
-book = double("book", title: "The RSpec Book")
+book = double("book", :title => "The RSpec Book")
 ```
 
 The first argument is a name, which is used for documentation and appears in
@@ -42,7 +42,7 @@ failure messages. If you don't care about the name, you can leave it out,
 making the combined instantiation/stub declaration very terse:
 
 ```ruby
-double(foo: 'bar')
+double(:foo => 'bar')
 ```
 
 This is particularly nice when providing a list of test doubles to a method
@@ -70,7 +70,7 @@ die.roll # => 3
 To return an array in a single invocation, declare an array:
 
 ```ruby
-allow(team).to receive(:players).and_return([double(name: "David")])
+allow(team).to receive(:players).and_return([double(:name => "David")])
 ```
 
 ## Message Expectations
@@ -96,7 +96,7 @@ Stubbing and verifying messages received in this way implements the Test Spy
 pattern.
 
 ```ruby
-  invitation = double('invitation', accept: true)
+  invitation = double('invitation', :accept => true)
 
   user.accept_invitation(invitation)
 
