@@ -31,13 +31,18 @@ module RSpec
         expect { double.foo }.to raise_error(/Mock "MyDouble" received/)
       end
 
-      it 'stubs the methods passed in the stubs hash' do
-        double = Module.new do
-          TestDouble.extend_onto(self, "MyDouble", :a => 5, :b => 10)
-        end
+      [[:should, :expect], [:expect], [:should]].each do |syntax|
+        context "with syntax #{syntax.inspect}" do
+          include_context "with syntax", syntax
+          it 'stubs the methods passed in the stubs hash' do
+            double = Module.new do
+              TestDouble.extend_onto(self, "MyDouble", :a => 5, :b => 10)
+            end
 
-        expect(double.a).to eq(5)
-        expect(double.b).to eq(10)
+            expect(double.a).to eq(5)
+            expect(double.b).to eq(10)
+          end
+        end
       end
 
       it 'indicates what type of test double it is in error messages' do
