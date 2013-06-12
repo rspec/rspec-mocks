@@ -110,7 +110,8 @@ module RSpec
 
       def assign_stubs(stubs)
         stubs.each_pair do |message, response|
-          stub(message).and_return(response)
+          matcher = Matchers::Receive.new(message, nil).and_return(response)
+          matcher.setup_allowance(self)
         end
       end
 
