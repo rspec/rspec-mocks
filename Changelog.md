@@ -1,3 +1,9 @@
+### Development
+
+Bug Fixes:
+
+* Bypass RSpec::Mocks::Syntax when mass-assigning stubs via double(). (Paul Annesley)
+
 ### 2.14.0.rc1 / 2013-05-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...v2.14.0.rc1)
 
