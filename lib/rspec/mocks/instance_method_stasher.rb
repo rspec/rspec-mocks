@@ -34,34 +34,23 @@ module RSpec
         klass.method_defined?(@method) || klass.private_method_defined?(@method)
       end
 
-      if ::UnboundMethod.method_defined?(:owner)
-        # @private
-        def method_owned_by_klass?
-          owner = @klass.instance_method(@method).owner
-          # On 1.8 (and some 1.9s -- e.g. rubinius) aliased methods
-          # can report the wrong owner. Example:
-          # class MyClass
-          #   class << self
-          #     alias alternate_new new
-          #   end
-          # end
-          #
-          # MyClass.owner(:alternate_new) returns `Class` on 1.8,
-          # but we need to consider the owner to be `MyClass` because
-          # it is not actually available on `Class` but is on `MyClass`.
-          # Hence, we verify that the owner actually has the method defined.
-          # If the given owner does not have the method defined, we assume
-          # that the method is actually owned by @klass.
-          owner == @klass || !(method_defined_on_klass?(owner))
-        end
-      else
-        # @private
-        def method_owned_by_klass?
-          # On 1.8.6, which does not support Method#owner, we have no choice but
-          # to assume it's defined on the klass even if it may be defined on
-          # a superclass.
-          true
-        end
+      def method_owned_by_klass?
+        owner = @klass.instance_method(@method).owner
+        # On some 1.9s (e.g. rubinius) aliased methods
+        # can report the wrong owner. Example:
+        # class MyClass
+        #   class << self
+        #     alias alternate_new new
+        #   end
+        # end
+        #
+        # MyClass.owner(:alternate_new) returns `Class` when incorrect,
+        # but we need to consider the owner to be `MyClass` because
+        # it is not actually available on `Class` but is on `MyClass`.
+        # Hence, we verify that the owner actually has the method defined.
+        # If the given owner does not have the method defined, we assume
+        # that the method is actually owned by @klass.
+        owner == @klass || !(method_defined_on_klass?(owner))
       end
 
       public
