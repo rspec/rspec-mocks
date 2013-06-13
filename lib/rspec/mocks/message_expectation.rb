@@ -152,7 +152,7 @@ module RSpec
       #
       #   stream.stub(:open).and_yield(StringIO.new)
       def and_yield(*args, &block)
-        yield @eval_context = Object.new.extend(RSpec::Mocks::InstanceExec) if block
+        yield @eval_context = Object.new if block
         @args_to_yield << args
         @implementation = build_implementation
         self
