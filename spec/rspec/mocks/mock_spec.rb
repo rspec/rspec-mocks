@@ -197,28 +197,24 @@ module RSpec
         expect( Array(@double) ).to eq([@double])
       end
 
-      context "with Ruby > 1.8.6", :unless => RUBY_VERSION.to_s == '1.8.6' do
-        it "passes proc to expectation block without an argument" do
-          # We eval this because Ruby 1.8.6's syntax parser barfs on { |&block| ... }
-          # and prevents the entire spec suite from running.
-          eval("@double.should_receive(:foo) {|&block| expect(block.call).to eq(:bar)}")
-          @double.foo { :bar }
-        end
+      it "passes proc to expectation block without an argument" do
+        @double.should_receive(:foo) { |&block| expect(block.call).to eq(:bar) }
+        @double.foo { :bar }
+      end
 
-        it "passes proc to expectation block with an argument" do
-          eval("@double.should_receive(:foo) {|arg, &block| expect(block.call).to eq(:bar)}")
-          @double.foo(:arg) { :bar }
-        end
+      it "passes proc to expectation block with an argument" do
+        @double.should_receive(:foo) { |arg, &block| expect(block.call).to eq(:bar) }
+        @double.foo(:arg) { :bar }
+      end
 
-        it "passes proc to stub block without an argurment" do
-          eval("@double.stub(:foo) {|&block| expect(block.call).to eq(:bar)}")
-          @double.foo { :bar }
-        end
+      it "passes proc to stub block without an argurment" do
+        @double.stub(:foo) { |&block| expect(block.call).to eq(:bar) }
+        @double.foo { :bar }
+      end
 
-        it "passes proc to stub block with an argument" do
-          eval("@double.stub(:foo) {|arg, &block| expect(block.call).to eq(:bar)}")
-          @double.foo(:arg) { :bar }
-        end
+      it "passes proc to stub block with an argument" do
+        @double.stub(:foo) { |arg, &block| expect(block.call).to eq(:bar) }
+        @double.foo(:arg) { :bar }
       end
 
       it "fails right away when method defined as never is received" do
