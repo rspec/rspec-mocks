@@ -145,9 +145,7 @@ person = double("person")
 expect(Person).to receive(:find) { person }
 ```
 
-We can do this with any object in a system because rspec-mocks adds the `stub`
-and `should_receive` methods to every object, including class objects. When we
-use either, RSpec replaces the method we're stubbing or mocking with its own
+RSpec replaces the method we're stubbing or mocking with its own
 test-double-like method. At the end of the example, RSpec verifies any message
 expectations, and then restores the original methods.
 
