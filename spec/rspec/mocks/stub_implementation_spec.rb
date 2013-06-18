@@ -25,6 +25,12 @@ module RSpec
           obj.stub(:foo) {|*given| given.first}
           expect(obj.foo(:bar)).to eq :bar
         end
+
+        it "does not complain if a lambda block and mismatched arguments are passed" do
+          obj = double
+          obj.stub(:foo, &lambda { 'bar' })
+          expect(obj.foo(1, 2)).to eq('bar')
+        end
       end
     end
 
