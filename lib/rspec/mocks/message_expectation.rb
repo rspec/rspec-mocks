@@ -29,6 +29,12 @@ module RSpec
         self.inner_implementation_action = implementation_block
       end
 
+      class ProcWithMisMatchedArity < Struct.new(:implementation)
+        def call(*args, &block)
+          implementation.call *args.slice(0,implementation.arity), &block
+        end
+      end
+
       # @private
 
       # @private
