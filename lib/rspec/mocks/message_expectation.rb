@@ -24,8 +24,18 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @eval_context = nil
-        @implementation = implementation
+        if implementation && implementation.arity >= 0
+          @implementation = ProcWithMisMatchedArity.new(implementation)
+        else
+          @implementation = implementation
+        end
         @values_to_return = nil
+      end
+
+      class ProcWithMisMatchedArity < Struct.new(:implementation)
+        def call(*args, &block)
+          implementation.call *args.slice(0,implementation.arity), &block
+        end
       end
 
       # @private
