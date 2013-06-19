@@ -110,28 +110,28 @@ module RSpec
         end
 
         it "restores existing instance methods" do
-          # See bug reports 8302 adn 7805
+          # See bug reports 8302 and 7805
           @instance.stub(:existing_instance_method) { :stub_value }
           reset @instance
           expect(@instance.existing_instance_method).to eq(:original_value)
         end
 
         it "restores existing private instance methods" do
-          # See bug reports 8302 adn 7805
+          # See bug reports 8302 and 7805
           @instance.stub(:existing_private_instance_method) { :stub_value }
           reset @instance
           expect(@instance.send(:existing_private_instance_method)).to eq(:original_value)
         end
 
         it "restores existing class methods" do
-          # See bug reports 8302 adn 7805
+          # See bug reports 8302 and 7805
           @class.stub(:existing_class_method) { :stub_value }
           reset @class
           expect(@class.existing_class_method).to eq(:original_value)
         end
 
         it "restores existing private class methods" do
-          # See bug reports 8302 adn 7805
+          # See bug reports 8302 and 7805
           @class.stub(:existing_private_class_method) { :stub_value }
           reset @class
           expect(@class.send(:existing_private_class_method)).to eq(:original_value)
