@@ -147,6 +147,16 @@ module RSpec
         end
       end
 
+      class TimeArgumentMatcher
+        def initialize(expected)
+          @expected = expected
+        end
+
+        def ==(actual)
+          @expected.to_i == actual.to_i
+        end
+      end
+
       # Matches any args at all. Supports a more explicit variation of
       # `object.should_receive(:message)`
       #
@@ -204,6 +214,11 @@ module RSpec
       #   object.should_receive(:message).with(hash_including(:key, :key2 => val2))
       def hash_including(*args)
         HashIncludingMatcher.new(anythingize_lonely_keys(*args))
+      end
+
+      # Matches a time object
+      def time_argument(*args)
+        TimeArgumentMatcher.new(*args)
       end
 
       # Matches an array that includes the specified items at least once.
