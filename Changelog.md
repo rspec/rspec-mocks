@@ -14,6 +14,10 @@ Enhancements:
 Bug Fixes:
 
 * Bypass RSpec::Mocks::Syntax when mass-assigning stubs via double(). (Paul Annesley)
+* Allow a block implementation to be used in combination with
+  `and_yield`, `and_raise`, `and_return` or `and_throw`. This got fixed
+  in 2.13.1 but failed to get merged into master for the 2.14.0.rc1
+  release (Myron Marston).
 
 ### 2.14.0.rc1 / 2013-05-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...v2.14.0.rc1)
