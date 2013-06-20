@@ -158,7 +158,7 @@ module RSpec
         # On 1.8.7, Object.ancestors.last == Kernel but
         # things blow up if we include `RSpec::Mocks::Methods`
         # into Kernel...not sure why.
-        return Object unless defined?(::BasicObject)
+        return Object unless defined?(::BasicObject) || (RUBY_PLATFORM == 'java' && RUBY_VERSION.to_f > 1.8)
 
         # MacRuby has BasicObject but it's not the root class.
         return Object unless Object.ancestors.last == ::BasicObject
