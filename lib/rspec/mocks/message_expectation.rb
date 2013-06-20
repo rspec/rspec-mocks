@@ -525,11 +525,11 @@ module RSpec
 
       def call(*args, &block)
         actions.map do |action|
-          action.call(*arity_checked(args, action.arity), &block)
+          action.call(*arg_slice_for(args, action.arity), &block)
         end.last
       end
 
-      def arity_checked(args, arity)
+      def arg_slice_for(args, arity)
         if arity >= 0
           args.slice(0, arity)
         else
