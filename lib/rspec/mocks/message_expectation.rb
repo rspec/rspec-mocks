@@ -30,8 +30,6 @@ module RSpec
       end
 
       # @private
-
-      # @private
       def expected_args
         @argument_list_matcher.expected_args
       end
@@ -480,6 +478,10 @@ module RSpec
         @error_generator = error_generator
       end
 
+      def arity
+        -1
+      end
+
       def call(*args_to_ignore, &block)
         return if @args_to_yield.empty? && @eval_context.nil?
 
@@ -502,6 +504,10 @@ module RSpec
         @values_to_return = values_to_return
       end
 
+      def arity
+        -1
+      end
+
       def call(*args_to_ignore, &block)
         if @values_to_return.size > 1
           @values_to_return.shift
@@ -519,8 +525,16 @@ module RSpec
 
       def call(*args, &block)
         actions.map do |action|
-          action.call(*args, &block)
+          action.call(*arg_slice_for(args, action.arity), &block)
         end.last
+      end
+
+      def arg_slice_for(args, arity)
+        if arity >= 0
+          args.slice(0, arity)
+        else
+          args
+        end
       end
 
       def present?
@@ -542,6 +556,10 @@ module RSpec
       end
 
       CannotModifyFurtherError = Class.new(StandardError)
+
+      def arity
+        @method.arity
+      end
 
       def initial_action=(value)
         raise cannot_modify_further_error
