@@ -23,6 +23,12 @@ describe "a double declaration with a block handed to:" do
       obj.stub(:foo) { 'bar' }
       expect(obj.foo).to eq('bar')
     end
+
+    it "does not complain if a lambda block and mismatched arguments are passed" do
+      obj = Object.new
+      obj.stub(:foo, &lambda { 'bar' })
+      expect(obj.foo(1, 2)).to eq('bar')
+    end
   end
 
   describe "with" do
@@ -30,6 +36,12 @@ describe "a double declaration with a block handed to:" do
       obj = Object.new
       obj.stub(:foo).with('baz') { 'bar' }
       expect(obj.foo('baz')).to eq('bar')
+    end
+
+    it "does not complain if a lambda block and mismatched arguments are passed" do
+      obj = Object.new
+      obj.stub(:foo).with(1, 2, &lambda { 'bar' })
+      expect(obj.foo(1, 2)).to eq('bar')
     end
   end
 
@@ -39,6 +51,12 @@ describe "a double declaration with a block handed to:" do
         obj = Object.new
         obj.stub(:foo).send(method) { 'bar' }
         expect(obj.foo).to eq('bar')
+      end
+
+      it "does not complain if a lambda block and mismatched arguments are passed" do
+        obj = Object.new
+        obj.stub(:foo).send(method, &lambda { 'bar' })
+        expect(obj.foo(1, 2)).to eq('bar')
       end
     end
   end
