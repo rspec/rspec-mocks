@@ -157,7 +157,9 @@ module RSpec
       def self.default_should_syntax_host
         # JRuby 1.7.4 introduces a regression whereby `defined?(::BasicObject) => nil`
         # yet `BasicObject` still exists and patching onto ::Object breaks things
-        # e.g. SimpleDelegator expectations won't work see jruby/jruby#814
+        # e.g. SimpleDelegator expectations won't work
+        #
+        # See: https://github.com/jruby/jruby/issues/814
         if defined?(JRUBY_VERSION) && JRUBY_VERSION == '1.7.4' && RUBY_VERSION.to_f > 1.8
           return ::BasicObject
         end
