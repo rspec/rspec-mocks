@@ -525,6 +525,10 @@ module RSpec
 
       def call(*args, &block)
         actions.map do |action|
+          if action.respond_to?(:lambda?) && action.lambda? && action.arity != args.size
+            RSpec.deprecate "stubbing implementations with mismatched arity",
+              :call_site => caller[5]
+          end
           action.call(*arg_slice_for(args, action.arity), &block)
         end.last
       end
