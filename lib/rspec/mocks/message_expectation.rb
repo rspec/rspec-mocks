@@ -527,7 +527,7 @@ module RSpec
         actions.map do |action|
           if action.respond_to?(:lambda?) && action.lambda? && action.arity != args.size
             RSpec.deprecate "stubbing implementations with mismatched arity",
-              :call_site => caller[5]
+              :call_site => caller[(defined?(JRUBY_VERSION)? 6 : 5)]
           end
           action.call(*arg_slice_for(args, action.arity), &block)
         end.last
