@@ -32,7 +32,7 @@ describe "a double declaration with a block handed to:" do
     end
 
     it 'warns of deprection if argument counts dont match', :if => (RUBY_VERSION.to_f > 1.8) do
-      expect(RSpec).to receive(:deprecate) do |message,opts|
+      expect(RSpec).to receive(:deprecate) do |message, opts|
         expect(message).to eq "stubbing implementations with mismatched arity"
         expect(opts[:call_site]).to match %r%/spec/rspec/mocks/block_return_value_spec.rb%
       end
@@ -57,7 +57,7 @@ describe "a double declaration with a block handed to:" do
     end
 
     it 'warns of deprection if argument counts dont match', :if => (RUBY_VERSION.to_f > 1.8) do
-      expect(RSpec).to receive(:deprecate) do |message,opts|
+      expect(RSpec).to receive(:deprecate) do |message, opts|
         expect(message).to eq "stubbing implementations with mismatched arity"
         expect(opts[:call_site]).to match %r%/spec/rspec/mocks/block_return_value_spec.rb%
       end
@@ -83,7 +83,7 @@ describe "a double declaration with a block handed to:" do
       end
 
       it 'warns of deprection if argument counts dont match', :if => (RUBY_VERSION.to_f > 1.8) do
-        expect(RSpec).to receive(:deprecate) do |message,opts|
+        expect(RSpec).to receive(:deprecate) do |message, opts|
           expect(message).to eq "stubbing implementations with mismatched arity"
           expect(opts[:call_site]).to match %r%/spec/rspec/mocks/block_return_value_spec.rb%
         end
