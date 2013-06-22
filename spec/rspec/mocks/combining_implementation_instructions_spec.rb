@@ -175,6 +175,14 @@ module RSpec
         expect(dbl.foo(:arg)).to eq(:at_least_block)
       end
 
+      it 'can combine and_call_original, with, and_return' do
+        obj = Struct.new(:value).new('original')
+        obj.stub(:value).and_call_original
+        obj.stub(:value).with(:arg).and_return('value')
+        expect(obj.value).to eq 'original'
+        expect(obj.value(:arg)).to eq 'value'
+      end
+
       it 'raises an error if `and_call_original` is followed by any other instructions' do
         dbl = [1, 2, 3]
         stubbed = dbl.stub(:size)
