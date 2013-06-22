@@ -181,6 +181,18 @@ module RSpec
           end
         end
 
+        context 'with #and_call_original and competing #with' do
+          let(:klass) { Struct.new(:a_method) }
+
+          it 'can combine and_call_original, with, and_return' do
+            allow_any_instance_of(klass).to receive(:a_method).and_call_original
+            allow_any_instance_of(klass).to receive(:a_method).with(:arg).and_return('value')
+
+            expect(klass.new('org').a_method).to eq 'org'
+            expect(klass.new.a_method(:arg)).to  eq 'value'
+          end
+        end
+
         context "with #and_raise" do
           it "stubs a method that doesn't exist" do
             klass.any_instance.stub(:foo).and_raise(CustomErrorForAnyInstanceSpec)
