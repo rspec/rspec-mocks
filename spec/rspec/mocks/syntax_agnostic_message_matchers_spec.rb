@@ -34,7 +34,36 @@ module RSpec
     end
 
     describe ".expect_message" do
-      pending
+      let(:subject) { Object.new }
+
+      it "sets up basic message expectation, verifies as uncalled" do
+        expect {
+          ::RSpec::Mocks.expect_message(subject, :basic)
+        }.to change {
+          subject.respond_to?(:basic)
+        }.to(true)
+
+        expect { verify subject }.to raise_error(RSpec::Mocks::MockExpectationError)
+      end
+
+      it "sets up basic message expectation, verifies as called" do
+        ::RSpec::Mocks.expect_message(subject, :basic)
+        subject.basic
+        verify subject
+      end
+
+      it "sets up message expectation with params and return value" do
+        ::RSpec::Mocks.expect_message(subject, :msg).with(:in).and_return(:out)
+        expect(subject.msg(:in)).to eq(:out)
+        verify subject
+      end
+
+      it "accepts a block implementation for the expected message" do
+        ::RSpec::Mocks.expect_message(subject, :msg) { :value }
+        expect(subject.msg).to eq(:value)
+        verify subject
+      end
+
     end
 
   end
