@@ -35,7 +35,7 @@ module RSpec
           hash = chain.pop
           hash.each do |k,v|
             chain << k
-            blk = lambda { v }
+            blk = proc { v }
           end
         end
         return chain.join('.').split('.'), blk
