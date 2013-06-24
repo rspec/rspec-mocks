@@ -2,6 +2,7 @@
 
 Breaking Changes for 3.0.0:
 
+* Removed `double`-aliases `stub` and `mock`. (Michi Huber)
 * Raise an explicit error if `should_not_receive(...).and_return` is used. (Sam
   Phippen)
 * Remove 1.8.6 workarounds (Jon Rowe)
@@ -13,6 +14,8 @@ Enhancements:
 
 Bug Fixes:
 
+* ArgumentMatcher methods (e.g. `hash_containing`) no longer overwrite
+  `let`-definitions of the same name. (Michi Huber)
 * Bypass RSpec::Mocks::Syntax when mass-assigning stubs via double(). (Paul Annesley)
 * Allow a block implementation to be used in combination with
   `and_yield`, `and_raise`, `and_return` or `and_throw`. This got fixed
