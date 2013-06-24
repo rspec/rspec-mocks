@@ -4,8 +4,9 @@ Feature: expect message using `expect`
   `object` should receive the message `:message` before the example is
   completed.
 
-  Note: You should use `expect_any_instance_of` when working with any
-  instance of a class, see message_expectations/expect_any_instance
+  Note: You can use `expect_any_instance_of` when you don't have a reference
+  to the object that receives a message in your test. For more information,
+  see the message_expectations/expect_any_instance_of feature.
 
   Scenario: expect a message
     Given a file named "spec/account_spec.rb" with:
