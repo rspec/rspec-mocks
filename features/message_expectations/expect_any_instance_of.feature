@@ -40,6 +40,7 @@ Feature: expect/allow a message on any instance of a class
           o = Object.new
           expect(o.foo).to eq(:return_value)
         end
+
         it "wont fail if no instances receive that message" do
           o = Object.new
         end
