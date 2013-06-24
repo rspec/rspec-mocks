@@ -4,8 +4,9 @@ Feature: expect/allow a message on any instance of a class
   (and only one) instance of a class receives a message before the example is
   completed. The spec will fail if no instance receives a message.
 
-  Use `allow_any_instance_of(Class).to receive` to allow any instance of a class
-  to receive that message. This won't fail if no instance receives that message.
+  Use `allow_any_instance_of(Class).to receive` when an instance of a class may
+  respond to a particular message. This will not set an expectation on any instance
+  so the spec will not fail if no instance receives the message.
 
   Scenario: expect a message on any instance of a class
     Given a file named "example_spec.rb" with:
