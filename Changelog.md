@@ -8,6 +8,13 @@ Bug Fixes:
   in 2.13.1 but failed to get merged into master for the 2.14.0.rc1
   release (Myron Marston).
 
+Deprecations
+
+* Expecting to use lambda's or other strong arity implementations for stub methods
+  with mis-matched arity is deprecated and support for them will be removed in 3.0.
+  Either provide the right amount of arguments or use a weak arity implementation
+  (methods with splats or procs). (Jon Rowe)
+
 ### 2.14.0.rc1 / 2013-05-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...v2.14.0.rc1)
 
