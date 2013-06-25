@@ -6,6 +6,10 @@ Feature: stub on any instance of a class
 
   Messages can be stubbed on any class, including those in Ruby's core library.
 
+  Note: You can use `allow_any_instance_of` when you don't have a reference
+  to the object that receives a message in your test. For more information,
+  see the message_expectations/allow_any_instance_of feature.
+
   Scenario: any_instance stub with a single return value
     Given a file named "example_spec.rb" with:
       """ruby
