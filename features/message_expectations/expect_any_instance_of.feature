@@ -17,7 +17,7 @@ Feature: expect a message on any instance of a class
           expect(o.foo).to eq(:return_value)
         end
 
-        it "fails if no instance receives that message" do
+        it "fails unless an instance receives that message" do
           o = Object.new
         end
       end
