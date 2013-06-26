@@ -3,11 +3,11 @@
     # create a double
     obj = double()
 
-    # specify a return value using `expect` syntax
+    # specify a return value using `:expect` syntax
     allow(obj).to receive(:message) { :value }
     allow(obj).to receive(:message).and_return(:value)
 
-    # specify a return value using `should` syntax
+    # specify a return value using `:should` syntax
     obj.stub(:message) { :value }
     obj.stub(:message => :value)
     obj.stub(:message).and_return(:value)
@@ -20,12 +20,12 @@ block contents are evaluated lazily when the `obj` receives the
 
     allow(obj).to receive(:message) do |arg1, arg2|
       # set expectations about the args in this block
-      # and/or set a return value
+      # and/or return  value
     end
 
     obj.stub(:message) do |arg1, arg2|
       # set expectations about the args in this block
-      # and/or set a return value
+      # and/or return a value
     end
 
 ### Raising/Throwing
@@ -59,7 +59,7 @@ You can also use the block format:
     allow(obj).to receive(:message).with(an_instance_of(Money)) { ... }
     allow(obj).to receive(:message).with(hash_including(:a => 'b')) { ... }
     allow(obj).to receive(:message).with(array_including(1,2,3)) { ... }
-    or
+    # or
     allow(obj).to receive(:message).with(array_including([1,2,3])) { ... }
 
     obj.stub(:message).with(anything()) { ... }
