@@ -24,4 +24,4 @@ Feature: expect a message on any instance of a class
       """
     When I run `rspec example_spec.rb`
     Then the output should contain "2 examples, 1 failure"
-    And the output should contain "1) expect_any_instance_of fails if no instance receives that message"
+    And the output should contain "1) expect_any_instance_of fails unless an instance receives that message"
