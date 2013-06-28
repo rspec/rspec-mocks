@@ -30,6 +30,16 @@ module RSpec
         space.any_instance_recorder_for(klass)
       end
 
+      def allow_message(subject, message, &block)
+        ::RSpec::Mocks.proxy_for(subject).
+          add_stub(caller(1)[0], message.to_sym, &block)
+      end
+
+      def expect_message(subject, message, &block)
+        ::RSpec::Mocks.proxy_for(subject).
+          add_message_expectation(caller(1)[0], message.to_sym, &block)
+      end
+
       # @api private
       KERNEL_METHOD_METHOD = ::Kernel.instance_method(:method)
 
