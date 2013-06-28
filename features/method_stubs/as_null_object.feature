@@ -16,7 +16,12 @@ Feature: as_null_object
           null_object.should respond_to(:an_undefined_method)
         end
 
-        it "allows explicit stubs" do
+        it "allows explicit stubs using expect syntax" do
+          allow(null_object).to receive(:foo) { "bar" }
+          expect(null_object.foo).to eq("bar")
+        end
+
+        it "allows explicit stubs using should syntax" do
           null_object.stub(:foo) { "bar" }
           null_object.foo.should eq("bar")
         end
