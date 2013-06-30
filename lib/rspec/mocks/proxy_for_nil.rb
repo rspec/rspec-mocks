@@ -28,7 +28,7 @@ module RSpec
       private
 
       def warn method_name
-        Kernel.warn("An expectation of :#{method_name} was set on nil. Called from #{caller[2]}. Use allow_message_expectations_on_nil to disable warnings.")
+        Kernel.warn("An expectation of :#{method_name} was set on nil. Called from #{caller[3]}. Use allow_message_expectations_on_nil to disable warnings.")
       end
 
     end

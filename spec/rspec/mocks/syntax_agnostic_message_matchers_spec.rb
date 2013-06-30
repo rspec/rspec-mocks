@@ -46,6 +46,13 @@ module RSpec
         expect { verify subject }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
+      it "fails if never is specified and the message is called" do
+        expect {
+          ::RSpec::Mocks.expect_message(subject, :foo).never
+          subject.foo
+        }.to raise_error(/expected.*0 times/)
+      end
+
       it "sets up basic message expectation, verifies as called" do
         ::RSpec::Mocks.expect_message(subject, :basic)
         subject.basic

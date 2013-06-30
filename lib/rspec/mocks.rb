@@ -30,14 +30,16 @@ module RSpec
         space.any_instance_recorder_for(klass)
       end
 
-      def allow_message(subject, message, &block)
+      # Adds an allowance (stub) on `subject`
+      def allow_message(subject, message, opts={}, &block)
         ::RSpec::Mocks.proxy_for(subject).
-          add_stub(caller(1)[0], message.to_sym, &block)
+          add_stub(caller(1)[0], message.to_sym, opts, &block)
       end
 
-      def expect_message(subject, message, &block)
+      # Sets a message expectation on `subject`.
+      def expect_message(subject, message, opts={}, orig_caller=caller(1)[0], &block)
         ::RSpec::Mocks.proxy_for(subject).
-          add_message_expectation(caller(1)[0], message.to_sym, &block)
+          add_message_expectation(opts[:expected_from] || orig_caller, message.to_sym, opts, &block)
       end
 
       # @api private

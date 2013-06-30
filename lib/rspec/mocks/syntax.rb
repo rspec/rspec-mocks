@@ -12,20 +12,18 @@ module RSpec
 
         syntax_host.class_eval do
           def should_receive(message, opts={}, &block)
-            proxy = ::RSpec::Mocks.proxy_for(self)
-            proxy.add_message_expectation(opts[:expected_from] || caller(1)[0], message.to_sym, opts, &block)
+            ::RSpec::Mocks.expect_message(self, message.to_sym, opts, caller(1)[0], &block)
           end
 
           def should_not_receive(message, &block)
-            proxy = ::RSpec::Mocks.proxy_for(self)
-            proxy.add_negative_message_expectation(caller(1)[0], message.to_sym, &block)
+            ::RSpec::Mocks.expect_message(self, message.to_sym, {}, caller(1)[0], &block).never
           end
 
           def stub(message_or_hash, opts={}, &block)
             if ::Hash === message_or_hash
               message_or_hash.each {|message, value| stub(message).and_return value }
             else
-              ::RSpec::Mocks.proxy_for(self).add_stub(caller(1)[0], message_or_hash.to_sym, opts, &block)
+              ::RSpec::Mocks.allow_message(self, message_or_hash, opts, &block)
             end
           end
 
