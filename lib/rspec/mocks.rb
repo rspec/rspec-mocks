@@ -32,18 +32,21 @@ module RSpec
 
       # Adds an allowance (stub) on `subject`
       def allow_message(subject, message, opts={}, &block)
+        orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
         ::RSpec::Mocks.proxy_for(subject).
-          add_stub(caller(1)[0], message.to_sym, opts, &block)
+          add_stub(orig_caller, message.to_sym, opts, &block)
       end
 
       # Sets a message expectation on `subject`.
-      def expect_message(subject, message, opts={}, orig_caller=caller(1)[0], &block)
+      def expect_message(subject, message, opts={}, &block)
+        orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
         ::RSpec::Mocks.proxy_for(subject).
-          add_message_expectation(opts[:expected_from] || orig_caller, message.to_sym, opts, &block)
+          add_message_expectation(orig_caller, message.to_sym, opts, &block)
       end
 
       # Sets a negative message expectation on `subject`.
-      def expect_no_message(subject, message, orig_caller=caller(1)[0], &block)
+      def expect_no_message(subject, message, opts, &block)
+        orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
         ::RSpec::Mocks.proxy_for(subject).
           add_negative_message_expectation(orig_caller, message.to_sym, &block)
       end

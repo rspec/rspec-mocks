@@ -12,17 +12,20 @@ module RSpec
 
         syntax_host.class_eval do
           def should_receive(message, opts={}, &block)
-            ::RSpec::Mocks.expect_message(self, message.to_sym, opts, caller(1)[0], &block)
+            opts[:expected_from] ||= caller(1)[0]
+            ::RSpec::Mocks.expect_message(self, message.to_sym, opts, &block)
           end
 
           def should_not_receive(message, &block)
-            ::RSpec::Mocks.expect_no_message(self, message.to_sym, caller(1)[0], &block)
+            opts = {:expected_from => caller(1)[0]}
+            ::RSpec::Mocks.expect_no_message(self, message.to_sym, opts, &block)
           end
 
           def stub(message_or_hash, opts={}, &block)
             if ::Hash === message_or_hash
               message_or_hash.each {|message, value| stub(message).and_return value }
             else
+              opts[:expected_from] = caller(1)[0]
               ::RSpec::Mocks.allow_message(self, message_or_hash, opts, &block)
             end
           end
