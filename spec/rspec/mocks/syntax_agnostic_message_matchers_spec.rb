@@ -26,11 +26,15 @@ module RSpec
         expect(subject.x(:in)).to eq(:out)
       end
 
-      it "accepts a callable responder for the message" do
+      it "supports block implementations" do
         ::RSpec::Mocks.allow_message(subject, :message) { :value }
-        expect(subject.message).to eq(:value)
+        expect(subject.respond_to? :message).to be_true
       end
 
+      it "does not set an expectation that the message will be received" do
+        ::RSpec::Mocks.allow_message(subject, :message)
+        expect { verify subject }.not_to raise_error
+      end
     end
 
     describe ".expect_message" do
