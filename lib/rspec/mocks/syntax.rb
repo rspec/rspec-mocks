@@ -16,7 +16,7 @@ module RSpec
           end
 
           def should_not_receive(message, &block)
-            ::RSpec::Mocks.expect_message(self, message.to_sym, {}, caller(1)[0], &block).never
+            ::RSpec::Mocks.expect_no_message(self, message.to_sym, caller(1)[0], &block)
           end
 
           def stub(message_or_hash, opts={}, &block)
