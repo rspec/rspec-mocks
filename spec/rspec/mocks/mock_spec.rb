@@ -42,8 +42,18 @@ module RSpec
         verify @double
       end
 
-      it "warns when should_not_receive is followed by and_return" do
-        expect { @double.should_not_receive(:do_something).and_return(1) }.to raise_error(/not supported/)
+      it "warns when `and_return` is called on a negative expectation" do
+        expect {
+          @double.should_not_receive(:do_something).and_return(1)
+        }.to raise_error(/not supported/)
+
+        expect {
+          expect(@double).not_to receive(:do_something).and_return(1)
+        }.to raise_error(/not supported/)
+
+        expect {
+          expect(@double).to receive(:do_something).never.and_return(1)
+        }.to raise_error(/not supported/)
       end
 
       it "passes when receiving message specified as not to be received with different args" do
@@ -88,6 +98,10 @@ module RSpec
 
       it "passes when receiving message specified as not to be received with wrong args" do
         @double.should_not_receive(:not_expected).with("unexpected text")
+        @double.not_expected "really unexpected text"
+        verify @double
+
+        @double.should_receive(:not_expected).with("unexpected text").never
         @double.not_expected "really unexpected text"
         verify @double
       end

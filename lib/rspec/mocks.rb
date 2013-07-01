@@ -44,13 +44,6 @@ module RSpec
           add_message_expectation(orig_caller, message.to_sym, opts, &block)
       end
 
-      # Sets a negative message expectation on `subject`.
-      def expect_no_message(subject, message, opts, &block)
-        orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
-        ::RSpec::Mocks.proxy_for(subject).
-          add_negative_message_expectation(orig_caller, message.to_sym, &block)
-      end
-
       # @api private
       KERNEL_METHOD_METHOD = ::Kernel.instance_method(:method)
 
