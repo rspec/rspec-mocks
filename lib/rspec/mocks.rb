@@ -54,7 +54,11 @@ module RSpec
       #                expected.
       # @param opts a hash of options, :expected_from is used to set the
       #             original call site
-      # @param block an optional implementation fo rhte allowance
+      # @param block an optional implementation for the allowance
+      #
+      # @example Expect the message `foo` to object `bar`, then call it
+      #   expect_message(bar, :foo)
+      #   bar.foo
       def expect_message(subject, message, opts={}, &block)
         orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
         ::RSpec::Mocks.proxy_for(subject).
