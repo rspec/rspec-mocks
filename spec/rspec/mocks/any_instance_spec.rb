@@ -347,6 +347,12 @@ module RSpec
             RSpec::Mocks.space.verify_all
           end
         end
+
+        it "prevents confusing double-negative expressions involving `never`" do
+          expect {
+            klass.any_instance.should_not_receive(:not_expected).never
+          }.to raise_error(/trying to negate it again/)
+        end
       end
 
       context "with #should_receive" do

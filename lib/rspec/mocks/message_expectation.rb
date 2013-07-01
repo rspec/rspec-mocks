@@ -376,6 +376,7 @@ module RSpec
       #
       #   car.should_receive(:stop).never
       def never
+        ErrorGenerator.raise_double_negation_error("expect(obj)") if negative?
         @expected_received_count = 0
         self
       end

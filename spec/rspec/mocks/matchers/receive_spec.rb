@@ -136,6 +136,16 @@ module RSpec
             receiver.foo(:a)
           }.to raise_error(/expected: 0 times.*received: 1 time/m)
         end
+
+        it 'prevents confusing double-negative expressions involving `never`' do
+          expect {
+            wrapped.not_to receive(:foo).never
+          }.to raise_error(/trying to negate it again/)
+
+          expect {
+            wrapped.to_not receive(:foo).never
+          }.to raise_error(/trying to negate it again/)
+        end
       end
 
       describe "allow(...).to receive" do

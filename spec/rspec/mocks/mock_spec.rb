@@ -42,6 +42,12 @@ module RSpec
         verify @double
       end
 
+      it "prevents confusing double-negative expressions involving `never`" do
+        expect {
+          @double.should_not_receive(:not_expected).never
+        }.to raise_error(/trying to negate it again/)
+      end
+
       it "warns when `and_return` is called on a negative expectation" do
         expect {
           @double.should_not_receive(:do_something).and_return(1)
