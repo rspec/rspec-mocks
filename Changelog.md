@@ -10,6 +10,9 @@ Enhancements:
 
 * Document test spies in the readme. (Adarsh Pandit)
 * Add an `array_including` matcher. (Sam Phippen)
+* Create syntax agnostic message matchers enable message allowances and
+  expectations to be set independently of any particular syntax being
+  enabled (Paul Anneesley, Myron Marston and Sam Phippen).
 
 Bug Fixes:
 
