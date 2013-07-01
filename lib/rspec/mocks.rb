@@ -31,6 +31,17 @@ module RSpec
       end
 
       # Adds an allowance (stub) on `subject`
+      #
+      # @param subject the subject to which the message will be added
+      # @param message a symbol, representing the message that will be
+      #                added.
+      # @param opts a hash of options, :expected_from is used to set the
+      #             original call site
+      # @param block an optional implementation fo rhte allowance
+      #
+      # @example Add the message `foo` to object `bar`, using the passed block
+      #   x = 0
+      #   allow_message(bar, :foo) { x += 1 }
       def allow_message(subject, message, opts={}, &block)
         orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
         ::RSpec::Mocks.proxy_for(subject).
@@ -38,6 +49,12 @@ module RSpec
       end
 
       # Sets a message expectation on `subject`.
+      # @param subject the subject on which the message will be expected
+      # @param message a symbol, representing the message that will be
+      #                expected.
+      # @param opts a hash of options, :expected_from is used to set the
+      #             original call site
+      # @param block an optional implementation fo rhte allowance
       def expect_message(subject, message, opts={}, &block)
         orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
         ::RSpec::Mocks.proxy_for(subject).
