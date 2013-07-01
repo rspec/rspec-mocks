@@ -28,7 +28,7 @@ module RSpec
 
       it "supports block implementations" do
         ::RSpec::Mocks.allow_message(subject, :message) { :value }
-        expect(subject.respond_to? :message).to be_true
+        expect(subject.message).to eq(:value)
       end
 
       it "does not set an expectation that the message will be received" do
