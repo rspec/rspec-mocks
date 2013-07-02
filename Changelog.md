@@ -7,6 +7,9 @@ Bug Fixes:
   `and_yield`, `and_raise`, `and_return` or `and_throw`. This got fixed
   in 2.13.1 but failed to get merged into master for the 2.14.0.rc1
   release (Myron Marston).
+* `Marshal.dump` does not unnecessarily duplicate objects when rspec-mocks has
+  not been fully initialized. This could cause errors when using `spork` or
+  similar preloading gems (Andy Lindeman).
 
 Deprecations
 
