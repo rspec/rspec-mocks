@@ -1,13 +1,13 @@
 module Marshal
   class << self
-    def dump_with_mocks(*args)
-      object = args.shift
-
-      if ( ::RSpec::Mocks.space && !::RSpec::Mocks.space.registered?(object) ) || NilClass === object
-        return dump_without_mocks(*args.unshift(object))
+    # Duplicates any mock objects before serialization. Otherwise,
+    # serialization will fail because methods exist on the singleton class.
+    def dump_with_mocks(object, *rest)
+      if ::RSpec::Mocks.space.nil? || !::RSpec::Mocks.space.registered?(object) || NilClass === object
+        dump_without_mocks(object, *rest)
+      else
+        dump_without_mocks(object.dup, *rest)
       end
-
-      dump_without_mocks(*args.unshift(object.dup))
     end
 
     alias_method :dump_without_mocks, :dump
