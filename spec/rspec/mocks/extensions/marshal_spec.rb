@@ -24,7 +24,8 @@ describe Marshal, 'extensions' do
       it 'does not duplicate the object before serialization' do
         obj = UndupableObject.new
         without_space do
-          expect { Marshal.dump(obj) }.not_to raise_error
+          serialized = Marshal.dump(obj)
+          expect(Marshal.load(serialized)).to be_an(UndupableObject)
         end
       end
     end
@@ -32,16 +33,21 @@ describe Marshal, 'extensions' do
     context 'when rspec-mocks has been fully initialized' do
       it 'duplicates objects with stubbed or mocked implementations before serialization' do
         obj = double(:foo => "bar")
-        expect { Marshal.dump(obj) }.not_to raise_error
+
+        serialized = Marshal.dump(obj)
+        expect(Marshal.load(serialized)).to be_an(obj.class)
       end
 
       it 'does not duplicate other objects before serialization' do
         obj = UndupableObject.new
-        expect { Marshal.dump(obj) }.not_to raise_error
+
+        serialized = Marshal.dump(obj)
+        expect(Marshal.load(serialized)).to be_an(UndupableObject)
       end
 
       it 'does not duplicate nil before serialization' do
-        expect { Marshal.dump(nil) }.not_to raise_error
+        serialized = Marshal.dump(nil)
+        expect(Marshal.load(serialized)).to be_nil
       end
     end
   end
