@@ -41,7 +41,7 @@ module RSpec
       #
       # @example Defines the implementation of `foo` on `bar`, using the passed block
       #   x = 0
-      #   allow_message(bar, :foo) { x += 1 }
+      #   RSpec::Mocks.allow_message(bar, :foo) { x += 1 }
       def allow_message(subject, message, opts={}, &block)
         orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
         ::RSpec::Mocks.proxy_for(subject).
@@ -57,7 +57,7 @@ module RSpec
       # @param block an optional implementation for the expectation
       #
       # @example Expect the message `foo` to receive `bar`, then call it
-      #   expect_message(bar, :foo)
+      #   RSpec::Mocks.expect_message(bar, :foo)
       #   bar.foo
       def expect_message(subject, message, opts={}, &block)
         orig_caller = opts.fetch(:expected_from) { caller(1)[0] }
