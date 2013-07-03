@@ -37,9 +37,9 @@ module RSpec
       #                added.
       # @param opts a hash of options, :expected_from is used to set the
       #             original call site
-      # @param block an optional implementation fo rhte allowance
+      # @param block an optional implementation for the allowance
       #
-      # @example Add the message `foo` to object `bar`, using the passed block
+      # @example Defines the implementation of `foo` on `bar`, using the passed block
       #   x = 0
       #   allow_message(bar, :foo) { x += 1 }
       def allow_message(subject, message, opts={}, &block)
@@ -54,9 +54,9 @@ module RSpec
       #                expected.
       # @param opts a hash of options, :expected_from is used to set the
       #             original call site
-      # @param block an optional implementation for the allowance
+      # @param block an optional implementation for the expectation
       #
-      # @example Expect the message `foo` to object `bar`, then call it
+      # @example Expect the message `foo` to receive `bar`, then call it
       #   expect_message(bar, :foo)
       #   bar.foo
       def expect_message(subject, message, opts={}, &block)
