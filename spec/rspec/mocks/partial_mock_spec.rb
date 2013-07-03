@@ -36,7 +36,7 @@ module RSpec
       end
 
       it "should_not_receive returns a negative message expectation" do
-        expect(object.should_not_receive(:foobar)).to be_kind_of(RSpec::Mocks::NegativeMessageExpectation)
+        expect(object.should_not_receive(:foobar)).to be_negative
       end
 
       it "should_receive mocks out the method" do
@@ -55,8 +55,8 @@ module RSpec
         expect(object.foobar(hash[:a])).to equal(1)
       end
 
-      it "should_receive returns a message expectation" do
-        expect(object.should_receive(:foobar)).to be_kind_of(RSpec::Mocks::MessageExpectation)
+      it "should_receive returns a positive message expectation" do
+        expect(object.should_receive(:foobar)).not_to be_negative
         object.foobar
       end
 
