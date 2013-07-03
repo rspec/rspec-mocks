@@ -73,16 +73,20 @@ module RSpec
       #   counter.stub(:count) { 1 }
       #   counter.count # => 1
       def and_return(*values, &implementation)
-        @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
-
-        if implementation
-          # TODO: deprecate `and_return { value }`
-          self.inner_implementation_action = implementation
+        if negative?
+          raise "`and_return` is not supported with negative message expectations"
         else
-          self.terminal_implementation_action = AndReturnImplementation.new(values)
-        end
+          @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
 
-        nil
+          if implementation
+            # TODO: deprecate `and_return { value }`
+            self.inner_implementation_action = implementation
+          else
+            self.terminal_implementation_action = AndReturnImplementation.new(values)
+          end
+
+          nil
+        end
       end
 
       # Tells the object to delegate to the original unmodified method
@@ -169,7 +173,7 @@ module RSpec
 
       # @private
       def invoke(parent_stub, *args, &block)
-        if (@expected_received_count == 0 && !@at_least) || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
+        if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += 1
           @failed_fast = true
           #args are the args we actually received, @argument_list_matcher is the
@@ -188,6 +192,11 @@ module RSpec
         ensure
           @actual_received_count += 1
         end
+      end
+
+      # @private
+      def negative?
+        @expected_received_count == 0 && !@at_least
       end
 
       # @private
@@ -367,6 +376,7 @@ module RSpec
       #
       #   car.should_receive(:stop).never
       def never
+        ErrorGenerator.raise_double_negation_error("expect(obj)") if negative?
         @expected_received_count = 0
         self
       end
@@ -409,7 +419,7 @@ module RSpec
 
       # @private
       def negative_expectation_for?(message)
-        return false
+        @message == message && negative?
       end
 
       # @private
@@ -449,23 +459,6 @@ module RSpec
 
       def terminal_implementation_action=(action)
         implementation.terminal_action = action
-      end
-    end
-
-    # @private
-    class NegativeMessageExpectation < MessageExpectation
-      # @private
-      def initialize(error_generator, expectation_ordering, expected_from, method_double, &implementation)
-        super(error_generator, expectation_ordering, expected_from, method_double, 0, {}, &implementation)
-      end
-
-      def and_return(*)
-        raise "and_return is not supported with negative message expectations"
-      end
-
-      # @private
-      def negative_expectation_for?(message)
-        return @message == message
       end
     end
 

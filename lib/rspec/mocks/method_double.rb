@@ -227,15 +227,6 @@ module RSpec
       end
 
       # @private
-      def add_negative_expectation(error_generator, expectation_ordering, expected_from, &implementation)
-        configure_method
-        expectation = NegativeMessageExpectation.new(error_generator, expectation_ordering,
-                                                     expected_from, self, &implementation)
-        expectations.unshift expectation
-        expectation
-      end
-
-      # @private
       def build_expectation(error_generator, expectation_ordering)
         expected_from = IGNORED_BACKTRACE_LINE
         MessageExpectation.new(error_generator, expectation_ordering, expected_from, self)

@@ -52,11 +52,6 @@ module RSpec
       end
 
       # @private
-      def add_negative_message_expectation(location, method_name, &implementation)
-        method_double[method_name].add_negative_expectation @error_generator, @expectation_ordering, location, &implementation
-      end
-
-      # @private
       def build_expectation(method_name)
         meth_double = method_double[method_name]
 
