@@ -4,24 +4,42 @@ module RSpec
     # Provides methods for enabling and disabling the available syntaxes
     # provided by rspec-mocks.
     module Syntax
+      def self.warn_about_should!
+        @warn_about_should = true
+      end
+
+      def self.warn_unless_should_configured(method_name)
+        if @warn_about_should
+          RSpec.deprecate(
+            "Using #{method_name} from the old `:should` syntax without explicitly enabling the syntax.",
+            :replacement => "the new `:expect` syntax or explicitly enable `:should`"
+          )
+
+          @warn_about_should = false
+        end
+      end
 
       # @api private
       # Enables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
       def self.enable_should(syntax_host = default_should_syntax_host)
+        @warn_about_should = false
         return if should_enabled?(syntax_host)
 
         syntax_host.class_exec do
           def should_receive(message, opts={}, &block)
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             opts[:expected_from] ||= CallerFilter.first_non_rspec_line
             ::RSpec::Mocks.expect_message(self, message.to_sym, opts, &block)
           end
 
           def should_not_receive(message, &block)
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             opts = {:expected_from => CallerFilter.first_non_rspec_line}
             ::RSpec::Mocks.expect_message(self, message.to_sym, opts, &block).never
           end
 
           def stub(message_or_hash, opts={}, &block)
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             if ::Hash === message_or_hash
               message_or_hash.each {|message, value| stub(message).and_return value }
             else
@@ -31,29 +49,35 @@ module RSpec
           end
 
           def unstub(message)
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             ::RSpec::Mocks.space.proxy_for(self).remove_stub(message)
           end
 
           def stub_chain(*chain, &blk)
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             ::RSpec::Mocks::StubChain.stub_chain_on(self, *chain, &blk)
           end
 
           def as_null_object
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             @_null_object = true
             ::RSpec::Mocks.proxy_for(self).as_null_object
           end
 
           def null_object?
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             defined?(@_null_object)
           end
 
           def received_message?(message, *args, &block)
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             ::RSpec::Mocks.proxy_for(self).received_message?(message, *args, &block)
           end
 
           unless Class.respond_to? :any_instance
             Class.class_exec do
               def any_instance
+                ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
                 ::RSpec::Mocks.any_instance_recorder_for(self)
               end
             end
