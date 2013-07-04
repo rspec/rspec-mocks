@@ -18,7 +18,7 @@ module RSpec
         expect(added_methods).to match_array([
           :as_null_object, :null_object?,
           :received_message?, :should_not_receive, :should_receive,
-          :stub, :stub!, :stub_chain, :unstub, :unstub!
+          :stub, :stub_chain, :unstub
         ])
       end
     end
