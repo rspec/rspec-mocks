@@ -180,25 +180,26 @@ module RSpec
           stop_observing!(method_name) if already_observing?(method_name)
           @observed_methods << method_name
           backup_method!(method_name)
-          @klass.class_eval(<<-EOM, __FILE__, __LINE__ + 1)
-            def #{method_name}(*args, &blk)
-              klass = ::RSpec::Mocks.method_handle_for(self, :#{method_name}).owner
-              ::RSpec::Mocks.any_instance_recorder_for(klass).playback!(self, :#{method_name})
-              self.__send__(:#{method_name}, *args, &blk)
+          @klass.class_eval do
+            define_method(method_name) do |*args, &blk|
+              method_name = method_name.to_sym
+              klass = ::RSpec::Mocks.method_handle_for(self, method_name).owner
+              ::RSpec::Mocks.any_instance_recorder_for(klass).playback!(self, method_name)
+              self.__send__(method_name.to_sym, *args, &blk)
             end
-          EOM
+          end
         end
 
         def mark_invoked!(method_name)
           backup_method!(method_name)
-          @klass.class_eval(<<-EOM, __FILE__, __LINE__ + 1)
-            def #{method_name}(*args, &blk)
-              method_name = :#{method_name}
-              klass = ::RSpec::Mocks.method_handle_for(self, :#{method_name}).owner
+          @klass.class_eval do
+            define_method(method_name) do |*args, &blk|
+              method_name = method_name.to_sym
+              klass = ::RSpec::Mocks.method_handle_for(self, method_name).owner
               invoked_instance = ::RSpec::Mocks.any_instance_recorder_for(klass).instance_that_received(method_name)
-              raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by \#{self.inspect} but has already been received by \#{invoked_instance}"
+              raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{self.inspect} but has already been received by #{invoked_instance}"
             end
-          EOM
+          end
         end
       end
     end
