@@ -12,7 +12,7 @@ Enhancements:
 * Add an `array_including` matcher. (Sam Phippen)
 * Create syntax agnostic message matchers enable message allowances and
   expectations to be set independently of any particular syntax being
-  enabled (Paul Anneesley, Myron Marston and Sam Phippen).
+  enabled (Paul Annesley, Myron Marston and Sam Phippen).
 
 Bug Fixes:
 
