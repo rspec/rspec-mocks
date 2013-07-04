@@ -9,6 +9,8 @@ Breaking Changes for 3.0.0:
 * Make `at_least(0)` raise an error. (Sam Phippen)
 * Remove `mock(name, methods)` and `stub(name, methods)`,
   leaving `double(name, methods)` for creating test doubles.  (Sam Phippen)
+* Remove `any_number_of_times` since `should_receive(:msg).any_number_of_times`
+  is really a stub in a mock's clothing. (Sam Phippen)
 
 Enhancements:
 
