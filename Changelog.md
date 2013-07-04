@@ -14,6 +14,7 @@ Breaking Changes for 3.0.0:
 * Remove support for re-using the same null-object test double in multiple
   examples.  Test doubles are designed to only live for one example.
   (Myron Marston)
+* Make `at_least(0)` raise an error. (Sam Phippen)
 
 ### 2.14.1 / 2013-07-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...v2.14.1)
