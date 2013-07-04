@@ -89,16 +89,6 @@ module RSpec
         end
 
         # @private
-        def stub!(*)
-          raise "stub! is not supported on any_instance. Use stub instead."
-        end
-
-        # @private
-        def unstub!(*)
-          raise "unstub! is not supported on any_instance. Use unstub instead."
-        end
-
-        # @private
         def stop_all_observation!
           @observed_methods.each {|method_name| restore_method!(method_name)}
         end

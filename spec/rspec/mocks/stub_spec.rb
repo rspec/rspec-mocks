@@ -37,32 +37,6 @@ module RSpec
         end
       end
 
-      describe "using stub!" do
-        it "warns of deprecation but still returns the declared value when message is received" do
-          expect(RSpec).to receive(:deprecate).with("stub!", :replacement => "stub")
-          @instance.stub!(:msg).and_return(:return_value)
-          expect(@instance.msg).to equal(:return_value)
-          verify @instance
-        end
-      end
-
-      describe 'using unstub' do
-        it 'removes the message stub' do
-          @instance.stub(:msg)
-          @instance.unstub(:msg)
-          expect { @instance.msg }.to raise_error NoMethodError
-        end
-      end
-
-      describe 'using unstub!' do
-        it 'removes the message stub but warns about deprecation' do
-          @instance.stub(:msg)
-          RSpec.should_receive(:deprecate).with("unstub!", :replacement => "unstub")
-          @instance.unstub!(:msg)
-          expect { @instance.msg }.to raise_error NoMethodError
-        end
-      end
-
       it "instructs an instance to respond_to the message" do
         @instance.stub(:msg)
         expect(@instance).to respond_to(:msg)
