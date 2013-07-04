@@ -6,6 +6,8 @@ Breaking Changes for 3.0.0:
   Phippen)
 * Remove 1.8.6 workarounds (Jon Rowe)
 * Remove `stub!` and `unstub!`. (Sam Phippen)
+* Remove `mock(name, methods)` and `stub(name, methods)`,
+  leaving `double(name, methods)` for creating test doubles.  (Sam Phippen)
 
 Enhancements:
 
