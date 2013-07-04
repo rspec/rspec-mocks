@@ -10,16 +10,14 @@ module RSpec
 
       def self.delegate_to(matcher_method, options = {})
         method_name = options.fetch(:from) { :to }
-        class_eval(<<-RUBY)
-        def #{method_name}(matcher, &block)
+        define_method(method_name) do |matcher, &block|
           unless Matchers::Receive === matcher
             raise UnsupportedMatcherError, "only the `receive` matcher is supported " +
-              "with `\#{expression}(...).\#{#{method_name.inspect}}`, but you have provided: \#{matcher}"
+              "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
           end
 
-          matcher.__send__(#{matcher_method.inspect}, @target, &block)
+          matcher.__send__(matcher_method, @target, &block)
         end
-        RUBY
       end
 
       def self.disallow_negation(method)

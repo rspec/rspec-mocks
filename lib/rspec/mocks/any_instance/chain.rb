@@ -16,11 +16,9 @@ module RSpec
           #   @see RSpec::Mocks::MessageExpectation#$1
           #
           def self.record(method_name)
-            class_eval(<<-EOM, __FILE__, __LINE__ + 1)
-              def #{method_name}(*args, &block)
-                record(:#{method_name}, *args, &block)
-              end
-            EOM
+            define_method(method_name) do |*args, &block|
+              record(method_name.to_sym, *args, &block)
+            end
           end
 
           record :and_return
