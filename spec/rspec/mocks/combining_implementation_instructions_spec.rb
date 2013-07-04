@@ -60,12 +60,6 @@ module RSpec
           end
         end
 
-        it 'works when passing a block to `any_number_of_times`' do
-          verify_combined_implementation do |dbl|
-            dbl.should_receive(:foo).any_number_of_times { @block_called = true }
-          end
-        end
-
         it 'works when passing a block to `once`' do
           verify_combined_implementation do |dbl|
             dbl.should_receive(:foo).once { @block_called = true }

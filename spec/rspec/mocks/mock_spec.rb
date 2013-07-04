@@ -635,16 +635,6 @@ module RSpec
         expect(@calls).to eq 10
       end
 
-      it "calls the block after #any_number_of_times" do
-        expect(RSpec).to receive(:deprecate).with("any_number_of_times", :replacement => "stub")
-
-        @double.should_receive(:foo).any_number_of_times { add_call }
-
-        (1..7).each { @double.foo }
-
-        expect(@calls).to eq 7
-      end
-
       it "calls the block after #ordered" do
         @double.should_receive(:foo).ordered { add_call }
         @double.should_receive(:bar).ordered { add_call }
