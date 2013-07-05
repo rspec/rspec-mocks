@@ -192,9 +192,7 @@ module RSpec
       # @private
       def restore_original_visibility
         return unless object_singleton_class.method_defined?(@method_name) || object_singleton_class.private_method_defined?(@method_name)
-        object_singleton_class.class_exec(*@original_visibility) do |visibility, method_name|
-          self.__send__ visibility, method_name
-        end
+        object_singleton_class.__send__(*@original_visibility)
       end
 
       # @private
