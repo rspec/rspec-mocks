@@ -72,19 +72,19 @@ module RSpec
       #   counter.count # => 1
       def and_return(*values, &implementation)
         if negative?
-          raise "`and_return` is not supported with negative message expectations"
-        else
-          @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
-
-          if implementation
-            # TODO: deprecate `and_return { value }`
-            self.inner_implementation_action = implementation
-          else
-            self.terminal_implementation_action = AndReturnImplementation.new(values)
-          end
-
-          nil
+          RSpec.deprecate "`and_return` on a negative message expectation"
         end
+
+        @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
+
+        if implementation
+          # TODO: deprecate `and_return { value }`
+          self.inner_implementation_action = implementation
+        else
+          self.terminal_implementation_action = AndReturnImplementation.new(values)
+        end
+
+        nil
       end
 
       # Tells the object to delegate to the original unmodified method
