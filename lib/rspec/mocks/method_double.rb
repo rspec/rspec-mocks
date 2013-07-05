@@ -160,7 +160,7 @@ module RSpec
 
       # @private
       def configure_method
-        @original_visibility = visibility_for_method
+        @original_visibility = [visibility, method_name]
         @method_stasher.stash unless @method_is_proxied
         define_proxy_method
       end
@@ -169,18 +169,13 @@ module RSpec
       def define_proxy_method
         return if @method_is_proxied
 
-        object_singleton_class.class_eval <<-EOF, __FILE__, __LINE__ + 1
-          def #{@method_name}(*args, &block)
-            ::RSpec::Mocks.proxy_for(self).message_received :#{@method_name}, *args, &block
+        object_singleton_class.class_exec(method_name, visibility) do |method_name, visibility|
+          define_method(method_name) do |*args, &block|
+            ::RSpec::Mocks.proxy_for(self).message_received method_name, *args, &block
           end
-          #{visibility_for_method}
-        EOF
+          self.__send__ visibility, method_name
+        end
         @method_is_proxied = true
-      end
-
-      # @private
-      def visibility_for_method
-        "#{visibility} :#{method_name}"
       end
 
       # @private
@@ -197,7 +192,7 @@ module RSpec
       # @private
       def restore_original_visibility
         return unless object_singleton_class.method_defined?(@method_name) || object_singleton_class.private_method_defined?(@method_name)
-        object_singleton_class.class_eval(@original_visibility, __FILE__, __LINE__)
+        object_singleton_class.__send__(*@original_visibility)
       end
 
       # @private
