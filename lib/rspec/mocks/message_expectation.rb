@@ -361,15 +361,6 @@ module RSpec
         self
       end
 
-
-      # Allows an expected message to be received any number of times.
-      def any_number_of_times(&block)
-        RSpec.deprecate "any_number_of_times", :replacement => "stub"
-        self.inner_implementation_action = block
-        @expected_received_count = :any
-        self
-      end
-
       # Expect a message not to be received at all.
       #
       # @example
