@@ -48,18 +48,28 @@ module RSpec
         }.to raise_error(/trying to negate it again/)
       end
 
-      it "warns when `and_return` is called on a negative expectation" do
-        expect {
-          @double.should_not_receive(:do_something).and_return(1)
-        }.to raise_error(/not supported/)
+      def expect_and_return_warning
+        expect(RSpec).to receive(:deprecate).with(/`and_return` on a negative message expectation/)
+      end
 
-        expect {
-          expect(@double).not_to receive(:do_something).and_return(1)
-        }.to raise_error(/not supported/)
+      it "warns when `should_not_receive().and_return` is used" do
+        expect_and_return_warning
+        @double.should_not_receive(:foo).and_return(1)
+      end
 
-        expect {
-          expect(@double).to receive(:do_something).never.and_return(1)
-        }.to raise_error(/not supported/)
+      it "warns when `should_receive().never.and_return` is used" do
+        expect_and_return_warning
+        @double.should_receive(:foo).never.and_return(1)
+      end
+
+      it "warns when `expect().not_to receive().and_return` is used" do
+        expect_and_return_warning
+        expect(@double).not_to receive(:foo).and_return(1)
+      end
+
+      it "warns when `expect().to receive().never.and_return` is used" do
+        expect_and_return_warning
+        expect(@double).to receive(:foo).never.and_return(1)
       end
 
       it "passes when receiving message specified as not to be received with different args" do
