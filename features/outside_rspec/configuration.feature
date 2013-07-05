@@ -34,8 +34,6 @@ Feature: configure any test framework to use rspec-mocks
       example.init
 
       puts example.respond_to?(:double)
-      puts example.respond_to?(:mock)
-      puts example.respond_to?(:stub)
       """
 
     When I run `ruby foo.rb`
