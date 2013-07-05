@@ -681,44 +681,6 @@ module RSpec
               end
             end
           end
-
-          context "the 'any_number_of_times' constraint" do
-            it "passes for 0 invocations" do
-              klass.any_instance.should_receive(:foo).any_number_of_times
-              verify klass.new
-            end
-
-            it "passes for a non-zero number of invocations" do
-              allow(RSpec).to receive(:deprecate).with("any_number_of_times", :replacement => "stub")
-
-              klass.any_instance.should_receive(:foo).any_number_of_times
-              instance = klass.new
-              instance.foo
-              verify instance
-            end
-
-            it "does not interfere with other expectations" do
-              klass.any_instance.should_receive(:foo).any_number_of_times
-              klass.any_instance.should_receive(:existing_method).and_return(5)
-              expect(klass.new.existing_method).to eq(5)
-            end
-
-            context "when combined with other expectations" do
-              it "passes when the other expecations are met" do
-                klass.any_instance.should_receive(:foo).any_number_of_times
-                klass.any_instance.should_receive(:existing_method).and_return(5)
-                expect(klass.new.existing_method).to eq(5)
-              end
-
-              it "fails when the other expecations are not met" do
-                expect do
-                  klass.any_instance.should_receive(:foo).any_number_of_times
-                  klass.any_instance.should_receive(:existing_method).and_return(5)
-                  RSpec::Mocks.space.verify_all
-                end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
-              end
-            end
-          end
         end
       end
 
