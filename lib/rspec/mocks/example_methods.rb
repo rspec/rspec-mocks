@@ -25,22 +25,8 @@ module RSpec
       #   card.suit  #=> "Spades"
       #   card.rank  #=> "A"
       #
-      # @see #mock
-      # @see #stub
       def double(*args)
         declare_double('Double', *args)
-      end
-
-      # Deprecated: Use [double](#double-instance_method).
-      def mock(*args)
-        RSpec.deprecate "mock", :replacement => "double"
-        declare_double('Mock', *args)
-      end
-
-      # Deprecated: Use [double](#double-instance_method).
-      def stub(*args)
-        RSpec.deprecate "stub", :replacement => "double"
-        declare_double('Stub', *args)
       end
 
       # Disables warning messages about expectations being set on nil.
