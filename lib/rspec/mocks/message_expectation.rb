@@ -328,12 +328,13 @@ module RSpec
       #
       #   dealer.should_receive(:deal_card).at_least(9).times
       def at_least(n, &block)
-        if n == 0
-          RSpec.deprecate "at_least(0) with should_receive", :replacement => "stub"
-        end
-
         self.inner_implementation_action = block
         set_expected_received_count :at_least, n
+
+        if n == 0
+          raise "at_least(0) has been removed, use allow(...).to receive(:message) instead"
+        end
+
         self
       end
 

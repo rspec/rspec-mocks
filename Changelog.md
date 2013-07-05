@@ -6,6 +6,7 @@ Breaking Changes for 3.0.0:
   Phippen)
 * Remove 1.8.6 workarounds (Jon Rowe)
 * Remove `stub!` and `unstub!`. (Sam Phippen)
+* Make `at_least(0)` raise an error. (Sam Phippen)
 
 Enhancements:
 
