@@ -17,7 +17,7 @@ module RSpec
           #
           def self.record(method_name)
             define_method(method_name) do |*args, &block|
-              record(method_name.to_sym, *args, &block)
+              record(method_name, *args, &block)
             end
           end
 
