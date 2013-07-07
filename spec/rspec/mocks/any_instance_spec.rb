@@ -858,10 +858,10 @@ module RSpec
               instance.bees(:sup)
             end
 
-            it "does not pass the instance" do
+            it "passes the instance" do
               klass = Struct.new(:science)
               instance = klass.new
-              klass.any_instance.should_receive(:bees).with(:sup) { |*args| expect(args.first).to eq(:sup) }
+              klass.any_instance.should_receive(:bees).with(:sup) { |*args| expect(args.first).to eq(instance) }
               instance.bees(:sup)
             end
           end
@@ -883,6 +883,13 @@ module RSpec
               instance = klass.new
               klass.any_instance.stub(:bees) { |*args| expect(args).to be_empty }
               instance.bees
+            end
+
+            it "gets data from with correctly" do
+              klass = Struct.new(:science)
+              instance = klass.new
+              klass.any_instance.should_receive(:bees).with(:faces)
+              instance.bees(:faces)
             end
           end
         end
