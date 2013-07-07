@@ -830,6 +830,64 @@ module RSpec
         end
       end
 
+      context "passing self" do
+        context "when configured to pass the instance" do
+          before(:each) do
+            @orig_pass = RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs
+            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = true
+          end
+
+          after(:each) do
+            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = @orig_pass
+          end
+
+          describe "an any instance stub" do
+            it "receives the instance" do
+              klass = Struct.new(:science)
+              instance = klass.new
+              klass.any_instance.stub(:bees) { |*args| expect(args.first).to eq(instance) }
+              instance.bees
+            end
+          end
+
+          describe "an any instance expectation" do
+            it "doesn't effect with" do
+              klass = Struct.new(:science)
+              instance = klass.new
+              klass.any_instance.should_receive(:bees).with(:sup)
+              instance.bees(:sup)
+            end
+
+            it "does not pass the instance" do
+              klass = Struct.new(:science)
+              instance = klass.new
+              klass.any_instance.should_receive(:bees).with(:sup) { |*args| expect(args.first).to eq(:sup) }
+              instance.bees(:sup)
+            end
+          end
+        end
+
+        context "when configured not to pass the instance" do
+          before(:each) do
+            @orig_pass = RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs
+            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = false
+          end
+
+          after(:each) do
+            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = @orig_pass
+          end
+
+          describe "an any instance stub" do
+            it "does not receive the instance" do
+              klass = Struct.new(:science)
+              instance = klass.new
+              klass.any_instance.stub(:bees) { |*args| expect(args).to be_empty }
+              instance.bees
+            end
+          end
+        end
+      end
+
       context 'when used in conjunction with a `dup`' do
         it "doesn't cause an infinite loop" do
           pending "This intermittently fails on JRuby" if RUBY_PLATFORM == 'java'

@@ -23,6 +23,14 @@ module RSpec
         end
       end
 
+      def pass_instance_to_any_instance_stubs
+        @pass_instance_to_any_instance_stubs ||= false
+      end
+
+      def pass_instance_to_any_instance_stubs=(arg)
+        @pass_instance_to_any_instance_stubs = arg
+      end
+
       def syntax=(values)
         if Array(values).include?(:expect)
           Syntax.enable_expect

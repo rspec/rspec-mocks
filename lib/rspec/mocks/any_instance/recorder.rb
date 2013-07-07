@@ -55,7 +55,7 @@ module RSpec
         # @see Methods#should_receive
         def should_receive(method_name, &block)
           @expectation_set = true
-          observe!(method_name)
+          observe!(method_name, true)
           message_chains.add(method_name, PositiveExpectationChain.new(method_name, &block))
         end
 
@@ -166,13 +166,16 @@ module RSpec
           @observed_methods.delete(method_name)
         end
 
-        def observe!(method_name)
+        def observe!(method_name, ignore_instance=false)
           stop_observing!(method_name) if already_observing?(method_name)
           @observed_methods << method_name
           backup_method!(method_name)
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             klass = ::RSpec::Mocks.method_handle_for(self, method_name).owner
             ::RSpec::Mocks.any_instance_recorder_for(klass).playback!(self, method_name)
+            if !ignore_instance && ::RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs
+              args.unshift(self)
+            end
             self.__send__(method_name, *args, &blk)
           end
         end
