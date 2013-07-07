@@ -88,6 +88,17 @@ module RSpec
         # returns an int value from #to_int.
         expect(("%i" % @double)).to eq("0")
       end
+
+      it "does not allow null-ness to persist between examples" do
+        RSpec::Mocks.teardown
+
+        expect(@double).not_to be_null_object
+        expect { @double.some.long.message.chain }.to raise_error(RSpec::Mocks::MockExpectationError)
+
+        @double.as_null_object
+        expect(@double).to be_null_object
+        expect { @double.some.long.message.chain }.not_to raise_error
+      end
     end
 
     describe "#as_null_object" do
