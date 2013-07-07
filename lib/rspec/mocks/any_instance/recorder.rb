@@ -55,7 +55,7 @@ module RSpec
         # @see Methods#should_receive
         def should_receive(method_name, &block)
           @expectation_set = true
-          observe!(method_name, true)
+          observe!(method_name)
           message_chains.add(method_name, PositiveExpectationChain.new(method_name, &block))
         end
 
@@ -166,7 +166,7 @@ module RSpec
           @observed_methods.delete(method_name)
         end
 
-        def observe!(method_name, ignore_instance=false)
+        def observe!(method_name)
           stop_observing!(method_name) if already_observing?(method_name)
           @observed_methods << method_name
           backup_method!(method_name)
