@@ -11,6 +11,9 @@ Breaking Changes for 3.0.0:
   leaving `double(name, methods)` for creating test doubles.  (Sam Phippen)
 * Remove `any_number_of_times` since `should_receive(:msg).any_number_of_times`
   is really a stub in a mock's clothing. (Sam Phippen)
+* Remove support for re-using the same null-object test double in multiple
+  examples.  Test doubles are designed to only live for one example.
+  (Myron Marston)
 
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0.rc1...v2.14.0)
