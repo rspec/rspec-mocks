@@ -79,6 +79,7 @@ module RSpec
             expectation.invoke(nil)
           end
         end
+
       end
 
       # @private
