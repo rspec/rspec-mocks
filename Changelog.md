@@ -1,4 +1,15 @@
 ### Development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...2-99-maintenance)
+
+Deprecations
+
+* Expecting to use lambda's or other strong arity implementations for stub methods
+  with mis-matched arity is deprecated and support for them will be removed in 3.0.
+  Either provide the right amount of arguments or use a weak arity implementation
+  (methods with splats or procs). (Jon Rowe)
+
+### 2.14.0 / 2013-07-06
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0.rc1...v2.14.0)
 
 Enhancements:
 
@@ -20,13 +31,6 @@ Bug Fixes:
 * `Marshal.dump` does not unnecessarily duplicate objects when rspec-mocks has
   not been fully initialized. This could cause errors when using `spork` or
   similar preloading gems (Andy Lindeman).
-
-Deprecations
-
-* Expecting to use lambda's or other strong arity implementations for stub methods
-  with mis-matched arity is deprecated and support for them will be removed in 3.0.
-  Either provide the right amount of arguments or use a weak arity implementation
-  (methods with splats or procs). (Jon Rowe)
 
 ### 2.14.0.rc1 / 2013-05-27
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...v2.14.0.rc1)
