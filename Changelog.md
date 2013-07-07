@@ -1,3 +1,15 @@
+### 2.14.1 Development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...2-14-maintenance)
+
+Bug Fixes:
+
+* Restore `double.as_null_object` behavior from 2.13 and earlier: a
+  double's nullness persisted between examples in earlier examples.
+  While this is not an intended use case (test doubles are meant to live
+  for only one example), we don't want to break behavior users rely
+  on in a minor relase.  This will be deprecated in 2.99 and removed
+  in 3.0. (Myron Marston)
+
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0.rc1...v2.14.0)
 
