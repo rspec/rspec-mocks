@@ -86,6 +86,14 @@ Deprecations
   (Jon Rowe).
 * Deprecate `at_least(0).times` and `any_number_of_times` (Michi Huber).
 
+### 2.13.1 / 2013-04-06
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.13.0...v2.13.1)
+
+Bug fixes
+
+* Allow a block implementation to be used in combination with
+  `and_yield`, `and_raise`, `and_return` or `and_throw` (Myron Marston).
+
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.12.2...v2.13.0)
 
