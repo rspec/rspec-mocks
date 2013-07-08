@@ -7,6 +7,12 @@ Deprecations
   with mis-matched arity is deprecated and support for them will be removed in 3.0.
   Either provide the right amount of arguments or use a weak arity implementation
   (methods with splats or procs). (Jon Rowe)
+* Using the same test double instance in multiple examples is deprecated. Test
+  doubles are only meant to live for one example. The mocks and stubs have
+  always been reset between examples; however, in 2.x the `as_null_object`
+  state was not reset and some users relied on this to have a null object
+  double that is used for many examples. This behavior will be removed in 3.0.
+  (Myron Marston)
 
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0.rc1...v2.14.0)
