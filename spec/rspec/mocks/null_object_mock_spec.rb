@@ -88,6 +88,13 @@ module RSpec
         # returns an int value from #to_int.
         expect(("%i" % @double)).to eq("0")
       end
+
+      it "preserves its nullness to subsequent examples to " +
+         "maintain compatibility with <= 2.13" do
+        RSpec::Mocks.teardown
+        expect(@double).to be_null_object
+        expect { @double.some.long.message.chain }.not_to raise_error
+      end
     end
 
     describe "#as_null_object" do
