@@ -1,5 +1,8 @@
-### 2.14.1 Development
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...2-14-maintenance)
+### 2.14.2 Development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.1...2-14-maintenance)
+
+### 2.14.1 / 2013-07-07
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...v2.14.1)
 
 Bug Fixes:
 
