@@ -28,11 +28,13 @@ module RSpec
       # returned.
       def as_null_object
         __mock_proxy.as_null_object
+        @__null_object = true
+        self
       end
 
       # Returns true if this object has received `as_null_object`
       def null_object?
-        __mock_proxy.null_object?
+        @__null_object
       end
 
       # This allows for comparing the mock to other objects that proxy such as
@@ -62,12 +64,21 @@ module RSpec
 
       # @private
       def __build_mock_proxy
-        Proxy.new(self, @name, @options)
+        proxy = Proxy.new(self, @name, @options || {})
+
+        if null_object?
+          proxy.as_null_object
+          RSpec.deprecate "Relying on a test double's null-ness to persist between examples"
+        end
+
+        proxy
       end
 
     private
 
       def __initialize_as_test_double(name=nil, stubs_and_options={})
+        @__null_object = false
+
         if name.is_a?(Hash) && stubs_and_options.empty?
           stubs_and_options = name
           @name = nil
