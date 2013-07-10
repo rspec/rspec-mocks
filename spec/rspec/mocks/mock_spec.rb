@@ -227,6 +227,21 @@ module RSpec
         expect( Array(@double) ).to eq([@double])
       end
 
+      it "is wrappable in an array when a null object" do
+        expect( Array(@double.as_null_object) ).to eq [@double]
+      end
+
+      %w[to_ary to_a].each do |method|
+        it "responds to #{method} as a null object" do
+          expect(@double.as_null_object.send method).to eq nil
+        end
+      end
+
+      it "passes proc to expectation block without an argument" do
+        @double.should_receive(:foo) { |&block| expect(block.call).to eq(:bar) }
+        @double.foo { :bar }
+      end
+
       context "with Ruby > 1.8.6", :unless => RUBY_VERSION.to_s == '1.8.6' do
         it "passes proc to expectation block without an argument" do
           # We eval this because Ruby 1.8.6's syntax parser barfs on { |&block| ... }
