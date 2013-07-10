@@ -17,10 +17,6 @@ Feature: double handling to_ary
       """ruby
       describe "#to_ary" do
         shared_examples "to_ary" do
-          it "raises a NoMethodError" do
-            expect { obj.to_ary }.to raise_error(NoMethodError)
-          end
-
           it "can be overridden with a stub" do
             obj.stub(:to_ary) { :non_nil_value }
             obj.to_ary.should be(:non_nil_value)
@@ -35,11 +31,19 @@ Feature: double handling to_ary
         context "sent to a double as_null_object" do
           let(:obj) { double('obj').as_null_object }
           include_examples "to_ary"
+
+          it "returns nil" do
+            expect( obj.to_ary ).to eq nil
+          end
         end
 
         context "sent to a double without as_null_object" do
           let(:obj) { double('obj') }
           include_examples "to_ary"
+
+          it "raises a NoMethodError" do
+            expect { obj.to_ary }.to raise_error(NoMethodError)
+          end
         end
       end
      """
