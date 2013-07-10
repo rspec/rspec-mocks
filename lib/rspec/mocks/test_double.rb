@@ -79,13 +79,16 @@ module RSpec
       end
 
       def method_missing(message, *args, &block)
-        raise NoMethodError if message == :to_ary || message == :to_a
-        return 0 if message == :to_int && __mock_proxy.null_object?
+        if __mock_proxy.null_object?
+          return 0   if message == :to_int
+          return nil if [:to_a,:to_ary].include? message
+        end
         __mock_proxy.record_message_received(message, *args, &block)
 
         begin
           __mock_proxy.null_object? ? self : super
         rescue NameError
+          raise NoMethodError if message == :to_ary || message == :to_a
           __mock_proxy.raise_unexpected_message_error(message, *args)
         end
       end
