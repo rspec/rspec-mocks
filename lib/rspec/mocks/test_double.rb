@@ -57,7 +57,7 @@ module RSpec
 
       # @private
       def respond_to?(message, incl_private=false)
-        __mock_proxy.null_object? && message != :to_ary ? true : super
+        __mock_proxy.null_object? ? true : super
       end
 
       # @private
@@ -88,7 +88,8 @@ module RSpec
         begin
           __mock_proxy.null_object? ? self : super
         rescue NameError
-          raise NoMethodError if message == :to_ary || message == :to_a
+          # for 1.9.2
+          raise NoMethodError if [:to_a, :to_ary].include? message
           __mock_proxy.raise_unexpected_message_error(message, *args)
         end
       end
