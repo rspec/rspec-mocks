@@ -2,12 +2,6 @@ require "spec_helper"
 
 describe "a double receiving to_ary" do
   shared_examples "to_ary" do
-    it "returns nil" do
-      expect do
-        expect(obj.to_ary).to be_nil
-      end.to raise_error(NoMethodError)
-    end
-
     it "doesn't respond" do
       expect(obj).not_to respond_to(:to_ary)
     end
@@ -31,10 +25,18 @@ describe "a double receiving to_ary" do
   context "double as_null_object" do
     let(:obj) { double('obj').as_null_object }
     include_examples "to_ary"
+
+    it "returns nil" do
+      expect(obj.to_ary).to eq nil
+    end
   end
 
   context "double without as_null_object" do
     let(:obj) { double('obj') }
     include_examples "to_ary"
+
+    it "raises NoMethodError" do
+      expect { obj.to_ary }.to raise_error(NoMethodError)
+    end
   end
 end
