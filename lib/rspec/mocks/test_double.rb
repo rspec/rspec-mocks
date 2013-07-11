@@ -88,7 +88,7 @@ module RSpec
         begin
           __mock_proxy.null_object? ? self : super
         rescue NameError
-          # for 1.9.2
+          # Required wrapping doubles in an Array on Ruby 1.9.2
           raise NoMethodError if [:to_a, :to_ary].include? message
           __mock_proxy.raise_unexpected_message_error(message, *args)
         end
