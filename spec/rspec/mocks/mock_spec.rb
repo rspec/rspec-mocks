@@ -217,6 +217,22 @@ module RSpec
         expect( Array(@double) ).to eq([@double])
       end
 
+      it "is wrappable in an array when a null object" do
+        expect( Array(@double.as_null_object) ).to eq [@double]
+      end
+
+      it "responds to to_ary as a null object" do
+        expect(@double.as_null_object.to_ary).to eq nil
+      end
+
+      it "responds to to_a as a null object" do
+        if RUBY_VERSION.to_f > 1.8
+          expect(@double.as_null_object.to_a).to eq nil
+        else
+          expect(@double.as_null_object.to_a).to eq [@double]
+        end
+      end
+
       it "passes proc to expectation block without an argument" do
         @double.should_receive(:foo) { |&block| expect(block.call).to eq(:bar) }
         @double.foo { :bar }
