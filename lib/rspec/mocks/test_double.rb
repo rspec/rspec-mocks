@@ -80,8 +80,10 @@ module RSpec
 
       def method_missing(message, *args, &block)
         if __mock_proxy.null_object?
-          return 0   if message == :to_int
-          return nil if [:to_a,:to_ary].include? message
+          case message
+          when :to_int        then return 0
+          when :to_a, :to_ary then return nil
+          end
         end
         __mock_proxy.record_message_received(message, *args, &block)
 
