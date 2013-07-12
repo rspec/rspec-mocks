@@ -63,8 +63,7 @@ module RSpec
         it "raises an exception when a block is used to match the arguments" do
           dbl = double_with_met_expectation(:expected_method)
           expect {
-            expect(dbl).to have_received(:expected_method) { |argument|
-            }
+            expect(dbl).to have_received(:expected_method) { }
           }.to raise_error(/have_received matcher does not take a block argument/)
         end
 
