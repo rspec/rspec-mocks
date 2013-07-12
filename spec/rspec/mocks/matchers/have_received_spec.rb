@@ -60,6 +60,14 @@ module RSpec
           }.to raise_error(/0 times/)
         end
 
+        it "raises an exception when a block is used to match the arguments" do
+          dbl = double_with_met_expectation(:expected_method)
+          expect {
+            expect(dbl).to have_received(:expected_method) { |argument|
+            }
+          }.to raise_error(/have_received matcher does not take a block argument/)
+        end
+
         context "with" do
           it 'passes when the given args match the args used with the message' do
             dbl = double_with_met_expectation(:expected_method, :expected, :args)
