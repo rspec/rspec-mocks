@@ -173,9 +173,6 @@ module RSpec
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             klass = ::RSpec::Mocks.method_handle_for(self, method_name).owner
             ::RSpec::Mocks.any_instance_recorder_for(klass).playback!(self, method_name)
-            if ::RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs
-              args.unshift(self)
-            end
             self.__send__(method_name, *args, &blk)
           end
         end

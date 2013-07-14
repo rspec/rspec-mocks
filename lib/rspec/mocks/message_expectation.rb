@@ -5,6 +5,8 @@ module RSpec
       # @private
       attr_accessor :error_generator, :implementation
       attr_reader :message
+      attr_reader :orig_object
+      attr_reader :yield_receiver_to_implementation
       attr_writer :expected_received_count, :expected_from, :argument_list_matcher
       protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
@@ -15,6 +17,7 @@ module RSpec
         @error_generator.opts = opts
         @expected_from = expected_from
         @method_double = method_double
+        @orig_object = @method_double.object
         @message = @method_double.method_name
         @actual_received_count = 0
         @expected_received_count = expected_received_count
@@ -24,6 +27,7 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @eval_context = nil
+        @yield_receiver_to_implementation = false
         @is_any_instance_expectation = opts[:is_any_instance_expectation]
 
         @implementation = Implementation.new
@@ -88,6 +92,11 @@ module RSpec
 
           nil
         end
+      end
+
+      def and_yield_receiver_to_implementation
+        @yield_receiver_to_implementation = true
+        self
       end
 
       # Tells the object to delegate to the original unmodified method
@@ -169,10 +178,6 @@ module RSpec
 
       # @private
       def matches?(message, *args)
-        args = args.dup
-        if @is_any_instance_expectation && ::RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs
-          args.shift
-        end
         @message == message && @argument_list_matcher.args_match?(*args)
       end
 
