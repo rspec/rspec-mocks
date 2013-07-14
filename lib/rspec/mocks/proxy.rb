@@ -79,6 +79,7 @@ module RSpec
             expectation.invoke(nil)
           end
         end
+
       end
 
       # @private
@@ -139,14 +140,8 @@ module RSpec
           if expectation = find_almost_matching_expectation(message, *args)
             expectation.advise(*args) unless expectation.expected_messages_received?
           end
-          if stub.yield_receiver_to_implementation
-            args.unshift(stub.orig_object)
-          end
           stub.invoke(nil, *args, &block)
         elsif expectation
-          if expectation.yield_receiver_to_implementation
-            args.unshift(expectation.orig_object)
-          end
           expectation.invoke(stub, *args, &block)
         elsif expectation = find_almost_matching_expectation(message, *args)
           expectation.advise(*args) if null_object? unless expectation.expected_messages_received?

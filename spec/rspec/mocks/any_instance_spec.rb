@@ -830,63 +830,70 @@ module RSpec
         end
       end
 
-      context "passing self" do
+      context "passing the receiver to the implementation block" do
         context "when configured to pass the instance" do
+          include_context 'with isolated configuration'
           before(:each) do
-            @orig_pass = RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs
-            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = true
-          end
-
-          after(:each) do
-            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = @orig_pass
+            RSpec::Mocks.configuration.yield_instance_from_any_instance_implementation_blocks = true
           end
 
           describe "an any instance stub" do
-            it "receives the instance" do
-              klass = Struct.new(:science)
+            it "passes the instance as the first arg of the implementation block" do
               instance = klass.new
-              klass.any_instance.stub(:bees) { |*args| expect(args.first).to eq(instance) }
-              instance.bees
+
+              expect { |b|
+                klass.any_instance.should_receive(:bees).with(:sup, &b)
+                instance.bees(:sup)
+              }.to yield_with_args(instance, :sup)
+            end
+
+            it "does not pass the instance to and_call_original" do
+              klass = Class.new do
+                def call(*args)
+                  args.first
+                end
+              end
+              klass.any_instance.should_receive(:call).and_call_original
+              instance = klass.new
+              expect(instance.call(:bees)).to be :bees
             end
           end
 
           describe "an any instance expectation" do
             it "doesn't effect with" do
-              klass = Struct.new(:science)
               instance = klass.new
               klass.any_instance.should_receive(:bees).with(:sup)
               instance.bees(:sup)
             end
 
-            it "passes the instance" do
-              klass = Struct.new(:science)
+            it "passes the instance as the first arg of the implementation block" do
               instance = klass.new
-              klass.any_instance.should_receive(:bees).with(:sup) { |*args| expect(args.first).to eq(instance) }
-              instance.bees(:sup)
+
+              expect { |b|
+                klass.any_instance.should_receive(:bees).with(:sup, &b)
+                instance.bees(:sup)
+              }.to yield_with_args(instance, :sup)
             end
           end
         end
 
         context "when configured not to pass the instance" do
+          include_context 'with isolated configuration'
           before(:each) do
-            @orig_pass = RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs
-            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = false
-          end
-
-          after(:each) do
-            RSpec::Mocks.configuration.pass_instance_to_any_instance_stubs = @orig_pass
+            RSpec::Mocks.configuration.yield_instance_from_any_instance_implementation_blocks = false
           end
 
           describe "an any instance stub" do
-            it "does not receive the instance" do
-              klass = Struct.new(:science)
+            it "does not pass the instance to the implementation block" do
               instance = klass.new
-              klass.any_instance.stub(:bees) { |*args| expect(args).to be_empty }
-              instance.bees
+
+              expect { |b|
+                klass.any_instance.should_receive(:bees).with(:sup, &b)
+                instance.bees(:sup)
+              }.to yield_with_args(:sup)
             end
 
-            it "gets data from with correctly" do
-              klass = Struct.new(:science)
+            it "does not cause with to fail when the instance is passed" do
               instance = klass.new
               klass.any_instance.should_receive(:bees).with(:faces)
               instance.bees(:faces)

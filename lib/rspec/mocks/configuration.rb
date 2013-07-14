@@ -23,12 +23,12 @@ module RSpec
         end
       end
 
-      def pass_instance_to_any_instance_stubs
-        @pass_instance_to_any_instance_stubs ||= false
+      def yield_instance_from_any_instance_implementation_blocks
+        @yield_instance_from_any_instance_implementation_blocks ||= false
       end
 
-      def pass_instance_to_any_instance_stubs=(arg)
-        @pass_instance_to_any_instance_stubs = arg
+      def yield_instance_from_any_instance_implementation_blocks=(arg)
+        @yield_instance_from_any_instance_implementation_blocks = arg
       end
 
       def syntax=(values)

@@ -6,7 +6,6 @@ module RSpec
       attr_accessor :error_generator, :implementation
       attr_reader :message
       attr_reader :orig_object
-      attr_reader :yield_receiver_to_implementation
       attr_writer :expected_received_count, :expected_from, :argument_list_matcher
       protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
@@ -27,8 +26,7 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @eval_context = nil
-        @yield_receiver_to_implementation = false
-        @is_any_instance_expectation = opts[:is_any_instance_expectation]
+        @yield_receiver_to_implementation_block = false
 
         @implementation = Implementation.new
         self.inner_implementation_action = implementation_block
@@ -95,8 +93,12 @@ module RSpec
       end
 
       def and_yield_receiver_to_implementation
-        @yield_receiver_to_implementation = true
+        @yield_receiver_to_implementation_block = true
         self
+      end
+
+      def yield_receiver_to_implementation_block?
+        @yield_receiver_to_implementation_block
       end
 
       # Tells the object to delegate to the original unmodified method
@@ -115,6 +117,7 @@ module RSpec
           @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
         else
           @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
+          @yield_receiver_to_implementation_block = false
         end
       end
 
@@ -183,6 +186,10 @@ module RSpec
 
       # @private
       def invoke(parent_stub, *args, &block)
+        if yield_receiver_to_implementation_block?
+          args.unshift(orig_object)
+        end
+
         if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += 1
           @failed_fast = true
