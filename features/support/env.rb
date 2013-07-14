@@ -2,7 +2,11 @@ require 'aruba/cucumber'
 require 'rspec/expectations'
 
 Before do
-  RUBY_PLATFORM =~ /java/ ? @aruba_timeout_seconds = 60 : @aruba_timeout_seconds = 5
+  if RUBY_PLATFORM =~ /java/ || defined?(Rubinius)
+    @aruba_timeout_seconds = 60
+  else
+    @aruba_timeout_seconds = 5
+  end
 end
 
 Aruba.configure do |config|
