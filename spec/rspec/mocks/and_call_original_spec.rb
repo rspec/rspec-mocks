@@ -149,7 +149,7 @@ describe "and_call_original" do
 
     context 'on an object that defines method_missing' do
       before do
-        klass.class_eval do
+        klass.class_exec do
           private
 
           def method_missing(name, *args)
