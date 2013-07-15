@@ -118,7 +118,7 @@ module RSpec
       end
 
       def self.included(klass)
-        klass.class_eval do
+        klass.class_exec do
           # This gets mixed in so that if `RSpec::Matchers` is included in
           # `klass` later, it's definition of `expect` will take precedence.
           include ExpectHost unless method_defined?(:expect)
