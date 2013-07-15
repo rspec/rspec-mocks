@@ -4,14 +4,14 @@ module RSpec
   module Mocks
     describe TestDouble do
       before(:all) do
-        Module.class_eval do
+        Module.class_exec do
           private
           def use; end
         end
       end
 
       after(:all) do
-        Module.class_eval do
+        Module.class_exec do
           undef use
         end
       end

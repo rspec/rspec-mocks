@@ -73,7 +73,7 @@ module RSpec
           return id if object.equal?(::ObjectSpace._id2ref(id))
           # this suggests that object.__id__ is proxying through to some wrapped object
 
-          object.instance_eval do
+          object.instance_exec do
             @__id_for_rspec_mocks_space ||= ::SecureRandom.uuid
           end
         end

@@ -10,7 +10,7 @@ module RSpec
       def self.enable_should(syntax_host = default_should_syntax_host)
         return if should_enabled?(syntax_host)
 
-        syntax_host.class_eval do
+        syntax_host.class_exec do
           def should_receive(message, opts={}, &block)
             opts[:expected_from] ||= caller(1)[0]
             ::RSpec::Mocks.expect_message(self, message.to_sym, opts, &block)
@@ -52,7 +52,7 @@ module RSpec
           end
 
           unless Class.respond_to? :any_instance
-            Class.class_eval do
+            Class.class_exec do
               def any_instance
                 ::RSpec::Mocks.any_instance_recorder_for(self)
               end
@@ -66,7 +66,7 @@ module RSpec
       def self.disable_should(syntax_host = default_should_syntax_host)
         return unless should_enabled?(syntax_host)
 
-        syntax_host.class_eval do
+        syntax_host.class_exec do
           undef should_receive
           undef should_not_receive
           undef stub
@@ -77,7 +77,7 @@ module RSpec
           undef received_message?
         end
 
-        Class.class_eval do
+        Class.class_exec do
           undef any_instance
         end
       end
@@ -87,7 +87,7 @@ module RSpec
       def self.enable_expect(syntax_host = ::RSpec::Mocks::ExampleMethods)
         return if expect_enabled?(syntax_host)
 
-        syntax_host.class_eval do
+        syntax_host.class_exec do
           def receive(method_name, &block)
             Matchers::Receive.new(method_name, block)
           end
@@ -105,7 +105,7 @@ module RSpec
           end
         end
 
-        RSpec::Mocks::ExampleMethods::ExpectHost.class_eval do
+        RSpec::Mocks::ExampleMethods::ExpectHost.class_exec do
           def expect(target)
             ExpectationTarget.new(target)
           end
@@ -117,14 +117,14 @@ module RSpec
       def self.disable_expect(syntax_host = ::RSpec::Mocks::ExampleMethods)
         return unless expect_enabled?(syntax_host)
 
-        syntax_host.class_eval do
+        syntax_host.class_exec do
           undef receive
           undef allow
           undef expect_any_instance_of
           undef allow_any_instance_of
         end
 
-        RSpec::Mocks::ExampleMethods::ExpectHost.class_eval do
+        RSpec::Mocks::ExampleMethods::ExpectHost.class_exec do
           undef expect
         end
       end

@@ -137,7 +137,7 @@ module RSpec
 
         def restore_original_method!(method_name)
           alias_method_name = build_alias_method_name(method_name)
-          @klass.class_eval do
+          @klass.class_exec do
             remove_method method_name
             alias_method  method_name, alias_method_name
             remove_method alias_method_name
@@ -145,14 +145,14 @@ module RSpec
         end
 
         def remove_dummy_method!(method_name)
-          @klass.class_eval do
+          @klass.class_exec do
             remove_method method_name
           end
         end
 
         def backup_method!(method_name)
           alias_method_name = build_alias_method_name(method_name)
-          @klass.class_eval do
+          @klass.class_exec do
             alias_method alias_method_name, method_name
           end if public_protected_or_private_method_defined?(method_name)
         end
