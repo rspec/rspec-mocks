@@ -20,7 +20,7 @@ module RSpec
       end
 
       it "does not conflict with @options in the object" do
-        object.instance_eval { @options = Object.new }
+        object.instance_exec { @options = Object.new }
         object.should_receive(:blah)
         object.blah
       end
