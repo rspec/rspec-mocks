@@ -113,8 +113,8 @@ module RSpec
       #
       #   # You can also use most message expectations:
       #   expect(invitation).to have_received(:accept).with(mailer).once
-      def have_received(method_name)
-        Matchers::HaveReceived.new(method_name)
+      def have_received(method_name, &block)
+        Matchers::HaveReceived.new(method_name, &block)
       end
 
       def self.included(klass)
