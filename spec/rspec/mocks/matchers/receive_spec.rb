@@ -46,42 +46,6 @@ module RSpec
           expect(receiver.foo).to eq(:curly)
         end
 
-        it "takes a curly-bracket block and yields the arguments given to the stubbed method call" do
-          yielded = []
-          wrapped.to receive(:foo) { |*a|
-            yielded << a
-          }
-          receiver.foo(:a, :b, :c)
-          expect(yielded).to include([:a,:b,:c])
-        end
-
-        it "takes a do-end block and yields the arguments given to the stubbed method call" do
-          yielded = []
-          wrapped.to receive(:foo) do |*a|
-            yielded << a
-          end
-          receiver.foo(:a, :b, :c)
-          expect(yielded).to include([:a,:b,:c])
-        end
-
-        it "passes if expectations against the yielded arguments pass" do
-          expect {
-            wrapped.to receive(:foo) do |arg|
-              expect(arg).to eq(42)
-            end
-            receiver.foo(42)
-          }.to_not raise_error
-        end
-
-        it "fails if expectations against the yielded arguments fail" do
-          expect {
-            wrapped.to receive(:foo) do |arg|
-              expect(arg).to eq(42)
-            end
-            receiver.foo(43)
-          }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
-        end
-
         it 'does not support other matchers', :unless => options.include?(:allow_other_matchers) do
           expect {
             wrapped.to eq(3)
