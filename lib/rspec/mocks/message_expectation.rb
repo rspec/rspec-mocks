@@ -332,7 +332,7 @@ module RSpec
         set_expected_received_count :at_least, n
 
         if n == 0
-          raise "at_least(0) has been removed, use allow(...).to receive(:message) instead"
+          raise ArgumentError.new("at_least(0) has been removed, use allow(...).to receive(:message) instead")
         end
 
         self
