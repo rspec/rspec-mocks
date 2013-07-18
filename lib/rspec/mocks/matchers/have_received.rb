@@ -14,7 +14,7 @@ module RSpec
         end
 
         def matches?(subject, &block)
-          @block = @block || block
+          @block ||= block
           @subject = subject
           @expectation = expect
           expected_messages_received?
