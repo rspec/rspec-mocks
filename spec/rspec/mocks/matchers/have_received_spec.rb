@@ -88,6 +88,18 @@ module RSpec
           }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
         end
 
+        it 'gives precedence to a `{ ... }` block when both forms are provided ' +
+           'since that form actually binds to `receive`' do
+          dbl = double(:foo => nil)
+          called = []
+          dbl.foo
+          expect(dbl).to have_received(:foo) { called << :curly } do
+            called << :do_end
+          end
+          expect(called).to include(:curly)
+          expect(called).not_to include(:do_end)
+        end
+
         it 'resets expectations on class methods when mocks are reset' do
           dbl = Object
           dbl.stub(:expected_method)
