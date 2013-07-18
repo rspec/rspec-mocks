@@ -114,6 +114,7 @@ module RSpec
       #   # You can also use most message expectations:
       #   expect(invitation).to have_received(:accept).with(mailer).once
       def have_received(method_name)
+        warn "have_received ignores its block argument. Called from #{caller[0]}" if block_given?
         Matchers::HaveReceived.new(method_name)
       end
 

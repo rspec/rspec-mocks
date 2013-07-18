@@ -60,6 +60,15 @@ module RSpec
           }.to raise_error(/0 times/)
         end
 
+        it "warns when a block is used to match the arguments" do
+          dbl = double_with_met_expectation(:expected_method)
+          self.stub(:warn => nil)
+          expect(dbl).to have_received(:expected_method) { }; line = __LINE__
+          file = __FILE__
+          message = /have_received ignores its block argument. Called from #{file}:#{line}/
+          expect(self).to have_received(:warn).with(message)
+        end
+
         context "with" do
           it 'passes when the given args match the args used with the message' do
             dbl = double_with_met_expectation(:expected_method, :expected, :args)
