@@ -62,7 +62,7 @@ module RSpec
       end
 
       # @private
-      def replay_received_message_on(expectation)
+      def replay_received_message_on(expectation, &block)
         expected_method_name = expectation.message
         meth_double = method_double[expected_method_name]
 
@@ -77,6 +77,7 @@ module RSpec
         @messages_received.each do |(actual_method_name, args, _)|
           if expectation.matches?(actual_method_name, *args)
             expectation.invoke(nil)
+            block.call(*args) if block
           end
         end
       end

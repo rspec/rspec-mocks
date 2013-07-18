@@ -48,6 +48,58 @@ module RSpec
           }.to raise_error(/method has been mocked instead of stubbed/)
         end
 
+        it "takes a curly-bracket block and yields the arguments given to the stubbed method call" do
+          dbl = double(:foo => nil)
+          yielded = []
+          dbl.foo(:a, :b, :c)
+          expect(dbl).to have_received(:foo) { |*args|
+            yielded << args
+          }
+          expect(yielded).to include([:a,:b,:c])
+        end
+
+        it "takes a do-end block and yields the arguments given to the stubbed method call" do
+          dbl = double(:foo => nil)
+          yielded = []
+          dbl.foo(:a, :b, :c)
+          expect(dbl).to have_received(:foo) do |*args|
+            yielded << args
+          end
+          expect(yielded).to include([:a,:b,:c])
+        end
+
+        it "passes if expectations against the yielded arguments pass" do
+          dbl = double(:foo => nil)
+          dbl.foo(42)
+          expect {
+            expect(dbl).to have_received(:foo) { |arg|
+              expect(arg).to eq(42)
+            }
+          }.to_not raise_error
+        end
+
+        it "fails if expectations against the yielded arguments fail" do
+          dbl = double(:foo => nil)
+          dbl.foo(43)
+          expect {
+            expect(dbl).to have_received(:foo) { |arg|
+              expect(arg).to eq(42)
+            }
+          }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+        end
+
+        it 'gives precedence to a `{ ... }` block when both forms are provided ' +
+           'since that form actually binds to `receive`' do
+          dbl = double(:foo => nil)
+          called = []
+          dbl.foo
+          expect(dbl).to have_received(:foo) { called << :curly } do
+            called << :do_end
+          end
+          expect(called).to include(:curly)
+          expect(called).not_to include(:do_end)
+        end
+
         it 'resets expectations on class methods when mocks are reset' do
           dbl = Object
           dbl.stub(:expected_method)
