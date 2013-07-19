@@ -14,6 +14,7 @@ Breaking Changes for 3.0.0:
 * Remove support for re-using the same null-object test double in multiple
   examples.  Test doubles are designed to only live for one example.
   (Myron Marston)
+* Make `at_least(0)` raise an error. (Sam Phippen)
 
 Enhancement:
 
