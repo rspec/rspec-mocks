@@ -26,7 +26,15 @@ module RSpec
       #   card.rank  #=> "A"
       #
       def double(*args)
-        declare_double('Double', *args)
+        declare_double(RSpec::Mocks::Mock, 'Double', *args)
+      end
+
+      def instance_double(*args)
+        declare_double(RSpec::Mocks::InstanceVerifyingMock, 'InstanceDouble', *args)
+      end
+
+      def class_double(*args)
+        declare_double(RSpec::Mocks::ClassVerifyingMock, 'ClassDouble', *args)
       end
 
       # Disables warning messages about expectations being set on nil.
@@ -127,10 +135,10 @@ module RSpec
 
     private
 
-      def declare_double(declared_as, *args)
+      def declare_double(type, declared_as, *args)
         args << {} unless Hash === args.last
         args.last[:__declared_as] = declared_as
-        RSpec::Mocks::Mock.new(*args)
+        type.new(*args)
       end
 
       # This module exists to host the `expect` method for cases where
