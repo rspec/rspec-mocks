@@ -212,10 +212,18 @@ module RSpec
         stubs.clear
       end
 
+      # The type of message expectation to create has been extracted to its own
+      # method so that subclasses can override it.
+      #
+      # @private
+      def message_expectation_class
+        MessageExpectation
+      end
+
       # @private
       def add_expectation(error_generator, expectation_ordering, expected_from, opts, &implementation)
         configure_method
-        expectation = MessageExpectation.new(error_generator, expectation_ordering,
+        expectation = message_expectation_class.new(error_generator, expectation_ordering,
                                              expected_from, self, 1, opts, &implementation)
         expectations << expectation
         expectation
@@ -224,13 +232,13 @@ module RSpec
       # @private
       def build_expectation(error_generator, expectation_ordering)
         expected_from = IGNORED_BACKTRACE_LINE
-        MessageExpectation.new(error_generator, expectation_ordering, expected_from, self)
+        message_expectation_class.new(error_generator, expectation_ordering, expected_from, self)
       end
 
       # @private
       def add_stub(error_generator, expectation_ordering, expected_from, opts={}, &implementation)
         configure_method
-        stub = MessageExpectation.new(error_generator, expectation_ordering, expected_from,
+        stub = message_expectation_class.new(error_generator, expectation_ordering, expected_from,
                                       self, :any, opts, &implementation)
         stubs.unshift stub
         stub

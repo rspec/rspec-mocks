@@ -22,6 +22,10 @@
   - stub_defined_constant.feature
   - stub_undefined_constant.feature
   - hiding_defined_constant.feature
+- verifying_doubles:
+  - introduction.feature
+  - class_doubles.feature
+  - dynamic_classes.feature
 - outside_rspec:
   - configuration.feature
   - standalone.feature

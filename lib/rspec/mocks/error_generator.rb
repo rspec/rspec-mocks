@@ -48,6 +48,22 @@ module RSpec
       end
 
       # @private
+      def raise_unimplemented_error(doubled_module, method_name)
+        __raise "%s does not implement:\n  %s" % [
+          doubled_module.name,
+          method_name
+        ]
+      end
+
+      # @private
+      def raise_arity_error(calculator, actual)
+        __raise "Wrong number of arguments. Expected %s, got %s." % [
+          calculator.range_description,
+          actual
+        ]
+      end
+
+      # @private
       def received_part_of_expectation_error(actual_received_count, *args)
         "received: #{count_message(actual_received_count)}" +
           method_call_args_description(args)

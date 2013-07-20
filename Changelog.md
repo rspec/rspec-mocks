@@ -24,6 +24,8 @@ Enhancements:
 * Allow the `have_received` matcher to use a block to set further expectations
   on arguments. (Tim Cowlishaw)
 * Yield the receiver to `any_instance` implementation blocks (Sam Phippen).
+* Provide `instance_double` and `class_double` to create verifying doubles,
+  ported from `rspec-fire` (Xavier Shay).
 
 Bug Fixes:
 
