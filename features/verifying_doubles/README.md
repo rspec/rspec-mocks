@@ -21,7 +21,7 @@ For example, specify the class being doubled in your specs:
         # Only this one line differs from how you write specs normally
         notifier = instance_double("EmailNotifier")
 
-        notifier.should_receive(:notify).with("suspended as")
+        expect(notifier).to receive(:notify).with("suspended as")
 
         user = User.new(notifier)
         user.suspend!

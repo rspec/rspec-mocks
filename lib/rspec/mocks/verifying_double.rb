@@ -1,4 +1,5 @@
 require 'rspec/mocks/mock'
+require 'rspec/mocks/verifying_message_expecation'
 
 module RSpec
   module Mocks
@@ -31,7 +32,35 @@ module RSpec
       # @override
       def add_message_expectation(location, method_name, opts={}, &block)
         ensure_implemented(method_name)
-        super
+        ret = super
+        ret
+      end
+
+      # @override
+      def method_double
+        @method_double ||= Hash.new {|h,k|
+          h[k] = VerifyingMethodDouble.new(@object, k, self).tap {|x|
+            with_doubled_class do |doubled_class|
+              x.method_finder = lambda {|method_name|
+                doubled_class.send(@__method_finder, method_name)
+              }
+            end
+          }
+        }
+      end
+
+      class VerifyingMethodDouble < MethodDouble
+        attr_accessor :method_finder
+
+        def message_expectation_class
+          VerifyingMessageExpectation
+        end
+
+        def add_expectation(*arg)
+          ret = super
+          ret.method_finder = method_finder
+          ret
+        end
       end
 
       protected
@@ -110,6 +139,5 @@ module RSpec
         )
       end
     end
-
   end
 end

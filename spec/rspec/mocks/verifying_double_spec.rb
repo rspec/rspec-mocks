@@ -16,9 +16,9 @@ module RSpec
       describe 'instance double' do
         describe 'when doubled class is not loaded' do
           it 'allows any instance method to be stubbed' do
-            o = instance_double('NonloadedClass',
-                                  undefined_instance_method: true)
-            expect(o.undefined_instance_method).to eq(true)
+            o = instance_double('NonloadedClass')
+            o.stub(:undefined_instance_method).with(:arg).and_return(true)
+            expect(o.undefined_instance_method(:arg)).to eq(true)
           end
         end
 
@@ -39,15 +39,22 @@ module RSpec
             prevents { expect(o).to receive(:undefined_instance_method) }
             prevents { expect(o).to receive(:defined_class_method) }
           end
+
+          it 'checks the arity of stubbed methods' do
+            o = instance_double('LoadedClass')
+            prevents {
+              expect(o).to receive(:defined_instance_method).with(:a)
+            }
+          end
         end
       end
 
       describe 'class double' do
         describe 'when doubled class is not loaded' do
           it 'allows any method to be stubbed' do
-            o = instance_double('NonloadedClass',
-                                  undefined_instance_method: true)
-            expect(o.undefined_instance_method).to eq(true)
+            o = class_double('NonloadedClass')
+            o.stub(:undefined_instance_method).with(:arg).and_return(true)
+            expect(o.undefined_instance_method(:arg)).to eq(true)
           end
         end
 
