@@ -16,7 +16,7 @@ describe "An object where respond_to? is true and does not have method" do
     obj = Object.new
     obj.should_receive(:respond_to?).with(:foobar).and_return(true)
     obj.should_receive(:foobar).and_return(:baz)
-    expect(obj.respond_to?(:foobar)).to be_true
+    expect(obj.respond_to?(:foobar)).to be_truthy
     expect(obj.foobar).to eq :baz
   end
 
@@ -24,7 +24,7 @@ describe "An object where respond_to? is true and does not have method" do
     obj = double("obj")
     obj.should_receive(:respond_to?).with(:foobar).and_return(true)
     obj.should_receive(:foobar).and_return(:baz)
-    expect(obj.respond_to?(:foobar)).to be_true
+    expect(obj.respond_to?(:foobar)).to be_truthy
     expect(obj.foobar).to eq :baz
   end
 

@@ -7,19 +7,19 @@ module RSpec
         @mock = double("mock").as_null_object
       end
       it "answers false for received_message? when no messages received" do
-        expect(@mock.received_message?(:message)).to be_false
+        expect(@mock.received_message?(:message)).to be_falsey
       end
       it "answers true for received_message? when message received" do
         @mock.message
-        expect(@mock.received_message?(:message)).to be_true
+        expect(@mock.received_message?(:message)).to be_truthy
       end
       it "answers true for received_message? when message received with correct args" do
         @mock.message 1,2,3
-        expect(@mock.received_message?(:message, 1,2,3)).to be_true
+        expect(@mock.received_message?(:message, 1,2,3)).to be_truthy
       end
       it "answers false for received_message? when message received with incorrect args" do
         @mock.message 1,2,3
-        expect(@mock.received_message?(:message, 1,2)).to be_false
+        expect(@mock.received_message?(:message, 1,2)).to be_falsey
       end
     end
   end

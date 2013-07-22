@@ -7,13 +7,13 @@ describe RSpec::Mocks::AnyInstance::MessageChains do
 
   it "knows if a method does not have an expectation set on it" do
     chains.add(:method_name, stub_chain)
-    expect(chains.has_expectation?(:method_name)).to be_false
+    expect(chains.has_expectation?(:method_name)).to be_falsey
   end
 
   it "knows if a method has an expectation set on it" do
     chains.add(:method_name, stub_chain)
     chains.add(:method_name, expectation_chain)
-    expect(chains.has_expectation?(:method_name)).to be_true
+    expect(chains.has_expectation?(:method_name)).to be_truthy
   end
 
   it "can remove all stub chains" do
