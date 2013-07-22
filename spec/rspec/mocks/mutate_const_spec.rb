@@ -78,18 +78,18 @@ module RSpec
 
       shared_examples_for "loaded constant hiding" do |const_name|
         before do
-          expect(recursive_const_defined?(const_name)).to be_true
+          expect(recursive_const_defined?(const_name)).to be_truthy
         end
 
         it 'allows it to be hidden' do
           hide_const(const_name)
-          expect(recursive_const_defined?(const_name)).to be_false
+          expect(recursive_const_defined?(const_name)).to be_falsey
         end
 
         it 'resets the constant when rspec clear its mocks' do
           hide_const(const_name)
           reset_rspec_mocks
-          expect(recursive_const_defined?(const_name)).to be_true
+          expect(recursive_const_defined?(const_name)).to be_truthy
         end
 
         it 'returns nil' do
@@ -101,7 +101,7 @@ module RSpec
         include_context "constant example methods", const_name
 
         before do
-          expect(recursive_const_defined?(const_name)).to be_false
+          expect(recursive_const_defined?(const_name)).to be_falsey
         end
 
         it 'allows it to be stubbed' do
@@ -112,7 +112,7 @@ module RSpec
         it 'removes the constant when rspec clears its mocks' do
           stub_const(const_name, 7)
           reset_rspec_mocks
-          expect(recursive_const_defined?(const_name)).to be_false
+          expect(recursive_const_defined?(const_name)).to be_falsey
         end
 
         it 'returns the stubbed value' do
@@ -130,18 +130,18 @@ module RSpec
         include_context "constant example methods", const_name
 
         before do
-          expect(recursive_const_defined?(const_name)).to be_false
+          expect(recursive_const_defined?(const_name)).to be_falsey
         end
 
         it 'allows it to be hidden, though the operation has no effect' do
           hide_const(const_name)
-          expect(recursive_const_defined?(const_name)).to be_false
+          expect(recursive_const_defined?(const_name)).to be_falsey
         end
 
         it 'remains undefined after rspec clears its mocks' do
           hide_const(const_name)
           reset_rspec_mocks
-          expect(recursive_const_defined?(const_name)).to be_false
+          expect(recursive_const_defined?(const_name)).to be_falsey
         end
 
         it 'returns nil' do
@@ -206,7 +206,7 @@ module RSpec
           orig_value = TOP_LEVEL_VALUE_CONST
 
           hide_const("TOP_LEVEL_VALUE_CONST")
-          expect(recursive_const_defined?("TOP_LEVEL_VALUE_CONST")).to be_false
+          expect(recursive_const_defined?("TOP_LEVEL_VALUE_CONST")).to be_falsey
 
           stub_const("TOP_LEVEL_VALUE_CONST", 12345)
           expect(TOP_LEVEL_VALUE_CONST).to eq 12345
@@ -247,8 +247,8 @@ module RSpec
             stub = Module.new
             stub_const("TestSubClass", stub, :transfer_nested_constants => true)
             expect(stub::P).to eq(:p)
-            expect(defined?(stub::M)).to be_false
-            expect(defined?(stub::N)).to be_false
+            expect(defined?(stub::M)).to be_falsey
+            expect(defined?(stub::N)).to be_falsey
           end
 
           it 'raises an error when asked to transfer a nested inherited constant' do
@@ -266,7 +266,7 @@ module RSpec
             stub_const("TestClass", stub, :transfer_nested_constants => [:M, :N])
             expect(stub::M).to eq(:m)
             expect(stub::N).to eq(:n)
-            expect(defined?(stub::Nested)).to be_false
+            expect(defined?(stub::Nested)).to be_falsey
           end
 
           it 'raises an error if asked to transfer nested constants but given an object that does not support them' do
@@ -302,7 +302,7 @@ module RSpec
 
           it 'raises an error if asked to transfer a nested constant that is not defined' do
             original_tc = TestClass
-            expect(defined?(TestClass::V)).to be_false
+            expect(defined?(TestClass::V)).to be_falsey
             stub = Module.new
 
             expect {
@@ -345,10 +345,10 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "X::Y"
 
           it 'removes the root constant when rspec clears its mocks' do
-            expect(defined?(X)).to be_false
+            expect(defined?(X)).to be_falsey
             stub_const("X::Y", 7)
             reset_rspec_mocks
-            expect(defined?(X)).to be_false
+            expect(defined?(X)).to be_falsey
           end
         end
 
@@ -356,10 +356,10 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "X::Y::Z"
 
           it 'removes the root constant when rspec clears its mocks' do
-            expect(defined?(X)).to be_false
+            expect(defined?(X)).to be_falsey
             stub_const("X::Y::Z", 7)
             reset_rspec_mocks
-            expect(defined?(X)).to be_false
+            expect(defined?(X)).to be_falsey
           end
         end
 
@@ -367,12 +367,12 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "TestClass::X"
 
           it 'removes the unloaded constant but leaves the loaded constant when rspec resets its mocks' do
-            expect(defined?(TestClass)).to be_true
-            expect(defined?(TestClass::X)).to be_false
+            expect(defined?(TestClass)).to be_truthy
+            expect(defined?(TestClass::X)).to be_falsey
             stub_const("TestClass::X", 7)
             reset_rspec_mocks
-            expect(defined?(TestClass)).to be_true
-            expect(defined?(TestClass::X)).to be_false
+            expect(defined?(TestClass)).to be_truthy
+            expect(defined?(TestClass::X)).to be_falsey
           end
 
           it 'raises a helpful error if it cannot be stubbed due to an intermediary constant that is not a module' do
@@ -385,12 +385,12 @@ module RSpec
           it_behaves_like "unloaded constant stubbing", "TestClass::Nested::NestedEvenMore::X::Y::Z"
 
           it 'removes the first unloaded constant but leaves the loaded nested constant when rspec resets its mocks' do
-            expect(defined?(TestClass::Nested::NestedEvenMore)).to be_true
-            expect(defined?(TestClass::Nested::NestedEvenMore::X)).to be_false
+            expect(defined?(TestClass::Nested::NestedEvenMore)).to be_truthy
+            expect(defined?(TestClass::Nested::NestedEvenMore::X)).to be_falsey
             stub_const("TestClass::Nested::NestedEvenMore::X::Y::Z", 7)
             reset_rspec_mocks
-            expect(defined?(TestClass::Nested::NestedEvenMore)).to be_true
-            expect(defined?(TestClass::Nested::NestedEvenMore::X)).to be_false
+            expect(defined?(TestClass::Nested::NestedEvenMore)).to be_truthy
+            expect(defined?(TestClass::Nested::NestedEvenMore::X)).to be_falsey
           end
         end
       end

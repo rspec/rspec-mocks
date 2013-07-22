@@ -696,13 +696,13 @@ module RSpec
             context "public methods" do
               before(:each) do
                 klass.any_instance.stub(:existing_method).and_return(1)
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_true
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_truthy
               end
 
               it "restores the class to its original state after each example when no instance is created" do
                 space.verify_all
 
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
 
@@ -711,7 +711,7 @@ module RSpec
 
                 space.verify_all
 
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
 
@@ -721,7 +721,7 @@ module RSpec
 
                 space.verify_all
 
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
             end
@@ -733,11 +733,11 @@ module RSpec
               end
 
               it "cleans up the backed up method" do
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
               end
 
               it "restores a stubbed private method after the spec is run" do
-                expect(klass.private_method_defined?(:private_method)).to be_true
+                expect(klass.private_method_defined?(:private_method)).to be_truthy
               end
 
               it "ensures that the restored method behaves as it originally did" do
@@ -755,11 +755,11 @@ module RSpec
               end
 
               it "cleans up the backed up method" do
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
               end
 
               it "restores a stubbed private method after the spec is run" do
-                expect(klass.private_method_defined?(:private_method)).to be_true
+                expect(klass.private_method_defined?(:private_method)).to be_truthy
               end
 
               it "ensures that the restored method behaves as it originally did" do

@@ -282,7 +282,7 @@ module RSpec
       context "when rspec-expectations is included in the test framework first" do
         before do
           # the examples here assume `expect` is define in RSpec::Matchers...
-          expect(RSpec::Matchers.method_defined?(:expect)).to be_true
+          expect(RSpec::Matchers.method_defined?(:expect)).to be_truthy
         end
 
         let(:framework) do
@@ -304,7 +304,7 @@ module RSpec
       context "when rspec-expectations is included in the test framework last" do
         before do
           # the examples here assume `expect` is define in RSpec::Matchers...
-          expect(RSpec::Matchers.method_defined?(:expect)).to be_true
+          expect(RSpec::Matchers.method_defined?(:expect)).to be_truthy
         end
 
         let(:framework) do
