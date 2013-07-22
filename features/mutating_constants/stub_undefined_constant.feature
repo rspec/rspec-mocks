@@ -33,15 +33,15 @@ Feature: Stub Undefined Constant
       module MyGem
         describe SomeClass do
           it "can stub an arbitrarily deep constant that is undefined" do
-            defined?(SomeClass::A).should be_false
+            defined?(SomeClass::A).should be_falsey
             stub_const("MyGem::SomeClass::A::B::C", 3)
             SomeClass::A::B::C.should eq(3)
             SomeClass::A.should be_a(Module)
           end
 
           it 'undefines the intermediary constants that were dynamically created' do
-            defined?(SomeClass).should be_true
-            defined?(SomeClass::A).should be_false
+            defined?(SomeClass).should be_truthy
+            defined?(SomeClass::A).should be_falsey
           end
         end
       end

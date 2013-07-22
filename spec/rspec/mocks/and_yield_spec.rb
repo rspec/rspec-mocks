@@ -25,7 +25,7 @@ describe RSpec::Mocks::Mock do
         obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
           evaluated = true
         end
-        expect(evaluated).to be_true
+        expect(evaluated).to be_truthy
       end
 
       it "passes an eval context object to the supplied block" do

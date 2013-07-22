@@ -205,7 +205,7 @@ module RSpec
 
       it "fails if expectation block fails" do
         @double.should_receive(:something) do |bool|
-          expect(bool).to be_true
+          expect(bool).to be_truthy
         end
 
         expect {

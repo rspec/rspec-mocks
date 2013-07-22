@@ -5,7 +5,7 @@ describe "Double" do
 
   specify "when one example has an expectation inside the block passed to should_receive" do
     test_double.should_receive(:msg) do |arg|
-      expect(arg).to be_true #this call exposes the problem
+      expect(arg).to be_truthy #this call exposes the problem
     end
     begin
       test_double.msg(false)
