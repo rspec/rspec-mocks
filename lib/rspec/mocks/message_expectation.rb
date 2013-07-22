@@ -425,11 +425,11 @@ module RSpec
         @actual_received_count += 1
       end
 
-    private
-
       def failed_fast?
         @failed_fast
       end
+
+    private
 
       def set_expected_received_count(relativity, n)
         @at_least = (relativity == :at_least)
