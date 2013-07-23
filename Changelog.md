@@ -15,6 +15,8 @@ Breaking Changes for 3.0.0:
   examples.  Test doubles are designed to only live for one example.
   (Myron Marston)
 * Make `at_least(0)` raise an error. (Sam Phippen)
+* Remove support for `require 'spec/mocks'` which had been kept
+  in place for backwards compatibility with rspec 1 (Myron Marston).
 
 Enhancement:
 

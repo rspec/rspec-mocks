@@ -55,11 +55,4 @@ describe RSpec::Mocks do
       expect(RSpec::Mocks.configuration).to be(RSpec::Mocks.configuration)
     end
   end
-
-  context 'when requiring spec/mocks (as was valid for rspec 1)' do
-    it 'prints a deprecation warning' do
-      expect(::RSpec).to receive(:deprecate).with("require 'spec/mocks'", :replacement => "require 'rspec/mocks'")
-      load "spec/mocks.rb"
-    end
-  end
 end
