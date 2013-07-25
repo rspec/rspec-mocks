@@ -834,7 +834,7 @@ module RSpec
         context "when configured to pass the instance" do
           include_context 'with isolated configuration'
           before(:each) do
-            RSpec::Mocks.configuration.yield_instance_from_any_instance_implementation_blocks = true
+            RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks = true
           end
 
           describe "an any instance stub" do
@@ -880,7 +880,7 @@ module RSpec
         context "when configured not to pass the instance" do
           include_context 'with isolated configuration'
           before(:each) do
-            RSpec::Mocks.configuration.yield_instance_from_any_instance_implementation_blocks = false
+            RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks = false
           end
 
           describe "an any instance stub" do
