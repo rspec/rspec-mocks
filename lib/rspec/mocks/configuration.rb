@@ -2,6 +2,13 @@ module RSpec
   module Mocks
     # Provides configuration options for rspec-mocks.
     class Configuration
+
+      def initialize
+        @yield_instance_from_any_instance_implementation_blocks = true
+      end
+
+      attr_accessor :yield_instance_from_any_instance_implementation_blocks
+
       # Adds `stub` and `should_receive` to the given
       # modules or classes. This is usually only necessary
       # if you application uses some proxy classes that
@@ -21,14 +28,6 @@ module RSpec
         modules.each do |mod|
           Syntax.enable_should(mod)
         end
-      end
-
-      def yield_instance_from_any_instance_implementation_blocks
-        @yield_instance_from_any_instance_implementation_blocks ||= false
-      end
-
-      def yield_instance_from_any_instance_implementation_blocks=(arg)
-        @yield_instance_from_any_instance_implementation_blocks = arg
       end
 
       def syntax=(values)
