@@ -15,6 +15,10 @@ Breaking Changes for 3.0.0:
   examples.  Test doubles are designed to only live for one example.
   (Myron Marston)
 
+Enhancements:
+
+* Yield the receiver to `any_instance` implementation blocks (Sam Phippen).
+
 ### 2.14.1 / 2013-07-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...v2.14.1)
 
