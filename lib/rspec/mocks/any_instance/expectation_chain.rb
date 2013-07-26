@@ -25,7 +25,12 @@ module RSpec
         def create_message_expectation_on(instance)
           proxy = ::RSpec::Mocks.proxy_for(instance)
           expected_from = IGNORED_BACKTRACE_LINE
-          proxy.add_message_expectation(expected_from, *@expectation_args, &@expectation_block)
+          me = proxy.add_message_expectation(expected_from, *@expectation_args, &@expectation_block)
+          if RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?
+            me.and_yield_receiver_to_implementation
+          end
+
+          me
         end
 
         def invocation_order

@@ -830,6 +830,78 @@ module RSpec
         end
       end
 
+      context "passing the receiver to the implementation block" do
+        context "when configured to pass the instance" do
+          include_context 'with isolated configuration'
+          before(:each) do
+            RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks = true
+          end
+
+          describe "an any instance stub" do
+            it "passes the instance as the first arg of the implementation block" do
+              instance = klass.new
+
+              expect { |b|
+                klass.any_instance.should_receive(:bees).with(:sup, &b)
+                instance.bees(:sup)
+              }.to yield_with_args(instance, :sup)
+            end
+
+            it "does not pass the instance to and_call_original" do
+              klass = Class.new do
+                def call(*args)
+                  args.first
+                end
+              end
+              klass.any_instance.should_receive(:call).and_call_original
+              instance = klass.new
+              expect(instance.call(:bees)).to be :bees
+            end
+          end
+
+          describe "an any instance expectation" do
+            it "doesn't effect with" do
+              instance = klass.new
+              klass.any_instance.should_receive(:bees).with(:sup)
+              instance.bees(:sup)
+            end
+
+            it "passes the instance as the first arg of the implementation block" do
+              instance = klass.new
+
+              expect { |b|
+                klass.any_instance.should_receive(:bees).with(:sup, &b)
+                instance.bees(:sup)
+              }.to yield_with_args(instance, :sup)
+            end
+          end
+        end
+
+        context "when configured not to pass the instance" do
+          include_context 'with isolated configuration'
+          before(:each) do
+            RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks = false
+          end
+
+          describe "an any instance stub" do
+            it "does not pass the instance to the implementation block" do
+              instance = klass.new
+
+              expect { |b|
+                klass.any_instance.should_receive(:bees).with(:sup, &b)
+                instance.bees(:sup)
+              }.to yield_with_args(:sup)
+            end
+
+            it "does not cause with to fail when the instance is passed" do
+              instance = klass.new
+              klass.any_instance.should_receive(:bees).with(:faces)
+              instance.bees(:faces)
+            end
+          end
+        end
+      end
+
       context 'when used in conjunction with a `dup`' do
         it "doesn't cause an infinite loop" do
           pending "This intermittently fails on JRuby" if RUBY_PLATFORM == 'java'

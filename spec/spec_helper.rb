@@ -68,3 +68,15 @@ shared_context "with syntax" do |syntax|
   end
 end
 
+
+shared_context "with isolated configuration" do
+  orig_configuration = nil
+  before do
+    orig_configuration = RSpec::Mocks.configuration
+    RSpec::Mocks.instance_variable_set(:@configuration, RSpec::Mocks::Configuration.new)
+  end
+
+  after do
+    RSpec::Mocks.instance_variable_set(:@configuration, orig_configuration)
+  end
+end
