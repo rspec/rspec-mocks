@@ -24,11 +24,6 @@ Enhancement:
 * Allow the `have_received` matcher to use a block to set further expectations
   on arguments. (Tim Cowlishaw)
 
-Bug Fixes:
-
-* ArgumentMatcher methods (e.g. `hash_containing`) no longer overwrite
-  `let`-definitions of the same name. (Michi Huber)
-
 ### 2.14.1 / 2013-07-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...v2.14.1)
 
