@@ -5,6 +5,7 @@ module RSpec
       # @private
       attr_accessor :error_generator, :implementation
       attr_reader :message
+      attr_reader :orig_object
       attr_writer :expected_received_count, :expected_from, :argument_list_matcher
       protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
@@ -15,6 +16,7 @@ module RSpec
         @error_generator.opts = opts
         @expected_from = expected_from
         @method_double = method_double
+        @orig_object = @method_double.object
         @message = @method_double.method_name
         @actual_received_count = 0
         @expected_received_count = expected_received_count
@@ -24,6 +26,7 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @eval_context = nil
+        @yield_receiver_to_implementation_block = false
 
         @implementation = Implementation.new
         self.inner_implementation_action = implementation_block
@@ -89,6 +92,15 @@ module RSpec
         end
       end
 
+      def and_yield_receiver_to_implementation
+        @yield_receiver_to_implementation_block = true
+        self
+      end
+
+      def yield_receiver_to_implementation_block?
+        @yield_receiver_to_implementation_block
+      end
+
       # Tells the object to delegate to the original unmodified method
       # when it receives the message.
       #
@@ -105,6 +117,7 @@ module RSpec
           @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
         else
           @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
+          @yield_receiver_to_implementation_block = false
         end
       end
 
@@ -173,6 +186,10 @@ module RSpec
 
       # @private
       def invoke(parent_stub, *args, &block)
+        if yield_receiver_to_implementation_block?
+          args.unshift(orig_object)
+        end
+
         if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += 1
           @failed_fast = true

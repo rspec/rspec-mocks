@@ -80,6 +80,7 @@ module RSpec
             block.call(*args) if block
           end
         end
+
       end
 
       # @private
