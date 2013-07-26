@@ -30,6 +30,8 @@ module RSpec
             me.and_yield_receiver_to_implementation
           end
 
+          warn_about_receiver_passing_if_necessary
+
           me
         end
 
@@ -39,6 +41,16 @@ module RSpec
             :and_return => [:with, nil],
             :and_raise => [:with, nil]
           }
+        end
+
+        def warn_about_receiver_passing_if_necessary
+          Kernel.warn(<<MSG
+`expect_any_instance_of(...).to receive(:message) { ... }` blocks will get the
+receiving instance in 3.0. please explicitly set:
+`RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks = true`
+in your spec helper and fix any failing specs.
+MSG
+          ) if RSpec::Mocks.configuration.should_warn_about_any_instance_blocks?
         end
       end
     end

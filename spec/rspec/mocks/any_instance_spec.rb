@@ -954,6 +954,30 @@ module RSpec
             end
           end
         end
+
+        context "by default" do
+          it "is off" do
+            expect(RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?).to be false
+          end
+
+          it "will warn about allowances receiving blocks in 3.0" do
+            expect(Kernel).to receive(:warn).with(/receiving instance/)
+
+            klass = Struct.new(:bees)
+
+            allow_any_instance_of(klass).to receive(:nil?) { |args| }
+            klass.new(:faces).nil?
+          end
+
+          it "will warn about expectatiosn receiving blocks in 3.0" do
+            expect(Kernel).to receive(:warn).with(/receiving instance/)
+
+            klass = Struct.new(:bees)
+
+            expect_any_instance_of(klass).to receive(:nil?) { |args| }
+            klass.new(:faces).nil?
+          end
+        end
       end
 
       context 'when used in conjunction with a `dup`' do
