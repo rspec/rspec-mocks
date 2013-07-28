@@ -22,7 +22,7 @@ describe "and_call_original" do
     let(:instance) { klass.new }
 
     it 'passes the received message through to the original method' do
-      instance.should_receive(:meth_1).and_call_original
+      allow(instance).to receive(:meth_1).and_call_original
       expect(instance.meth_1).to eq(:original)
     end
 
@@ -33,17 +33,23 @@ describe "and_call_original" do
     end
 
     it 'passes args and blocks through to the original method' do
-      instance.should_receive(:meth_2).and_call_original
+      allow(instance).to receive(:meth_2).and_call_original
       value = instance.meth_2(:submitted_arg) { |a, b| [a, b] }
       expect(value).to eq([:submitted_arg, :additional_yielded_arg])
     end
 
     it 'errors when you pass through the wrong number of args' do
-      instance.stub(:meth_1).and_call_original
-      instance.stub(:meth_2).and_call_original
+      allow(instance).to receive(:meth_1).and_call_original
+      allow(instance).to receive(:meth_2).and_call_original
       expect { instance.meth_1 :a }.to raise_error ArgumentError
       expect { instance.meth_2 {} }.to raise_error ArgumentError
       expect { instance.meth_2(:a, :b) {}  }.to raise_error ArgumentError
+    end
+
+    it 'warns when you override an existing implementation' do
+      expect(RSpec).to receive(:warning).with /overriding a previous implementation/
+      allow(instance).to receive(:meth_1) { true }.and_call_original
+      instance.meth_1
     end
 
     context "for singleton methods" do
