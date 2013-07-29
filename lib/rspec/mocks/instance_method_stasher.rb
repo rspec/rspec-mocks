@@ -36,6 +36,12 @@ module RSpec
 
       def method_owned_by_klass?
         owner = @klass.instance_method(@method).owner
+
+        # On Ruby 2.0.0+ the owner of a method on a class which has been
+        # `prepend`ed may actually be an instance, e.g.
+        # `#<MyClass:0x007fbb94e3cd10>`, rather than the expected `MyClass`.
+        owner = owner.class unless owner.is_a? Class
+
         # On some 1.9s (e.g. rubinius) aliased methods
         # can report the wrong owner. Example:
         # class MyClass
