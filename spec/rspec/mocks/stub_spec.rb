@@ -38,8 +38,16 @@ module RSpec
       end
 
       describe "using stub!" do
-        it "warns of deprecation but still returns the declared value when message is received" do
+        before do
+          allow(RSpec).to receive(:deprecate)
+        end
+
+        it "warns of deprecation" do
           expect(RSpec).to receive(:deprecate).with("stub!", :replacement => "stub")
+          @instance.stub!(:msg).and_return(:return_value)
+        end
+
+        it "returns the declared value when the message is received" do
           @instance.stub!(:msg).and_return(:return_value)
           expect(@instance.msg).to equal(:return_value)
           verify @instance
