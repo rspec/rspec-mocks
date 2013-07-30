@@ -1,5 +1,5 @@
 ### Development
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...2-99-maintenance)
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...2-99-maintenance)
 
 Deprecations
 
@@ -13,6 +13,9 @@ Deprecations
   state was not reset and some users relied on this to have a null object
   double that is used for many examples. This behavior will be removed in 3.0.
   (Myron Marston)
+
+### 2.14.2 / 2013-07-30
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.1...v2.14.2)
 
 Bug Fixes:
 
