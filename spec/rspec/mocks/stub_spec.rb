@@ -52,6 +52,11 @@ module RSpec
           expect(@instance.msg).to equal(:return_value)
           verify @instance
         end
+
+        it "can be used to stub the example context itself (since `stub` returns a test dobule instead)" do
+          stub!(:foo).and_return(5)
+          expect(foo).to eq(5)
+        end
       end
 
       describe 'using unstub' do
