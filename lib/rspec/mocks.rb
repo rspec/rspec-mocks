@@ -48,6 +48,19 @@ module RSpec
           add_stub(orig_caller, message.to_sym, opts, &block)
       end
 
+      # @api private
+      # semi private message to remove duplicated info to renable
+      # implict stub!
+      def allow_messages(subject, message_or_hash, opts={}, &block)
+        if ::Hash === message_or_hash
+          message_or_hash.each do |message,value|
+            allow_message(subject,message,opts).and_return(value)
+          end
+        else
+          allow_message(subject,message_or_hash,opts,&block)
+        end
+      end
+
       # Sets a message expectation on `subject`.
       # @param subject the subject on which the message will be expected
       # @param message a symbol, representing the message that will be
