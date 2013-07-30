@@ -1,5 +1,5 @@
 ### Development
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...master)
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...master)
 
 Breaking Changes for 3.0.0:
 
@@ -27,6 +27,16 @@ Enhancement:
 Enhancements:
 
 * Yield the receiver to `any_instance` implementation blocks (Sam Phippen).
+
+### 2.14.2 / 2013-07-30
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.1...v2.14.2)
+
+Bug Fixes:
+
+* Fix `as_null_object` doubles so that they return `nil` from `to_ary`
+  (Jon Rowe).
+* Fix regression in 2.14 that made `stub!` (with an implicit receiver)
+  return a test double rather than stub a method (Myron Marston).
 
 ### 2.14.1 / 2013-07-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...v2.14.1)
