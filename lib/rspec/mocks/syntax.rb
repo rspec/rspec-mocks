@@ -22,12 +22,8 @@ module RSpec
           end
 
           def stub(message_or_hash, opts={}, &block)
-            if ::Hash === message_or_hash
-              message_or_hash.each {|message, value| stub(message).and_return value }
-            else
-              opts[:expected_from] = caller(1)[0]
-              ::RSpec::Mocks.allow_message(self, message_or_hash, opts, &block)
-            end
+            opts[:expected_from] = caller(1)[0]
+            ::RSpec::Mocks.allow_messages(self, message_or_hash, opts, &block)
           end
 
           def unstub(message)
@@ -36,7 +32,8 @@ module RSpec
 
           def stub!(message_or_hash, opts={}, &block)
             ::RSpec.deprecate "stub!", :replacement => "stub"
-            stub(message_or_hash, opts={}, &block)
+            opts[:expected_from] = caller(1)[0]
+            ::RSpec::Mocks.allow_messages(self, message_or_hash, opts, &block)
           end
 
           def unstub!(message)
