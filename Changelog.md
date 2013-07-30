@@ -1,6 +1,13 @@
 ### 2.14.2 Development
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.1...2-14-maintenance)
 
+Bug Fixes:
+
+* Fix `as_null_object` doubles so that they return `nil` from `to_ary`
+  (Jon Rowe).
+* Fix regression in 2.14 that made `stub!` (with an implicit receiver)
+  return a test double rather than stub a method (Myron Marston).
+
 ### 2.14.1 / 2013-07-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...v2.14.1)
 

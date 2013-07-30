@@ -4,6 +4,21 @@ module RSpec
     # Provides methods for enabling and disabling the available syntaxes
     # provided by rspec-mocks.
     module Syntax
+      # @api private
+      #
+      # Common stubbing logic for both `stub` and `stub!`. This used to
+      # live in `stub`, and `stub!` delegated to `stub`, but we discovered
+      # that `stub!` was delegating to `RSpec::Mocks::ExampleMethods#stub`
+      # (which declares a test double) when called with an implicit receiver,
+      # which was a regression in 2.14.0.
+      def self.stub_object(object, message_or_hash, opts = {}, &block)
+        if ::Hash === message_or_hash
+          message_or_hash.each {|message, value| stub_object(object, message).and_return value }
+        else
+          opts[:expected_from] = caller(1)[1]
+          ::RSpec::Mocks.allow_message(object, message_or_hash, opts, &block)
+        end
+      end
 
       # @api private
       # Enables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
@@ -22,12 +37,7 @@ module RSpec
           end
 
           def stub(message_or_hash, opts={}, &block)
-            if ::Hash === message_or_hash
-              message_or_hash.each {|message, value| stub(message).and_return value }
-            else
-              opts[:expected_from] = caller(1)[0]
-              ::RSpec::Mocks.allow_message(self, message_or_hash, opts, &block)
-            end
+            ::RSpec::Mocks::Syntax.stub_object(self, message_or_hash, opts, &block)
           end
 
           def unstub(message)
@@ -36,7 +46,7 @@ module RSpec
 
           def stub!(message_or_hash, opts={}, &block)
             ::RSpec.deprecate "stub!", :replacement => "stub"
-            stub(message_or_hash, opts={}, &block)
+            ::RSpec::Mocks::Syntax.stub_object(self, message_or_hash, opts, &block)
           end
 
           def unstub!(message)
