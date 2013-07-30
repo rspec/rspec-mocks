@@ -3,6 +3,8 @@
 
 Bug Fixes:
 
+* Fix `as_null_object` doubles so that they return `nil` from `to_ary`
+  (Jon Rowe).
 * Fix regression in 2.14 that made `stub!` (with an implicit receiver)
   return a test double rather than stub a method (Myron Marston).
 
