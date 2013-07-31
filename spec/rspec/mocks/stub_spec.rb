@@ -138,6 +138,43 @@ module RSpec
 
           expect(mod.hello).to eq(:hello)
         end
+
+        if RUBY_VERSION >= '2.0.0'
+          context "with a prepended module (ruby 2.0.0+)" do
+            before do
+              mod = Module.new do
+                def existing_instance_method
+                  "#{super}_prepended".to_sym
+                end
+              end
+
+              @prepended_class = Class.new(@class) do
+                prepend mod
+
+                def non_prepended_method
+                  :not_prepended
+                end
+              end
+              @prepended_instance = @prepended_class.new
+            end
+
+            it "restores prepended instance methods" do
+              allow(@prepended_instance).to receive(:existing_instance_method) { :stubbed }
+              expect(@prepended_instance.existing_instance_method).to eq :stubbed
+
+              reset @prepended_instance
+              expect(@prepended_instance.existing_instance_method).to eq :original_value_prepended
+            end
+
+            it "restores non-prepended instance methods" do
+              allow(@prepended_instance).to receive(:non_prepended_method) { :stubbed }
+              expect(@prepended_instance.non_prepended_method).to eq :stubbed
+
+              reset @prepended_instance
+              expect(@prepended_instance.non_prepended_method).to eq :not_prepended
+            end
+          end
+        end
       end
 
       it "returns values in order to consecutive calls" do
