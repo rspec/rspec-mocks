@@ -244,6 +244,21 @@ module RSpec
         stub
       end
 
+      # A simple stub can only return a concrete value for a message, and
+      # cannot match on arguments. It is used as an optimization over
+      # `add_stub` where it is known in advance that this is all that will be
+      # required of a stub, such as when passing attributes to the `double`
+      # example method.
+      #
+      # @private
+      def add_simple_stub(error_generator, expectation_ordering, expected_from, method_name, response)
+        define_proxy_method
+
+        stub = SimpleMessageExpectation.new(method_name, response)
+        stubs.unshift stub
+        stub
+      end
+
       # @private
       def add_default_stub(*args, &implementation)
         return if stubs.any?

@@ -31,6 +31,11 @@ module RSpec
         super
       end
 
+      def add_simple_stub(_, method_name, *args)
+        ensure_implemented(method_name)
+        super
+      end
+
       def add_message_expectation(location, method_name, opts={}, &block)
         ensure_implemented(method_name)
         super

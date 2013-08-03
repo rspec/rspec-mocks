@@ -1,6 +1,20 @@
 module RSpec
   module Mocks
 
+    # A message expectation that only allows concrete return values to be set
+    # for a message. While this same effect can be achieved using a standard
+    # MessageExpecation, this version is much faster and so can be used as an
+    # optimization.
+    SimpleMessageExpectation = Struct.new(:message, :response) do
+      def invoke(*_)
+        response
+      end
+
+      def matches?(message, *_)
+        self.message == message
+      end
+    end
+
     class MessageExpectation
       # @private
       attr_accessor :error_generator, :implementation

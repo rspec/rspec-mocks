@@ -99,10 +99,10 @@ module RSpec
         # Performance optimization so that `caller` is not called needlessly.
         return if stubs.empty?
 
-        opts = {:expected_from => caller(1)[0]}
+        expected_from = caller(1)[0]
 
         stubs.each_pair do |message, response|
-          Mocks.allow_message(self, message, opts).and_return(response)
+          __mock_proxy.add_simple_stub(expected_from, message, response)
         end
       end
 

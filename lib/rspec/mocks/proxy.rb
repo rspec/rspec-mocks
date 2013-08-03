@@ -97,6 +97,10 @@ module RSpec
         method_double[method_name].add_stub @error_generator, @expectation_ordering, location, opts, &implementation
       end
 
+      def add_simple_stub(location, method_name, response)
+        method_double[method_name].add_simple_stub @error_generator, @expectation_ordering, location, method_name, response
+      end
+
       # @private
       def remove_stub(method_name)
         method_double[method_name].remove_stub
