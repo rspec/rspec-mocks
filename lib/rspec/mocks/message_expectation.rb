@@ -20,7 +20,7 @@ module RSpec
         @message = @method_double.method_name
         @actual_received_count = 0
         @expected_received_count = expected_received_count
-        @argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
+        @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
         @order_group = expectation_ordering
         @at_least = @at_most = @exactly = nil
         @args_to_yield = []
