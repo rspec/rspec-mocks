@@ -96,8 +96,13 @@ module RSpec
       end
 
       def assign_stubs(stubs)
+        # Performance optimization so that `caller` is not called needlessly.
+        return if stubs.empty?
+
+        opts = {:expected_from => caller(1)[0]}
+
         stubs.each_pair do |message, response|
-          Mocks.allow_message(self, message).and_return(response)
+          Mocks.allow_message(self, message, opts).and_return(response)
         end
       end
 
