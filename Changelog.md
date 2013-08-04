@@ -14,6 +14,11 @@ Deprecations
   double that is used for many examples. This behavior will be removed in 3.0.
   (Myron Marston)
 
+Bug Fixes:
+
+* Fix stubbing some instance methods for classes whose hierarchy includes
+  a prepended Module (Bradley Schaefer)
+
 ### 2.14.2 / 2013-07-30
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.1...v2.14.2)
 
