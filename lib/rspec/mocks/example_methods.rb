@@ -1,3 +1,5 @@
+require 'rspec/mocks/module_reference'
+
 module RSpec
   module Mocks
     module ExampleMethods
@@ -9,12 +11,12 @@ module RSpec
       # @overload double(name, stubs)
       # @param name [String/Symbol] (optional) used in
       #   clarify intent
-      # @param stubs (Hash) (optional) hash of method/return-value pairs
+      # @param stubs (Hash) (optional) hash of message/return-value pairs
       # @return (Mock)
       #
       # Constructs an instance of [RSpec::Mocks::Mock](RSpec::Mocks::Mock) configured
       # with an optional name, used for reporting in failure messages, and an optional
-      # hash of method/return-value pairs.
+      # hash of message/return-value pairs.
       #
       # @example
       #
@@ -26,8 +28,35 @@ module RSpec
       #   card.rank  #=> "A"
       #
       def double(*args)
-        args << {} unless Hash === args.last
-        RSpec::Mocks::Mock.new(*args)
+        declare_double(Mock, *args)
+      end
+
+      # @overload instance_double(doubled_class)
+      # @overload instance_double(doubled_class, stubs)
+      # @param doubled_class [String, Class]
+      # @param stubs [Hash] (optional) hash of message/return-value pairs
+      # @return InstanceVerifyingMock
+      #
+      # Constructs a test double against a specific class. If the given class
+      # name has been loaded, only instance methods defined on the class are
+      # allowed to be stubbed. In all other ways it behaves like a
+      # [double](double).
+      def instance_double(doubled_class, *args)
+        declare_verifying_double(InstanceVerifyingMock, doubled_class, *args)
+      end
+
+      # @overload instance_double(doubled_class)
+      # @overload instance_double(doubled_class, stubs)
+      # @param doubled_class [String, Module]
+      # @param stubs [Hash] (optional) hash of message/return-value pairs
+      # @return ClassVerifyingMock
+      #
+      # Constructs a test double against a specific class. If the given class
+      # name has been loaded, only class methods defined on the class are
+      # allowed to be stubbed. In all other ways it behaves like a
+      # [double](double).
+      def class_double(doubled_class, *args)
+        declare_verifying_double(ClassVerifyingMock, doubled_class, *args)
       end
 
       # Disables warning messages about expectations being set on nil.
@@ -127,6 +156,27 @@ module RSpec
       end
 
     private
+
+      def declare_verifying_double(type, constant_or_name, *args)
+        ref = ModuleReference.new(constant_or_name)
+
+        if RSpec::Mocks.configuration.verify_doubled_constant_names? &&
+          !ref.defined?
+
+          raise NameError,
+            "#{ref.name} is not a defined constant. " +
+            "Perhaps you misspelt it? " +
+            "Disable check with verify_constant_names configuration option."
+        end
+
+        declare_double(type, ref, *args)
+      end
+
+      def declare_double(type, *args)
+        args << {} unless Hash === args.last
+        type.new(*args)
+      end
+
       # This module exists to host the `expect` method for cases where
       # rspec-mocks is used w/o rspec-expectations.
       module ExpectHost
