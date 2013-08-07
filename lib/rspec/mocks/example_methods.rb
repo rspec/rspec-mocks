@@ -45,8 +45,8 @@ module RSpec
         declare_verifying_double(InstanceVerifyingMock, doubled_class, *args)
       end
 
-      # @overload instance_double(doubled_class)
-      # @overload instance_double(doubled_class, stubs)
+      # @overload class_double(doubled_class)
+      # @overload class_double(doubled_class, stubs)
       # @param doubled_class [String, Module]
       # @param stubs [Hash] (optional) hash of message/return-value pairs
       # @return ClassVerifyingMock
