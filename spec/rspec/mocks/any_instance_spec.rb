@@ -961,7 +961,7 @@ module RSpec
           end
 
           it "will warn about allowances receiving blocks in 3.0" do
-            expect(Kernel).to receive(:warn).with(/receiving instance/)
+            expect(RSpec).to receive(:warn_deprecation).with(/as the first block argument/)
 
             klass = Struct.new(:bees)
 
@@ -969,12 +969,39 @@ module RSpec
             klass.new(:faces).nil?
           end
 
-          it "will warn about expectatiosn receiving blocks in 3.0" do
-            expect(Kernel).to receive(:warn).with(/receiving instance/)
+          it "will warn about expectations receiving blocks in 3.0" do
+            expect(RSpec).to receive(:warn_deprecation).with(/as the first block argument/)
 
             klass = Struct.new(:bees)
 
             expect_any_instance_of(klass).to receive(:nil?) { |args| }
+            klass.new(:faces).nil?
+          end
+
+          it "won't warn if there is no implementation block on an expectation" do
+            expect(RSpec).not_to receive(:warn_deprecation).with(/as the first block argument/)
+
+            klass = Struct.new(:bees)
+
+            allow_any_instance_of(klass).to receive(:nil?)
+            klass.new(:faces).nil?
+          end
+
+          it "will warn about stubs receiving blocks in 3.0" do
+            expect(RSpec).to receive(:warn_deprecation).with(/as the first block argument/)
+
+            klass = Struct.new(:bees)
+
+            expect_any_instance_of(klass).to receive(:nil?) { |args| }
+            klass.new(:faces).nil?
+          end
+
+          it "won't warn if there is no implementation block on an stub" do
+            expect(RSpec).not_to receive(:warn_deprecation).with(/as the first block argument/)
+
+            klass = Struct.new(:bees)
+
+            allow_any_instance_of(klass).to receive(:nil?)
             klass.new(:faces).nil?
           end
         end

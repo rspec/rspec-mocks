@@ -58,7 +58,6 @@ shared_context "with syntax" do |syntax|
   end
 end
 
-
 shared_context "with isolated configuration" do
   orig_configuration = nil
   before do

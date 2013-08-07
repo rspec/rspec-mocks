@@ -4,6 +4,7 @@ module RSpec
     class MessageExpectation
       # @private
       attr_accessor :error_generator, :implementation
+      attr_accessor :warn_about_yielding_receiver_to_implementation_block
       attr_reader :message
       attr_reader :orig_object
       attr_writer :expected_received_count, :expected_from, :argument_list_matcher
@@ -17,6 +18,7 @@ module RSpec
         @expected_from = expected_from
         @method_double = method_double
         @orig_object = @method_double.object
+        @warn_about_yielding_receiver_to_implementation_block = false
         @message = @method_double.method_name
         @actual_received_count = 0
         @expected_received_count = expected_received_count
@@ -445,6 +447,26 @@ module RSpec
       # @private
       def increase_actual_received_count!
         @actual_received_count += 1
+      end
+
+      def warn_about_receiver_passing
+        RSpec.warn_deprecation(<<MSG
+In RSpec 3, `any_instance` implementation blocks will be yielded the receiving
+instance as the first block argument to allow the implementation block to use
+the state of the receiver.  To maintain compatibility with RSpec 3 you need to
+either set rspec-mocks' `yield_receiver_to_any_instance_implementation_blocks`
+config option to `false` OR set it to `true` and update your `any_instance`
+implementation blocks to account for the first block argument being the receiving instance.
+
+To set the config option, use a snippet like:
+
+RSpec.configure do |rspec|
+  rspec.mock_with :rspec do |mocks|
+    mocks.yield_receiver_to_any_instance_implementation_blocks = false
+  end
+end
+MSG
+)
       end
 
     private
