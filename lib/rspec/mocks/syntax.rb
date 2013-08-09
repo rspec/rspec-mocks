@@ -92,6 +92,11 @@ module RSpec
             Matchers::Receive.new(method_name, block)
           end
 
+          def receive_messages(method_value_hash)
+            raise "Implementation blocks arn't supported with `receive_messages`" if block_given?
+            Matchers::ReceivesMessages.new(method_value_hash)
+          end
+
           def allow(target)
             AllowanceTarget.new(target)
           end
