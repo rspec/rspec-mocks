@@ -1,5 +1,5 @@
 ### Development
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...master)
+[full changelog](http://github.com/rspec/rspec-mocks/compare/2-99-maintenance...master)
 
 Breaking Changes for 3.0.0:
 
@@ -26,6 +26,9 @@ Enhancements:
 * Yield the receiver to `any_instance` implementation blocks (Sam Phippen).
 * Provide `instance_double` and `class_double` to create verifying doubles,
   ported from `rspec-fire` (Xavier Shay).
+
+### 2.14.3 / 2013-08-08
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...v2.14.3)
 
 Bug Fixes:
 
