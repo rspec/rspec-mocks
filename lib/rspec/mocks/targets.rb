@@ -12,7 +12,8 @@ module RSpec
         method_name = options.fetch(:from) { :to }
         define_method(method_name) do |matcher, &block|
           unless Matchers::Receive === matcher || Matchers::ReceivesMessages === matcher
-            raise UnsupportedMatcherError, "only the `receive` matcher is supported " +
+            raise UnsupportedMatcherError,
+              "only the `receive` or `receive_messages` matchers are supported " +
               "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
           end
 
