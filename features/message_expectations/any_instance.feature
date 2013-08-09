@@ -16,7 +16,7 @@ Feature: expect a message on any instance of a class
 
         it "verifies that one instance of the class receives the message" do
           o = Object.new
-          o.foo.should eq(:return_value)
+          expect(o.foo).to eq(:return_value)
         end
 
         it "fails unless an instance receives that message" do
@@ -27,7 +27,7 @@ Feature: expect a message on any instance of a class
     Then the output should contain "2 examples, 1 failure"
     And the output should contain "1) expect_any_instance_of fails unless an instance receives that message"
 
-  Scenario: expect a message on any instance of a class (alternate syntax)
+  Scenario: expect a message on any instance of a class (should syntax)
     Given a file named "example_spec.rb" with:
       """ruby
       describe "any_instance.should_receive" do
