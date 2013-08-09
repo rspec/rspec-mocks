@@ -11,7 +11,7 @@ module RSpec
       def self.delegate_to(matcher_method, options = {})
         method_name = options.fetch(:from) { :to }
         define_method(method_name) do |matcher, &block|
-          unless Matchers::Receive === matcher
+          unless Matchers::Receive === matcher || Matchers::ReceivesMessages === matcher
             raise UnsupportedMatcherError, "only the `receive` matcher is supported " +
               "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
           end
