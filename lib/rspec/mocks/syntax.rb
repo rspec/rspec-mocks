@@ -124,6 +124,7 @@ module RSpec
 
         syntax_host.class_exec do
           undef receive
+          undef receive_messages
           undef allow
           undef expect_any_instance_of
           undef allow_any_instance_of
