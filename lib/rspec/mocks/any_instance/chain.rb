@@ -2,7 +2,8 @@ module RSpec
   module Mocks
     module AnyInstance
       class Chain
-        def initialize(*args, &block)
+        def initialize(recorder, *args, &block)
+          @recorder          = recorder
           @expectation_args  = args
           @expectation_block = block
         end

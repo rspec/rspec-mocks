@@ -162,6 +162,12 @@ module RSpec
       end
 
       # @private
+      def remove_single_stub(stub)
+        stubs.delete(stub)
+        restore_original_method if stubs.empty? && expectations.empty?
+      end
+
+      # @private
       def raise_method_not_stubbed_error
         raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
       end
