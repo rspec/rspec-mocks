@@ -13,6 +13,14 @@ Deprecations
   state was not reset and some users relied on this to have a null object
   double that is used for many examples. This behavior will be removed in 3.0.
   (Myron Marston)
+* Print a detailed warning when an `any_instance` implementation block is used when the new
+  `yield_receiver_to_any_instance_implementation_blocks` config option is not explicitly set,
+  as RSpec 3.0 will default to enabling this new feature. (Sam Phippen)
+
+Enhancements:
+
+* Add a config option to yield the receiver to `any_instance` implementation
+  blocks (Sam Phippen).
 
 ### 2.14.2 / 2013-07-30
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.1...v2.14.2)
@@ -23,10 +31,6 @@ Bug Fixes:
   (Jon Rowe).
 * Fix regression in 2.14 that made `stub!` (with an implicit receiver)
   return a test double rather than stub a method (Myron Marston).
-
-Enhancements:
-
-* Yield the receiver to `any_instance` implementation blocks (Sam Phippen).
 
 ### 2.14.1 / 2013-07-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.0...v2.14.1)

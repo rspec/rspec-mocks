@@ -956,53 +956,90 @@ module RSpec
         end
 
         context "by default" do
+          let(:block_regex) { /as the first block argument/ }
+
           it "is off" do
             expect(RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?).to be false
           end
 
           it "will warn about allowances receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(/as the first block argument/)
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
 
             klass = Struct.new(:bees)
 
-            allow_any_instance_of(klass).to receive(:nil?) { |args| }
-            klass.new(:faces).nil?
+            allow_any_instance_of(klass).to receive(:foo) { |args| }
+            klass.new(:faces).foo
           end
 
           it "will warn about expectations receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(/as the first block argument/)
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
 
             klass = Struct.new(:bees)
 
-            expect_any_instance_of(klass).to receive(:nil?) { |args| }
-            klass.new(:faces).nil?
+            expect_any_instance_of(klass).to receive(:foo) { |args| }
+            klass.new(:faces).foo
+          end
+
+          it "will warn about expectations receiving blocks with a times restriction" do
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
+
+            klass = Struct.new(:bees)
+
+            klass.any_instance.should_receive(:foo).exactly(3).times { :some_return_value }
+
+            instance = klass.new(:faces)
+            3.times { instance.foo }
+          end
+
+          it "will warn about expectations receiving blocks with an argument expectation" do
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
+
+            klass = Struct.new(:bees)
+
+            klass.any_instance.should_receive(:foo).with(3) { :some_return_value }
+
+            instance = klass.new(:faces)
+            instance.foo(3)
+          end
+
+          it "works with a do end style block" do
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
+
+            klass = Struct.new(:bees)
+
+            klass.any_instance.should_receive(:foo).with(3) do
+              :some_return_value
+            end
+
+            instance = klass.new(:faces)
+            instance.foo(3)
           end
 
           it "won't warn if there is no implementation block on an expectation" do
-            expect(RSpec).not_to receive(:warn_deprecation).with(/as the first block argument/)
+            expect(RSpec).not_to receive(:warn_deprecation)
 
             klass = Struct.new(:bees)
 
-            allow_any_instance_of(klass).to receive(:nil?)
-            klass.new(:faces).nil?
+            allow_any_instance_of(klass).to receive(:foo)
+            klass.new(:faces).foo
           end
 
           it "will warn about stubs receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(/as the first block argument/)
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
 
             klass = Struct.new(:bees)
 
-            expect_any_instance_of(klass).to receive(:nil?) { |args| }
-            klass.new(:faces).nil?
+            expect_any_instance_of(klass).to receive(:foo) { |args| }
+            klass.new(:faces).foo
           end
 
           it "won't warn if there is no implementation block on an stub" do
-            expect(RSpec).not_to receive(:warn_deprecation).with(/as the first block argument/)
+            expect(RSpec).not_to receive(:warn_deprecation)
 
             klass = Struct.new(:bees)
 
-            allow_any_instance_of(klass).to receive(:nil?)
-            klass.new(:faces).nil?
+            allow_any_instance_of(klass).to receive(:foo)
+            klass.new(:faces).foo
           end
         end
       end

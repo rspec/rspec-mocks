@@ -17,6 +17,7 @@ module RSpec
         @error_generator.opts = opts
         @expected_from = expected_from
         @method_double = method_double
+        @have_warned_about_yielding_receiver = false
         @orig_object = @method_double.object
         @warn_about_yielding_receiver_to_implementation_block = false
         @message = @method_double.method_name
@@ -237,6 +238,13 @@ module RSpec
         Kernel::raise error
       end
 
+      def display_any_instance_deprecation_warning_if_necessary
+        if should_display_any_instance_deprecation_warning
+          display_any_instance_deprecation_warning
+          @have_warned_about_yielding_receiver = true
+        end
+      end
+
       # @private
       def expected_messages_received?
         ignoring_args? || matches_exact_count? || matches_at_least_count? || matches_at_most_count?
@@ -450,6 +458,15 @@ module RSpec
       end
 
       def warn_about_receiver_passing
+        @warn_about_yielding_receiver_to_implementation_block = true
+      end
+
+      def should_display_any_instance_deprecation_warning
+        warn_about_yielding_receiver_to_implementation_block &&
+          !@have_warned_about_yielding_receiver
+      end
+
+      def display_any_instance_deprecation_warning
         RSpec.warn_deprecation(<<MSG
 In RSpec 3, `any_instance` implementation blocks will be yielded the receiving
 instance as the first block argument to allow the implementation block to use
@@ -465,6 +482,8 @@ RSpec.configure do |rspec|
     mocks.yield_receiver_to_any_instance_implementation_blocks = false
   end
 end
+
+Your `any_instance` implementation block is declared at: #{caller.find { |line| not line =~ /rspec.*any_instance/i }}
 MSG
 )
       end
@@ -491,6 +510,7 @@ MSG
       end
 
       def inner_implementation_action=(action)
+        display_any_instance_deprecation_warning_if_necessary if action
         implementation.inner_action = action if action
       end
 

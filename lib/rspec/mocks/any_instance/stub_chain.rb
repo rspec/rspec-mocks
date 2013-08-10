@@ -16,8 +16,9 @@ module RSpec
           expected_from = IGNORED_BACKTRACE_LINE
           stub = proxy.add_stub(expected_from, *@expectation_args, &@expectation_block)
 
-          if RSpec::Mocks.configuration.should_warn_about_any_instance_blocks? && @expectation_block
+          if RSpec::Mocks.configuration.should_warn_about_any_instance_blocks?
             stub.warn_about_receiver_passing
+            stub.display_any_instance_deprecation_warning_if_necessary if @expectation_block
           elsif RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?
             stub.and_yield_receiver_to_implementation
           end
