@@ -99,7 +99,7 @@ module RSpec
         # Performance optimization so that `caller` is not called needlessly.
         return if stubs.empty?
 
-        expected_from = caller(1)[0]
+        expected_from = CallerFilter.first_non_rspec_line
 
         stubs.each_pair do |message, response|
           __mock_proxy.add_simple_stub(expected_from, message, response)
