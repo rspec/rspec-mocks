@@ -12,9 +12,9 @@ module RSpec
       end
 
       it "complains if a block is given" do
-        expect do
+        expect {
           allow(obj).to receive_messages(:a => 1) { "implementation" }
-        end.to raise_error "Implementation blocks arn't supported with `receive_messages`"
+        }.to raise_error "Implementation blocks arn't supported with `receive_messages`"
       end
     end
 
@@ -28,9 +28,9 @@ module RSpec
       end
 
       it "complains if a block is given" do
-        expect do
+        expect {
           allow_any_instance_of(Object).to receive_messages(:a => 1) { "implementation" }
-        end.to raise_error "Implementation blocks arn't supported with `receive_messages`"
+        }.to raise_error "Implementation blocks arn't supported with `receive_messages`"
       end
     end
 
@@ -44,9 +44,9 @@ module RSpec
       end
 
       it "complains if a block is given" do
-        expect do
+        expect {
           expect(double).to receive_messages(:a => 1) { "implementation" }
-        end.to raise_error "Implementation blocks arn't supported with `receive_messages`"
+        }.to raise_error "Implementation blocks arn't supported with `receive_messages`"
       end
     end
 
@@ -60,9 +60,9 @@ module RSpec
       end
 
       it "complains if a block is given" do
-        expect do
+        expect {
           expect_any_instance_of(Object).to receive_messages(:a => 1) { "implementation" }
-        end.to raise_error "Implementation blocks arn't supported with `receive_messages`"
+        }.to raise_error "Implementation blocks arn't supported with `receive_messages`"
       end
     end
   end
