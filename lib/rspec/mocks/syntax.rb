@@ -327,6 +327,19 @@ module RSpec
       #   expect(obj).to receive(:hello).with("world").exactly(3).times
       #
       # @note This is only available when you have enabled the `expect` syntax.
+      #
+      # @method receive_messages
+      # Shorthand syntax used to setup message(s), and their return value(s),
+      # that you expect or allow an object to receive. The method takes a hash
+      # of messages and their respective return values. Unlike `receive` block
+      # implementations are not supported, neither is the fluent interface.
+      #
+      # @example
+      #
+      #   allow(obj).to receive_messages(:speak => "Hello World")
+      #   allow(obj).to receive_messages(:speak => "Hello", :meow => "Meow")
+      #
+      # @note This is only available when you have enabled the `expect` syntax.
     end
   end
 end
