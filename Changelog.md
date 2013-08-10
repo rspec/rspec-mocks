@@ -26,6 +26,8 @@ Enhancements:
 * Yield the receiver to `any_instance` implementation blocks (Sam Phippen).
 * Provide `instance_double` and `class_double` to create verifying doubles,
   ported from `rspec-fire` (Xavier Shay).
+* Improved performance of double creation, particularly those with many
+  attributes. (Xavier Shay)
 
 ### 2.14.3 / 2013-08-08
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...v2.14.3)
