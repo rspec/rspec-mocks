@@ -10,6 +10,14 @@ module RSpec
         message << " Called from #{caller(0)[2]}."
         warn message
       end
+
+      # @private
+      #
+      # Used internally to print deprecation warnings
+      def warn_deprecation(warning)
+        message = "\nDEPRECATION: #{warning}\n"
+        warn message
+      end
     end
   end
 
