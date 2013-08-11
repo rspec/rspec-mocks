@@ -13,6 +13,14 @@ Deprecations
   state was not reset and some users relied on this to have a null object
   double that is used for many examples. This behavior will be removed in 3.0.
   (Myron Marston)
+* Print a detailed warning when an `any_instance` implementation block is used when the new
+  `yield_receiver_to_any_instance_implementation_blocks` config option is not explicitly set,
+  as RSpec 3.0 will default to enabling this new feature. (Sam Phippen)
+
+Enhancements:
+
+* Add a config option to yield the receiver to `any_instance` implementation
+  blocks (Sam Phippen).
 
 ### 2.14.3 / 2013-08-08
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...v2.14.3)

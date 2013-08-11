@@ -4,7 +4,9 @@ module RSpec
     class MessageExpectation
       # @private
       attr_accessor :error_generator, :implementation
+      attr_accessor :warn_about_yielding_receiver_to_implementation_block
       attr_reader :message
+      attr_reader :orig_object
       attr_writer :expected_received_count, :expected_from, :argument_list_matcher
       protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
@@ -15,6 +17,9 @@ module RSpec
         @error_generator.opts = opts
         @expected_from = expected_from
         @method_double = method_double
+        @have_warned_about_yielding_receiver = false
+        @orig_object = @method_double.object
+        @warn_about_yielding_receiver_to_implementation_block = false
         @message = @method_double.method_name
         @actual_received_count = 0
         @expected_received_count = expected_received_count
@@ -24,6 +29,7 @@ module RSpec
         @args_to_yield = []
         @failed_fast = nil
         @eval_context = nil
+        @yield_receiver_to_implementation_block = false
 
         @implementation = Implementation.new
         self.inner_implementation_action = implementation_block
@@ -87,6 +93,15 @@ module RSpec
         nil
       end
 
+      def and_yield_receiver_to_implementation
+        @yield_receiver_to_implementation_block = true
+        self
+      end
+
+      def yield_receiver_to_implementation_block?
+        @yield_receiver_to_implementation_block
+      end
+
       # Tells the object to delegate to the original unmodified method
       # when it receives the message.
       #
@@ -103,6 +118,7 @@ module RSpec
           @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
         else
           @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
+          @yield_receiver_to_implementation_block = false
         end
       end
 
@@ -171,6 +187,10 @@ module RSpec
 
       # @private
       def invoke(parent_stub, *args, &block)
+        if yield_receiver_to_implementation_block?
+          args.unshift(orig_object)
+        end
+
         if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += 1
           @failed_fast = true
@@ -216,6 +236,13 @@ module RSpec
       rescue RSpec::Mocks::MockExpectationError => error
         error.backtrace.insert(0, @expected_from)
         Kernel::raise error
+      end
+
+      def display_any_instance_deprecation_warning_if_necessary
+        if should_display_any_instance_deprecation_warning
+          display_any_instance_deprecation_warning
+          @have_warned_about_yielding_receiver = true
+        end
       end
 
       # @private
@@ -430,6 +457,37 @@ module RSpec
         @actual_received_count += 1
       end
 
+      def warn_about_receiver_passing
+        @warn_about_yielding_receiver_to_implementation_block = true
+      end
+
+      def should_display_any_instance_deprecation_warning
+        warn_about_yielding_receiver_to_implementation_block &&
+          !@have_warned_about_yielding_receiver
+      end
+
+      def display_any_instance_deprecation_warning
+        RSpec.warn_deprecation(<<MSG
+In RSpec 3, `any_instance` implementation blocks will be yielded the receiving
+instance as the first block argument to allow the implementation block to use
+the state of the receiver.  To maintain compatibility with RSpec 3 you need to
+either set rspec-mocks' `yield_receiver_to_any_instance_implementation_blocks`
+config option to `false` OR set it to `true` and update your `any_instance`
+implementation blocks to account for the first block argument being the receiving instance.
+
+To set the config option, use a snippet like:
+
+RSpec.configure do |rspec|
+  rspec.mock_with :rspec do |mocks|
+    mocks.yield_receiver_to_any_instance_implementation_blocks = false
+  end
+end
+
+Your `any_instance` implementation block is declared at: #{caller.find { |line| not line =~ /rspec.*any_instance/i }}
+MSG
+)
+      end
+
     private
 
       def failed_fast?
@@ -452,6 +510,7 @@ module RSpec
       end
 
       def inner_implementation_action=(action)
+        display_any_instance_deprecation_warning_if_necessary if action
         implementation.inner_action = action if action
       end
 
