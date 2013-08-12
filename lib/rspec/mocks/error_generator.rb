@@ -48,6 +48,11 @@ module RSpec
       end
 
       # @private
+      def raise_simple_expectation_error(message)
+        __raise "(#{intro}).#{message} expected with any arguments"
+      end
+
+      # @private
       def raise_unimplemented_error(doubled_module, method_name)
         __raise "%s does not implement:\n  %s" % [
           doubled_module.name,
