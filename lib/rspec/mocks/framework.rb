@@ -2,6 +2,7 @@
 # supports wrapping rspec's mocking functionality without invading every
 # object in the system.
 
+require 'rspec/mocks/caller_filter'
 require 'rspec/mocks/deprecation'
 require 'rspec/mocks/instance_method_stasher'
 require 'rspec/mocks/method_double'

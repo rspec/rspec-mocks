@@ -97,7 +97,7 @@ module RSpec
 
       def assign_stubs(stubs)
         stubs.each_pair do |message, response|
-          Mocks.allow_message(self, message).and_return(response)
+          __mock_proxy.add_simple_stub(message, response)
         end
       end
 

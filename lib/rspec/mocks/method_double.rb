@@ -147,7 +147,7 @@ module RSpec
             |used instead; however, it may not work correctly when executed due
             |to the fact that `self` will be #{@object.superclass}, not #{@object}.
             |
-            |Called from: #{caller[2]}
+            |Called from: #{CallerFilter.first_non_rspec_line}
           WARNING
 
           @object.superclass.method(@method_name)
@@ -240,6 +240,21 @@ module RSpec
         configure_method
         stub = message_expectation_class.new(error_generator, expectation_ordering, expected_from,
                                       self, :any, opts, &implementation)
+        stubs.unshift stub
+        stub
+      end
+
+      # A simple stub can only return a concrete value for a message, and
+      # cannot match on arguments. It is used as an optimization over
+      # `add_stub` where it is known in advance that this is all that will be
+      # required of a stub, such as when passing attributes to the `double`
+      # example method.
+      #
+      # @private
+      def add_simple_stub(method_name, response)
+        define_proxy_method
+
+        stub = SimpleMessageExpectation.new(method_name, response)
         stubs.unshift stub
         stub
       end

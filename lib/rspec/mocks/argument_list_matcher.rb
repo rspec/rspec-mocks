@@ -23,6 +23,8 @@ module RSpec
     #     arg_list_matcher = RSpec::Mocks::ArgumentListMatcher.new(123, hash_including(:a => 'b'))
     #     arg_list_matcher.args_match?(123, :a => 'b')
     #
+    # This class is immutable.
+    #
     # @see ArgumentMatchers
     class ArgumentListMatcher
       # @private
@@ -92,6 +94,11 @@ module RSpec
       def match_any_args?
         @match_any_args
       end
+
+      # Value that will match all argument lists.
+      #
+      # @private
+      MATCH_ALL = new(ArgumentMatchers::AnyArgsMatcher.new)
     end
   end
 end
