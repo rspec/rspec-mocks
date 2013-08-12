@@ -251,7 +251,7 @@ module RSpec
       # example method.
       #
       # @private
-      def add_simple_stub(error_generator, expectation_ordering, expected_from, method_name, response)
+      def add_simple_stub(method_name, response)
         define_proxy_method
 
         stub = SimpleMessageExpectation.new(method_name, response)

@@ -31,7 +31,7 @@ module RSpec
         super
       end
 
-      def add_simple_stub(_, method_name, *args)
+      def add_simple_stub(method_name, *args)
         ensure_implemented(method_name)
         super
       end
