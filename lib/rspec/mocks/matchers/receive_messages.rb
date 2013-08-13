@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     module Matchers
-      class ReceivesMessages
+      class ReceiveMessages
 
         def initialize(message_return_value_hash)
           @message_return_value_hash = message_return_value_hash
