@@ -3,32 +3,31 @@ module RSpec
     module Matchers
       class ReceivesMessages
 
-        def initialize(message_value_hash)
-          @message_value_hash = message_value_hash
+        def initialize(message_return_value_hash)
+          @message_return_value_hash = message_return_value_hash
         end
 
         def setup_expectation(subject, &block)
-          map_to proxy_on(subject), :add_simple_expectation
+          each_message_on( proxy_on(subject) ) do |host, message, return_value|
+            host.add_simple_expectation(message, return_value)
+          end
         end
-        alias matches?                   setup_expectation
-        alias does_not_match?            setup_expectation
-        alias setup_negative_expectation setup_expectation
-        alias setup_allowance            setup_expectation
+        alias matches? setup_expectation
 
         def setup_allowance(subject)
-          map_to proxy_on(subject), :add_simple_stub
+          each_message_on( proxy_on(subject) ) do |host, message, return_value|
+            host.add_simple_stub(message, return_value)
+          end
         end
 
         def setup_any_instance_expectation(subject)
-          map_to_as_chain any_instance_of(subject), :should_receive
-        end
-
-        def setup_any_instance_negative_expectation(subject)
-          map_to_as_chain any_instance_of(subject), :should_not_receive
+          each_message_on( any_instance_of(subject) ) do |host, message, return_value|
+            host.should_receive(message).and_return(return_value)
+          end
         end
 
         def setup_any_instance_allowance(subject)
-          any_instance_of(subject).stub(@message_value_hash)
+          any_instance_of(subject).stub(@message_return_value_hash)
         end
 
       private
@@ -41,15 +40,9 @@ module RSpec
           ::RSpec::Mocks.any_instance_recorder_for(subject)
         end
 
-        def map_to(host, method_name)
-          @message_value_hash.each do |message, value|
-            host.__send__(method_name, message.to_sym, value)
-          end
-        end
-
-        def map_to_as_chain(host, method_name, *args)
-          @message_value_hash.each do |message, value|
-            host.__send__(method_name, message, *args).and_return(value)
+        def each_message_on(host)
+          @message_return_value_hash.each do |message, value|
+            yield host, message, value
           end
         end
 
