@@ -7,8 +7,8 @@ module RSpec
     # optimization.
     class SimpleMessageExpectation
 
-      def initialize(message, response, error_generator)
-        @message, @response, @error_generator = message, response, error_generator
+      def initialize(message, response, error_generator, backtrace_line = nil)
+        @message, @response, @error_generator, @backtrace_line = message, response, error_generator, backtrace_line
         @received = false
       end
 
@@ -29,6 +29,9 @@ module RSpec
         unless @received
           @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
         end
+      rescue RSpec::Mocks::MockExpectationError => error
+        error.backtrace.insert(0, @backtrace_line)
+        Kernel::raise error
       end
     end
 

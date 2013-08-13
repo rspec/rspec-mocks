@@ -5,11 +5,12 @@ module RSpec
 
         def initialize(message_return_value_hash)
           @message_return_value_hash = message_return_value_hash
+          @backtrace_line = CallerFilter.first_non_rspec_line
         end
 
         def setup_expectation(subject, &block)
           each_message_on( proxy_on(subject) ) do |host, message, return_value|
-            host.add_simple_expectation(message, return_value)
+            host.add_simple_expectation(message, return_value, @backtrace_line)
           end
         end
         alias matches? setup_expectation

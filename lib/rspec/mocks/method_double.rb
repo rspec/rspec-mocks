@@ -150,15 +150,15 @@ module RSpec
       end
 
       # @private
-      def add_simple_expectation(method_name, response, error_generator)
-        setup_simple_method_double method_name, response, expectations, error_generator
+      def add_simple_expectation(method_name, response, error_generator, backtrace_line)
+        setup_simple_method_double method_name, response, expectations, error_generator, backtrace_line
       end
 
       # @private
-      def setup_simple_method_double(method_name, response, collection, error_generator = nil)
+      def setup_simple_method_double(method_name, response, collection, error_generator = nil, backtrace_line = nil)
         define_proxy_method
 
-        me = SimpleMessageExpectation.new(method_name, response, error_generator)
+        me = SimpleMessageExpectation.new(method_name, response, error_generator, backtrace_line)
         collection.unshift me
         me
       end

@@ -37,10 +37,31 @@ module RSpec
     describe "expect(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { double "Object" }
 
+      let(:expectation_error) do
+        failure = nil
+        begin
+          RSpec::Mocks.space.verify_all
+        rescue RSpec::Mocks::MockExpectationError => error
+          failure = error
+        end
+        failure
+      end
+
+
       it "sets up multiple expectations" do
         expect(obj).to receive_messages(:a => 1, :b => 2)
         obj.a
         expect { RSpec::Mocks.space.verify_all }.to raise_error RSpec::Mocks::MockExpectationError
+      end
+
+      it 'fails with a sensible message' do
+        expect(obj).to receive_messages(:a => 1, :b => 2)
+        expect(expectation_error.to_s).to eq %Q{(Double "Object").a(no args)\n    expected: 1 time with any arguments\n    received: 0 times}
+      end
+
+      it 'fails with the correct location' do
+        expect(obj).to receive_messages(:a => 1, :b => 2); line = __LINE__
+        expect(expectation_error.backtrace[0]).to match /#{__FILE__}:#{line}/
       end
 
       it "complains if a block is given" do
