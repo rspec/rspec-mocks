@@ -26,7 +26,9 @@ module RSpec
       end
 
       def verify_messages_received
-        @error_generator.raise_simple_expectation_error(@message) unless @received
+        unless @received
+          @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
+        end
       end
     end
 
