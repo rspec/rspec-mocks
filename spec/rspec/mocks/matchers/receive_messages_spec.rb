@@ -56,6 +56,7 @@ module RSpec
 
       it 'fails with a sensible message' do
         expect(obj).to receive_messages(:a => 1, :b => 2)
+        obj.b
         expect(expectation_error.to_s).to eq %Q{(Double "Object").a(no args)\n    expected: 1 time with any arguments\n    received: 0 times}
       end
 
