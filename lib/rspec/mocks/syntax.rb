@@ -92,9 +92,9 @@ module RSpec
             Matchers::Receive.new(method_name, block)
           end
 
-          def receive_messages(method_value_hash)
-            raise "Implementation blocks arn't supported with `receive_messages`" if block_given?
-            Matchers::ReceiveMessages.new(method_value_hash)
+          def receive_messages(message_return_value_hash)
+            raise "Implementation blocks aren't supported with `receive_messages`" if block_given?
+            Matchers::ReceiveMessages.new(message_return_value_hash)
           end
 
           def allow(target)
@@ -331,7 +331,7 @@ module RSpec
       # @method receive_messages
       # Shorthand syntax used to setup message(s), and their return value(s),
       # that you expect or allow an object to receive. The method takes a hash
-      # of messages and their respective return values. Unlike `receive` block
+      # of messages and their respective return values. Unlike `receive`, block
       # implementations are not supported, neither is the fluent interface.
       #
       # @example
