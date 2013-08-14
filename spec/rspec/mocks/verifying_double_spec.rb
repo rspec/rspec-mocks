@@ -192,7 +192,7 @@ module RSpec
 
           it 'correctly verifies expectations when constant is removed' do
             dbl1 = class_double(LoadedClass::Nested).as_stubbed_const
-            dbl2 = class_double(LoadedClass).as_stubbed_const
+            class_double(LoadedClass).as_stubbed_const
 
             prevents {
               expect(dbl1).to receive(:undefined_class_method)

@@ -38,7 +38,7 @@ module RSpec
             stack = caller(i, increment)
             raise "No non-lib lines in stack" unless stack
 
-            line = stack.find { |line| line !~ LIB_REGEX }
+            line = stack.find { |l| l !~ LIB_REGEX }
 
             i         += increment
             increment *= 2 # The choice of two here is arbitrary.
