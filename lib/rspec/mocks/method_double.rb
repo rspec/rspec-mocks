@@ -1,9 +1,9 @@
 module RSpec
   module Mocks
     # @private
-    class MethodDouble < Hash
+    class MethodDouble
       # @private
-      attr_reader :method_name, :object
+      attr_reader :method_name, :object, :expectations, :stubs
 
       # @private
       def initialize(object, method_name, proxy)
@@ -13,18 +13,8 @@ module RSpec
 
         @method_stasher = InstanceMethodStasher.new(object_singleton_class, @method_name)
         @method_is_proxied = false
-        store(:expectations, [])
-        store(:stubs, [])
-      end
-
-      # @private
-      def expectations
-        self[:expectations]
-      end
-
-      # @private
-      def stubs
-        self[:stubs]
+        @expectations = []
+        @stubs = []
       end
 
       # @private
