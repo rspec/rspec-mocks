@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-# Mock still fails on methods that catch StandardError AKA MockExpectationError
-# does not inherit from StandardError
 module RSpec
   module Mocks
     describe 'MockExpectationError' do
