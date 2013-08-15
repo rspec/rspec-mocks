@@ -53,7 +53,7 @@ module RSpec
                         when NilClass   then ProxyForNil.new
                         when TestDouble then object.__build_mock_proxy
                         else
-                          Proxy.new(object)
+                          PartialMockProxy.new(object)
                         end
         end
       end

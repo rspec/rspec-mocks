@@ -2,24 +2,25 @@ module RSpec
   module Mocks
     # @private
     class InstanceMethodStasher
-      def initialize(klass, method)
-        @klass = klass
-        @method = method
+      attr_reader :original_method
 
-        @method_is_stashed = false
+      def initialize(object, method)
+        @object = object
+        @method = method
+        @klass = (class << object; self; end)
+
+        @original_method = nil
       end
 
       # @private
       def method_is_stashed?
-        @method_is_stashed
+        !!@original_method
       end
 
       # @private
       def stash
-        return if !method_defined_directly_on_klass? || @method_is_stashed
-
-        @klass.__send__(:alias_method, stashed_method_name, @method)
-        @method_is_stashed = true
+        return if !method_defined_directly_on_klass?
+        @original_method ||= ::RSpec::Mocks.method_handle_for(@object, @method)
       end
 
       private
@@ -62,20 +63,15 @@ module RSpec
       public
 
       # @private
-      def stashed_method_name
-        "obfuscated_by_rspec_mocks__#{@method}"
-      end
-
-      # @private
       def restore
-        return unless @method_is_stashed
+        return unless @original_method
 
         if @klass.__send__(:method_defined?, @method)
           @klass.__send__(:undef_method, @method)
         end
-        @klass.__send__(:alias_method, @method, stashed_method_name)
-        @klass.__send__(:remove_method, stashed_method_name)
-        @method_is_stashed = false
+
+        @klass.__send__(:define_method, @method, &@original_method)
+        @original_method = nil
       end
     end
   end
