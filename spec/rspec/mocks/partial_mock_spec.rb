@@ -168,9 +168,10 @@ module RSpec
 
     describe "A partial class mock that has been subclassed" do
 
+      let(:klass)  { Class.new }
+      let(:subklass) { Class.new(klass) }
+
       it "cleans up stubs during #reset to prevent leakage onto subclasses between examples" do
-        klass = Class.new
-        subklass = Class.new(klass)
         allow(klass).to receive(:new).and_return(:new_foo)
         expect(subklass.new).to eq :new_foo
 
@@ -181,18 +182,15 @@ module RSpec
 
       describe "stubbing a base class class method" do
         before do
-          @base_class     = Class.new
-          @concrete_class = Class.new(@base_class)
-
-          @base_class.stub(:find).and_return "stubbed_value"
+          klass.stub(:find).and_return "stubbed_value"
         end
 
         it "returns the value for the stub on the base class" do
-          expect(@base_class.find).to eq "stubbed_value"
+          expect(klass.find).to eq "stubbed_value"
         end
 
         it "returns the value for the descendent class" do
-          expect(@concrete_class.find).to eq "stubbed_value"
+          expect(subklass.find).to eq "stubbed_value"
         end
       end
     end
