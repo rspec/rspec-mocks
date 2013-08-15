@@ -173,8 +173,10 @@ module RSpec
         return unless @method_is_proxied
 
         object_singleton_class.__send__(:remove_method, @method_name)
-        @method_stasher.restore
-        restore_original_visibility
+        if @method_stasher.method_is_stashed?
+          @method_stasher.restore
+          restore_original_visibility
+        end
 
         @method_is_proxied = false
       end
@@ -238,7 +240,8 @@ module RSpec
       # cannot match on arguments. It is used as an optimization over
       # `add_stub` where it is known in advance that this is all that will be
       # required of a stub, such as when passing attributes to the `double`
-      # example method.
+      # example method. They do not stash or restore existing method
+      # definitions.
       #
       # @private
       def add_simple_stub(method_name, response)
