@@ -166,6 +166,26 @@ module RSpec
       end
     end
 
+    describe 'Inheritance using partial mocks' do
+
+      describe "stubbing a base class class method" do
+        before do
+          @base_class     = Class.new
+          @concrete_class = Class.new(@base_class)
+
+          @base_class.stub(:find).and_return "stubbed_value"
+        end
+
+        it "returns the value for the stub on the base class" do
+          expect(@base_class.find).to eq "stubbed_value"
+        end
+
+        it "returns the value for the descendent class" do
+          expect(@concrete_class.find).to eq "stubbed_value"
+        end
+      end
+    end
+
     describe "Method visibility when using partial mocks" do
       let(:klass) do
         Class.new do
