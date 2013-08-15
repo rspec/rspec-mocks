@@ -166,7 +166,18 @@ module RSpec
       end
     end
 
-    describe 'Inheritance using partial mocks' do
+    describe "A partial class mock that has been subclassed" do
+
+      it "cleans up stubs during #reset to prevent leakage onto subclasses between examples" do
+        klass = Class.new
+        subklass = Class.new(klass)
+        allow(klass).to receive(:new).and_return(:new_foo)
+        expect(subklass.new).to eq :new_foo
+
+        reset(klass)
+
+        expect(subklass.new).to be_a(subklass)
+      end
 
       describe "stubbing a base class class method" do
         before do
