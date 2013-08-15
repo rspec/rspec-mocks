@@ -13,11 +13,15 @@ module RSpec
         class << obj; self; end
       end
 
+      def stasher_for(obj, method_name)
+        InstanceMethodStasher.new(obj, method_name)
+      end
+
       it "stashes the current implementation of an instance method so it can be temporarily replaced" do
         obj = Object.new
         def obj.hello; :hello_defined_on_singleton_class; end;
 
-        stashed_method = InstanceMethodStasher.new(singleton_class_for(obj), :hello)
+        stashed_method = stasher_for(obj, :hello)
         stashed_method.stash
 
         def obj.hello; :overridden_hello; end
@@ -32,7 +36,7 @@ module RSpec
         def obj.hello; :hello_defined_on_singleton_class; end;
         singleton_class_for(obj).__send__(:private, :hello)
 
-        stashed_method = InstanceMethodStasher.new(singleton_class_for(obj), :hello)
+        stashed_method = stasher_for(obj, :hello)
         stashed_method.stash
 
         def obj.hello; :overridden_hello; end
@@ -43,7 +47,7 @@ module RSpec
       it "only stashes methods directly defined on the given class, not its ancestors" do
         obj = ExampleClass.new
 
-        stashed_method = InstanceMethodStasher.new(singleton_class_for(obj), :hello)
+        stashed_method = stasher_for(obj, :hello)
         stashed_method.stash
 
         def obj.hello; :overridden_hello; end;
@@ -51,6 +55,19 @@ module RSpec
 
         stashed_method.restore
         expect(obj.hello).to eql :overridden_hello
+      end
+
+      it "does not unnecessarily create obfuscated aliased methods" do
+        obj = Object.new
+        def obj.hello; :hello_defined_on_singleton_class; end;
+
+        stashed_method = InstanceMethodStasher.new(singleton_class_for(obj), :hello)
+
+        expect {
+          stashed_method.stash
+        }.not_to change { obj.methods.count }
+
+        expect(obj.methods.grep(/rspec/)).to eq([])
       end
     end
   end
