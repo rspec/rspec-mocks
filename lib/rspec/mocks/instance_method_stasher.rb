@@ -70,7 +70,7 @@ module RSpec
           @klass.__send__(:undef_method, @method)
         end
 
-        @klass.__send__(:define_method, @method, @original_method)
+        @klass.__send__(:define_method, @method, &@original_method)
         @original_method = nil
       end
     end
