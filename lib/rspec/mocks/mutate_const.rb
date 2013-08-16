@@ -173,7 +173,10 @@ module RSpec
           UndefinedConstantSetter
         end
 
-        mutate(mutator.new(constant_name, value, options[:transfer_nested_constants]))
+        mutate(mutator.new(constant_name, value, options.fetch(
+          :transfer_nested_constants,
+          RSpec::Mocks.configuration.transfer_nested_constants?
+        )))
         value
       end
 

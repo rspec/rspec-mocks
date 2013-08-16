@@ -28,6 +28,8 @@ Enhancements:
   ported from `rspec-fire` (Xavier Shay).
 * Improved performance of double creation, particularly those with many
   attributes. (Xavier Shay)
+* Default value of `transfer_nested_constants` option for constant stubbing can
+  be configured. (Xavier Shay)
 
 Bug Fixes:
 

@@ -311,6 +311,24 @@ module RSpec
 
             expect(TestClass).to be(original_tc)
           end
+
+          describe 'with global transfer_nested_constant option set' do
+            include_context "with isolated configuration"
+
+            before do
+              RSpec::Mocks.configuration.transfer_nested_constants = true
+            end
+
+            it 'allows nested constants to be transferred to a stub module' do
+              tc_nested = TestClass::Nested
+              stub = Module.new
+              stub_const("TestClass", stub)
+              expect(stub::M).to eq(:m)
+              expect(stub::N).to eq(:n)
+              expect(stub::Nested).to be(tc_nested)
+            end
+          end
+
         end
 
         context 'for a loaded nested constant' do

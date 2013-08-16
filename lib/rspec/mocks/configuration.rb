@@ -6,6 +6,7 @@ module RSpec
       def initialize
         @yield_receiver_to_any_instance_implementation_blocks = true
         @verify_doubled_constant_names = false
+        @transfer_nested_constants = false
       end
 
       def yield_receiver_to_any_instance_implementation_blocks?
@@ -69,6 +70,16 @@ module RSpec
       # isolated unit test will prevent you from being able to isolate it!
       def verify_doubled_constant_names=(val)
         @verify_doubled_constant_names = val
+      end
+
+      def transfer_nested_constants?
+        !!@transfer_nested_constants
+      end
+
+      # Sets the default for the `transfer_nested_constants` option when
+      # stubbing constants.
+      def transfer_nested_constants=(val)
+        @transfer_nested_constants = val
       end
     end
 
