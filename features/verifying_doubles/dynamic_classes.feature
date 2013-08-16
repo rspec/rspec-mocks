@@ -9,7 +9,7 @@ Feature: Dynamic classes
   be queried directly on the class.
 
   Background:
-    Given a file name "lib/fake_active_record.rb"
+    Given a file named "lib/fake_active_record.rb" with:
       """ruby
       class FakeActiveRecord
         COLUMNS = %w[name email]
