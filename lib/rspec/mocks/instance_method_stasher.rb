@@ -41,7 +41,7 @@ module RSpec
         # On Ruby 2.0.0+ the owner of a method on a class which has been
         # `prepend`ed may actually be an instance, e.g.
         # `#<MyClass:0x007fbb94e3cd10>`, rather than the expected `MyClass`.
-        owner = owner.class unless owner.is_a? Class
+        owner = owner.class unless owner.is_a? Module
 
         # On some 1.9s (e.g. rubinius) aliased methods
         # can report the wrong owner. Example:
@@ -70,7 +70,7 @@ module RSpec
           @klass.__send__(:undef_method, @method)
         end
 
-        @klass.__send__(:define_method, @method, &@original_method)
+        @klass.__send__(:define_method, @method, @original_method)
         @original_method = nil
       end
     end
