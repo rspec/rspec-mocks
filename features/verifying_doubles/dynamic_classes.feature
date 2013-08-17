@@ -34,7 +34,7 @@ Feature: Dynamic classes
 
       describe User do
         it 'can be doubled' do
-          instance_double("User", name: "Don")
+          instance_double("User", :name => "Don")
         end
       end
       """
