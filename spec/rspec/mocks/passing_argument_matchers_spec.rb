@@ -93,8 +93,8 @@ module RSpec
         it "matches arguments against RSpec expectations" do
           @double.should_receive(:random_call).with {|arg1, arg2, arr, *rest|
             expect(arg1).to eq 5
-            expect(arg2).to have_at_least(3).characters
-            expect(arg2).to have_at_most(10).characters
+            expect(arg2.length).to be >= 3
+            expect(arg2.length).to be <= 10
             expect(arr.map {|i| i * 2}).to eq [2,4,6]
             expect(rest).to eq [:fee, "fi", 4]
           }
