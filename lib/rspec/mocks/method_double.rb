@@ -11,6 +11,7 @@ module RSpec
         @object = object
         @proxy = proxy
 
+        @original_visibility = nil
         @method_stasher = InstanceMethodStasher.new(object, method_name)
         @method_is_proxied = false
         @expectations = []
