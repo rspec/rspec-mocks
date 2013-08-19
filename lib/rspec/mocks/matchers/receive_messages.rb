@@ -8,6 +8,10 @@ module RSpec
           @backtrace_line = CallerFilter.first_non_rspec_line
         end
 
+        def name
+          "receive_messages"
+        end
+
         def setup_expectation(subject, &block)
           each_message_on( proxy_on(subject) ) do |host, message, return_value|
             host.add_simple_expectation(message, return_value, @backtrace_line)

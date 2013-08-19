@@ -14,6 +14,10 @@ module RSpec
           @backtrace_line = CallerFilter.first_non_rspec_line
         end
 
+        def name
+          "receive"
+        end
+
         def setup_expectation(subject, &block)
           setup_mock_proxy_method_substitute(subject, :add_message_expectation, block)
         end

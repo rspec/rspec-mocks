@@ -12,24 +12,32 @@ module RSpec
         method_name = options.fetch(:from) { :to }
         define_method(method_name) do |matcher, &block|
           unless Matchers::Receive === matcher || Matchers::ReceiveMessages === matcher
-            raise UnsupportedMatcherError,
-              "only the `receive` or `receive_messages` matchers are supported " +
-              "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
+            raise_unsupported_matcher(:to, matcher)
           end
 
           matcher.__send__(matcher_method, @target, &block)
         end
       end
 
-      def self.disallow_negation(method)
-        define_method method do |*args|
-          raise NegationUnsupportedError,
-            "`#{expression}(...).#{method} receive` is not supported since it " +
-            "doesn't really make sense. What would it even mean?"
+      def self.disallow_negation(method_name)
+        define_method(method_name) do |matcher, *args|
+          raise_negation_unsupported(method_name, matcher)
         end
       end
 
     private
+
+      def raise_unsupported_matcher(method_name, matcher)
+        raise UnsupportedMatcherError,
+          "only the `receive` or `receive_messages` matchers are supported " +
+          "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
+      end
+
+      def raise_negation_unsupported(method_name, matcher)
+        raise NegationUnsupportedError,
+          "`#{expression}(...).#{method_name} #{matcher.name}` is not supported since it " +
+          "doesn't really make sense. What would it even mean?"
+      end
 
       def expression
         self.class::EXPRESSION
