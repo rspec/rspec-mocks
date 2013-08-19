@@ -51,7 +51,7 @@ module RSpec
     end
 
     class AnyInstanceAllowanceTarget < TargetBase
-      EXPRESSION = :expect_any_instance_of
+      EXPRESSION = :allow_any_instance_of
       delegate_to :setup_any_instance_allowance
       disallow_negation :not_to
       disallow_negation :to_not
