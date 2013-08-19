@@ -19,6 +19,13 @@ module RSpec
         end
         alias matches? setup_expectation
 
+        def setup_negative_expectation(subject, &block)
+          raise NegationUnsupportedError,
+            "`expect(...).to_not receive_messages` is not supported since it " +
+            "doesn't really make sense. What would it even mean?"
+        end
+        alias does_not_match? setup_negative_expectation
+
         def setup_allowance(subject)
           each_message_on( proxy_on(subject) ) do |host, message, return_value|
             host.add_simple_stub(message, return_value)
