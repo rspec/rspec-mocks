@@ -159,7 +159,7 @@ module RSpec
         elsif stub = find_almost_matching_stub(message, *args)
           stub.advise(*args)
           raise_missing_default_stub_error(stub, *args)
-        elsif @object.is_a?(Class)
+        elsif Class === @object
           @object.superclass.__send__(message, *args, &block)
         else
           @object.__send__(:method_missing, message, *args, &block)

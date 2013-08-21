@@ -26,7 +26,7 @@ module RSpec
         #
         # @see Methods#stub
         def stub(method_name_or_method_map, &block)
-          if method_name_or_method_map.is_a?(Hash)
+          if Hash === method_name_or_method_map
             method_name_or_method_map.each do |method_name, return_value|
               stub(method_name).and_return(return_value)
             end
