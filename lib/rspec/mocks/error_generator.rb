@@ -77,11 +77,14 @@ module RSpec
 
       # @private
       def method_call_args_description(args)
-        if args.first.is_a?(ArgumentMatchers::AnyArgsMatcher)
-          " with any arguments"
-        elsif args.first.is_a?(ArgumentMatchers::NoArgsMatcher)
-          " with no arguments"
-        elsif args.length > 0
+        case args.first
+          when ArgumentMatchers::AnyArgsMatcher
+            return " with any arguments"
+          when ArgumentMatchers::NoArgsMatcher
+            return " with no arguments"
+       end
+
+        if args.length > 0
           " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
         else
           ""
