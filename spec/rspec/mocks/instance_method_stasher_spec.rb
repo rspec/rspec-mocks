@@ -61,7 +61,7 @@ module RSpec
         obj = Object.new
         def obj.hello; :hello_defined_on_singleton_class; end;
 
-        stashed_method = InstanceMethodStasher.new(singleton_class_for(obj), :hello)
+        stashed_method = stasher_for(obj, :hello)
 
         expect {
           stashed_method.stash
