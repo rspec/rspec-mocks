@@ -35,6 +35,8 @@ Bug Fixes:
 
 * Fix `and_call_original` to handle a complex edge case involving
   singleton class ancestors. (Marc-André Lafortune, Myron Marston)
+* Fix issue where unstubing methods on "any instances" would not
+  remove stubs on existing instances (Jon Rowe)
 
 ### 2.14.3 / 2013-08-08
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...v2.14.3)

@@ -279,6 +279,30 @@ module RSpec
           expect(klass.new.existing_method).to eq(:existing_method_return_value)
         end
 
+        it "removes stubs even if they have already been invoked" do
+          klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
+          obj = klass.new
+          obj.existing_method
+          klass.any_instance.unstub(:existing_method)
+          expect(obj.existing_method).to eq(:existing_method_return_value)
+        end
+
+        it "removes stubs from sub class after invokation when super class was originally stubbed" do
+          klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
+          obj = Class.new(klass).new
+          expect(obj.existing_method).to eq(:any_instance_value)
+          klass.any_instance.unstub(:existing_method)
+          expect(obj.existing_method).to eq(:existing_method_return_value)
+        end
+
+        it "does not remove any stubs set directly on an instance" do
+          klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
+          obj = klass.new
+          obj.stub(:existing_method).and_return(:local_method)
+          klass.any_instance.unstub(:existing_method)
+          expect(obj.existing_method).to eq(:local_method)
+        end
+
         it "does not remove any expectations with the same method name" do
           klass.any_instance.should_receive(:existing_method_with_arguments).with(3).and_return(:three)
           klass.any_instance.stub(:existing_method_with_arguments).with(1)
