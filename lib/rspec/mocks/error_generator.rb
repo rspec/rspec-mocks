@@ -82,7 +82,7 @@ module RSpec
             return " with any arguments"
           when ArgumentMatchers::NoArgsMatcher
             return " with no arguments"
-       end
+        end
 
         if args.length > 0
           " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
