@@ -7,10 +7,9 @@ describe "Double" do
     test_double.should_receive(:msg) do |arg|
       expect(arg).to be_truthy #this call exposes the problem
     end
-    begin
+    expect {
       test_double.msg(false)
-    rescue Exception
-    end
+    }.to raise_exception
   end
 
   specify "then the next example should behave as expected instead of saying" do
