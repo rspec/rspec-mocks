@@ -64,7 +64,7 @@ module RSpec
 
       def recursive_const_defined?(const_name)
         normalize_const_name(const_name).split('::').inject([Object, '']) do |(mod, full_name), name|
-          yield(full_name, name) if block_given? && !mod.is_a?(Module)
+          yield(full_name, name) if block_given? && !(Module === mod)
           return false unless const_defined_on?(mod, name)
           [get_const_defined_on(mod, name), [mod, name].join('::')]
         end
@@ -291,7 +291,7 @@ module RSpec
             end
           end
 
-          if @transfer_nested_constants.is_a?(Array)
+          if Array === @transfer_nested_constants
             @transfer_nested_constants = @transfer_nested_constants.map(&:to_s) if RUBY_VERSION == '1.8.7'
             undefined_constants = @transfer_nested_constants - constants_defined_on(@original_value)
 

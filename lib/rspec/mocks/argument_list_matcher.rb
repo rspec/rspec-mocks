@@ -71,7 +71,7 @@ module RSpec
 
       def matcher_for(arg)
         return ArgumentMatchers::MatcherMatcher.new(arg) if is_matcher?(arg)
-        return ArgumentMatchers::RegexpMatcher.new(arg)  if arg.is_a?(Regexp)
+        return ArgumentMatchers::RegexpMatcher.new(arg)  if Regexp === arg
         return ArgumentMatchers::EqualityProxy.new(arg)
       end
 

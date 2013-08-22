@@ -90,6 +90,25 @@ module RSpec
           expect(@instance.existing_instance_method).to eq(:original_value)
         end
 
+        it "restores existing singleton methods with the appropriate context" do
+          klass = Class.new do
+            def self.say_hello
+              @hello if defined?(@hello)
+            end
+          end
+
+          subclass = Class.new(klass)
+
+          subclass.instance_variable_set(:@hello, "Hello")
+          expect(subclass.say_hello).to eq("Hello")
+
+          klass.stub(:say_hello) { "Howdy" }
+          expect(subclass.say_hello).to eq("Howdy")
+
+          reset klass
+          expect(subclass.say_hello).to eq("Hello")
+        end
+
         it "restores existing private instance methods" do
           # See bug reports 8302 and 7805
           @instance.stub(:existing_private_instance_method) { :stub_value }

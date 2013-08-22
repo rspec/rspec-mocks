@@ -21,14 +21,14 @@ module RSpec
         # @private
         def remove_stub_chains_for!(method_name)
           @chains_by_method_name[method_name].reject! do |chain|
-            chain.is_a?(StubChain)
+            StubChain === chain
           end
         end
 
         # @private
         def has_expectation?(method_name)
           @chains_by_method_name[method_name].find do |chain|
-            chain.is_a?(ExpectationChain)
+            ExpectationChain === chain
           end
         end
 
@@ -42,7 +42,7 @@ module RSpec
         # @private
         def unfulfilled_expectations
           @chains_by_method_name.map do |method_name, chains|
-            method_name.to_s if chains.last.is_a?(ExpectationChain) unless chains.last.expectation_fulfilled?
+            method_name.to_s if ExpectationChain === chains.last unless chains.last.expectation_fulfilled?
           end.compact
         end
 
@@ -64,8 +64,8 @@ module RSpec
         private
 
         def raise_if_second_instance_to_receive_message(instance)
-          @instance_with_expectation ||= instance if instance.is_a?(ExpectationChain)
-          if instance.is_a?(ExpectationChain) && !@instance_with_expectation.equal?(instance)
+          @instance_with_expectation ||= instance if ExpectationChain === instance
+          if ExpectationChain === instance && !@instance_with_expectation.equal?(instance)
             raise RSpec::Mocks::MockExpectationError, "Exactly one instance should have received the following message(s) but didn't: #{unfulfilled_expectations.sort.join(', ')}"
           end
         end

@@ -11,6 +11,7 @@ module RSpec
         @object = object
         @proxy = proxy
 
+        @original_visibility = nil
         @method_stasher = InstanceMethodStasher.new(object, method_name)
         @method_is_proxied = false
         @expectations = []
@@ -72,15 +73,18 @@ module RSpec
         object_singleton_class.__send__(:remove_method, @method_name)
         if @method_stasher.method_is_stashed?
           @method_stasher.restore
-          restore_original_visibility
         end
+        restore_original_visibility
 
         @method_is_proxied = false
       end
 
       # @private
       def restore_original_visibility
-        return unless object_singleton_class.method_defined?(@method_name) || object_singleton_class.private_method_defined?(@method_name)
+        return unless @original_visibility &&
+          (object_singleton_class.method_defined?(@method_name) ||
+           object_singleton_class.private_method_defined?(@method_name))
+
         object_singleton_class.__send__(*@original_visibility)
       end
 

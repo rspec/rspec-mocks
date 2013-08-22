@@ -127,7 +127,7 @@ module RSpec
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
-        if @method_double.object.is_a?(RSpec::Mocks::TestDouble)
+        if RSpec::Mocks::TestDouble === @method_double.object
           @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
         else
           @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
