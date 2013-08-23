@@ -15,7 +15,7 @@ module RSpec
         if ::Hash === message_or_hash
           message_or_hash.each {|message, value| stub_object(object, message).and_return value }
         else
-          opts[:expected_from] = caller(1)[1]
+          opts[:expected_from] = CallerFilter.first_non_rspec_line
           ::RSpec::Mocks.allow_message(object, message_or_hash, opts, &block)
         end
       end
@@ -27,12 +27,12 @@ module RSpec
 
         syntax_host.class_eval do
           def should_receive(message, opts={}, &block)
-            opts[:expected_from] ||= caller(1)[0]
+            opts[:expected_from] ||= CallerFilter.first_non_rspec_line
             ::RSpec::Mocks.expect_message(self, message.to_sym, opts, &block)
           end
 
           def should_not_receive(message, &block)
-            opts = {:expected_from => caller(1)[0]}
+            opts = { :expected_from => CallerFilter.first_non_rspec_line }
             ::RSpec::Mocks.expect_message(self, message.to_sym, opts, &block).never
           end
 

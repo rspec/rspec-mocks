@@ -483,7 +483,7 @@ RSpec.configure do |rspec|
   end
 end
 
-Your `any_instance` implementation block is declared at: #{caller.find { |line| not line =~ /rspec.*any_instance/i }}
+Your `any_instance` implementation block is declared at: #{CallerFilter.first_non_rspec_line}
 MSG
 )
       end
@@ -577,7 +577,7 @@ MSG
         actions.map do |action|
           if action.respond_to?(:lambda?) && action.lambda? && action.arity != args.size
             RSpec.deprecate "stubbing implementations with mismatched arity",
-              :call_site => caller.find { |line| !(line =~ %r%lib/rspec/mocks/%) }
+              :call_site => CallerFilter.first_non_rspec_line
           end
           action.call(*arg_slice_for(args, action.arity), &block)
         end.last

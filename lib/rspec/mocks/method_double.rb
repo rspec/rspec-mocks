@@ -147,7 +147,7 @@ module RSpec
             |used instead; however, it may not work correctly when executed due
             |to the fact that `self` will be #{@object.superclass}, not #{@object}.
             |
-            |Called from: #{caller[2]}
+            |Called from: #{CallerFilter.first_non_rspec_line}
           WARNING
 
           @object.superclass.method(@method_name)
