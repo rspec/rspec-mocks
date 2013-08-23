@@ -5,8 +5,8 @@ module RSpec
       attr_reader :proxies, :any_instance_recorders
 
       def initialize
-        @proxies = {}
-        @any_instance_recorders = {}
+        @proxies                 = {}
+        @any_instance_recorders  = {}
       end
 
       def verify_all
@@ -44,6 +44,10 @@ module RSpec
 
       def remove_any_instance_recorder_for(klass)
         any_instance_recorders.delete(klass.__id__)
+      end
+
+      def proxies_of(klass)
+        proxies.values.select { |proxy| klass === proxy.object }
       end
 
       def proxy_for(object)

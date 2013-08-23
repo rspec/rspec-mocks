@@ -16,6 +16,9 @@ module RSpec
       end
 
       # @private
+      attr_reader :object
+
+      # @private
       def null_object?
         @null_object
       end
@@ -98,6 +101,10 @@ module RSpec
       # @private
       def remove_stub(method_name)
         method_double[method_name].remove_stub
+      end
+
+      def remove_single_stub(method_name, stub)
+        method_double[method_name].remove_single_stub(stub)
       end
 
       # @private

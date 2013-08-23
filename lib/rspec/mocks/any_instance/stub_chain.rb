@@ -15,6 +15,7 @@ module RSpec
           proxy = ::RSpec::Mocks.proxy_for(instance)
           expected_from = IGNORED_BACKTRACE_LINE
           stub = proxy.add_stub(expected_from, *@expectation_args, &@expectation_block)
+          @recorder.stubs[stub.message] << stub
 
           if RSpec::Mocks.configuration.should_warn_about_any_instance_blocks?
             stub.warn_about_receiver_passing
