@@ -26,6 +26,10 @@ module RSpec
         space.proxy_for(object)
       end
 
+      def proxies_of(klass)
+        space.proxies_of(klass)
+      end
+
       def any_instance_recorder_for(klass)
         space.any_instance_recorder_for(klass)
       end

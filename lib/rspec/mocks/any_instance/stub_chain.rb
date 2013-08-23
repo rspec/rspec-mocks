@@ -14,7 +14,9 @@ module RSpec
         def create_message_expectation_on(instance)
           proxy = ::RSpec::Mocks.proxy_for(instance)
           expected_from = IGNORED_BACKTRACE_LINE
-          proxy.add_stub(expected_from, *@expectation_args, &@expectation_block)
+          stub = proxy.add_stub(expected_from, *@expectation_args, &@expectation_block)
+          @recorder.stubs[stub.message] << stub
+          stub
         end
 
         def invocation_order

@@ -1,3 +1,11 @@
+### 2.14.4 Development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...2-14-maintenance)
+
+Bug Fixes:
+
+* Fix issue where unstubing methods on "any instances" would not
+  remove stubs on existing instances (Jon Rowe)
+
 ### 2.14.3 / 2013-08-08
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...v2.14.3)
 
