@@ -71,6 +71,19 @@ module RSpec
 
         private
 
+        def create_message_expectation_on(instance)
+          me = yield(::RSpec::Mocks.proxy_for(instance), IGNORED_BACKTRACE_LINE)
+
+          if RSpec::Mocks.configuration.should_warn_about_any_instance_blocks?
+            me.warn_about_receiver_passing
+            me.display_any_instance_deprecation_warning_if_necessary if @expectation_block
+          elsif RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?
+            me.and_yield_receiver_to_implementation
+          end
+
+          me
+        end
+
         def negated?
           messages.any? { |(message, *_), _| message.to_sym == :never }
         end
