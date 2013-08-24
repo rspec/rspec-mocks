@@ -457,7 +457,8 @@ module RSpec
         @actual_received_count += 1
       end
 
-      def warn_about_receiver_passing
+      def warn_about_receiver_passing(source_line)
+        @source_line = source_line
         @warn_about_yielding_receiver_to_implementation_block = true
       end
 
@@ -483,7 +484,7 @@ RSpec.configure do |rspec|
   end
 end
 
-Your `any_instance` implementation block is declared at: #{CallerFilter.first_non_rspec_line}
+Your `any_instance` implementation block is declared at: #{@source_line}
 MSG
 )
       end

@@ -6,6 +6,7 @@ module RSpec
           @recorder          = recorder
           @expectation_args  = args
           @expectation_block = block
+          @source_line       = CallerFilter.first_non_rspec_line
         end
 
         module Customizations
@@ -75,7 +76,7 @@ module RSpec
           me = yield(::RSpec::Mocks.proxy_for(instance), IGNORED_BACKTRACE_LINE)
 
           if RSpec::Mocks.configuration.should_warn_about_any_instance_blocks?
-            me.warn_about_receiver_passing
+            me.warn_about_receiver_passing(@source_line)
             me.display_any_instance_deprecation_warning_if_necessary if @expectation_block
           elsif RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?
             me.and_yield_receiver_to_implementation

@@ -980,35 +980,34 @@ module RSpec
         end
 
         context "by default" do
-          let(:block_regex) { /as the first block argument/ }
+          def block_regex(line)
+            /as the first block argument.*#{__FILE__}:#{line}/m
+          end
 
           it "is off" do
             expect(RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?).to be false
           end
 
           it "will warn about allowances receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             allow_any_instance_of(klass).to receive(:foo) { |args| }
             klass.new(:faces).foo
           end
 
           it "will warn about expectations receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             expect_any_instance_of(klass).to receive(:foo) { |args| }
             klass.new(:faces).foo
           end
 
           it "will warn about expectations receiving blocks with a times restriction" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             klass.any_instance.should_receive(:foo).exactly(3).times { :some_return_value }
 
             instance = klass.new(:faces)
@@ -1016,10 +1015,9 @@ module RSpec
           end
 
           it "will warn about expectations receiving blocks with an argument expectation" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             klass.any_instance.should_receive(:foo).with(3) { :some_return_value }
 
             instance = klass.new(:faces)
@@ -1027,10 +1025,9 @@ module RSpec
           end
 
           it "works with a do end style block" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             klass.any_instance.should_receive(:foo).with(3) do
               :some_return_value
             end
@@ -1049,10 +1046,9 @@ module RSpec
           end
 
           it "will warn about stubs receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             expect_any_instance_of(klass).to receive(:foo) { |args| }
             klass.new(:faces).foo
           end
