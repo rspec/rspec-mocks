@@ -1004,6 +1004,16 @@ module RSpec
             klass.new(:faces).foo
           end
 
+          it 'includes the line of the block declaration in the warning, ' +
+             'even when it is different from the `any_instance` line', :unless => (RUBY_VERSION.to_f < 1.9) do
+            klass = Class.new
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 3))
+            stub = klass.any_instance.stub(:foo)
+
+            stub.with("bar") { |args| }
+            klass.new.foo("bar")
+          end
+
           it "will warn about expectations receiving blocks with a times restriction" do
             klass = Struct.new(:bees)
 

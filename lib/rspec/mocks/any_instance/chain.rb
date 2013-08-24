@@ -7,6 +7,7 @@ module RSpec
           @expectation_args  = args
           @expectation_block = block
           @source_line       = CallerFilter.first_non_rspec_line
+          ensure_expectation_block_has_source_location
         end
 
         module Customizations
@@ -77,7 +78,7 @@ module RSpec
 
           if RSpec::Mocks.configuration.should_warn_about_any_instance_blocks?
             me.warn_about_receiver_passing(@source_line)
-            me.display_any_instance_deprecation_warning_if_necessary if @expectation_block
+            me.display_any_instance_deprecation_warning_if_necessary(@expectation_block)
           elsif RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?
             me.and_yield_receiver_to_implementation
           end
@@ -101,6 +102,19 @@ module RSpec
           verify_invocation_order(rspec_method_name, *args, &block)
           messages << [args.unshift(rspec_method_name), block]
           self
+        end
+
+        if Proc.method_defined?(:source_location)
+          def ensure_expectation_block_has_source_location; end
+        else
+          def ensure_expectation_block_has_source_location
+            return unless @expectation_block
+            source_location = CallerFilter.first_non_rspec_line.split(':')
+
+            @expectation_block.extend Module.new {
+              define_method(:source_location) { source_location }
+            }
+          end
         end
       end
     end

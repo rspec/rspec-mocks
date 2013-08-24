@@ -238,9 +238,15 @@ module RSpec
         Kernel::raise error
       end
 
-      def display_any_instance_deprecation_warning_if_necessary
-        if should_display_any_instance_deprecation_warning
-          display_any_instance_deprecation_warning
+      def display_any_instance_deprecation_warning_if_necessary(block)
+        if block && should_display_any_instance_deprecation_warning
+          line = if block.respond_to?(:source_location)
+                   block.source_location.join(':')
+                 else
+                   @any_instance_source_line
+                 end
+
+          display_any_instance_deprecation_warning(line)
           @have_warned_about_yielding_receiver = true
         end
       end
@@ -457,8 +463,8 @@ module RSpec
         @actual_received_count += 1
       end
 
-      def warn_about_receiver_passing(source_line)
-        @source_line = source_line
+      def warn_about_receiver_passing(any_instance_source_line)
+        @any_instance_source_line = any_instance_source_line
         @warn_about_yielding_receiver_to_implementation_block = true
       end
 
@@ -467,7 +473,7 @@ module RSpec
           !@have_warned_about_yielding_receiver
       end
 
-      def display_any_instance_deprecation_warning
+      def display_any_instance_deprecation_warning(block_source_line)
         RSpec.warn_deprecation(<<MSG
 In RSpec 3, `any_instance` implementation blocks will be yielded the receiving
 instance as the first block argument to allow the implementation block to use
@@ -484,7 +490,7 @@ RSpec.configure do |rspec|
   end
 end
 
-Your `any_instance` implementation block is declared at: #{@source_line}
+Your `any_instance` implementation block is declared at: #{block_source_line}
 MSG
 )
       end
@@ -511,7 +517,7 @@ MSG
       end
 
       def inner_implementation_action=(action)
-        display_any_instance_deprecation_warning_if_necessary if action
+        display_any_instance_deprecation_warning_if_necessary(action)
         implementation.inner_action = action if action
       end
 
