@@ -12,15 +12,10 @@ module RSpec
           super
         end
 
-        private
+      private
+
         def verify_invocation_order(rspec_method_name, *args, &block)
         end
-      end
-
-      # @api private
-      class PositiveExpectationChain < ExpectationChain
-
-        private
 
         def create_message_expectation_on(instance)
           super do |proxy, expected_from|
