@@ -1055,7 +1055,7 @@ module RSpec
             klass.new(:faces).foo
           end
 
-          it "won't warn if the implementation block expects no arguments" do
+          it "won't warn if the implementation block ignores arguments", :if => (RUBY_VERSION.to_f > 1.8) do
             expect(RSpec).not_to receive(:warn_deprecation)
 
             klass = Struct.new(:bees)
