@@ -238,8 +238,10 @@ module RSpec
         Kernel::raise error
       end
 
+      # @private
       def display_any_instance_deprecation_warning_if_necessary(block)
-        if block && should_display_any_instance_deprecation_warning
+        if passing_an_additional_arg_would_break_block?(block) &&
+           should_display_any_instance_deprecation_warning
           line = if block.respond_to?(:source_location)
                    block.source_location.join(':')
                  else
@@ -249,6 +251,13 @@ module RSpec
           display_any_instance_deprecation_warning(line)
           @have_warned_about_yielding_receiver = true
         end
+      end
+
+      # @private
+      def passing_an_additional_arg_would_break_block?(block)
+        return false unless block
+        return true if block.lambda?
+        !block.arity.zero?
       end
 
       # @private

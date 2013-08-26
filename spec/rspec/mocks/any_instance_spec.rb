@@ -1018,7 +1018,7 @@ module RSpec
             klass = Struct.new(:bees)
 
             expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
-            klass.any_instance.should_receive(:foo).exactly(3).times { :some_return_value }
+            klass.any_instance.should_receive(:foo).exactly(3).times { |a| :some_return_value }
 
             instance = klass.new(:faces)
             3.times { instance.foo }
@@ -1028,7 +1028,7 @@ module RSpec
             klass = Struct.new(:bees)
 
             expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
-            klass.any_instance.should_receive(:foo).with(3) { :some_return_value }
+            klass.any_instance.should_receive(:foo).with(3) { |b| :some_return_value }
 
             instance = klass.new(:faces)
             instance.foo(3)
@@ -1038,7 +1038,7 @@ module RSpec
             klass = Struct.new(:bees)
 
             expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
-            klass.any_instance.should_receive(:foo).with(3) do
+            klass.any_instance.should_receive(:foo).with(3) do |a|
               :some_return_value
             end
 
@@ -1052,6 +1052,32 @@ module RSpec
             klass = Struct.new(:bees)
 
             allow_any_instance_of(klass).to receive(:foo)
+            klass.new(:faces).foo
+          end
+
+          it "won't warn if the implementation block expects no arguments" do
+            expect(RSpec).not_to receive(:warn_deprecation)
+
+            klass = Struct.new(:bees)
+            allow_any_instance_of(klass).to receive(:foo) { 5 }
+            klass.new(:faces).foo
+          end
+
+          it "warns if the implementation block accepts a splat" do
+            klass = Struct.new(:bees)
+
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
+            allow_any_instance_of(klass).to receive(:foo) { |*a| 5 }
+
+            klass.new(:faces).foo
+          end
+
+          it "warns if it the implementation is a lambda that expects no arguments" do
+            klass = Struct.new(:bees)
+
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
+            allow_any_instance_of(klass).to receive(:foo, &lambda { 5 })
+
             klass.new(:faces).foo
           end
 
