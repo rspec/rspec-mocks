@@ -197,7 +197,7 @@ module RSpec
       # @private
       def restore_original_visibility
         return unless object_singleton_class.method_defined?(@method_name) || object_singleton_class.private_method_defined?(@method_name)
-        object_singleton_class.class_eval(@original_visibility, __FILE__, __LINE__)
+        object_singleton_class.class_eval(@original_visibility, __FILE__, __LINE__ + 1)
       end
 
       # @private

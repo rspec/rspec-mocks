@@ -42,7 +42,7 @@ module RSpec
         MessageExpectation.public_instance_methods(false).each do |method|
           next if method_defined?(method)
 
-          class_eval(<<-RUBY)
+          class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
             def #{method}(*args, &block)
               @recorded_customizations << Customization.new(#{method.inspect}, args, block)
               self

@@ -10,7 +10,7 @@ module RSpec
 
       def self.delegate_to(matcher_method, options = {})
         method_name = options.fetch(:from) { :to }
-        class_eval(<<-RUBY)
+        class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
         def #{method_name}(matcher, &block)
           unless Matchers::Receive === matcher
             raise UnsupportedMatcherError, "only the `receive` matcher is supported " +
