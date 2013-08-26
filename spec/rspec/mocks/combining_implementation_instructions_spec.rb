@@ -21,7 +21,7 @@ module RSpec
             expect(dbl.foo(:arg, &b)).to eq(3)
           }.to yield_with_args(5)
 
-          expect(@block_called).to be_true
+          expect(@block_called).to be true
         end
 
         it 'works when passing a block to `stub`' do
@@ -60,7 +60,7 @@ module RSpec
           end
         end
 
-        it 'works when passing a block to `any_number_of_times`' do
+        it 'works when passing a block to `any_number_of_times`', :silence_warnings do
           verify_combined_implementation do |dbl|
             dbl.should_receive(:foo).any_number_of_times { @block_called = true }
           end
@@ -117,7 +117,7 @@ module RSpec
           expect { dbl.foo(&b) }.to raise_error("boom")
         }.to yield_with_args(5)
 
-        expect(block_called).to be_true
+        expect(block_called).to be true
       end
 
       it 'can combine and_yield and and_throw' do
@@ -138,7 +138,7 @@ module RSpec
           expect { dbl.foo(&b) }.to throw_symbol(:bar)
         }.to yield_with_args(5)
 
-        expect(block_called).to be_true
+        expect(block_called).to be true
       end
 
       it 'returns `nil` from all terminal actions to discourage further configuration' do
