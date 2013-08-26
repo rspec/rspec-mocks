@@ -60,7 +60,7 @@ module RSpec
           end
         end
 
-        it 'works when passing a block to `any_number_of_times`' do
+        it 'works when passing a block to `any_number_of_times`', :silence_warnings do
           verify_combined_implementation do |dbl|
             dbl.should_receive(:foo).any_number_of_times { @block_called = true }
           end
