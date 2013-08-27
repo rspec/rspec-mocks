@@ -34,6 +34,7 @@ RSpec.configure do |config|
 
   old_verbose = nil
   config.before(:each, :silence_warnings) do
+    allow(RSpec).to receive(:deprecate)
     old_verbose = $VERBOSE
     $VERBOSE = nil
   end

@@ -774,13 +774,13 @@ module RSpec
             context "public methods" do
               before(:each) do
                 klass.any_instance.stub(:existing_method).and_return(1)
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_true
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be true
               end
 
               it "restores the class to its original state after each example when no instance is created" do
                 space.verify_all
 
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
 
@@ -789,7 +789,7 @@ module RSpec
 
                 space.verify_all
 
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
 
@@ -799,7 +799,7 @@ module RSpec
 
                 space.verify_all
 
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
               end
             end
@@ -811,11 +811,11 @@ module RSpec
               end
 
               it "cleans up the backed up method" do
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
               end
 
               it "restores a stubbed private method after the spec is run" do
-                expect(klass.private_method_defined?(:private_method)).to be_true
+                expect(klass.private_method_defined?(:private_method)).to be true
               end
 
               it "ensures that the restored method behaves as it originally did" do
@@ -833,11 +833,11 @@ module RSpec
               end
 
               it "cleans up the backed up method" do
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_false
+                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
               end
 
               it "restores a stubbed private method after the spec is run" do
-                expect(klass.private_method_defined?(:private_method)).to be_true
+                expect(klass.private_method_defined?(:private_method)).to be true
               end
 
               it "ensures that the restored method behaves as it originally did" do
@@ -980,58 +980,65 @@ module RSpec
         end
 
         context "by default" do
-          let(:block_regex) { /as the first block argument/ }
+          def block_regex(line)
+            /as the first block argument.*#{__FILE__}:#{line}/m
+          end
 
           it "is off" do
             expect(RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?).to be false
           end
 
           it "will warn about allowances receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             allow_any_instance_of(klass).to receive(:foo) { |args| }
             klass.new(:faces).foo
           end
 
           it "will warn about expectations receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             expect_any_instance_of(klass).to receive(:foo) { |args| }
             klass.new(:faces).foo
           end
 
-          it "will warn about expectations receiving blocks with a times restriction" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
+          it 'includes the line of the block declaration in the warning, ' +
+             'even when it is different from the `any_instance` line', :unless => (RUBY_VERSION.to_f < 1.9) do
+            klass = Class.new
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 3))
+            stub = klass.any_instance.stub(:foo)
 
+            stub.with("bar") { |args| }
+            klass.new.foo("bar")
+          end
+
+          it "will warn about expectations receiving blocks with a times restriction" do
             klass = Struct.new(:bees)
 
-            klass.any_instance.should_receive(:foo).exactly(3).times { :some_return_value }
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
+            klass.any_instance.should_receive(:foo).exactly(3).times { |a| :some_return_value }
 
             instance = klass.new(:faces)
             3.times { instance.foo }
           end
 
           it "will warn about expectations receiving blocks with an argument expectation" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
-            klass.any_instance.should_receive(:foo).with(3) { :some_return_value }
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
+            klass.any_instance.should_receive(:foo).with(3) { |b| :some_return_value }
 
             instance = klass.new(:faces)
             instance.foo(3)
           end
 
           it "works with a do end style block" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
-
             klass = Struct.new(:bees)
 
-            klass.any_instance.should_receive(:foo).with(3) do
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
+            klass.any_instance.should_receive(:foo).with(3) do |a|
               :some_return_value
             end
 
@@ -1048,11 +1055,36 @@ module RSpec
             klass.new(:faces).foo
           end
 
-          it "will warn about stubs receiving blocks in 3.0" do
-            expect(RSpec).to receive(:warn_deprecation).with(block_regex)
+          it "won't warn if the implementation block ignores arguments", :if => (RUBY_VERSION.to_f > 1.8) do
+            expect(RSpec).not_to receive(:warn_deprecation)
 
             klass = Struct.new(:bees)
+            allow_any_instance_of(klass).to receive(:foo) { 5 }
+            klass.new(:faces).foo
+          end
 
+          it "warns if the implementation block accepts a splat" do
+            klass = Struct.new(:bees)
+
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
+            allow_any_instance_of(klass).to receive(:foo) { |*a| 5 }
+
+            klass.new(:faces).foo
+          end
+
+          it "warns if it the implementation is a lambda that expects no arguments" do
+            klass = Struct.new(:bees)
+
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
+            allow_any_instance_of(klass).to receive(:foo, &lambda { 5 })
+
+            klass.new(:faces).foo
+          end
+
+          it "will warn about stubs receiving blocks in 3.0" do
+            klass = Struct.new(:bees)
+
+            expect(RSpec).to receive(:warn_deprecation).with(block_regex(__LINE__ + 1))
             expect_any_instance_of(klass).to receive(:foo) { |args| }
             klass.new(:faces).foo
           end
