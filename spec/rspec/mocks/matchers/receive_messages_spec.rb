@@ -47,7 +47,6 @@ module RSpec
         failure
       end
 
-
       it "sets up multiple expectations" do
         expect(obj).to receive_messages(:a => 1, :b => 2)
         obj.a
