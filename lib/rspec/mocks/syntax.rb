@@ -331,8 +331,9 @@ module RSpec
       # @method receive_messages
       # Shorthand syntax used to setup message(s), and their return value(s),
       # that you expect or allow an object to receive. The method takes a hash
-      # of messages and their respective return values. Unlike `receive`, block
-      # implementations are not supported, neither is the fluent interface.
+      # of messages and their respective return values. Unlike with `receive`,
+      # you cannot apply further customizations using a block or the fluent
+      # interface.
       #
       # @example
       #
