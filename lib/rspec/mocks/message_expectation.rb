@@ -26,7 +26,7 @@ module RSpec
       end
 
       def verify_messages_received
-        BacktrackRestore.with(@backtrace_line) do
+        InsertOntoBacktrace.line(@backtrace_line) do
           unless @received
             @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
           end
@@ -264,7 +264,7 @@ module RSpec
 
       # @private
       def verify_messages_received
-        BacktrackRestore.with(@expected_from) do
+        InsertOntoBacktrace.line(@expected_from) do
           generate_error unless expected_messages_received? || failed_fast?
         end
       end
@@ -606,8 +606,8 @@ module RSpec
 
     # Insert original locations into stacktraces
     # @api private
-    class BacktrackRestore
-      def self.with(location)
+    class InsertOntoBacktrace
+      def self.line(location)
         yield
       rescue RSpec::Mocks::MockExpectationError => error
         error.backtrace.insert(0, location)
