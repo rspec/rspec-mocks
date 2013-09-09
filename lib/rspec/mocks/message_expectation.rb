@@ -26,12 +26,11 @@ module RSpec
       end
 
       def verify_messages_received
-        unless @received
-          @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
+        BacktrackRestore.with(@backtrace_line) do
+          unless @received
+            @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
+          end
         end
-      rescue RSpec::Mocks::MockExpectationError => error
-        error.backtrace.insert(0, @backtrace_line)
-        Kernel::raise error
       end
     end
 
@@ -265,10 +264,9 @@ module RSpec
 
       # @private
       def verify_messages_received
-        generate_error unless expected_messages_received? || failed_fast?
-      rescue RSpec::Mocks::MockExpectationError => error
-        error.backtrace.insert(0, @expected_from)
-        Kernel::raise error
+        BacktrackRestore.with(@expected_from) do
+          generate_error unless expected_messages_received? || failed_fast?
+        end
       end
 
       # @private
@@ -605,5 +603,17 @@ module RSpec
           "to call the original implementation, and cannot be modified further."
       end
     end
+
+    # Insert original locations into stacktraces
+    # @api private
+    class BacktrackRestore
+      def self.with(location)
+        yield
+      rescue RSpec::Mocks::MockExpectationError => error
+        error.backtrace.insert(0, location)
+        Kernel::raise error
+      end
+    end
+
   end
 end
