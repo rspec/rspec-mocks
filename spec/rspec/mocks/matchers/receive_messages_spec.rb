@@ -18,8 +18,21 @@ module RSpec
       end
     end
 
+    shared_examples_for "handles partially mocked objects correctly" do
+      let(:obj) { Struct.new(:a).new('original') }
+
+      it "resets partially mocked objects correctly" do
+        target.to receive_messages(:a => 1, :b => 2)
+
+        expect {
+          reset obj
+        }.to change { obj.a }.from(1).to("original")
+      end
+    end
+
     describe "allow(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { double "Object" }
+      let(:target) { allow(obj) }
 
       it "allows the object to respond to multiple messages" do
         allow(obj).to receive_messages(:a => 1, :b => 2)
@@ -27,13 +40,13 @@ module RSpec
         expect(obj.b).to eq 2
       end
 
-      it_behaves_like "complains when given blocks" do
-        let(:target) { allow(obj) }
-      end
+      it_behaves_like "complains when given blocks"
+      it_behaves_like "handles partially mocked objects correctly"
     end
 
     describe "allow_any_instance_of(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { Object.new }
+      let(:target) { allow_any_instance_of(Object) }
 
       it "allows the object to respond to multiple messages" do
         allow_any_instance_of(Object).to receive_messages(:a => 1, :b => 2)
@@ -41,13 +54,12 @@ module RSpec
         expect(obj.b).to eq 2
       end
 
-      it_behaves_like "complains when given blocks" do
-        let(:target) { allow_any_instance_of(Object) }
-      end
+      it_behaves_like "complains when given blocks"
     end
 
     describe "expect(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { double "Object" }
+      let(:target) { expect(obj) }
 
       let(:expectation_error) do
         failure = nil
@@ -76,13 +88,13 @@ module RSpec
         expect(expectation_error.backtrace[0]).to match /#{__FILE__}:#{line}/
       end
 
-      it_behaves_like "complains when given blocks" do
-        let(:target) { expect(double) }
-      end
+      it_behaves_like "complains when given blocks"
+      it_behaves_like "handles partially mocked objects correctly"
     end
 
     describe "expect_any_instance_of(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { Object.new }
+      let(:target) { expect_any_instance_of(Object) }
 
       it "sets up multiple expectations" do
         expect_any_instance_of(Object).to receive_messages(:a => 1, :b => 2)
@@ -90,9 +102,7 @@ module RSpec
         expect { RSpec::Mocks.space.verify_all }.to raise_error RSpec::Mocks::MockExpectationError
       end
 
-      it_behaves_like "complains when given blocks" do
-        let(:target) { expect_any_instance_of(Object) }
-      end
+      it_behaves_like "complains when given blocks"
     end
 
     describe "negative expectation failure" do

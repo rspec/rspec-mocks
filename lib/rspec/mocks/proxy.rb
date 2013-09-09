@@ -253,6 +253,18 @@ module RSpec
         nil
       end
 
+      # @private
+      def add_simple_expectation(method_name, response, location)
+        method_double[method_name].configure_method
+        super
+      end
+
+      # @private
+      def add_simple_stub(method_name, response)
+        method_double[method_name].configure_method
+        super
+      end
+
     private
 
       def any_instance_class_recorder_observing_method?(klass, method_name)
