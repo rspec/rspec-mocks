@@ -2,6 +2,22 @@ require 'spec_helper'
 
 module RSpec
   module Mocks
+    shared_examples_for "complains when given blocks" do
+      it "complains if a { } block is given" do
+        expect {
+          target.to receive_messages(:a => 1) { "implementation" }
+        }.to raise_error "Implementation blocks aren't supported with `receive_messages`"
+      end
+
+      it "complains if a do; end; block is given" do
+        expect {
+          target.to receive_messages(:a => 1) do
+            "implementation"
+          end
+        }.to raise_error "Implementation blocks aren't supported with `receive_messages`"
+      end
+    end
+
     describe "allow(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { double "Object" }
 
@@ -11,10 +27,8 @@ module RSpec
         expect(obj.b).to eq 2
       end
 
-      it "complains if a block is given" do
-        expect {
-          allow(obj).to receive_messages(:a => 1) { "implementation" }
-        }.to raise_error "Implementation blocks aren't supported with `receive_messages`"
+      it_behaves_like "complains when given blocks" do
+        let(:target) { allow(obj) }
       end
     end
 
@@ -27,10 +41,8 @@ module RSpec
         expect(obj.b).to eq 2
       end
 
-      it "complains if a block is given" do
-        expect {
-          allow_any_instance_of(Object).to receive_messages(:a => 1) { "implementation" }
-        }.to raise_error "Implementation blocks aren't supported with `receive_messages`"
+      it_behaves_like "complains when given blocks" do
+        let(:target) { allow_any_instance_of(Object) }
       end
     end
 
@@ -64,10 +76,8 @@ module RSpec
         expect(expectation_error.backtrace[0]).to match /#{__FILE__}:#{line}/
       end
 
-      it "complains if a block is given" do
-        expect {
-          expect(double).to receive_messages(:a => 1) { "implementation" }
-        }.to raise_error "Implementation blocks aren't supported with `receive_messages`"
+      it_behaves_like "complains when given blocks" do
+        let(:target) { expect(double) }
       end
     end
 
@@ -80,10 +90,8 @@ module RSpec
         expect { RSpec::Mocks.space.verify_all }.to raise_error RSpec::Mocks::MockExpectationError
       end
 
-      it "complains if a block is given" do
-        expect {
-          expect_any_instance_of(Object).to receive_messages(:a => 1) { "implementation" }
-        }.to raise_error "Implementation blocks aren't supported with `receive_messages`"
+      it_behaves_like "complains when given blocks" do
+        let(:target) { expect_any_instance_of(Object) }
       end
     end
 

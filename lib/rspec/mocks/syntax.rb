@@ -93,8 +93,9 @@ module RSpec
           end
 
           def receive_messages(message_return_value_hash)
-            raise "Implementation blocks aren't supported with `receive_messages`" if block_given?
-            Matchers::ReceiveMessages.new(message_return_value_hash)
+            matcher = Matchers::ReceiveMessages.new(message_return_value_hash)
+            matcher.warn_about_block if block_given?
+            matcher
           end
 
           def allow(target)
