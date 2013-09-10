@@ -30,6 +30,8 @@ Enhancements:
   attributes. (Xavier Shay)
 * Default value of `transfer_nested_constants` option for constant stubbing can
   be configured. (Xavier Shay)
+* Messages can be allowed or expected on in bulk via
+  `receive_messages(:message => :value)` (Jon Rowe)
 
 Deprecations:
 

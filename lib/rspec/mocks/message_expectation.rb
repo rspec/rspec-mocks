@@ -5,13 +5,32 @@ module RSpec
     # for a message. While this same effect can be achieved using a standard
     # MessageExpecation, this version is much faster and so can be used as an
     # optimization.
-    SimpleMessageExpectation = Struct.new(:message, :response) do
+    class SimpleMessageExpectation
+
+      def initialize(message, response, error_generator, backtrace_line = nil)
+        @message, @response, @error_generator, @backtrace_line = message, response, error_generator, backtrace_line
+        @received = false
+      end
+
       def invoke(*_)
-        response
+        @received = true
+        @response
       end
 
       def matches?(message, *_)
-        self.message == message
+        @message == message
+      end
+
+      def called_max_times?
+        false
+      end
+
+      def verify_messages_received
+        InsertOntoBacktrace.line(@backtrace_line) do
+          unless @received
+            @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
+          end
+        end
       end
     end
 
@@ -245,10 +264,9 @@ module RSpec
 
       # @private
       def verify_messages_received
-        generate_error unless expected_messages_received? || failed_fast?
-      rescue RSpec::Mocks::MockExpectationError => error
-        error.backtrace.insert(0, @expected_from)
-        Kernel::raise error
+        InsertOntoBacktrace.line(@expected_from) do
+          generate_error unless expected_messages_received? || failed_fast?
+        end
       end
 
       # @private
@@ -585,5 +603,17 @@ module RSpec
           "to call the original implementation, and cannot be modified further."
       end
     end
+
+    # Insert original locations into stacktraces
+    # @api private
+    class InsertOntoBacktrace
+      def self.line(location)
+        yield
+      rescue RSpec::Mocks::MockExpectationError => error
+        error.backtrace.insert(0, location)
+        Kernel::raise error
+      end
+    end
+
   end
 end
