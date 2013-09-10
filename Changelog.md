@@ -31,6 +31,12 @@ Enhancements:
 * Default value of `transfer_nested_constants` option for constant stubbing can
   be configured. (Xavier Shay)
 
+Deprecations:
+
+* Using the old `:should` syntax without explicitly configuring it
+  is disabled. It will continue to work but will emit a deprecation
+  warning in RSpec 3 if you do not explicitly enable it. (Sam Phippen)
+
 Bug Fixes:
 
 * Fix `and_call_original` to handle a complex edge case involving
