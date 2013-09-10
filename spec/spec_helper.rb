@@ -79,3 +79,9 @@ shared_context "with isolated configuration" do
     RSpec::Mocks.instance_variable_set(:@configuration, orig_configuration)
   end
 end
+
+def expect_deprecation_with_call_site(file, line)
+  expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
+    expect(options[:call_site]).to include([file, line].join(':'))
+  end
+end

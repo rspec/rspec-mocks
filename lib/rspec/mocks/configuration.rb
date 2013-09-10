@@ -81,13 +81,17 @@ module RSpec
       def transfer_nested_constants=(val)
         @transfer_nested_constants = val
       end
+
+      def reset_syntaxes_to_default
+        self.syntax = [:should, :expect]
+        RSpec::Mocks::Syntax.warn_about_should!
+      end
     end
 
     def self.configuration
       @configuration ||= Configuration.new
     end
 
-    configuration.syntax = [:should, :expect]
+    configuration.reset_syntaxes_to_default
   end
 end
-
