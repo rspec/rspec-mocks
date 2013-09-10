@@ -82,6 +82,8 @@ module RSpec
         @transfer_nested_constants = val
       end
 
+      # @api private
+      # Resets the configured syntax to the default.
       def reset_syntaxes_to_default
         self.syntax = [:should, :expect]
         RSpec::Mocks::Syntax.warn_about_should!
