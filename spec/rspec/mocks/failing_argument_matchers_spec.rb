@@ -119,6 +119,39 @@ module RSpec
           @double.msg arg
         end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (3)\n       got: (my_thing)")
       end
+
+      it "fails with sensible message when arg#description is nil" do
+        arg = Class.new do
+          def description
+          end
+
+          def inspect
+            "my_thing"
+          end
+        end.new
+
+        expect do
+          @double.should_receive(:msg).with(arg)
+          @double.msg 3
+        end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (my_thing)\n       got: (3)")
+      end
+
+      it "fails with sensible message when arg#description is blank" do
+        arg = Class.new do
+          def description
+            ""
+          end
+
+          def inspect
+            "my_thing"
+          end
+        end.new
+
+        expect do
+          @double.should_receive(:msg).with(arg)
+          @double.msg 3
+        end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (my_thing)\n       got: (3)")
+      end
     end
   end
 end
