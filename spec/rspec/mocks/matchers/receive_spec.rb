@@ -265,7 +265,7 @@ module RSpec
             framework.new.instance_exec do
               expect(3).to eq(3)
             end
-          }.to raise_error(/only the `receive` matcher is supported with `expect\(...\).to`/)
+          }.to raise_error(/only the `receive` or `receive_messages` matchers are supported with `expect\(...\).to`/)
         end
 
         it 'can toggle the available syntax' do

@@ -60,6 +60,11 @@ module RSpec
       end
 
       # @private
+      def add_simple_expectation(method_name, response, location)
+        method_double[method_name].add_simple_expectation method_name, response, @error_generator, location
+      end
+
+      # @private
       def build_expectation(method_name)
         meth_double = method_double[method_name]
 
@@ -246,6 +251,18 @@ module RSpec
         ::RSpec::Mocks.method_handle_for(@object, message)
       rescue NameError
         nil
+      end
+
+      # @private
+      def add_simple_expectation(method_name, response, location)
+        method_double[method_name].configure_method
+        super
+      end
+
+      # @private
+      def add_simple_stub(method_name, response)
+        method_double[method_name].configure_method
+        super
       end
 
     private
