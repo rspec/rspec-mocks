@@ -225,6 +225,24 @@ module RSpec
           end
         end
 
+        context "when partially mocking objects" do
+          let(:obj) { klass.new }
+
+          it "resets partially mocked objects correctly" do
+            allow_any_instance_of(klass).to receive(:existing_method).and_return("stubbed value")
+
+            # Simply resetting the proxy doesn't work
+            # what we need to have happen is
+            # ::RSpec::Mocks.any_instance_recorder_for(klass).stop_all_observation!
+            # but that is never invoked in ::
+            expect {
+              RSpec::Mocks.space.verify_all
+            }.to(
+              change { obj.existing_method }.from("stubbed value").to(:existing_method_return_value)
+            )
+          end
+        end
+
         context "core ruby objects" do
           it "works uniformly across *everything*" do
             Object.any_instance.stub(:foo).and_return(1)
