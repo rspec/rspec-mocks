@@ -51,7 +51,7 @@ module RSpec
 
           @doubled_module.when_loaded do |original_module|
             method_double.method_checker = lambda do |method_name|
-              original_module.__send__(@method_checker, method_name)
+              @method_checker.call(original_module, method_name)
             end
 
             method_double.method_exists_checker = lambda do |method_name|
@@ -59,7 +59,7 @@ module RSpec
             end
 
             method_double.method_finder = lambda do |method_name|
-              original_module.__send__(@method_finder, method_name)
+              @method_finder.call(original_module, method_name)
             end
           end
 
@@ -71,7 +71,7 @@ module RSpec
 
       def ensure_implemented(method_name)
         @doubled_module.when_loaded do |original_module|
-          unless original_module.__send__(@method_checker, method_name)
+          unless @method_checker.call(original_module, method_name)
             @error_generator.raise_unimplemented_error(
               @doubled_module,
               method_name

@@ -19,9 +19,9 @@ module RSpec
       def __build_mock_proxy
         VerifyingProxy.new(self,
           @doubled_module,
-          :method_defined?,
           lambda { |cls, method_name| cls.method_defined? method_name },
-          :instance_method
+          lambda { |cls, method_name| cls.method_defined? method_name },
+          lambda { |cls, method_name| cls.instance_method method_name },
         )
       end
     end
@@ -43,9 +43,9 @@ module RSpec
       def __build_mock_proxy
         VerifyingProxy.new(self,
           @doubled_module,
-          :respond_to?,
+          lambda { |cls, method_name| cls.respond_to? method_name },
           lambda { |cls, method_name| cls.singleton_class.method_defined? method_name },
-          :method
+          lambda { |cls, method_name| cls.method method_name },
         )
       end
 
