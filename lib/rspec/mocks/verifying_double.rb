@@ -20,6 +20,7 @@ module RSpec
         VerifyingProxy.new(self,
           @doubled_module,
           :method_defined?,
+          lambda { |cls, method_name| cls.method_defined? method_name },
           :instance_method
         )
       end
@@ -43,6 +44,7 @@ module RSpec
         VerifyingProxy.new(self,
           @doubled_module,
           :respond_to?,
+          lambda { |cls, method_name| cls.singleton_class.method_defined? method_name },
           :method
         )
       end

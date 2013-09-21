@@ -10,7 +10,9 @@ module RSpec
         subject {
           null = double.as_null_object
 
-          described_class.new(error_generator, null, null, null)
+          VerifyingMessageExpectation.new(error_generator, null, null, null).tap do |ve|
+            ve.method_exists_checker = lambda { |_| true }
+          end
         }
 
         describe 'when expected method is not loaded' do

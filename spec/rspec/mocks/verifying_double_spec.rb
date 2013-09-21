@@ -103,6 +103,13 @@ module RSpec
             }
           end
 
+          it "verifies the arity when the method is called qwoeijfwqeoifjqwiofjqwoifej" do
+            o = instance_double('LoadedClass', :defined_instance_method => 25)
+            prevents {
+              o.defined_instance_method(:a)
+            }
+          end
+
           it 'allows class to be specified by constant' do
             o = instance_double(LoadedClass, :defined_instance_method => 1)
             expect(o.defined_instance_method).to eq(1)
@@ -154,6 +161,20 @@ module RSpec
           it 'allows dynamically defined class methods to be expected' do
             o = class_double('LoadedClass', :dynamic_class_method => 1)
             expect(o.dynamic_class_method).to eq(1)
+          end
+
+          it 'allows dynamically defined class method stubs with arguments' do
+            o = class_double('LoadedClass')
+            allow(o).to receive(:dynamic_class_method).with(:a) { 1 }
+
+            expect(o.dynamic_class_method(:a)).to eq(1)
+          end
+
+          it 'allows dynamically defined class method mocks with arguments' do
+            o = class_double('LoadedClass')
+            expect(o).to receive(:dynamic_class_method).with(:a)
+
+            o.dynamic_class_method(:a)
           end
 
           it 'allows class to be specified by constant' do
