@@ -26,6 +26,8 @@ Enhancements:
 * Yield the receiver to `any_instance` implementation blocks (Sam Phippen).
 * Provide `instance_double` and `class_double` to create verifying doubles,
   ported from `rspec-fire` (Xavier Shay).
+* `as_null_object` on a verifying double only responds to defined methods
+  (Xavier Shay).
 * Improved performance of double creation, particularly those with many
   attributes. (Xavier Shay)
 * Default value of `transfer_nested_constants` option for constant stubbing can
