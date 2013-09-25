@@ -107,6 +107,13 @@ module RSpec
             o = instance_double(LoadedClass, :defined_instance_method => 1)
             expect(o.defined_instance_method).to eq(1)
           end
+
+          it 'only allows defined methods for null objects' do
+            o = instance_double('LoadedClass').as_null_object
+
+            expect(o.defined_instance_method).to eq(o)
+            prevents { o.undefined_method }
+          end
         end
       end
 
@@ -185,6 +192,13 @@ module RSpec
             prevents {
               expect(dbl1).to receive(:undefined_class_method)
             }
+          end
+
+          it 'only allows defined methods for null objects' do
+            o = class_double('LoadedClass').as_null_object
+
+            expect(o.defined_class_method).to eq(o)
+            prevents { o.undefined_method }
           end
         end
       end

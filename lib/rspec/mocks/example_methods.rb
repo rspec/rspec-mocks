@@ -35,28 +35,28 @@ module RSpec
       # @overload instance_double(doubled_class, stubs)
       # @param doubled_class [String, Class]
       # @param stubs [Hash] (optional) hash of message/return-value pairs
-      # @return InstanceVerifyingMock
+      # @return InstanceVerifyingDouble
       #
       # Constructs a test double against a specific class. If the given class
       # name has been loaded, only instance methods defined on the class are
       # allowed to be stubbed. In all other ways it behaves like a
       # [double](double).
       def instance_double(doubled_class, *args)
-        declare_verifying_double(InstanceVerifyingMock, doubled_class, *args)
+        declare_verifying_double(InstanceVerifyingDouble, doubled_class, *args)
       end
 
       # @overload class_double(doubled_class)
       # @overload class_double(doubled_class, stubs)
       # @param doubled_class [String, Module]
       # @param stubs [Hash] (optional) hash of message/return-value pairs
-      # @return ClassVerifyingMock
+      # @return ClassVerifyingDouble
       #
       # Constructs a test double against a specific class. If the given class
       # name has been loaded, only class methods defined on the class are
       # allowed to be stubbed. In all other ways it behaves like a
       # [double](double).
       def class_double(doubled_class, *args)
-        declare_verifying_double(ClassVerifyingMock, doubled_class, *args)
+        declare_verifying_double(ClassVerifyingDouble, doubled_class, *args)
       end
 
       # Disables warning messages about expectations being set on nil.
