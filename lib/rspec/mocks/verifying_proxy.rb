@@ -58,8 +58,6 @@ module RSpec
         end
       end
 
-    protected
-
       def ensure_implemented(method_name)
         @doubled_module.when_loaded do |original_module|
           unless original_module.__send__(@method_checker, method_name)
