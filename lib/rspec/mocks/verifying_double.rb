@@ -17,7 +17,7 @@ module RSpec
     # A mock providing a custom proxy that can verify the validity of any
     # method stubs or expectations against the public instance methods of the
     # given class.
-    class InstanceVerifyingMock
+    class InstanceVerifyingDouble
       include TestDouble
       include VerifyingDouble
 
@@ -36,12 +36,12 @@ module RSpec
       end
     end
 
-    # Similar to an InstanceVerifyingMock, except that it verifies against
+    # Similar to an InstanceVerifyingDouble, except that it verifies against
     # public methods of the given class (i.e. the "class methods").
     #
     # Module needs to be in the inheritance chain for transferring nested
     # constants to work.
-    class ClassVerifyingMock < Module
+    class ClassVerifyingDouble < Module
       include TestDouble
       include VerifyingDouble
 
