@@ -56,14 +56,19 @@ module RSpec
         @original_method = @method_stasher.original_method ||
                            @proxy.method_handle_for(method_name)
 
-        object_singleton_class.class_exec(method_name, visibility) do |method_name, visibility|
+        method_implementer = method(:proxy_method_implementation)
+        object_singleton_class.class_exec(method_name, visibility, method_implementer) do |method_name, visibility, method_implementer|
           define_method(method_name) do |*args, &block|
-            ::RSpec::Mocks.proxy_for(self).message_received method_name, *args, &block
+            method_implementer.call(self, method_name, *args, &block)
           end
           self.__send__ visibility, method_name
         end
 
         @method_is_proxied = true
+      end
+
+      def proxy_method_implementation(object, method_name, *args, &block)
+        ::RSpec::Mocks.proxy_for(object).message_received method_name, *args, &block
       end
 
       # @private

@@ -18,11 +18,12 @@ module RSpec
     #
     # @api private
     class VerifyingProxy < Proxy
-      def initialize(object, name, method_checker, method_finder)
+      def initialize(object, name, method_responds_checker, method_exists_checker, method_finder)
         super(object)
         @object         = object
         @doubled_module = name
-        @method_checker = method_checker
+        @method_checker = method_responds_checker
+        @method_exists_checker = method_exists_checker
         @method_finder  = method_finder
       end
 
@@ -49,8 +50,16 @@ module RSpec
           method_double = VerifyingMethodDouble.new(@object, k, self)
 
           @doubled_module.when_loaded do |original_module|
+            method_double.method_checker = lambda do |method_name|
+              @method_checker.call(original_module, method_name)
+            end
+
+            method_double.method_exists_checker = lambda do |method_name|
+              @method_exists_checker.call(original_module, method_name)
+            end
+
             method_double.method_finder = lambda do |method_name|
-              original_module.__send__(@method_finder, method_name)
+              @method_finder.call(original_module, method_name)
             end
           end
 
@@ -60,7 +69,7 @@ module RSpec
 
       def ensure_implemented(method_name)
         @doubled_module.when_loaded do |original_module|
-          unless original_module.__send__(@method_checker, method_name)
+          unless @method_checker.call(original_module, method_name)
             @error_generator.raise_unimplemented_error(
               @doubled_module,
               method_name
@@ -72,16 +81,40 @@ module RSpec
 
     # @api private
     class VerifyingMethodDouble < MethodDouble
-      attr_accessor :method_finder
+      attr_accessor :method_finder, :method_checker, :method_exists_checker
+
+      def initialize(*)
+        super
+        @method_finder = lambda { |method_name| ArityCalculator::MethodNotLoaded }
+      end
+
+      def proxy_method_implementation(object, method_name, *args, &block)
+         unless arity_within_range?(method_name, args.length)
+           raise RSpec::Mocks::MockExpectationError, "arity LOLOLOL"
+         end
+
+        super
+      end
 
       def message_expectation_class
         VerifyingMessageExpectation
       end
 
       def add_expectation(*arg)
-        super.tap {|x| x.method_finder = method_finder if method_finder }
+        super.tap {|x|
+          x.method_finder = method_finder if method_finder
+          x.method_exists_checker = method_exists_checker if method_exists_checker
+        }
+      end
+
+      private
+      def arity_within_range?(method_name, arity)
+        if method_checker === method_name && method_exists_checker === method_name
+          ArityCalculator.new(method_finder.call(method_name)).within_range?(arity)
+        else
+          true
+        end
       end
     end
-
   end
 end
