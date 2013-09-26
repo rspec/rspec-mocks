@@ -4,8 +4,8 @@ module RSpec
   module Mocks
     describe VerifyingMessageExpectation do
       describe '#with' do
-        let(:method_tracer) { Object.new }
         let(:error_generator) { double.as_null_object }
+        let(:string_module_reference) { ModuleReference.new(String) }
 
         subject {
           null = double.as_null_object
@@ -21,33 +21,33 @@ module RSpec
 
         describe 'when arity match fails' do
           it 'raises error' do
-            subject.method_finder = Proc.new { lambda {|_| } }
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
             expect(error_generator).to receive(:raise_arity_error).
               with(instance_of(ArityCalculator), 2)
 
-            subject.with(nil, nil)
+            subject.with("abc123", "xyz987")
           end
         end
 
         describe 'when called with arguments' do
           it 'matches arity against the number of arguments' do
-            subject.method_finder = Proc.new { lambda {|_| } }
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
             expect(error_generator).not_to receive(:raise_arity_error)
 
-            subject.with(nil)
+            subject.with("abc123")
           end
         end
 
         describe 'when called with any arguments matcher' do
           it 'does not try to match arity' do
-            subject.method_finder = Proc.new { raise }
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
             subject.with(any_args)
           end
         end
 
         describe 'when called with no arguments matcher' do
           it 'matches arity to 0' do
-            subject.method_finder = Proc.new { lambda {|_| } }
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
             expect(error_generator).to receive(:raise_arity_error).
               with(instance_of(ArityCalculator), 0)
 
