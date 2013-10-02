@@ -48,6 +48,10 @@ Bug Fixes:
   singleton class ancestors. (Marc-André Lafortune, Myron Marston)
 * Fix issue where unstubing methods on "any instances" would not
   remove stubs on existing instances (Jon Rowe)
+* When generating an error message for unexpected arguments,
+  use `#inspect` rather than `#description` if `#description`
+  returns `nil` or `''` so that you still get a useful message.
+  (Nick DeLuca)
 
 ### 2.14.3 / 2013-08-08
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.2...v2.14.3)
