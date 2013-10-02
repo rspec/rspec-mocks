@@ -18,6 +18,7 @@ Breaking Changes for 3.0.0:
 * Make `at_least(0)` raise an error. (Sam Phippen)
 * Remove support for `require 'spec/mocks'` which had been kept
   in place for backwards compatibility with rspec 1 (Myron Marston).
+* Blocks provided to `with` are always used as implementation (Xavier Shay).
 
 Enhancements:
 
