@@ -3,8 +3,7 @@
 # object in the system.
 
 require 'rspec/mocks/caller_filter' unless defined?(::RSpec::CallerFilter)
-require 'rspec/mocks/deprecation'
-require 'rspec/mocks/warning'
+require 'rspec/mocks/warnings'
 require 'rspec/mocks/instance_method_stasher'
 require 'rspec/mocks/method_double'
 require 'rspec/mocks/argument_matchers'
