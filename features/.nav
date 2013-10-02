@@ -25,6 +25,7 @@
 - verifying_doubles:
   - introduction.feature
   - class_doubles.feature
+  - object_doubles.feature
   - dynamic_classes.feature
 - outside_rspec:
   - configuration.feature

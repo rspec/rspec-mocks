@@ -3,6 +3,7 @@ require 'spec_helper'
 class LoadedClass
   M = :m
   N = :n
+  INSTANCE = LoadedClass.new
 
   def defined_instance_method; end
   def self.defined_class_method; end
@@ -122,6 +123,18 @@ module RSpec
             prevents { o.undefined_method }
           end
         end
+
+        it 'cannot be constructed with a non-module object' do
+          expect {
+            instance_double(Object.new)
+          }.to raise_error(/Module or String expected/)
+        end
+
+        it 'can be constructed with a struct' do
+          o = instance_double(Struct.new(:defined_method), :defined_method => 1)
+
+          expect(o.defined_method).to eq(1)
+        end
       end
 
       describe 'class doubles' do
@@ -229,7 +242,66 @@ module RSpec
             prevents { o.undefined_method }
           end
         end
+
+        it 'cannot be constructed with a non-module object' do
+          expect {
+            class_double(Object.new)
+          }.to raise_error(/Module or String expected/)
+        end
       end
+
+      describe 'object doubles' do
+        it 'replaces an unloaded constant' do
+          o = object_double("LoadedClass::NOINSTANCE").as_stubbed_const
+
+          expect(LoadedClass::NOINSTANCE).to eq(o)
+
+          expect(o).to receive(:undefined_instance_method)
+          o.undefined_instance_method
+        end
+
+        it 'replaces a constant by name and verifies instances methods' do
+          o = object_double("LoadedClass::INSTANCE").as_stubbed_const
+
+          expect(LoadedClass::INSTANCE).to eq(o)
+
+          prevents { expect(o).to receive(:undefined_instance_method) }
+          prevents { expect(o).to receive(:defined_class_method) }
+          prevents { o.defined_instance_method }
+
+          expect(o).to receive(:defined_instance_method)
+          o.defined_instance_method
+        end
+
+        it 'can create a double that matches the interface of any arbitrary object' do
+          o = object_double(LoadedClass.new)
+
+          prevents { expect(o).to receive(:undefined_instance_method) }
+          prevents { expect(o).to receive(:defined_class_method) }
+          prevents { o.defined_instance_method }
+
+          expect(o).to receive(:defined_instance_method)
+          o.defined_instance_method
+        end
+
+        it 'does not allow transferring constants to an object' do
+          expect {
+            object_double("LoadedClass::INSTANCE").
+              as_stubbed_const(:transfer_nested_constants => true)
+          }.to raise_error(/Cannot transfer nested constants/)
+        end
+
+        it 'does not allow as_stubbed_constant for real objects' do
+          expect {
+            object_double(LoadedClass.new).as_stubbed_const
+          }.to raise_error(/Can not perform constant replacement with an object/)
+        end
+
+        it 'is not a module' do
+          expect(object_double("LoadedClass::INSTANCE")).to_not be_a(Module)
+        end
+      end
+
 
       describe 'when verify_doubled_constant_names config option is set' do
         include_context "with isolated configuration"
