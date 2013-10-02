@@ -353,8 +353,13 @@ module RSpec
       #   cart.add(Book.new(:isbn => 1934356379))
       #   # => passes
       def with(*args, &block)
-        self.inner_implementation_action = block if block_given? unless args.empty?
-        @argument_list_matcher = ArgumentListMatcher.new(*args, &block)
+        if args.empty?
+          raise ArgumentError,
+            "`with` must have at least one argument. Use `no_args` matcher to set the expectation of receiving no arguments."
+        end
+
+        self.inner_implementation_action = block
+        @argument_list_matcher = ArgumentListMatcher.new(*args)
         self
       end
 
