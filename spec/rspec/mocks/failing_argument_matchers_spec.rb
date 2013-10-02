@@ -97,11 +97,10 @@ module RSpec
          end.to raise_error(/array_including\(1,2,3\)/)
       end
 
-      it "fails with block matchers" do
+      it "fails with zero arguments" do
         expect do
           @double.should_receive(:msg).with {|arg| expect(arg).to eq :received }
-          @double.msg :no_msg_for_you
-        end.to raise_error(RSpec::Expectations::ExpectationNotMetError, /expected: :received.*\s*.*got: :no_msg_for_you/)
+        end.to raise_error(ArgumentError, /must have at least one argument/)
       end
 
       it "fails with sensible message when args respond to #description" do
