@@ -14,7 +14,7 @@ Feature: Hide Defined Constant
         end
 
         it "restores the hidden constant when the example completes" do
-          FOO.should eq(7)
+          expect(FOO).to eq(7)
         end
       end
       """
@@ -38,7 +38,7 @@ Feature: Hide Defined Constant
           end
 
           it "restores the hidden constant when the example completes" do
-            MyGem::SomeClass::FOO.should eq(7)
+            expect(MyGem::SomeClass::FOO).to eq(7)
           end
         end
       end

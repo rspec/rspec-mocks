@@ -10,7 +10,7 @@ Feature: Spy on an unstubbed method
         it "raises a helpful error for unstubbed methods" do
           object = Object.new
           object.object_id
-          object.should have_received(:object_id)
+          expect(object).to have_received(:object_id)
         end
       end
       """

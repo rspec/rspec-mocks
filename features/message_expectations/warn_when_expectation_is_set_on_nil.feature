@@ -6,7 +6,7 @@ Feature: warn when expectation is set on nil
       RSpec.configure {|c| c.mock_with :rspec}
       describe "something" do
         it "does something" do
-          @i_do_not_exist.should_receive(:foo)
+          expect(@i_do_not_exist).to receive(:foo)
           @i_do_not_exist.foo
         end
       end
@@ -21,7 +21,7 @@ Feature: warn when expectation is set on nil
       describe "something" do
         it "does something" do
           allow_message_expectations_on_nil
-          nil.should_receive(:foo)
+          expect(nil).to receive(:foo)
           nil.foo
         end
       end
@@ -40,7 +40,7 @@ Feature: warn when expectation is set on nil
           nil.foo
         end
         it "does something (bar)" do
-          nil.should_receive(:bar)
+          expect(nil).to receive(:bar)
           nil.bar
         end
       end

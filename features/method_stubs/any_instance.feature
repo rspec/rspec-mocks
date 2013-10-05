@@ -18,7 +18,7 @@ Feature: stub on any instance of a class
           Object.any_instance.stub(:foo).and_return(:return_value)
 
           o = Object.new
-          o.foo.should eq(:return_value)
+          expect(o.foo).to eq(:return_value)
         end
       end
       """
@@ -34,8 +34,8 @@ Feature: stub on any instance of a class
             Object.any_instance.stub(:foo => 'foo', :bar => 'bar')
 
             o = Object.new
-            o.foo.should eq('foo')
-            o.bar.should eq('bar')
+            expect(o.foo).to eq('foo')
+            expect(o.bar).to eq('bar')
           end
         end
       end
@@ -53,8 +53,8 @@ Feature: stub on any instance of a class
             Object.any_instance.stub(:foo).with(:param_three, :param_four).and_return(:result_two)
 
             o = Object.new
-            o.foo(:param_one, :param_two).should eq(:result_one)
-            o.foo(:param_three, :param_four).should eq(:result_two)
+            expect(o.foo(:param_one, :param_two)).to eq(:result_one)
+            expect(o.foo(:param_three, :param_four)).to eq(:result_two)
           end
         end
       end
@@ -76,7 +76,7 @@ Feature: stub on any instance of a class
           Object.any_instance.stub(:foo)
           Object.any_instance.unstub(:foo)
 
-          Object.new.foo.should eq(:foo)
+          expect(Object.new.foo).to eq(:foo)
         end
       end
       """
@@ -94,11 +94,11 @@ Feature: stub on any instance of a class
                 :foo
               end
             end
-            Object.any_instance.should_receive(:foo).and_return(:bar)
+            expect_any_instance_of(Object).to receive(:foo).and_return(:bar)
             Object.any_instance.stub(:foo)
             Object.any_instance.unstub(:foo)
 
-            Object.new.foo.should eq(:bar)
+            expect(Object.new.foo).to eq(:bar)
           end
         end
       end
@@ -113,21 +113,21 @@ Feature: stub on any instance of a class
         context "given symbols representing methods" do
           it "returns the correct value" do
             Object.any_instance.stub_chain(:one, :two, :three).and_return(:four)
-            Object.new.one.two.three.should eq(:four)
+            expect(Object.new.one.two.three).to eq(:four)
           end
         end
 
         context "given a hash at the end" do
           it "returns the correct value" do
             Object.any_instance.stub_chain(:one, :two, :three => :four)
-            Object.new.one.two.three.should eq(:four)
+            expect(Object.new.one.two.three).to eq(:four)
           end
         end
 
         context "given a string of methods separated by dots" do
           it "returns the correct value" do
             Object.any_instance.stub_chain("one.two.three").and_return(:four)
-            Object.new.one.two.three.should eq(:four)
+            expect(Object.new.one.two.three).to eq(:four)
           end
         end
       end

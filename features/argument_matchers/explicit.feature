@@ -21,7 +21,7 @@ Feature: explicit arguments
 
         it "works on doubles and expectations" do
           object = double('foo')
-          object.should_receive(:bar).with(:foo)
+          expect(object).to receive(:bar).with(:foo)
 
           object.bar(:foo)
         end
@@ -43,13 +43,13 @@ Feature: explicit arguments
             "got this and that"
           end
 
-          object.foo(:this).should eq("got this")
-          object.foo(:this, :that).should eq("got this and that")
+          expect(object.foo(:this)).to eq("got this")
+          expect(object.foo(:this, :that)).to eq("got this and that")
         end
 
         it "works on mocks" do
           object = double('foo')
-          object.should_receive(:foo).with(:this, :that)
+          expect(object).to receive(:foo).with(:this, :that)
 
           object.foo(:this, :that)
         end
