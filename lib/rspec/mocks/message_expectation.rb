@@ -344,7 +344,15 @@ module RSpec
       #   cart.add(Book.new(:isbn => 1934356379))
       #   # => passes
       def with(*args, &block)
-        self.inner_implementation_action = block if block_given? unless args.empty?
+        if block_given?
+          if args.empty?
+            RSpec.deprecate "Using the return value of a `with` block to validate passed arguments rather than as an implementation",
+              :replacement => "the `satisfy` matcher, a custom matcher or validate the arguments in an implementation block"
+          else
+            self.inner_implementation_action = block
+          end
+        end
+
         @argument_list_matcher = ArgumentListMatcher.new(*args, &block)
         self
       end
