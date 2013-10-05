@@ -39,8 +39,8 @@ Feature: stub with substitute implementation
             end
           end
 
-          object.foo(:this).should eq("got this")
-          object.foo(:that).should eq("got that")
+          expect(object.foo(:this)).to eq("got this")
+          expect(object.foo(:that)).to eq("got that")
         end
       end
       """

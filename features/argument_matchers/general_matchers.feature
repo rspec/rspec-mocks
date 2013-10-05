@@ -15,8 +15,8 @@ Feature: General matchers
             "anything"
           end
 
-          object.foo(1).should eq("anything")
-          object.foo(:that).should eq("anything")
+          expect(object.foo(1)).to eq("anything")
+          expect(object.foo(:that)).to eq("anything")
         end
       end
       """
@@ -33,9 +33,9 @@ Feature: General matchers
             "anything"
           end
 
-          object.foo(1).should eq("anything")
-          object.foo(:that).should eq("anything")
-          object.foo.should eq("anything")
+          expect(object.foo(1)).to eq("anything")
+          expect(object.foo(:that)).to eq("anything")
+          expect(object.foo).to eq("anything")
         end
       end
       """
@@ -55,8 +55,8 @@ Feature: General matchers
             "something"
           end
 
-          object.foo(:that).should eq("something")
-          object.foo.should eq("nothing")
+          expect(object.foo(:that)).to eq("something")
+          expect(object.foo).to eq("nothing")
         end
       end
       """
@@ -69,13 +69,13 @@ Feature: General matchers
       describe "stubbed no_args() args spec for expectations" do
         it "works for no args" do
           object = Object.new
-          object.should_receive(:foo).with(no_args)
+          expect(object).to receive(:foo).with(no_args)
 
           object.foo
         end
         it "fails for args" do
           object = Object.new
-          object.should_receive(:foo).with(no_args)
+          expect(object).to receive(:foo).with(no_args)
 
           object.foo(:bar)
         end

@@ -12,11 +12,11 @@ Feature: Stub Defined Constant
       describe "stubbing FOO" do
         it "can stub FOO with a different value" do
           stub_const("FOO", 5)
-          FOO.should eq(5)
+          expect(FOO).to eq(5)
         end
 
         it "restores the stubbed constant when the example completes" do
-          FOO.should eq(7)
+          expect(FOO).to eq(7)
         end
       end
       """
@@ -36,7 +36,7 @@ Feature: Stub Defined Constant
         describe SomeClass do
           it "stubs the nested constant when it is fully qualified" do
             stub_const("MyGem::SomeClass::FOO", 5)
-            SomeClass::FOO.should eq(5)
+            expect(SomeClass::FOO).to eq(5)
           end
         end
       end
@@ -64,12 +64,12 @@ Feature: Stub Defined Constant
 
           it "transfers nested constants when using :transfer_nested_constants => true" do
             stub_const("MyGem::SomeClass", fake_class, :transfer_nested_constants => true)
-            SomeClass::FOO.should eq(7)
+            expect(SomeClass::FOO).to eq(7)
           end
 
           it "can specify a list of nested constants to transfer" do
             stub_const("MyGem::SomeClass", fake_class, :transfer_nested_constants => [:FOO])
-            SomeClass::FOO.should eq(7)
+            expect(SomeClass::FOO).to eq(7)
           end
         end
       end

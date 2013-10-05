@@ -14,8 +14,8 @@ Feature: Calling the original method
 
       describe "and_call_original" do
         it "delegates the message to the original implementation" do
-          Addition.should_receive(:two_plus_two).and_call_original
-          Addition.two_plus_two.should eq(4)
+          expect(Addition).to receive(:two_plus_two).and_call_original
+          expect(Addition.two_plus_two).to eq(4)
         end
       end
       """
