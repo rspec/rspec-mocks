@@ -65,6 +65,22 @@ describe "a double declaration with a block handed to:" do
       obj.stub(:foo).with(1, 2, &lambda { 'bar' })
       expect(obj.foo(1, 2)).to eq('bar')
     end
+
+    it 'warns of deprecation when provided block but no arguments' do
+      expect(RSpec).to receive(:deprecate) do |message, opts|
+        expect(message).to match(/Using the return value of a `with` block/)
+      end
+      obj = Object.new
+      obj.stub(:foo).with {|x| 'baz' }.and_return('bar')
+      expect(obj.foo(1)).to eq('bar')
+    end
+
+    it 'includes callsite in deprecation of provided block but no arguments' do
+      obj = Object.new
+      expect_deprecation_with_call_site __FILE__, __LINE__ + 1
+      obj.stub(:foo).with {|x| 'baz' }.and_return('bar')
+      expect(obj.foo(1)).to eq('bar')
+    end
   end
 
   %w[once twice ordered and_return].each do |method|
