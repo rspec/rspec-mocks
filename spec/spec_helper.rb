@@ -20,6 +20,16 @@ module VerifyAndResetHelpers
   end
 end
 
+# TODO: This is duplicated in rspec-core, should be extracted into
+# rspec-support when that project gets started.
+module HelperMethods
+  def expect_deprecation_with_call_site(file, line)
+    expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
+      expect(options[:call_site]).to include([file, line].join(':'))
+    end
+  end
+end
+
 RSpec.configure do |config|
   config.mock_with :rspec
   config.color_enabled = true
@@ -44,6 +54,7 @@ RSpec.configure do |config|
   end
 
   config.include VerifyAndResetHelpers
+  config.include HelperMethods
 end
 
 shared_context "with syntax" do |syntax|
