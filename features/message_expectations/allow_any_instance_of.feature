@@ -7,7 +7,7 @@ Feature: allow a message on any instance of a class
   Scenario: allowing a message on any instance of a class
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "any_instance.should_receive" do
+      describe "any_instance.to receive" do
         before do
           allow_any_instance_of(Object).to receive(:foo).and_return(:return_value)
         end

@@ -84,7 +84,7 @@ Feature: expect message using `should_receive`
           it "returns the specified value" do
             object = double("object")
             object.should_receive(:message) { :return_value }
-            object.message.should eq(:return_value)
+            expect(object.message).to eq(:return_value)
           end
         end
 
@@ -92,7 +92,7 @@ Feature: expect message using `should_receive`
           it "returns the specified value" do
             object = double("object")
             object.should_receive(:message).and_return(:return_value)
-            object.message.should eq(:return_value)
+            expect(object.message).to eq(:return_value)
           end
         end
       end
