@@ -32,6 +32,14 @@ module RSpec
           expect(receiver.foo).to eq(4)
         end
 
+        it 'allows chaining off a `do...end` block implementation to be provided' do
+          wrapped.to receive(:foo) do
+            4
+          end.and_return(6)
+
+          expect(receiver.foo).to eq(6)
+        end
+
         it 'allows a `{ ... }` block implementation to be provided' do
           wrapped.to receive(:foo) { 5 }
           expect(receiver.foo).to eq(5)
