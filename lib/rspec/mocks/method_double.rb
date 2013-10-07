@@ -56,8 +56,7 @@ module RSpec
         @original_method = @method_stasher.original_method ||
                            @proxy.method_handle_for(method_name)
 
-        method_double = self
-        object_singleton_class.class_exec(method_name, visibility) do |method_name, visibility|
+        object_singleton_class.class_exec(self, method_name, visibility) do |method_double, method_name, visibility|
           define_method(method_name) do |*args, &block|
             method_double.proxy_method_invoked(self, *args, &block)
           end
@@ -67,6 +66,9 @@ module RSpec
         @method_is_proxied = true
       end
 
+      # The implementation of the proxied method. Subclasses may override this
+      # method to perform additional operations.
+      #
       # @private
       def proxy_method_invoked(obj, *args, &block)
         ::RSpec::Mocks.proxy_for(obj).message_received method_name, *args, &block

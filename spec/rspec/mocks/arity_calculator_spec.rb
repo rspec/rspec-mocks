@@ -14,14 +14,6 @@ module RSpec
           subject.range_description
         end
 
-        describe 'with unloaded method' do
-          let(:test_method) { ArityCalculator::MethodNotLoaded }
-
-          it 'covers any range' do
-            expect(within_range?(123)).to eq(true)
-          end
-        end
-
         describe 'with a method with arguments' do
           def arity_two(x, y); end
 

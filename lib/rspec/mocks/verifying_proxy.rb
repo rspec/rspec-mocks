@@ -86,7 +86,8 @@ module RSpec
         super
       end
 
-      private
+    private
+
       def ensure_arity!(arity)
         @method_reference.when_defined do |method|
           calculator = ArityCalculator.new(method)
