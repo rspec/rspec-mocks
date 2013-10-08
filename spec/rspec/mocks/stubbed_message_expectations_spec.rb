@@ -54,5 +54,48 @@ describe "expection set on previously stubbed method" do
         expect(e.message).to include('expected: ("a", ["b"])', 'got: (["a"], "b")')
       }
     end
+
+    describe "when using a short-hand specific argument constraint method" do
+      context "for a stubbed method" do
+        it 'assumes "anything" for all arguments other than the specified argument' do
+          [:first, :second, :third, :fourth, :fifth, :sixth, :seventh, :eigth, :ninth] \
+            .each_with_index do |interval, index|
+
+            with_x_argument = "with_#{interval}_argument"
+
+            dbl = double
+            params = [anything] * 10
+            dbl.stub(:test).with(*params)
+
+            dbl.should_receive(:test).send(with_x_argument, 1)
+
+            expect { verify dbl }.to raise_error
+              /\((#<.+AnyArgMatcher.+>, ){#{index}}1(, #<.+AnyArgMatcher.+>){#{9-index}}\)/
+          end
+        end
+      end
+
+      context "for a concrete method" do
+        class FakeConcreteObject
+          def concrete_method(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
+          end
+        end
+
+        it 'assumes "anything" for all arguments other than the specified argument' do
+          [:first, :second, :third, :fourth, :fifth, :sixth, :seventh, :eigth, :ninth] \
+            .each_with_index do |interval, index|
+
+            with_x_argument = "with_#{interval}_argument"
+
+            obj = FakeConcreteObject.new
+
+            obj.should_receive(:concrete_method).send(with_x_argument, 1)
+
+            expect { verify obj }.to raise_error
+              /\((#<.+AnyArgMatcher.+>, ){#{index}}1(, #<.+AnyArgMatcher.+>){#{9-index}}\)/
+          end
+        end
+      end
+    end
   end
 end
