@@ -36,10 +36,10 @@ module RSpec
 
     class MessageExpectation
       # @private
-      attr_accessor :error_generator, :implementation
+      attr_accessor :argument_list_matcher, :error_generator, :implementation
       attr_reader :message
       attr_reader :orig_object
-      attr_writer :expected_received_count, :expected_from, :argument_list_matcher
+      attr_writer :expected_received_count, :expected_from
       protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
       # @private
@@ -366,6 +366,60 @@ module RSpec
         self
       end
 
+      # Defines methods:
+      #
+      # def with_first_argument(arg)
+      # def with_second_argument(arg)
+      # def with_third_argument(arg)
+      # def with_fourth_argument(arg)
+      # def with_fifth_argument(arg)
+      # def with_sixth_argument(arg)
+      # def with_seventh_argument(arg)
+      # def with_eigth_argument(arg)
+      # def with_nineth_argument(arg)
+      #
+      # Constrains a stub or message expectation to invocations with a specific
+      # argument.
+      #
+      # With a stub, if the message might be received with other args as well,
+      # you should stub a default value first, and then stub or mock the same
+      # message using `with_first_argument` or similar method to constrain to 
+      # specific arguments.
+      #
+      # A message expectation will fail if the message is received with a different
+      # argument.
+      #
+      # @example
+      #
+      #   cart.stub(:add) { :failure }
+      #   cart.stub(:add).with_first_argument(Product.new(:barcode => 1934356379)) { :success }
+      #   cart.add(Product.new(:barcode => 1234567890), :quantity => 2)
+      #   # => :failure
+      #   cart.add(Product.new(:barcode => 1934356379), :quantity => 2)
+      #   # => :success
+      #
+      #   cart.should_receive(:add).with_first_argument(Product.new(:barcode => 1934356379)) { :success }
+      #   cart.add(Product.new(:barcode => 1234567890), :quantity => 2)
+      #   # => failed expectation
+      #   cart.add(Product.new(:barcode => 1934356379), :quantity => 2)
+      #   # => passes
+      [:first, :second, :third, :fourth, :fifth, :sixth, :seventh, :eigth, :ninth] \
+        .each_with_index do |interval, index|
+          with_x_argument = :"with_#{interval}_argument"
+
+          define_method with_x_argument do |arg, &block|
+            anything = ArgumentMatchers::AnyArgMatcher.new(nil)
+            param_count = derive_param_count_from_method_double()
+
+            args = [anything] * param_count
+            args[index] = arg
+
+            self.inner_implementation_action = block
+            @argument_list_matcher = ArgumentListMatcher.new(*args)
+            self
+          end
+      end
+
       # Constrain a message expectation to be received a specific number of
       # times.
       #
@@ -510,6 +564,19 @@ module RSpec
 
       def terminal_implementation_action=(action)
         implementation.terminal_action = action
+      end
+
+      def derive_param_count_from_method_double
+        if @method_double.stubs.first.is_a? RSpec::Mocks::MessageExpectation
+          max = @method_double.stubs.max do |a,b|
+            a.argument_list_matcher.expected_args.count <=>
+              b.argument_list_matcher.expected_args.count
+          end
+
+          max.argument_list_matcher.expected_args.count
+        else # concrete method
+          @method_double.original_method.parameters.count
+        end
       end
     end
 
