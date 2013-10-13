@@ -22,7 +22,7 @@ Feature: standalone
       require "rspec/mocks/standalone"
 
       greeter = double("greeter")
-      greeter.should_receive(:say_hi)
+      expect(greeter).to receive(:say_hi)
 
       RSpec::Mocks.verify
       """

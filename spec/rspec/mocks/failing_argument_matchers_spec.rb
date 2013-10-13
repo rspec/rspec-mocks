@@ -97,11 +97,10 @@ module RSpec
          end.to raise_error(/array_including\(1,2,3\)/)
       end
 
-      it "fails with block matchers" do
+      it "fails with zero arguments" do
         expect do
           @double.should_receive(:msg).with {|arg| expect(arg).to eq :received }
-          @double.msg :no_msg_for_you
-        end.to raise_error(RSpec::Expectations::ExpectationNotMetError, /expected: :received.*\s*.*got: :no_msg_for_you/)
+        end.to raise_error(ArgumentError, /must have at least one argument/)
       end
 
       it "fails with sensible message when args respond to #description" do
@@ -118,6 +117,39 @@ module RSpec
           @double.should_receive(:msg).with(3)
           @double.msg arg
         end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (3)\n       got: (my_thing)")
+      end
+
+      it "fails with sensible message when arg#description is nil" do
+        arg = Class.new do
+          def description
+          end
+
+          def inspect
+            "my_thing"
+          end
+        end.new
+
+        expect do
+          @double.should_receive(:msg).with(arg)
+          @double.msg 3
+        end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (my_thing)\n       got: (3)")
+      end
+
+      it "fails with sensible message when arg#description is blank" do
+        arg = Class.new do
+          def description
+            ""
+          end
+
+          def inspect
+            "my_thing"
+          end
+        end.new
+
+        expect do
+          @double.should_receive(:msg).with(arg)
+          @double.msg 3
+        end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (my_thing)\n       got: (3)")
       end
     end
   end

@@ -32,24 +32,12 @@ module RSpec
           raise_error(RSpec::Mocks::MockExpectationError)
       end
 
-      def verifying_constant_names(bool, &block)
-        config = RSpec::Mocks.configuration
-
-        original_value = config.verify_doubled_constant_names?
-        begin
-          config.verify_doubled_constant_names = bool
-          block.call
-        ensure
-          config.verify_doubled_constant_names = original_value
-        end
-      end
-
       describe 'instance doubles' do
         describe 'when doubled class is not loaded' do
-          around do |example|
-            verifying_constant_names(false) do
-              example.run
-            end
+          include_context "with isolated configuration"
+
+          before do
+            RSpec::Mocks.configuration.verify_doubled_constant_names = false
           end
 
           it 'allows any instance method to be stubbed' do
@@ -70,10 +58,10 @@ module RSpec
         end
 
         describe 'when doubled class is loaded' do
-          around do |example|
-            verifying_constant_names(true) do
-              example.run
-            end
+          include_context "with isolated configuration"
+
+          before do
+            RSpec::Mocks.configuration.verify_doubled_constant_names = true
           end
 
           it 'only allows instance methods that exist to be stubbed' do
@@ -119,15 +107,22 @@ module RSpec
             o = instance_double(LoadedClass, :defined_instance_method => 1)
             expect(o.defined_instance_method).to eq(1)
           end
+
+          it 'only allows defined methods for null objects' do
+            o = instance_double('LoadedClass').as_null_object
+
+            expect(o.defined_instance_method).to eq(o)
+            prevents { o.undefined_method }
+          end
         end
       end
 
       describe 'class doubles' do
         describe 'when doubled class is not loaded' do
-          around do |example|
-            verifying_constant_names(false) do
-              example.run
-            end
+          include_context "with isolated configuration"
+
+          before do
+            RSpec::Mocks.configuration.verify_doubled_constant_names = false
           end
 
           it 'allows any method to be stubbed' do
@@ -138,10 +133,10 @@ module RSpec
         end
 
         describe 'when doubled class is loaded' do
-          around do |example|
-            verifying_constant_names(true) do
-              example.run
-            end
+          include_context "with isolated configuration"
+
+          before do
+            RSpec::Mocks.configuration.verify_doubled_constant_names = true
           end
 
           it 'only allows class methods that exist to be stubbed' do
@@ -192,30 +187,39 @@ module RSpec
 
           it 'correctly verifies expectations when constant is removed' do
             dbl1 = class_double(LoadedClass::Nested).as_stubbed_const
-            dbl2 = class_double(LoadedClass).as_stubbed_const
+            class_double(LoadedClass).as_stubbed_const
 
             prevents {
               expect(dbl1).to receive(:undefined_class_method)
             }
           end
+
+          it 'only allows defined methods for null objects' do
+            o = class_double('LoadedClass').as_null_object
+
+            expect(o.defined_class_method).to eq(o)
+            prevents { o.undefined_method }
+          end
         end
       end
 
       describe 'when verify_doubled_constant_names config option is set' do
+        include_context "with isolated configuration"
+
+        before do
+          RSpec::Mocks.configuration.verify_doubled_constant_names = true
+        end
+
         it 'prevents creation of instance doubles for unloaded constants' do
-          verifying_constant_names(true) do
-            expect {
-              instance_double('LoadedClas')
-            }.to raise_error(NameError)
-          end
+          expect {
+            instance_double('LoadedClas')
+          }.to raise_error(NameError)
         end
 
         it 'prevents creation of class doubles for unloaded constants' do
-          verifying_constant_names(true) do
-            expect {
-              class_double('LoadedClas')
-            }.to raise_error(NameError)
-          end
+          expect {
+            class_double('LoadedClas')
+          }.to raise_error(NameError)
         end
       end
 

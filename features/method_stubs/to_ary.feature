@@ -19,12 +19,12 @@ Feature: double handling to_ary
         shared_examples "to_ary" do
           it "can be overridden with a stub" do
             obj.stub(:to_ary) { :non_nil_value }
-            obj.to_ary.should be(:non_nil_value)
+            expect(obj.to_ary).to be(:non_nil_value)
           end
 
           it "supports Array#flatten" do
             obj = double('foo')
-            [obj].flatten.should eq([obj])
+            expect([obj].flatten).to eq([obj])
           end
         end
 

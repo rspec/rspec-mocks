@@ -2,7 +2,8 @@
 # supports wrapping rspec's mocking functionality without invading every
 # object in the system.
 
-require 'rspec/mocks/deprecation'
+require 'rspec/mocks/caller_filter' unless defined?(::RSpec::CallerFilter)
+require 'rspec/mocks/warnings'
 require 'rspec/mocks/instance_method_stasher'
 require 'rspec/mocks/method_double'
 require 'rspec/mocks/argument_matchers'
@@ -27,6 +28,7 @@ require 'rspec/mocks/any_instance/recorder'
 require 'rspec/mocks/mutate_const'
 require 'rspec/mocks/matchers/have_received'
 require 'rspec/mocks/matchers/receive'
+require 'rspec/mocks/matchers/receive_messages'
 require 'rspec/mocks/stub_chain'
 require 'rspec/mocks/targets'
 require 'rspec/mocks/syntax'

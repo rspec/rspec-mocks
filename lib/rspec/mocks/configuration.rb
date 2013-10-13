@@ -6,6 +6,7 @@ module RSpec
       def initialize
         @yield_receiver_to_any_instance_implementation_blocks = true
         @verify_doubled_constant_names = false
+        @transfer_nested_constants = false
       end
 
       def yield_receiver_to_any_instance_implementation_blocks?
@@ -70,13 +71,29 @@ module RSpec
       def verify_doubled_constant_names=(val)
         @verify_doubled_constant_names = val
       end
+
+      def transfer_nested_constants?
+        !!@transfer_nested_constants
+      end
+
+      # Sets the default for the `transfer_nested_constants` option when
+      # stubbing constants.
+      def transfer_nested_constants=(val)
+        @transfer_nested_constants = val
+      end
+
+      # @api private
+      # Resets the configured syntax to the default.
+      def reset_syntaxes_to_default
+        self.syntax = [:should, :expect]
+        RSpec::Mocks::Syntax.warn_about_should!
+      end
     end
 
     def self.configuration
       @configuration ||= Configuration.new
     end
 
-    configuration.syntax = [:should, :expect]
+    configuration.reset_syntaxes_to_default
   end
 end
-

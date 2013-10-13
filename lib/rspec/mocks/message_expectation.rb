@@ -1,6 +1,39 @@
 module RSpec
   module Mocks
 
+    # A message expectation that only allows concrete return values to be set
+    # for a message. While this same effect can be achieved using a standard
+    # MessageExpecation, this version is much faster and so can be used as an
+    # optimization.
+    class SimpleMessageExpectation
+
+      def initialize(message, response, error_generator, backtrace_line = nil)
+        @message, @response, @error_generator, @backtrace_line = message, response, error_generator, backtrace_line
+        @received = false
+      end
+
+      def invoke(*_)
+        @received = true
+        @response
+      end
+
+      def matches?(message, *_)
+        @message == message
+      end
+
+      def called_max_times?
+        false
+      end
+
+      def verify_messages_received
+        InsertOntoBacktrace.line(@backtrace_line) do
+          unless @received
+            @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
+          end
+        end
+      end
+    end
+
     class MessageExpectation
       # @private
       attr_accessor :error_generator, :implementation
@@ -20,7 +53,7 @@ module RSpec
         @message = @method_double.method_name
         @actual_received_count = 0
         @expected_received_count = expected_received_count
-        @argument_list_matcher = ArgumentListMatcher.new(ArgumentMatchers::AnyArgsMatcher.new)
+        @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
         @order_group = expectation_ordering
         @at_least = @at_most = @exactly = nil
         @args_to_yield = []
@@ -113,9 +146,12 @@ module RSpec
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
-        if @method_double.object.is_a?(RSpec::Mocks::TestDouble)
+        if RSpec::Mocks::TestDouble === @method_double.object
           @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
         else
+          if implementation.inner_action
+            RSpec.warning("You're overriding a previous implementation for this stub")
+          end
           @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
           @yield_receiver_to_implementation_block = false
         end
@@ -231,10 +267,9 @@ module RSpec
 
       # @private
       def verify_messages_received
-        generate_error unless expected_messages_received? || failed_fast?
-      rescue RSpec::Mocks::MockExpectationError => error
-        error.backtrace.insert(0, @expected_from)
-        Kernel::raise error
+        InsertOntoBacktrace.line(@expected_from) do
+          generate_error unless expected_messages_received? || failed_fast?
+        end
       end
 
       # @private
@@ -321,8 +356,13 @@ module RSpec
       #   cart.add(Book.new(:isbn => 1934356379))
       #   # => passes
       def with(*args, &block)
-        self.inner_implementation_action = block if block_given? unless args.empty?
-        @argument_list_matcher = ArgumentListMatcher.new(*args, &block)
+        if args.empty?
+          raise ArgumentError,
+            "`with` must have at least one argument. Use `no_args` matcher to set the expectation of receiving no arguments."
+        end
+
+        self.inner_implementation_action = block
+        @argument_list_matcher = ArgumentListMatcher.new(*args)
         self
       end
 
@@ -464,6 +504,7 @@ module RSpec
       end
 
       def inner_implementation_action=(action)
+        RSpec.warning("You're overriding a previous implementation for this stub") if implementation.inner_action
         implementation.inner_action = action if action
       end
 
@@ -560,6 +601,10 @@ module RSpec
         true
       end
 
+      def inner_action
+        true
+      end
+
       def call(*args, &block)
         @method.call(*args, &block)
       end
@@ -571,5 +616,17 @@ module RSpec
           "to call the original implementation, and cannot be modified further."
       end
     end
+
+    # Insert original locations into stacktraces
+    # @api private
+    class InsertOntoBacktrace
+      def self.line(location)
+        yield
+      rescue RSpec::Mocks::MockExpectationError => error
+        error.backtrace.insert(0, location)
+        Kernel::raise error
+      end
+    end
+
   end
 end

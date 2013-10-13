@@ -225,6 +225,24 @@ module RSpec
           end
         end
 
+        context "when partially mocking objects" do
+          let(:obj) { klass.new }
+
+          it "resets partially mocked objects correctly" do
+            allow_any_instance_of(klass).to receive(:existing_method).and_return("stubbed value")
+
+            # Simply resetting the proxy doesn't work
+            # what we need to have happen is
+            # ::RSpec::Mocks.any_instance_recorder_for(klass).stop_all_observation!
+            # but that is never invoked in ::
+            expect {
+              RSpec::Mocks.space.verify_all
+            }.to(
+              change { obj.existing_method }.from("stubbed value").to(:existing_method_return_value)
+            )
+          end
+        end
+
         context "core ruby objects" do
           it "works uniformly across *everything*" do
             Object.any_instance.stub(:foo).and_return(1)
@@ -277,6 +295,30 @@ module RSpec
           klass.any_instance.stub(:existing_method).with(2)
           klass.any_instance.unstub(:existing_method)
           expect(klass.new.existing_method).to eq(:existing_method_return_value)
+        end
+
+        it "removes stubs even if they have already been invoked" do
+          klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
+          obj = klass.new
+          obj.existing_method
+          klass.any_instance.unstub(:existing_method)
+          expect(obj.existing_method).to eq(:existing_method_return_value)
+        end
+
+        it "removes stubs from sub class after invokation when super class was originally stubbed" do
+          klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
+          obj = Class.new(klass).new
+          expect(obj.existing_method).to eq(:any_instance_value)
+          klass.any_instance.unstub(:existing_method)
+          expect(obj.existing_method).to eq(:existing_method_return_value)
+        end
+
+        it "does not remove any stubs set directly on an instance" do
+          klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
+          obj = klass.new
+          obj.stub(:existing_method).and_return(:local_method)
+          klass.any_instance.unstub(:existing_method)
+          expect(obj.existing_method).to eq(:local_method)
         end
 
         it "does not remove any expectations with the same method name" do

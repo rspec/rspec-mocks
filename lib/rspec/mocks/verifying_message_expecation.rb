@@ -26,14 +26,13 @@ module RSpec
       # @override
       def with(*args, &block)
         unless ArgumentMatchers::AnyArgsMatcher === args.first
-          expected_arity = if block
-            block.arity
-          elsif ArgumentMatchers::NoArgsMatcher === args.first
+          expected_arity = if ArgumentMatchers::NoArgsMatcher === args.first
             0
           elsif args.length > 0
             args.length
           else
-            raise ArgumentError, "No arguments nor block given."
+            # No arguments given, this will raise.
+            super
           end
 
           ensure_arity!(expected_arity)

@@ -55,21 +55,11 @@ module RSpec
           end
         end
 
-        describe 'when called with a block' do
-          it 'matches arity against the arity of the block' do
-            subject.method_finder = Proc.new { lambda {|_| } }
-            expect(error_generator).to receive(:raise_arity_error).
-              with(instance_of(ArityCalculator), 2)
-
-            subject.with {|x, y| }
-          end
-        end
-
         describe 'when called with no arguments and no block' do
           it 'raises' do
             expect {
               subject.with
-            }.to raise_error(ArgumentError, "No arguments nor block given.")
+            }.to raise_error(ArgumentError)
           end
         end
       end

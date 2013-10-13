@@ -5,8 +5,8 @@ module RSpec
       attr_reader :proxies, :any_instance_recorders
 
       def initialize
-        @proxies = {}
-        @any_instance_recorders = {}
+        @proxies                 = {}
+        @any_instance_recorders  = {}
       end
 
       def verify_all
@@ -46,6 +46,10 @@ module RSpec
         any_instance_recorders.delete(klass.__id__)
       end
 
+      def proxies_of(klass)
+        proxies.values.select { |proxy| klass === proxy.object }
+      end
+
       def proxy_for(object)
         id = id_for(object)
         proxies.fetch(id) do
@@ -53,7 +57,7 @@ module RSpec
                         when NilClass   then ProxyForNil.new
                         when TestDouble then object.__build_mock_proxy
                         else
-                          Proxy.new(object)
+                          PartialMockProxy.new(object)
                         end
         end
       end

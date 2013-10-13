@@ -16,6 +16,9 @@ module RSpec
       end
 
       # @private
+      attr_reader :object
+
+      # @private
       def null_object?
         @null_object
       end
@@ -26,6 +29,11 @@ module RSpec
       def as_null_object
         @null_object = true
         @object
+      end
+
+      # @private
+      def method_handle_for(message)
+        nil
       end
 
       # @private
@@ -49,6 +57,11 @@ module RSpec
         end
 
         meth_double.add_expectation @error_generator, @expectation_ordering, location, opts, &block
+      end
+
+      # @private
+      def add_simple_expectation(method_name, response, location)
+        method_double[method_name].add_simple_expectation method_name, response, @error_generator, location
       end
 
       # @private
@@ -98,8 +111,18 @@ module RSpec
       end
 
       # @private
+      def add_simple_stub(method_name, response)
+        method_double[method_name].add_simple_stub method_name, response
+      end
+
+      # @private
       def remove_stub(method_name)
         method_double[method_name].remove_stub
+      end
+
+      # @private
+      def remove_single_stub(method_name, stub)
+        method_double[method_name].remove_single_stub(stub)
       end
 
       # @private
@@ -150,7 +173,7 @@ module RSpec
         elsif stub = find_almost_matching_stub(message, *args)
           stub.advise(*args)
           raise_missing_default_stub_error(stub, *args)
-        elsif @object.is_a?(Class)
+        elsif Class === @object
           @object.superclass.__send__(message, *args, &block)
         else
           @object.__send__(:method_missing, message, *args, &block)
@@ -214,6 +237,41 @@ module RSpec
 
       def find_almost_matching_stub(method_name, *args)
         method_double[method_name].stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
+      end
+    end
+
+    class PartialMockProxy < Proxy
+      def method_handle_for(message)
+        if any_instance_class_recorder_observing_method?(@object.class, message)
+          message = ::RSpec::Mocks.
+            any_instance_recorder_for(@object.class).
+            build_alias_method_name(message)
+        end
+
+        ::RSpec::Mocks.method_handle_for(@object, message)
+      rescue NameError
+        nil
+      end
+
+      # @private
+      def add_simple_expectation(method_name, response, location)
+        method_double[method_name].configure_method
+        super
+      end
+
+      # @private
+      def add_simple_stub(method_name, response)
+        method_double[method_name].configure_method
+        super
+      end
+
+    private
+
+      def any_instance_class_recorder_observing_method?(klass, method_name)
+        return true if ::RSpec::Mocks.any_instance_recorder_for(klass).already_observing?(method_name)
+        superklass = klass.superclass
+        return false if superklass.nil?
+        any_instance_class_recorder_observing_method?(superklass, method_name)
       end
     end
   end

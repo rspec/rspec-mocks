@@ -12,7 +12,7 @@ Feature: stub with a simple return value
 
         it "returns nil" do
           collaborator.stub(:message)
-          collaborator.message.should be(nil)
+          expect(collaborator.message).to be(nil)
         end
       end
       """
@@ -27,7 +27,7 @@ Feature: stub with a simple return value
           it "returns the specified value" do
             collaborator = double("collaborator")
             collaborator.stub(:message) { :value }
-            collaborator.message.should eq(:value)
+            expect(collaborator.message).to eq(:value)
           end
         end
 
@@ -35,7 +35,7 @@ Feature: stub with a simple return value
           it "returns the specified value" do
             collaborator = double("collaborator")
             collaborator.stub(:message).and_return(:value)
-            collaborator.message.should eq(:value)
+            expect(collaborator.message).to eq(:value)
           end
         end
 
@@ -43,8 +43,8 @@ Feature: stub with a simple return value
           it "returns the specified value" do
             collaborator = double("collaborator")
             collaborator.stub(:message_1 => :value_1, :message_2 => :value_2)
-            collaborator.message_1.should eq(:value_1)
-            collaborator.message_2.should eq(:value_2)
+            expect(collaborator.message_1).to eq(:value_1)
+            expect(collaborator.message_2).to eq(:value_2)
           end
         end
 
@@ -54,8 +54,8 @@ Feature: stub with a simple return value
               :message_1 => :value_1,
               :message_2 => :value_2
             )
-            collaborator.message_1.should eq(:value_1)
-            collaborator.message_2.should eq(:value_2)
+            expect(collaborator.message_1).to eq(:value_1)
+            expect(collaborator.message_2).to eq(:value_2)
           end
         end
       end

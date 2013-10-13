@@ -89,26 +89,6 @@ module RSpec
         end
       end
 
-      context "handling block matchers" do
-        it "matches arguments against RSpec expectations" do
-          @double.should_receive(:random_call).with {|arg1, arg2, arr, *rest|
-            expect(arg1).to eq 5
-            expect(arg2).to have_at_least(3).characters
-            expect(arg2).to have_at_most(10).characters
-            expect(arr.map {|i| i * 2}).to eq [2,4,6]
-            expect(rest).to eq [:fee, "fi", 4]
-          }
-          @double.random_call 5, "hello", [1,2,3], :fee, "fi", 4
-        end
-
-        it "does not eval the block as the return value" do
-          eval_count = 0
-          @double.should_receive(:msg).with {|a| eval_count += 1}
-          @double.msg(:ignore)
-          expect(eval_count).to eq(1)
-        end
-      end
-
       context "handling non-matcher arguments" do
         it "matches non special symbol (can be removed when deprecated symbols are removed)" do
           @double.should_receive(:random_call).with(:some_symbol)

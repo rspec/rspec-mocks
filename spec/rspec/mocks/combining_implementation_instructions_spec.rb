@@ -159,6 +159,7 @@ module RSpec
       end
 
       it 'allows the inner implementation block to be overriden' do
+        allow(RSpec).to receive(:warning)
         dbl = double
         stubbed_double = dbl.stub(:foo)
 
@@ -167,6 +168,11 @@ module RSpec
 
         stubbed_double.at_least(:once) { :at_least_block }
         expect(dbl.foo(:arg)).to eq(:at_least_block)
+      end
+
+      it 'warns when the inner implementation block is overriden' do
+        expect(RSpec).to receive(:warning).with /overriding a previous implementation/
+        double.stub(:foo).with(:arg) { :with_block }.at_least(:once) { :at_least_block }
       end
 
       it 'can combine and_call_original, with, and_return' do
@@ -178,6 +184,7 @@ module RSpec
       end
 
       it 'raises an error if `and_call_original` is followed by any other instructions' do
+        allow(RSpec).to receive(:warning)
         dbl = [1, 2, 3]
         stubbed = dbl.stub(:size)
         stubbed.and_call_original

@@ -9,7 +9,7 @@ Feature: Dynamic classes
   be queried directly on the class.
 
   Background:
-    Given a file name "lib/fake_active_record.rb"
+    Given a file named "lib/fake_active_record.rb" with:
       """ruby
       class FakeActiveRecord
         COLUMNS = %w[name email]
@@ -34,7 +34,7 @@ Feature: Dynamic classes
 
       describe User do
         it 'can be doubled' do
-          instance_double("User", name: "Don")
+          instance_double("User", :name => "Don")
         end
       end
       """

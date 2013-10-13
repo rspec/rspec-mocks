@@ -32,6 +32,14 @@ module RSpec
           expect(receiver.foo).to eq(4)
         end
 
+        it 'allows chaining off a `do...end` block implementation to be provided' do
+          wrapped.to receive(:foo) do
+            4
+          end.and_return(6)
+
+          expect(receiver.foo).to eq(6)
+        end
+
         it 'allows a `{ ... }` block implementation to be provided' do
           wrapped.to receive(:foo) { 5 }
           expect(receiver.foo).to eq(5)
@@ -148,10 +156,35 @@ module RSpec
         end
       end
 
+      shared_examples_for "resets partial mocks cleanly" do
+        let(:klass)  { Struct.new(:foo) }
+        let(:object) { klass.new :bar }
+
+        it "removes the method double" do
+          target.to receive(:foo).and_return(:baz)
+          expect { reset object }.to change { object.foo }.from(:baz).to(:bar)
+        end
+      end
+
+      shared_examples_for "resets partial mocks of any instance cleanly" do
+        let(:klass)  { Struct.new(:foo) }
+        let(:object) { klass.new :bar }
+
+        it "removes the method double" do
+          target.to receive(:foo).and_return(:baz)
+          expect {
+            ::RSpec::Mocks.space.verify_all
+          }.to change { object.foo }.from(:baz).to(:bar)
+        end
+      end
+
       describe "allow(...).to receive" do
         include_examples "an expect syntax allowance" do
           let(:receiver) { double }
           let(:wrapped)  { allow(receiver) }
+        end
+        include_examples "resets partial mocks cleanly" do
+          let(:target) { allow(object) }
         end
       end
 
@@ -167,6 +200,9 @@ module RSpec
           let(:wrapped)  { allow_any_instance_of(klass) }
           let(:receiver) { klass.new }
         end
+        include_examples "resets partial mocks of any instance cleanly" do
+          let(:target) { allow_any_instance_of(klass) }
+        end
       end
 
       describe "allow_any_instance_of(...).not_to receive" do
@@ -180,6 +216,9 @@ module RSpec
           let(:receiver) { double }
           let(:wrapped)  { expect(receiver) }
         end
+        include_examples "resets partial mocks cleanly" do
+          let(:target) { expect(object) }
+        end
       end
 
       describe "expect_any_instance_of(...).to receive" do
@@ -187,6 +226,9 @@ module RSpec
           let(:klass)    { Class.new }
           let(:wrapped)  { expect_any_instance_of(klass) }
           let(:receiver) { klass.new }
+        end
+        include_examples "resets partial mocks of any instance cleanly" do
+          let(:target) { expect_any_instance_of(klass) }
         end
       end
 
@@ -265,7 +307,7 @@ module RSpec
             framework.new.instance_exec do
               expect(3).to eq(3)
             end
-          }.to raise_error(/only the `receive` matcher is supported with `expect\(...\).to`/)
+          }.to raise_error(/only the `receive` or `receive_messages` matchers are supported with `expect\(...\).to`/)
         end
 
         it 'can toggle the available syntax' do

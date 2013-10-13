@@ -11,7 +11,7 @@ Feature: Spy on a stubbed method on a partial mock
           invitation = Object.new
           invitation.stub(:deliver => true)
           invitation.deliver
-          invitation.should have_received(:deliver)
+          expect(invitation).to have_received(:deliver)
         end
       end
       """
@@ -25,7 +25,7 @@ Feature: Spy on a stubbed method on a partial mock
         it "fails when the expectation is not met" do
           invitation = Object.new
           invitation.stub(:deliver => true)
-          invitation.should have_received(:deliver)
+          expect(invitation).to have_received(:deliver)
         end
       end
       """

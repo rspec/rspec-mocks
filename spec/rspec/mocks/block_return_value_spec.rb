@@ -31,6 +31,12 @@ describe "a double declaration with a block handed to:" do
       obj.stub(:foo).with('baz') { 'bar' }
       expect(obj.foo('baz')).to eq('bar')
     end
+
+    it "returns the value of executing the block with given argument" do
+      obj = Object.new
+      obj.stub(:foo).with('baz') {|x| 'bar' + x }
+      expect(obj.foo('baz')).to eq('barbaz')
+    end
   end
 
   %w[once twice ordered and_return].each do |method|
