@@ -32,6 +32,11 @@ module RSpec
         end
       end
 
+      # Yields to the block if the method is not implemented.
+      def when_not_implemented
+        yield unless implemented?
+      end
+
       private
       def original_method
         @module_reference.when_loaded do |m|
