@@ -19,11 +19,11 @@ module RSpec
     #
     # @api private
     class VerifyingProxy < Proxy
-      def initialize(object, name, method_reference_factory)
+      def initialize(object, name, method_reference_class)
         super(object)
-        @object                   = object
-        @doubled_module           = name
-        @method_reference_factory = method_reference_factory
+        @object                 = object
+        @doubled_module         = name
+        @method_reference_class = method_reference_class
       end
 
       def add_stub(location, method_name, opts={}, &implementation)
@@ -52,7 +52,7 @@ module RSpec
 
       def method_reference
         @method_reference ||= Hash.new do |h, k|
-          h[k] = @method_reference_factory.new(@doubled_module, k)
+          h[k] = @method_reference_class.new(@doubled_module, k)
         end
       end
 
