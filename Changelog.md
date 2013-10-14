@@ -38,6 +38,9 @@ Enhancements:
 * `allow(Klass.any_instance)` and `expect(Klass.any_instance)` now print a
   warning.  This is usually a mistake, and users usually want
   `allow_any_instance_of` or `expect_any_instance_of` instead. (Sam Phippen)
+* `instance_double` and `class_double` raise `ArgumentError` if the underlying
+  module is loaded and the arity of the method being invoked does not match the
+  arity of the method as it is actually implemented.  (Andy Lindeman)
 
 Deprecations:
 
