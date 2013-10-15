@@ -9,6 +9,21 @@ module RSpec
         ::RSpec::Mocks.space.verify_all
       end
 
+      describe "expectations/allowances on any instance recorders" do
+        include_context "with syntax", [:expect, :should]
+
+        it "warns about allow(Klass.any_instance).to receive..." do
+          expect(RSpec).to receive(:warning).with(/allow.*any_instance.*is probably not what you meant.*allow_any_instance_of.*instead/)
+          allow(Object.any_instance).to receive(:foo)
+        end
+
+        it "warns about expect(Klass.any_instance).to receive..." do
+          expect(RSpec).to receive(:warning).with(/expect.*any_instance.*is probably not what you meant.*expect_any_instance_of.*instead/)
+          expect(Object.any_instance).to receive(:foo)
+          Object.any_instance.foo
+        end
+      end
+
       shared_examples_for "a receive matcher" do |*options|
         it 'allows the caller to configure how the subject responds' do
           wrapped.to receive(:foo).and_return(5)
