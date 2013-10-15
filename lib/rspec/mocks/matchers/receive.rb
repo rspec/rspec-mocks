@@ -19,6 +19,7 @@ module RSpec
         end
 
         def setup_expectation(subject, &block)
+          warn_if_any_instance("expect", subject)
           setup_mock_proxy_method_substitute(subject, :add_message_expectation, block)
         end
         alias matches? setup_expectation
@@ -28,11 +29,14 @@ module RSpec
           # where `and_return` is meant to raise an error
           @recorded_customizations.unshift Customization.new(:never, [], nil)
 
+          warn_if_any_instance("expect", subject)
+
           setup_expectation(subject, &block)
         end
         alias does_not_match? setup_negative_expectation
 
         def setup_allowance(subject, &block)
+          warn_if_any_instance("allow", subject)
           setup_mock_proxy_method_substitute(subject, :add_stub, block)
         end
 
@@ -58,6 +62,17 @@ module RSpec
         end
 
       private
+
+        def warn_if_any_instance(expression, subject)
+          if AnyInstance::Recorder === subject
+            RSpec.warning(
+              "`#{expression}(#{subject.klass}.any_instance).to` " <<
+              "is probably not what you meant, it does not stub on " <<
+              "any instance of `#{subject.klass}`. " <<
+              "Use `#{expression}_any_instance_of(#{subject.klass}).to` instead."
+            )
+          end
+        end
 
         def setup_mock_proxy_method_substitute(subject, method, block)
           proxy = ::RSpec::Mocks.proxy_for(subject)
