@@ -49,12 +49,18 @@ Bug Fixes:
 
 * Fix `and_call_original` to handle a complex edge case involving
   singleton class ancestors. (Marc-André Lafortune, Myron Marston)
-* Fix issue where unstubing methods on "any instances" would not
-  remove stubs on existing instances (Jon Rowe)
 * When generating an error message for unexpected arguments,
   use `#inspect` rather than `#description` if `#description`
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
+
+### 2.14.4 / 2013-10-15
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...v2.14.4)
+
+Bug Fixes:
+
+* Fix issue where unstubing methods on "any instances" would not
+  remove stubs on existing instances (Jon Rowe)
 * Fix issue with receive(:message) do ... end precedence preventing
   the usage of modifications (`and_return` etc) (Jon Rowe)
 
