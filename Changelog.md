@@ -35,6 +35,9 @@ Enhancements:
   be configured. (Xavier Shay)
 * Messages can be allowed or expected on in bulk via
   `receive_messages(:message => :value)` (Jon Rowe)
+* `allow(Klass.any_instance)` and `expect(Klass.any_instance)` now print a
+  warning.  This is usually a mistake, and users usually want
+  `allow_any_instance_of` or `expect_any_instance_of` instead. (Sam Phippen)
 
 Deprecations:
 

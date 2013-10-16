@@ -11,7 +11,7 @@ module RSpec
       # @see Chain
       class Recorder
         # @private
-        attr_reader :message_chains, :stubs
+        attr_reader :message_chains, :stubs, :klass
 
         def initialize(klass)
           @message_chains = MessageChains.new
