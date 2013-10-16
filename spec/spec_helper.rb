@@ -36,6 +36,10 @@ module DeprecationHelpers
       expect(options[:call_site]).to include([file, line].join(':'))
     end
   end
+
+  def expect_warning_with_call_site(file, line)
+    expect(Kernel).to receive(:warn).with(/Called from #{file}:#{line}/)
+  end
 end
 
 RSpec.configure do |config|
