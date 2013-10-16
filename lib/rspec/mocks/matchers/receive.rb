@@ -67,7 +67,7 @@ module RSpec
           if AnyInstance::Recorder === subject
             RSpec.warning(
               "`#{expression}(#{subject.klass}.any_instance).to` " <<
-              "is probably not what you meant, it does not stub on " <<
+              "is probably not what you meant, it does not operate on " <<
               "any instance of `#{subject.klass}`. " <<
               "Use `#{expression}_any_instance_of(#{subject.klass}).to` instead."
             )
