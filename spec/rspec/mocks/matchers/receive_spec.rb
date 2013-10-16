@@ -17,8 +17,19 @@ module RSpec
           allow(Object.any_instance).to receive(:foo)
         end
 
+        it "includes the correct call site in the allow warning" do
+          expect_warning_with_call_site(__FILE__, __LINE__ + 1)
+          allow(Object.any_instance).to receive(:foo)
+        end
+
         it "warns about expect(Klass.any_instance).to receive..." do
           expect(RSpec).to receive(:warning).with(/expect.*any_instance.*is probably not what you meant.*expect_any_instance_of.*instead/)
+          expect(Object.any_instance).to receive(:foo)
+          Object.any_instance.foo
+        end
+
+        it "includes the correct call site in the expect warning" do
+          expect_warning_with_call_site(__FILE__, __LINE__ + 1)
           expect(Object.any_instance).to receive(:foo)
           Object.any_instance.foo
         end
