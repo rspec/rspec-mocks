@@ -1,3 +1,6 @@
+### 2.14.5 Development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.14.5)
+
 ### 2.14.4 / 2013-10-15
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...v2.14.4)
 
