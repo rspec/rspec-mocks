@@ -1,5 +1,5 @@
 ### Development
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...2-99-maintenance)
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...2-99-maintenance)
 
 Deprecations
 
@@ -21,6 +21,9 @@ Enhancements:
 
 * Add a config option to yield the receiver to `any_instance` implementation
   blocks (Sam Phippen).
+
+### 2.14.4 / 2013-10-15
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...v2.14.4)
 
 Bug Fixes:
 
