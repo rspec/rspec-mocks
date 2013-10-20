@@ -134,7 +134,7 @@ module RSpec
 
           it 'allows any method to be stubbed' do
             o = class_double('NonloadedClass')
-            o.stub(:undefined_instance_method).with(:arg).and_return(1)
+            allow(o).to receive(:undefined_instance_method).with(:arg).and_return(1)
             expect(o.undefined_instance_method(:arg)).to eq(1)
           end
         end
