@@ -59,7 +59,7 @@ module RSpec
       def ensure_implemented(method_name)
         return unless @doubled_module.defined?
 
-        method_reference[method_name].when_not_implemented do
+        method_reference[method_name].when_unimplemented do
           @error_generator.raise_unimplemented_error(
             @doubled_module,
             method_name

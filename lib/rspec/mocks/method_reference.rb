@@ -33,7 +33,7 @@ module RSpec
       end
 
       # Yields to the block if the method is not implemented.
-      def when_not_implemented
+      def when_unimplemented
         yield unless implemented?
       end
 
