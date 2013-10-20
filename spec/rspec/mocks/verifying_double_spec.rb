@@ -103,6 +103,13 @@ module RSpec
             }
           end
 
+          it 'checks that stubbed methods are invoked with the correct arity' do
+            o = instance_double('LoadedClass', :defined_instance_method => 25)
+            expect {
+              o.defined_instance_method(:a)
+            }.to raise_error(ArgumentError)
+          end
+
           it 'allows class to be specified by constant' do
             o = instance_double(LoadedClass, :defined_instance_method => 1)
             expect(o.defined_instance_method).to eq(1)
@@ -127,7 +134,7 @@ module RSpec
 
           it 'allows any method to be stubbed' do
             o = class_double('NonloadedClass')
-            o.stub(:undefined_instance_method).with(:arg).and_return(1)
+            allow(o).to receive(:undefined_instance_method).with(:arg).and_return(1)
             expect(o.undefined_instance_method(:arg)).to eq(1)
           end
         end
@@ -156,6 +163,27 @@ module RSpec
             prevents { expect(o).to receive(:defined_instance_method) }
             prevents { o.should_receive(:undefined_instance_method) }
             prevents { o.should_receive(:defined_instance_method) }
+          end
+
+          it 'checks that stubbed methods are invoked with the correct arity' do
+            o = class_double('LoadedClass', :defined_class_method => 1)
+            expect {
+              o.defined_class_method(:a)
+            }.to raise_error(ArgumentError)
+          end
+
+          it 'allows dynamically defined class method stubs with arguments' do
+            o = class_double('LoadedClass')
+            allow(o).to receive(:dynamic_class_method).with(:a) { 1 }
+
+            expect(o.dynamic_class_method(:a)).to eq(1)
+          end
+
+          it 'allows dynamically defined class method mocks with arguments' do
+            o = class_double('LoadedClass')
+            expect(o).to receive(:dynamic_class_method).with(:a)
+
+            o.dynamic_class_method(:a)
           end
 
           it 'allows dynamically defined class methods to be expected' do

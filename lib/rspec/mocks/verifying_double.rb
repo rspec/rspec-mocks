@@ -30,8 +30,7 @@ module RSpec
       def __build_mock_proxy
         VerifyingProxy.new(self,
           @doubled_module,
-          :method_defined?,
-          :instance_method
+          InstanceMethodReference
         )
       end
     end
@@ -54,8 +53,7 @@ module RSpec
       def __build_mock_proxy
         VerifyingProxy.new(self,
           @doubled_module,
-          :respond_to?,
-          :method
+          ClassMethodReference
         )
       end
 

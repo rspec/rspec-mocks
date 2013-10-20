@@ -4,17 +4,12 @@ module RSpec
     # Figures out the valid arity range for a method. Surprisingly non-trivial.
     class ArityCalculator
 
-      # Default value for method if it not available.
-      MethodNotLoaded = Class.new
-
       def initialize(method)
         @method = method
       end
 
       # @api private
       def within_range?(actual)
-        return true if method == MethodNotLoaded
-
         min_arity <= actual && actual <= max_arity
       end
 
