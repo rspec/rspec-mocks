@@ -71,7 +71,7 @@ module RSpec
       #
       # @private
       def proxy_method_invoked(obj, *args, &block)
-        ::RSpec::Mocks.proxy_for(obj).message_received method_name, *args, &block
+        @proxy.message_received method_name, *args, &block
       end
 
       # @private
