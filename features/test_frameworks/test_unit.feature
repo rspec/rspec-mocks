@@ -40,4 +40,4 @@ Feature: Test::Unit integration
      When I run `ruby rspec_mocks_test.rb`
      Then the output should contain "3 tests, 0 assertions, 0 failures, 1 errors" or "3 tests, 0 assertions, 1 failures, 0 errors"
      And the output should contain "expected: 0 times with any arguments"
-     And the output should contain "old_message is deprecated. Use message instead."
+     And the output should contain "old_message is deprecated"

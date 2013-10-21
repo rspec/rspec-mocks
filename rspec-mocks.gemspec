@@ -23,6 +23,14 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 1.8.7'
 
+  if RSpec::Mocks::Version::STRING =~ /[a-zA-Z]+/
+    # pin to exact version for rc's and betas
+    s.add_runtime_dependency "rspec-support", "= #{RSpec::Mocks::Version::STRING}"
+  else
+    # pin to major/minor ignoring patch
+    s.add_runtime_dependency "rspec-support", "~> #{RSpec::Mocks::Version::STRING.split('.')[0..1].concat(['0']).join('.')}"
+  end
+
   s.add_development_dependency 'rake',     '~> 10.0.0'
   s.add_development_dependency 'cucumber', '~> 1.1.9'
   s.add_development_dependency 'aruba',    '~> 0.5'
