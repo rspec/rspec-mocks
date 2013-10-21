@@ -21,7 +21,7 @@ module RSpec
 
         describe 'when arity match fails' do
           it 'raises error' do
-            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             expect(error_generator).to receive(:raise_arity_error).
               with(instance_of(ArityCalculator), 2)
 
@@ -31,7 +31,7 @@ module RSpec
 
         describe 'when called with arguments' do
           it 'matches arity against the number of arguments' do
-            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             expect(error_generator).not_to receive(:raise_arity_error)
 
             subject.with("abc123")
@@ -40,14 +40,14 @@ module RSpec
 
         describe 'when called with any arguments matcher' do
           it 'does not try to match arity' do
-            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             subject.with(any_args)
           end
         end
 
         describe 'when called with no arguments matcher' do
           it 'matches arity to 0' do
-            subject.method_reference = InstanceMethodReference.new(string_module_reference, :include?)
+            subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             expect(error_generator).to receive(:raise_arity_error).
               with(instance_of(ArityCalculator), 0)
 
