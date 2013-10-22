@@ -55,6 +55,8 @@ module RSpec
         @expected_received_count = expected_received_count
         @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
         @order_group = expectation_ordering
+        @order_group.register(self)
+        @ordered = false
         @at_least = @at_most = @exactly = nil
         @args_to_yield = []
         @failed_fast = nil
@@ -462,9 +464,13 @@ module RSpec
       #   api.should_receive(:finish).ordered
       def ordered(&block)
         self.inner_implementation_action = block
-        @order_group.register(self)
         @ordered = true
         self
+      end
+
+      # @private
+      def ordered?
+        @ordered
       end
 
       # @private
