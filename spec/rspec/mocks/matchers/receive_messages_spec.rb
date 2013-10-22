@@ -85,7 +85,7 @@ module RSpec
 
       it 'fails with the correct location' do
         expect(obj).to receive_messages(:a => 1, :b => 2); line = __LINE__
-        expect(expectation_error.backtrace[0]).to match /#{__FILE__}:#{line}/
+        expect(expectation_error.backtrace[0]).to match(/#{__FILE__}:#{line}/)
       end
 
       it_behaves_like "complains when given blocks"
