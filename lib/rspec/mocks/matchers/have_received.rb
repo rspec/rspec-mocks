@@ -4,7 +4,7 @@ module RSpec
       class HaveReceived
         COUNT_CONSTRAINTS = %w(exactly at_least at_most times once twice)
         ARGS_CONSTRAINTS = %w(with)
-        CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS
+        CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS + %w(ordered)
 
         def initialize(method_name, &block)
           @method_name = method_name
@@ -50,7 +50,7 @@ module RSpec
           end
         end
 
-        private
+      private
 
         def expect
           expectation = mock_proxy.build_expectation(@method_name)
