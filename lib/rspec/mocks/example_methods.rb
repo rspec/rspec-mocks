@@ -67,8 +67,8 @@ module RSpec
       # @param stubs [Hash] (optional) hash of message/return-value pairs
       # @return ObjectVerifyingDouble
       #
-      # Constructs a test double against a specific object. Only instance
-      # methods on the object are allowed to be stubbed. If a String argument
+      # Constructs a test double against a specific object. Only the methods
+      # the object responds to are allowed to be stubbed. If a String argument
       # is provided, it is assumed to reference a constant object which is used
       # for verification. In all other ways it behaves like a [double](double).
       def object_double(object_or_name, *args)
