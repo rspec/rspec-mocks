@@ -61,8 +61,8 @@ module RSpec
       end
 
       # @private
-      def __build_mock_proxy
-        Proxy.new(self, @name)
+      def __build_mock_proxy(order_group)
+        Proxy.new(self, order_group, @name)
       end
 
     private

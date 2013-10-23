@@ -27,8 +27,8 @@ module RSpec
         __initialize_as_test_double(doubled_module, *args)
       end
 
-      def __build_mock_proxy
-        VerifyingProxy.new(self,
+      def __build_mock_proxy(order_group)
+        VerifyingProxy.new(self, order_group,
           @doubled_module,
           InstanceMethodReference
         )
@@ -47,8 +47,8 @@ module RSpec
         __initialize_as_test_double(doubled_module, *args)
       end
 
-      def __build_mock_proxy
-        VerifyingProxy.new(self,
+      def __build_mock_proxy(order_group)
+        VerifyingProxy.new(self, order_group,
           @doubled_module,
           ObjectMethodReference
         )

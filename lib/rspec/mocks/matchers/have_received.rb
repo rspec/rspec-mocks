@@ -4,7 +4,7 @@ module RSpec
       class HaveReceived
         COUNT_CONSTRAINTS = %w(exactly at_least at_most times once twice)
         ARGS_CONSTRAINTS = %w(with)
-        CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS
+        CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS + %w(ordered)
 
         def initialize(method_name, &block)
           @method_name = method_name
@@ -21,14 +21,14 @@ module RSpec
           @block ||= block
           @subject = subject
           @expectation = expect
-          expected_messages_received?
+          expected_messages_received_in_order?
         end
 
         def does_not_match?(subject)
           @subject = subject
           ensure_count_unconstrained
           @expectation = expect.never
-          expected_messages_received?
+          expected_messages_received_in_order?
         end
 
         def failure_message
@@ -50,7 +50,7 @@ module RSpec
           end
         end
 
-        private
+      private
 
         def expect
           expectation = mock_proxy.build_expectation(@method_name)
@@ -84,9 +84,9 @@ module RSpec
           error.message
         end
 
-        def expected_messages_received?
+        def expected_messages_received_in_order?
           mock_proxy.replay_received_message_on @expectation, &@block
-          @expectation.expected_messages_received?
+          @expectation.expected_messages_received? && @expectation.ensure_expected_ordering_received!
         end
 
         def mock_proxy

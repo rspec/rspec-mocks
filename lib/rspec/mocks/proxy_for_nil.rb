@@ -3,9 +3,9 @@ module RSpec
     # @private
     class ProxyForNil < Proxy
 
-      def initialize
+      def initialize(order_group)
         @warn_about_expectations = true
-        super nil
+        super nil, order_group
       end
       attr_accessor :warn_about_expectations
       alias warn_about_expectations? warn_about_expectations

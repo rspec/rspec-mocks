@@ -2,10 +2,16 @@ module RSpec
   module Mocks
     # @private
     class Proxy
+      SpecificMessage = Struct.new(:object,:message) do
+        def ==(expectation)
+          expectation.orig_object == object && expectation.message == message
+        end
+      end
 
       # @private
-      def initialize(object, name=nil, options={})
+      def initialize(object, order_group, name=nil, options={})
         @object = object
+        @order_group = order_group
         @name = name
         @error_generator = ErrorGenerator.new(object, name)
         @expectation_ordering = RSpec::Mocks::space.expectation_ordering
@@ -139,6 +145,7 @@ module RSpec
 
       # @private
       def record_message_received(message, *args, &block)
+        @order_group.invoked SpecificMessage.new(object, message)
         @messages_received << [message, args, block]
       end
 
