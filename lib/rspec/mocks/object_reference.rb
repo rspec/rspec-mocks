@@ -1,10 +1,29 @@
 module RSpec
   module Mocks
 
-    # An abstraction in front of objects so that non-loaded objects can be
-    # worked with. The null case is for concrete objects that are always
-    # loaded. See `ModuleReference` for an example of non-loaded objects.
+    # @api private
     class ObjectReference
+      # Returns an appropriate Object or Module reference based
+      # on the given argument.
+      def self.for(object_module_or_name, allow_direct_object_refs = false)
+        case object_module_or_name
+          when Module then DirectModuleReference.new(object_module_or_name)
+          when String then NamedObjectReference.new(object_module_or_name)
+          else
+            if allow_direct_object_refs
+              DirectObjectReference.new(object_module_or_name)
+            else
+              raise ArgumentError,
+                "Module or String expected, got #{object_module_or_name.inspect}"
+            end
+        end
+      end
+    end
+
+    # Used when an object is passed to `object_double`.
+    # Represents a reference to that object.
+    # @api private
+    class DirectObjectReference
       def initialize(object)
         @object = object
       end
@@ -27,39 +46,45 @@ module RSpec
       end
     end
 
-    # Provides a consistent interface for dealing with modules that may or may
-    # not be defined.
-    #
-    # @private
-    class ModuleReference
-      def initialize(module_or_name)
-        case module_or_name
-          when Module then @module = module_or_name
-          when String then @name   = module_or_name
-          else raise ArgumentError,
-            "Module or String expected, got #{module_or_name.inspect}"
-        end
+    # Used when a module is passed to `class_double` or `instance_double`.
+    # Represents a reference to that module.
+    # @api private
+    class DirectModuleReference < DirectObjectReference
+      def const_to_replace
+        @object.name
+      end
+      alias description const_to_replace
+    end
+
+    # Used when a string is passed to `class_double`, `instance_double`
+    # or `object_double`.
+    # Represents a reference to the object named (via a constant lookup)
+    # by the string.
+    # @api private
+    class NamedObjectReference
+      def initialize(const_name)
+        @const_name = const_name
       end
 
       def defined?
-        !!original_module
+        !!object
       end
 
       def const_to_replace
-        @name || @module.name
+        @const_name
       end
-
-      alias_method :description, :const_to_replace
+      alias description const_to_replace
 
       def when_loaded(&block)
-        yield original_module if original_module
+        yield object if object
       end
 
-      private
+   private
 
-      def original_module
-        @module ||= Constant.original(@name).original_value
+      def object
+        @object ||= Constant.original(@const_name).original_value
       end
     end
   end
 end
+
