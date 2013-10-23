@@ -40,6 +40,11 @@ module RSpec
         expectation.raise_out_of_order_error
       end
 
+      def verify_invocation_order(expectation)
+        expectation.raise_out_of_order_error unless expectations_invoked_in_order?
+        true
+      end
+
       def clear
         @index = 0
         @invocation_order.clear
@@ -54,6 +59,22 @@ module RSpec
 
       def remaining_expectations
         @expectations[@index..-1] || []
+      end
+
+      def expectations_invoked_in_order?
+        invoked_expectations == expected_invocations
+      end
+
+      def invoked_expectations
+        @expectations.select { |e| e.ordered? && @invocation_order.include?([e.orig_object,e.message]) }
+      end
+
+      def expected_invocations
+        @invocation_order.map { |invocation| expectation_for(*invocation) }.compact
+      end
+
+      def expectation_for(object, message)
+        @expectations.find { |e| e.orig_object == object && e.message == message }
       end
 
     end

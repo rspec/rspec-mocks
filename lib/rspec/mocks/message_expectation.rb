@@ -279,6 +279,10 @@ module RSpec
         ignoring_args? || matches_exact_count? || matches_at_least_count? || matches_at_most_count?
       end
 
+      def expected_ordering_received?
+        !@ordered || @order_group.verify_invocation_order(self)
+      end
+
       # @private
       def ignoring_args?
         @expected_received_count == :any

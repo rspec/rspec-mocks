@@ -247,6 +247,28 @@ module RSpec
             end
           end
         end
+
+        context 'ordered' do
+          let(:dbl) { double :one => 1, :two => 2 }
+
+          it 'passes when the messages were received in order' do
+            dbl.one
+            dbl.two
+
+            expect(dbl).to have_received(:one).ordered
+            expect(dbl).to have_received(:two).ordered
+          end
+
+          it 'fails when the messages are received out of order' do
+            dbl.two
+            dbl.one
+
+            expect {
+              expect(dbl).to have_received(:one).ordered
+              expect(dbl).to have_received(:two).ordered
+            }.to raise_error(/received :two out of order/m)
+          end
+        end
       end
 
       describe "expect(...).not_to have_received" do

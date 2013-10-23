@@ -21,14 +21,14 @@ module RSpec
           @block ||= block
           @subject = subject
           @expectation = expect
-          expected_messages_received?
+          expected_messages_received_in_order?
         end
 
         def does_not_match?(subject)
           @subject = subject
           ensure_count_unconstrained
           @expectation = expect.never
-          expected_messages_received?
+          expected_messages_received_in_order?
         end
 
         def failure_message
@@ -84,9 +84,9 @@ module RSpec
           error.message
         end
 
-        def expected_messages_received?
+        def expected_messages_received_in_order?
           mock_proxy.replay_received_message_on @expectation, &@block
-          @expectation.expected_messages_received?
+          @expectation.expected_messages_received? && @expectation.expected_ordering_received?
         end
 
         def mock_proxy

@@ -43,6 +43,7 @@ Enhancements:
 * `instance_double` and `class_double` raise `ArgumentError` if the underlying
   module is loaded and the arity of the method being invoked does not match the
   arity of the method as it is actually implemented.  (Andy Lindeman)
+* Spies can now check their invocation ordering is correct. (Jon Rowe)
 
 Deprecations:
 
