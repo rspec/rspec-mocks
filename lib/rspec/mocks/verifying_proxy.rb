@@ -19,8 +19,8 @@ module RSpec
     #
     # @api private
     class VerifyingProxy < Proxy
-      def initialize(object, name, method_reference_class)
-        super(object)
+      def initialize(object, order_group, name, method_reference_class)
+        super(object, order_group)
         @object                 = object
         @doubled_module         = name
         @method_reference_class = method_reference_class

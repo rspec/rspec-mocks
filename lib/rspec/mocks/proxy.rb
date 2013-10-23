@@ -2,26 +2,17 @@ module RSpec
   module Mocks
     # @private
     class Proxy
-      class NullOrderGroup
-        def invoked(object, message)
-        end
-      end
 
       # @private
-      def initialize(object, name=nil, options={})
+      def initialize(object, order_group, name=nil, options={})
         @object = object
+        @order_group = order_group
         @name = name
         @error_generator = ErrorGenerator.new(object, name)
         @expectation_ordering = RSpec::Mocks::space.expectation_ordering
         @messages_received = []
         @options = options
-        @order_group = NullOrderGroup.new
         @null_object = false
-      end
-
-      def with_order_group(group)
-        @order_group = group
-        self
       end
 
       # @private
