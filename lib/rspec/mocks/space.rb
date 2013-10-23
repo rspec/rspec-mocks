@@ -55,9 +55,9 @@ module RSpec
         proxies.fetch(id) do
           proxies[id] = case object
                         when NilClass   then ProxyForNil.new
-                        when TestDouble then object.__build_mock_proxy
+                        when TestDouble then object.__build_mock_proxy.with_order_group(expectation_ordering)
                         else
-                          PartialMockProxy.new(object)
+                          PartialMockProxy.new(object).with_order_group(expectation_ordering)
                         end
         end
       end

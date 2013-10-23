@@ -2,6 +2,10 @@ module RSpec
   module Mocks
     # @private
     class Proxy
+      class NullOrderGroup
+        def invoked(object, message)
+        end
+      end
 
       # @private
       def initialize(object, name=nil, options={})
@@ -11,7 +15,13 @@ module RSpec
         @expectation_ordering = RSpec::Mocks::space.expectation_ordering
         @messages_received = []
         @options = options
+        @order_group = NullOrderGroup.new
         @null_object = false
+      end
+
+      def with_order_group(group)
+        @order_group = group
+        self
       end
 
       # @private
@@ -139,6 +149,7 @@ module RSpec
 
       # @private
       def record_message_received(message, *args, &block)
+        @order_group.invoked(object, message)
         @messages_received << [message, args, block]
       end
 

@@ -4,12 +4,17 @@ module RSpec
     class OrderGroup
       def initialize
         @expectations = []
+        @invocation_order = []
         @index = 0
       end
 
       # @private
       def register(expectation)
         @expectations << expectation
+      end
+
+      def invoked(object, message)
+        @invocation_order << [object, message]
       end
 
       # @private
@@ -37,6 +42,7 @@ module RSpec
 
       def clear
         @index = 0
+        @invocation_order.clear
         @expectations.clear
       end
 
