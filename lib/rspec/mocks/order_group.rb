@@ -13,8 +13,8 @@ module RSpec
         @expectations << expectation
       end
 
-      def invoked(object, message)
-        @invocation_order << [object, message]
+      def invoked(message)
+        @invocation_order << message
       end
 
       # @private
@@ -66,15 +66,15 @@ module RSpec
       end
 
       def invoked_expectations
-        @expectations.select { |e| e.ordered? && @invocation_order.include?([e.orig_object,e.message]) }
+        @expectations.select { |e| e.ordered? && @invocation_order.include?(e) }
       end
 
       def expected_invocations
-        @invocation_order.map { |invocation| expectation_for(*invocation) }.compact
+        @invocation_order.map { |invocation| expectation_for(invocation) }.compact
       end
 
-      def expectation_for(object, message)
-        @expectations.find { |e| e.orig_object == object && e.message == message }
+      def expectation_for(message)
+        @expectations.find { |e| message == e }
       end
 
     end
