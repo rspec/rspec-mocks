@@ -35,12 +35,9 @@ module RSpec
       end
     end
 
-    # Similar to an InstanceVerifyingDouble, except that it verifies against
-    # public methods of the given class (i.e. the "class methods").
-    #
-    # Module needs to be in the inheritance chain for transferring nested
-    # constants to work.
-    class ClassVerifyingDouble < Module
+    # An awkward module necessary because we cannot otherwise have
+    # ClassVerifyingDouble inherit from Module and still share these methods.
+    module ObjectVerifyingDoubleMethods
       include TestDouble
       include VerifyingDouble
 
@@ -53,14 +50,27 @@ module RSpec
       def __build_mock_proxy
         VerifyingProxy.new(self,
           @doubled_module,
-          ClassMethodReference
+          ObjectMethodReference
         )
       end
 
       def as_stubbed_const(options = {})
-        ConstantMutator.stub(@doubled_module.name, self, options)
+        ConstantMutator.stub(@doubled_module.const_to_replace, self, options)
         self
       end
+    end
+
+    # Similar to an InstanceVerifyingDouble, except that it verifies against
+    # public methods of the given object.
+    class ObjectVerifyingDouble
+      include ObjectVerifyingDoubleMethods
+    end
+
+    # Effectively the same as an ObjectVerifyingDouble (since a class is a type
+    # of object), except with Module in the inheritance chain so that
+    # transferring nested constants to work.
+    class ClassVerifyingDouble < Module
+      include ObjectVerifyingDoubleMethods
     end
 
   end
