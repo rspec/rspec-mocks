@@ -42,7 +42,8 @@ module RSpec
       # allowed to be stubbed. In all other ways it behaves like a
       # [double](double).
       def instance_double(doubled_class, *args)
-        declare_instance_or_class_double(InstanceVerifyingDouble, doubled_class, *args)
+        ref = ObjectReference.for(doubled_class)
+        declare_verifying_double(InstanceVerifyingDouble, ref, *args)
       end
 
       # @overload class_double(doubled_class)
@@ -56,7 +57,8 @@ module RSpec
       # allowed to be stubbed. In all other ways it behaves like a
       # [double](double).
       def class_double(doubled_class, *args)
-        declare_instance_or_class_double(ClassVerifyingDouble, doubled_class, *args)
+        ref = ObjectReference.for(doubled_class)
+        declare_verifying_double(ClassVerifyingDouble, ref, *args)
       end
 
       # @overload object_double(object_or_name)
@@ -70,12 +72,7 @@ module RSpec
       # is provided, it is assumed to reference a constant object which is used
       # for verification. In all other ways it behaves like a [double](double).
       def object_double(object_or_name, *args)
-        ref = if object_or_name.is_a?(String)
-          ModuleReference.new(object_or_name)
-        else
-          ObjectReference.new(object_or_name)
-        end
-
+        ref = ObjectReference.for(object_or_name, :allow_direct_object_refs)
         declare_verifying_double(ObjectVerifyingDouble, ref, *args)
       end
 
@@ -176,12 +173,6 @@ module RSpec
       end
 
     private
-
-      def declare_instance_or_class_double(type, constant_or_name, *args)
-        ref = ModuleReference.new(constant_or_name)
-
-        declare_verifying_double(type, ref, *args)
-      end
 
       def declare_verifying_double(type, ref, *args)
         if RSpec::Mocks.configuration.verify_doubled_constant_names? &&
