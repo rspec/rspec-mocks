@@ -16,6 +16,17 @@ module RSpec
         @double.three
       end
 
+      it "passes when messages are received in order" do
+        @double.stub(:something)
+        @double.should_receive(:one).ordered
+        @double.should_receive(:two).ordered
+        @double.should_receive(:three).at_least(:once).ordered
+        @double.one
+        @double.two
+        @double.three
+        @double.three
+      end
+
       it "passes when messages are received in order across objects" do
         a = double("a")
         b = double("b")
