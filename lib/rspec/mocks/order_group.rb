@@ -35,7 +35,7 @@ module RSpec
 
       # @private
       def handle_order_constraint(expectation)
-        return unless expectation.ordered? && @expectations.include?(expectation)
+        return unless expectation.ordered? && remaining_expectations.include?(expectation)
         return consume if ready_for?(expectation)
         expectation.raise_out_of_order_error
       end
