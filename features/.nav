@@ -27,6 +27,7 @@
   - class_doubles.feature
   - object_doubles.feature
   - dynamic_classes.feature
+  - partial_doubles.feature
 - outside_rspec:
   - configuration.feature
   - standalone.feature

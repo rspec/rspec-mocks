@@ -230,5 +230,76 @@ module RSpec
       end
 
     end
+
+    describe 'when verify_partial_doubles configuration option is set' do
+      include_context "with isolated configuration"
+
+      let(:klass) do
+        Class.new do
+          def implemented
+            "works"
+          end
+
+          def respond_to?(method_name, include_all=false)
+            method_name.to_s == "dynamic_method" || super
+          end
+
+          def method_missing(method_name, *args)
+            if respond_to?(method_name)
+              method_name
+            else
+              super
+            end
+          end
+        end
+      end
+
+      let(:object) { klass.new }
+
+      before do
+        RSpec::Mocks.configuration.verify_partial_doubles = true
+      end
+
+      it 'allows valid methods to be expected' do
+        expect(object).to receive(:implemented).and_call_original
+        expect(object.implemented).to eq("works")
+      end
+
+      it 'does not allow a non-existing method to be expected' do
+        prevents { expect(object).to receive(:unimplemented) }
+      end
+
+      it 'verifies arity range when matching arguments' do
+        prevents { expect(object).to receive(:implemented).with('bogus') }
+      end
+
+      it 'allows a method defined with method_missing to be expected' do
+        expect(object).to receive(:dynamic_method).with('a').and_call_original
+        expect(object.dynamic_method('a')).to eq(:dynamic_method)
+      end
+
+      it 'allows valid methods to be expected on any_instance' do
+        expect_any_instance_of(klass).to receive(:implemented)
+        object.implemented
+      end
+
+      it 'does not allow a non-existing method to be called on any_instance' do
+        prevents { expect_any_instance_of(klass).to receive(:unimplemented) }
+      end
+
+      it 'does not allow missing methods to be called on any_instance' do
+        # This is potentially surprising behaviour, but there is no way for us
+        # to know that this method is valid since we only have class and not an
+        # instance.
+        prevents { expect_any_instance_of(klass).to receive(:dynamic_method) }
+      end
+
+      it 'verifies arity range when receiving a message' do
+        allow(object).to receive(:implemented)
+        expect {
+          object.implemented('bogus')
+        }.to raise_error(ArgumentError, /wrong number of arguments \(1 for 0\)/)
+      end
+    end
   end
 end

@@ -7,6 +7,7 @@ module RSpec
         @yield_receiver_to_any_instance_implementation_blocks = true
         @verify_doubled_constant_names = false
         @transfer_nested_constants = false
+        @verify_partial_doubles = false
       end
 
       def yield_receiver_to_any_instance_implementation_blocks?
@@ -80,6 +81,17 @@ module RSpec
       # stubbing constants.
       def transfer_nested_constants=(val)
         @transfer_nested_constants = val
+      end
+
+      # When set to true, partial mocks will be verified the same as object
+      # doubles. Any stubs will have their arity checked against the original
+      # method, and methods that do not exist cannot be stubbed.
+      def verify_partial_doubles=(val)
+        @verify_partial_doubles = !!val
+      end
+
+      def verify_partial_doubles?
+        @verify_partial_doubles
       end
 
       # @api private
