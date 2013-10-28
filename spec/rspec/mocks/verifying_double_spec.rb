@@ -28,11 +28,6 @@ end
 module RSpec
   module Mocks
     describe 'verifying doubles' do
-      def prevents(&block)
-        expect(&block).to \
-          raise_error(RSpec::Mocks::MockExpectationError)
-      end
-
       describe 'instance doubles' do
         describe 'when doubled class is not loaded' do
           include_context "with isolated configuration"

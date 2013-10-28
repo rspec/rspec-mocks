@@ -19,10 +19,19 @@ module RSpec
       end
 
       def original_method
-        @original_method ||= Proc.new do |*args, &block|
-          @object.__send__(:method_missing, @method_name, *args, &block)
-        end
+        # If original method is not present, uses the `method_missing`
+        # handler of the object. This accounts for cases where the user has not
+        # correctly defined `respond_to?`, and also 1.8 which does not provide
+        # method handles for missing methods even if `respond_to?` is correct.
+        @original_method ||=
+          @method_stasher.original_method ||
+          @proxy.method_handle_for(method_name) ||
+          Proc.new do |*args, &block|
+            @object.__send__(:method_missing, @method_name, *args, &block)
+          end
       end
+
+      alias_method :save_original_method!, :original_method
 
       # @private
       def visibility
@@ -53,8 +62,7 @@ module RSpec
       def define_proxy_method
         return if @method_is_proxied
 
-        @original_method = @method_stasher.original_method ||
-                           @proxy.method_handle_for(method_name)
+        save_original_method!
 
         object_singleton_class.class_exec(self, method_name, visibility) do |method_double, method_name, visibility|
           define_method(method_name) do |*args, &block|

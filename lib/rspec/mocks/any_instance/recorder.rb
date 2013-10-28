@@ -172,6 +172,10 @@ module RSpec
         end
 
         def observe!(method_name)
+          if RSpec::Mocks.configuration.verify_partial_doubles?
+            raise MockExpectationError unless @klass.method_defined?(method_name)
+          end
+
           stop_observing!(method_name) if already_observing?(method_name)
           @observed_methods << method_name
           backup_method!(method_name)

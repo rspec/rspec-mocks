@@ -42,6 +42,13 @@ module DeprecationHelpers
   end
 end
 
+module VerificationHelpers
+  def prevents(&block)
+    expect(&block).to \
+      raise_error(RSpec::Mocks::MockExpectationError)
+  end
+end
+
 RSpec.configure do |config|
   config.mock_with :rspec
   config.color_enabled = true
@@ -65,6 +72,7 @@ RSpec.configure do |config|
 
   config.include VerifyAndResetHelpers
   config.include DeprecationHelpers
+  config.include VerificationHelpers
 end
 
 shared_context "with syntax" do |syntax|
