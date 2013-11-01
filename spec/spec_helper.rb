@@ -4,15 +4,14 @@ begin
 rescue LoadError
 end
 
-unless ENV['NO_COVERALLS'] || RUBY_VERSION == '1.9.2'
-  require 'simplecov' if RUBY_VERSION.to_f > 1.8
-  require 'coveralls'
-  Coveralls.wear! do
-    add_filter '/bundle/'
-    add_filter '/spec/'
-    add_filter '/tmp/'
- end
-end
+begin
+  require 'simplecov'
+
+  SimpleCov.start do
+    add_filter "bundle"
+  end
+rescue LoadError
+end unless ENV['NO_COVERAGE'] || RUBY_VERSION < '1.9.3'
 
 RSpec::Matchers.define :include_method do |expected|
   match do |actual|
