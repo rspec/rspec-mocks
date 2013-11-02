@@ -12,13 +12,13 @@ describe RSpec::Mocks do
   end
 
   describe "::teardown" do
-    it "delegates to the space" do
+    it "prevents further expectations from being set" do
       foo = double
       foo.should_receive(:bar)
       RSpec::Mocks::teardown
       expect do
         foo.bar
-      end.to raise_error(/received unexpected message/)
+      end.to raise_error(RSpec::Mocks::OutsideOfExampleError)
     end
   end
 

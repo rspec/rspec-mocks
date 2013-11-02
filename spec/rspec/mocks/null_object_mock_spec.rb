@@ -89,15 +89,11 @@ module RSpec
         expect(("%i" % @double)).to eq("0")
       end
 
-      it "does not allow null-ness to persist between examples" do
+      it "does not allow null objects to be used outside of examples" do
         RSpec::Mocks.teardown
 
-        expect(@double).not_to be_null_object
-        expect { @double.some.long.message.chain }.to raise_error(RSpec::Mocks::MockExpectationError)
-
-        @double.as_null_object
-        expect(@double).to be_null_object
-        expect { @double.some.long.message.chain }.not_to raise_error
+        expect { @double.some.long.message.chain }.to raise_error(RSpec::Mocks::OutsideOfExampleError)
+        expect { @double.as_null_object }.to raise_error(RSpec::Mocks::OutsideOfExampleError)
       end
     end
 

@@ -7,6 +7,8 @@ Breaking Changes for 3.0.0:
 * Change how to integrate rspec-mocks in other test frameworks. You now
   need to include `RSpec::Mocks::ExampleMethods` in your test context.
   (Myron Marston)
+* Prevent RSpec mocks' doubles and partial doubles from being used outside of
+  the per-test lifecycle (e.g. from a `before(:all)` hook). (Sam Phippen)
 
 Bug Fixes:
 
