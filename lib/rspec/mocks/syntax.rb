@@ -9,6 +9,10 @@ module RSpec
         @warn_about_should = true
       end
 
+      def self.warn_about_any_instance!
+        @warn_about_any_instance = true
+      end
+
       # @api private
       def self.warn_unless_should_configured(method_name ,replacement = "the new `:expect` syntax or explicitly enable `:should`")
         if @warn_about_should
@@ -18,6 +22,17 @@ module RSpec
           )
 
           @warn_about_should = false
+        end
+      end
+
+      def self.warn_unless_any_instance_configured(method_name)
+        if @warn_about_any_instance
+          RSpec.deprecate(
+            "Using `#{method_name}` explicitly without enabling any instance mocks/stubs",
+            :replacement => "`RSpec::Mocks::Configuration.enable_any_instance_mocks = true` to enable any instance mocks/stubs"
+          )
+
+          @warn_about_any_instance = false
         end
       end
 
@@ -75,15 +90,6 @@ module RSpec
             ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             ::RSpec::Mocks.space.proxy_for(self).received_message?(message, *args, &block)
           end
-
-          unless Class.respond_to? :any_instance
-            Class.class_exec do
-              def any_instance
-                ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
-                ::RSpec::Mocks.space.any_instance_recorder_for(self)
-              end
-            end
-          end
         end
       end
 
@@ -108,6 +114,81 @@ module RSpec
         end
       end
 
+      # Enables any instance mocks. If the should syntax is enabled,
+      # `any_instance` is added to `Class`. If the expect syntax is enabled,
+      # `allow_any_instance_of` and `expect_any_instance_of` is added to
+      # `expect_syntax_host`.
+      #
+      # @private
+      def self.enable_any_instance(expect_syntax_host = ::RSpec::Mocks::ExampleMethods, should_syntax_host = default_should_syntax_host)
+        enable_expect_any_instance(expect_syntax_host)
+        enable_should_any_instance(should_syntax_host)
+      end
+
+      # @private
+      def self.enable_should_any_instance(syntax_host)
+        return unless should_enabled?(syntax_host)
+
+        unless Class.respond_to? :any_instance
+          Class.class_exec do
+            def any_instance
+              ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
+              ::RSpec::Mocks.any_instance_recorder_for(self)
+            end
+          end
+        end
+      end
+
+      # @private
+      def self.enable_expect_any_instance(syntax_host = ::RSpec::Mocks::ExampleMethods)
+        return unless expect_enabled?(syntax_host)
+
+        RSpec::Mocks::ExampleMethods::ExpectHost.class_exec do
+          def expect_any_instance_of(klass)
+            AnyInstanceExpectationTarget.new(klass)
+          end
+
+          def allow_any_instance_of(klass)
+            ::RSpec::Mocks::Syntax.warn_unless_any_instance_configured(__method__)
+            AnyInstanceAllowanceTarget.new(klass)
+          end
+        end
+      end
+
+      # @private
+      def self.any_instance_enabled?(syntax_host = ::RSpec::Mocks::ExampleMethods)
+        syntax_host.method_defined?(:allow_any_instance_of) || Class.method_defined?(:any_instance)
+      end
+
+      # Distance any instance mocks. If the should syntax is enabled,
+      # `any_instance` is added to `Class`. If the expect syntax is enabled,
+      # `allow_any_instance_of` and `expect_any_instance_of` is added to
+      # `expect_syntax_host`.
+      #
+      # @private
+      def self.disable_any_instance(expect_syntax_host = ::RSpec::Mocks::ExampleMethods, should_syntax_host = default_should_syntax_host)
+        return if any_instance_enabled?(syntax_host)
+
+        syntax_host.class_exec do
+          undef allow_any_instance_of
+          undef expect_any_instance_of
+        end
+
+        Class.class_exec do
+          undef any_instance
+        end
+      end
+
+      # @private
+      def self.disable_should_any_instance(syntax_host)
+        return if any_instance_enabled?(
+      end
+
+      # @private
+      def self.disable_expect_any_instance(syntax_host)
+        return unless any_instance
+      end
+
       # @api private
       # Enables the expect syntax (`expect(dbl).to receive`, `allow(dbl).to receive`, etc).
       def self.enable_expect(syntax_host = ::RSpec::Mocks::ExampleMethods)
@@ -130,14 +211,6 @@ module RSpec
 
           def allow(target)
             AllowanceTarget.new(target)
-          end
-
-          def expect_any_instance_of(klass)
-            AnyInstanceExpectationTarget.new(klass)
-          end
-
-          def allow_any_instance_of(klass)
-            AnyInstanceAllowanceTarget.new(klass)
           end
         end
 

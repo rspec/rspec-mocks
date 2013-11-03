@@ -84,6 +84,25 @@ module RSpec
         syntaxes
       end
 
+      def enable_any_instance_mocks?
+        @enable_any_instance_mocks
+      end
+
+      def enable_any_instance_mocks=(arg)
+        @enable_any_instance_mocks = arg
+        if arg
+          Syntax.enable_any_instance
+        else
+          Syntax.disable_any_instance
+        end
+      end
+
+      def reset_any_instance_to_default
+        self.enable_any_instance_mocks = true
+        RSpec::Mocks::Syntax.warn_about_any_instance!
+      end
+
+
       def verify_doubled_constant_names?
         !!@verify_doubled_constant_names
       end
@@ -131,5 +150,6 @@ module RSpec
     end
 
     configuration.reset_syntaxes_to_default
+    configuration.reset_any_instance_to_default
   end
 end
