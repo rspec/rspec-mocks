@@ -5,6 +5,14 @@ module RSpec
     describe "A chained method stub" do
       let(:object) { Object.new }
 
+      it 'does not get confused by symbol vs string usage for the messages' do
+        object.stub_chain(:foo, :bar => 1)
+        object.stub_chain("foo", :bazz => 2)
+
+        expect(object.foo.bar).to eq(1)
+        expect(object.foo.bazz).to eq(2)
+      end
+
       context "with one method in chain" do
         context "using and_return" do
           it "returns expected value from chaining only one method call" do

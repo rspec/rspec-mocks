@@ -332,6 +332,12 @@ module RSpec
             klass.any_instance.unstub(:existing_method)
           }.to raise_error(RSpec::Mocks::MockExpectationError, 'The method `existing_method` was not stubbed or was already unstubbed')
         end
+
+        it 'does not get confused about string vs symbol usage for the message' do
+          klass.any_instance.stub(:existing_method) { :stubbed }
+          klass.any_instance.unstub("existing_method")
+          expect(klass.new.existing_method).to eq(:existing_method_return_value)
+        end
       end
 
       context "with #should_not_receive" do
