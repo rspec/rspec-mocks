@@ -51,7 +51,7 @@ module RSpec
           CallerFilter.first_non_rspec_line
         }
         ::RSpec::Mocks.proxy_for(subject).
-          add_stub(orig_caller, message.to_sym, opts, &block)
+          add_stub(orig_caller, message, opts, &block)
       end
 
       # Sets a message expectation on `subject`.
@@ -70,7 +70,7 @@ module RSpec
           CallerFilter.first_non_rspec_line
         }
         ::RSpec::Mocks.proxy_for(subject).
-          add_message_expectation(orig_caller, message.to_sym, opts, &block)
+          add_message_expectation(orig_caller, message, opts, &block)
       end
 
       # @api private

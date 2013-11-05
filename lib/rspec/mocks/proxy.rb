@@ -18,6 +18,7 @@ module RSpec
         @messages_received = []
         @options = options
         @null_object = false
+        @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
       end
 
       # @private
@@ -43,7 +44,7 @@ module RSpec
 
       # @private
       def add_message_expectation(location, method_name, opts={}, &block)
-        meth_double = method_double[method_name]
+        meth_double = method_double_for(method_name)
 
         if null_object? && !block
           meth_double.add_default_stub(@error_generator, @expectation_ordering, location, opts) do
@@ -56,12 +57,12 @@ module RSpec
 
       # @private
       def add_simple_expectation(method_name, response, location)
-        method_double[method_name].add_simple_expectation method_name, response, @error_generator, location
+        method_double_for(method_name).add_simple_expectation method_name, response, @error_generator, location
       end
 
       # @private
       def build_expectation(method_name)
-        meth_double = method_double[method_name]
+        meth_double = method_double_for(method_name)
 
         meth_double.build_expectation(
           @error_generator,
@@ -72,7 +73,7 @@ module RSpec
       # @private
       def replay_received_message_on(expectation, &block)
         expected_method_name = expectation.message
-        meth_double = method_double[expected_method_name]
+        meth_double = method_double_for(expected_method_name)
 
         if meth_double.expectations.any?
           @error_generator.raise_expectation_on_mocked_method(expected_method_name)
@@ -102,34 +103,34 @@ module RSpec
 
       # @private
       def add_stub(location, method_name, opts={}, &implementation)
-        method_double[method_name].add_stub @error_generator, @expectation_ordering, location, opts, &implementation
+        method_double_for(method_name).add_stub @error_generator, @expectation_ordering, location, opts, &implementation
       end
 
       # @private
       def add_simple_stub(method_name, response)
-        method_double[method_name].add_simple_stub method_name, response
+        method_double_for(method_name).add_simple_stub method_name, response
       end
 
       # @private
       def remove_stub(method_name)
-        method_double[method_name].remove_stub
+        method_double_for(method_name).remove_stub
       end
 
       # @private
       def remove_single_stub(method_name, stub)
-        method_double[method_name].remove_single_stub(stub)
+        method_double_for(method_name).remove_single_stub(stub)
       end
 
       # @private
       def verify
-        method_doubles.each {|d| d.verify}
+        @method_doubles.each_value {|d| d.verify}
       ensure
         reset
       end
 
       # @private
       def reset
-        method_doubles.each {|d| d.reset}
+        @method_doubles.each_value {|d| d.reset}
         @messages_received.clear
       end
 
@@ -140,7 +141,7 @@ module RSpec
 
       # @private
       def has_negative_expectation?(message)
-        method_double[message].expectations.detect {|expectation| expectation.negative_expectation_for?(message)}
+        method_double_for(message).expectations.detect {|expectation| expectation.negative_expectation_for?(message)}
       end
 
       # @private
@@ -193,12 +194,8 @@ module RSpec
 
       private
 
-      def method_double
-        @method_double ||= Hash.new {|h,k| h[k] = MethodDouble.new(@object, k, self) }
-      end
-
-      def method_doubles
-        method_double.values
+      def method_double_for(message)
+        @method_doubles[message.to_sym]
       end
 
       def find_matching_expectation(method_name, *args)
@@ -216,7 +213,7 @@ module RSpec
       def find_best_matching_expectation_for(method_name)
         first_match = nil
 
-        method_double[method_name].expectations.each do |expectation|
+        method_double_for(method_name).expectations.each do |expectation|
           next unless yield expectation
           return expectation unless expectation.called_max_times?
           first_match ||= expectation
@@ -226,11 +223,11 @@ module RSpec
       end
 
       def find_matching_method_stub(method_name, *args)
-        method_double[method_name].stubs.find {|stub| stub.matches?(method_name, *args)}
+        method_double_for(method_name).stubs.find {|stub| stub.matches?(method_name, *args)}
       end
 
       def find_almost_matching_stub(method_name, *args)
-        method_double[method_name].stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
+        method_double_for(method_name).stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
       end
     end
 
@@ -249,13 +246,13 @@ module RSpec
 
       # @private
       def add_simple_expectation(method_name, response, location)
-        method_double[method_name].configure_method
+        method_double_for(method_name).configure_method
         super
       end
 
       # @private
       def add_simple_stub(method_name, response)
-        method_double[method_name].configure_method
+        method_double_for(method_name).configure_method
         super
       end
 

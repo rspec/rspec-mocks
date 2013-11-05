@@ -54,13 +54,11 @@ module RSpec
         @object                 = object
         @doubled_module         = name
         @method_reference_class = method_reference_class
-      end
 
-      # A custom method double is required to pass through a way to lookup
-      # methods to determine their arity. This is only relevant if the doubled
-      # class is loaded.
-      def method_double
-        @method_double ||= Hash.new do |h,k|
+        # A custom method double is required to pass through a way to lookup
+        # methods to determine their arity. This is only relevant if the doubled
+        # class is loaded.
+        @method_doubles = Hash.new do |h, k|
           h[k] = VerifyingMethodDouble.new(@object, k, self, method_reference[k])
         end
       end
@@ -78,17 +76,17 @@ module RSpec
       def initialize(object, expectation_ordering)
         super(object, expectation_ordering)
         @doubled_module = DirectObjectReference.new(object)
-      end
 
-      # A custom method double is required to pass through a way to lookup
-      # methods to determine their arity.
-      def method_double
-        @method_double ||= Hash.new do |h,k|
+        # A custom method double is required to pass through a way to lookup
+        # methods to determine their arity.
+        @method_doubles = Hash.new do |h, k|
           h[k] = VerifyingExistingMethodDouble.new(object, k, self)
         end
       end
 
-      alias_method :method_reference, :method_double
+      def method_reference
+        @method_doubles
+      end
     end
 
     # @api private
