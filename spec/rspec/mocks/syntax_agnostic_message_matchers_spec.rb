@@ -35,6 +35,16 @@ module RSpec
         ::RSpec::Mocks.allow_message(subject, :message)
         expect { verify subject }.not_to raise_error
       end
+
+      it 'does not get confused when the string and symbol message form are both used' do
+        ::RSpec::Mocks.allow_message(subject, :foo).with(1) { :a }
+        ::RSpec::Mocks.allow_message(subject, "foo").with(2) { :b }
+
+        expect(subject.foo(1)).to eq(:a)
+        expect(subject.foo(2)).to eq(:b)
+
+        reset subject
+      end
     end
 
     describe ".expect_message" do
@@ -72,6 +82,16 @@ module RSpec
       it "accepts a block implementation for the expected message" do
         ::RSpec::Mocks.expect_message(subject, :msg) { :value }
         expect(subject.msg).to eq(:value)
+        verify subject
+      end
+
+      it 'does not get confused when the string and symbol message form are both used' do
+        ::RSpec::Mocks.expect_message(subject, :foo).with(1)
+        ::RSpec::Mocks.expect_message(subject, "foo").with(2)
+
+        subject.foo(1)
+        subject.foo(2)
+
         verify subject
       end
 
