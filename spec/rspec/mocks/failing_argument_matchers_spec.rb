@@ -84,6 +84,7 @@ module RSpec
       end
 
       it "fails with block matchers" do
+        allow_deprecation
         expect do
           @double.should_receive(:msg).with {|arg| expect(arg).to eq :received }
           @double.msg :no_msg_for_you

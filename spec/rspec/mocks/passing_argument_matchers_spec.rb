@@ -85,6 +85,8 @@ module RSpec
       end
 
       context "handling block matchers" do
+        before { allow_deprecation }
+
         it "matches arguments against RSpec expectations" do
           @double.should_receive(:random_call).with {|arg1, arg2, arr, *rest|
             expect(arg1).to eq 5
