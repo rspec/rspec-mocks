@@ -3,24 +3,25 @@
 
 Deprecations
 
-* Expecting to use lambda's or other strong arity implementations for stub methods
-  with mis-matched arity is deprecated and support for them will be removed in 3.0.
-  Either provide the right amount of arguments or use a weak arity implementation
-  (methods with splats or procs). (Jon Rowe)
+* Expecting to use lambdas or other strong arity implementations for stub
+  methods with mis-matched arity is deprecated and support for them will be
+  removed in 3.0. Either provide the right amount of arguments or use a weak
+  arity implementation (methods with splats or procs). (Jon Rowe)
 * Using the same test double instance in multiple examples is deprecated. Test
   doubles are only meant to live for one example. The mocks and stubs have
   always been reset between examples; however, in 2.x the `as_null_object`
   state was not reset and some users relied on this to have a null object
   double that is used for many examples. This behavior will be removed in 3.0.
   (Myron Marston)
-* Print a detailed warning when an `any_instance` implementation block is used when the new
-  `yield_receiver_to_any_instance_implementation_blocks` config option is not explicitly set,
-  as RSpec 3.0 will default to enabling this new feature. (Sam Phippen)
+* Print a detailed warning when an `any_instance` implementation block is used
+  when the new `yield_receiver_to_any_instance_implementation_blocks` config
+  option is not explicitly set, as RSpec 3.0 will default to enabling this new
+  feature. (Sam Phippen)
 
 Enhancements:
 
 * Add a config option to yield the receiver to `any_instance` implementation
-  blocks (Sam Phippen).
+  blocks. (Sam Phippen)
 
 ### 2.14.4 / 2013-10-15
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...v2.14.4)
