@@ -191,13 +191,11 @@ module RSpec
         @error_generator.raise_missing_default_stub_error(expectation, *args)
       end
 
-      protected
+      private
 
       def method_double
         @method_double ||= Hash.new {|h,k| h[k] = MethodDouble.new(@object, k, self) }
       end
-
-      private
 
       def method_doubles
         method_double.values
