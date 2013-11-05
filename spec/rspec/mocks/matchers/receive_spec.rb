@@ -85,6 +85,14 @@ module RSpec
             wrapped.to eq(3)
           }.to raise_error(UnsupportedMatcherError)
         end
+
+        it 'does not get confused by messages being passed as strings and symbols' do
+          wrapped.to receive(:foo).with(1) { :a }
+          wrapped.to receive("foo").with(2) { :b }
+
+          expect(receiver.foo(1)).to eq(:a)
+          expect(receiver.foo(2)).to eq(:b)
+        end
       end
 
       shared_examples_for "an expect syntax allowance" do |*options|

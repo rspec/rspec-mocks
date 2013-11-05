@@ -112,6 +112,25 @@ module RSpec
         verify @double
       end
 
+      it 'does not get confused when `should_not_received` is used with a string and symbol message' do
+        @double.stub(:foo) { 3 }
+        @double.should_not_receive(:foo).with(1)
+        @double.should_not_receive("foo").with(2)
+
+        expect(@double.foo).to eq(3)
+        verify @double
+      end
+
+      it 'does not get confused when `should_received` is used with a string and symbol message' do
+        @double.should_receive(:foo).with(1)
+        @double.should_receive("foo").with(2)
+
+        @double.foo(1)
+        @double.foo(2)
+
+        verify @double
+      end
+
       it "allows block to calculate return values" do
         @double.should_receive(:something).with("a","b","c").and_return { |a,b,c| c+b+a }
         expect(@double.something("a","b","c")).to eq "cba"
