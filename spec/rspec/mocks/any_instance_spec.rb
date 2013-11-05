@@ -37,7 +37,7 @@ module RSpec
         end
 
         context "#stub_chain" do
-          it "raises an error if 'stub_chain' follows 'any_instance'" do
+          it "raises an error if 'stub_chain' follows 'and_return'" do
             expect { klass.any_instance.and_return("1").stub_chain(:foo, :bar) }.to raise_error(NoMethodError)
           end
         end
