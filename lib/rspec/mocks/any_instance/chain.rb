@@ -70,7 +70,7 @@ module RSpec
         private
 
         def negated?
-          messages.any? { |(message, *_), _| message.to_sym == :never }
+          messages.any? { |(message, *_), _| message == :never }
         end
 
         def messages
