@@ -28,6 +28,10 @@ module HelperMethods
       expect(options[:call_site]).to include([file, line].join(':'))
     end
   end
+
+  def allow_deprecation
+    allow(RSpec.configuration.reporter).to receive(:deprecation)
+  end
 end
 
 RSpec.configure do |config|

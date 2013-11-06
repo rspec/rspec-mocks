@@ -21,4 +21,11 @@ describe "double" do
       mock("TestDouble")
     end
   end
+
+  it 'does not get string vs symbol messages confused' do
+    dbl = double("foo" => 1)
+    allow(dbl).to receive(:foo).and_return(2)
+    expect(dbl.foo).to eq(2)
+    expect { reset dbl }.not_to raise_error
+  end
 end
