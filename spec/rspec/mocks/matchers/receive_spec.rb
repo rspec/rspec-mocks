@@ -96,7 +96,7 @@ module RSpec
       end
 
       shared_examples_for "an expect syntax allowance" do |*options|
-        include_examples "a receive matcher", *options
+        it_behaves_like "a receive matcher", *options
 
         it 'does not expect the message to be received' do
           wrapped.to receive(:foo)
@@ -117,7 +117,7 @@ module RSpec
       end
 
       shared_examples_for "an expect syntax expectation" do |*options|
-        include_examples "a receive matcher", *options
+        it_behaves_like "a receive matcher", *options
 
         it 'sets up a message expectation that passes if the message is received' do
           wrapped.to receive(:foo)
@@ -213,68 +213,69 @@ module RSpec
       end
 
       describe "allow(...).to receive" do
-        include_examples "an expect syntax allowance" do
+        it_behaves_like "an expect syntax allowance" do
           let(:receiver) { double }
           let(:wrapped)  { allow(receiver) }
         end
-        include_examples "resets partial mocks cleanly" do
+        it_behaves_like "resets partial mocks cleanly" do
           let(:target) { allow(object) }
         end
       end
 
       describe "allow(...).not_to receive" do
-        include_examples "an expect syntax negative allowance" do
+        it_behaves_like "an expect syntax negative allowance" do
           let(:wrapped) { allow(double) }
         end
       end
 
       describe "allow_any_instance_of(...).to receive" do
-        include_examples "an expect syntax allowance" do
+        it_behaves_like "an expect syntax allowance" do
           let(:klass)    { Class.new }
           let(:wrapped)  { allow_any_instance_of(klass) }
           let(:receiver) { klass.new }
         end
-        include_examples "resets partial mocks of any instance cleanly" do
+
+        it_behaves_like "resets partial mocks of any instance cleanly" do
           let(:target) { allow_any_instance_of(klass) }
         end
       end
 
       describe "allow_any_instance_of(...).not_to receive" do
-        include_examples "an expect syntax negative allowance" do
+        it_behaves_like "an expect syntax negative allowance" do
           let(:wrapped) { allow_any_instance_of(Class.new) }
         end
       end
 
       describe "expect(...).to receive" do
-        include_examples "an expect syntax expectation", :allow_other_matchers do
+        it_behaves_like "an expect syntax expectation", :allow_other_matchers do
           let(:receiver) { double }
           let(:wrapped)  { expect(receiver) }
         end
-        include_examples "resets partial mocks cleanly" do
+        it_behaves_like "resets partial mocks cleanly" do
           let(:target) { expect(object) }
         end
       end
 
       describe "expect_any_instance_of(...).to receive" do
-        include_examples "an expect syntax expectation", :does_not_report_line_num do
+        it_behaves_like "an expect syntax expectation", :does_not_report_line_num do
           let(:klass)    { Class.new }
           let(:wrapped)  { expect_any_instance_of(klass) }
           let(:receiver) { klass.new }
         end
-        include_examples "resets partial mocks of any instance cleanly" do
+        it_behaves_like "resets partial mocks of any instance cleanly" do
           let(:target) { expect_any_instance_of(klass) }
         end
       end
 
       describe "expect(...).not_to receive" do
-        include_examples "an expect syntax negative expectation" do
+        it_behaves_like "an expect syntax negative expectation" do
           let(:receiver) { double }
           let(:wrapped)  { expect(receiver) }
         end
       end
 
       describe "expect_any_instance_of(...).not_to receive" do
-        include_examples "an expect syntax negative expectation" do
+        it_behaves_like "an expect syntax negative expectation" do
           let(:klass)    { Class.new }
           let(:wrapped)  { expect_any_instance_of(klass) }
           let(:receiver) { klass.new }
@@ -334,7 +335,7 @@ module RSpec
           end
         end
 
-        include_examples "using rspec-mocks in another test framework"
+        it_behaves_like "using rspec-mocks in another test framework"
 
         it 'cannot use `expect` with another matcher' do
           expect {
@@ -368,7 +369,7 @@ module RSpec
           end
         end
 
-        include_examples "using rspec-mocks in another test framework"
+        it_behaves_like "using rspec-mocks in another test framework"
 
         it 'can use `expect` with any matcher' do
           framework.new.instance_exec do
@@ -390,7 +391,7 @@ module RSpec
           end
         end
 
-        include_examples "using rspec-mocks in another test framework"
+        it_behaves_like "using rspec-mocks in another test framework"
 
         it 'can use `expect` with any matcher' do
           framework.new.instance_exec do
