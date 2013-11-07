@@ -3,13 +3,12 @@
 
 Breaking Changes for 3.0.0:
 
-* Removed `double`-aliases `stub` and `mock`. (Michi Huber)
 * Raise an explicit error if `should_not_receive(...).and_return` is used. (Sam
   Phippen)
 * Remove 1.8.6 workarounds. (Jon Rowe)
 * Remove `stub!` and `unstub!`. (Sam Phippen)
-* Remove `mock(name, methods)` and `stub(name, methods)`,
-  leaving `double(name, methods)` for creating test doubles. (Sam Phippen)
+* Remove `mock(name, methods)` and `stub(name, methods)`, leaving
+  `double(name, methods)` for creating test doubles. (Sam Phippen, Michi Huber)
 * Remove `any_number_of_times` since `should_receive(:msg).any_number_of_times`
   is really a stub in a mock's clothing. (Sam Phippen)
 * Remove support for re-using the same null-object test double in multiple
@@ -19,12 +18,13 @@ Breaking Changes for 3.0.0:
 * Remove support for `require 'spec/mocks'` which had been kept
   in place for backwards compatibility with RSpec 1. (Myron Marston)
 * Blocks provided to `with` are always used as implementation. (Xavier Shay)
+* The config option (added in 2.99) to yield the receiver to
+  `any_instance` implementation blocks now defaults to "on". (Sam Phippen)
 
 Enhancements:
 
 * Allow the `have_received` matcher to use a block to set further expectations
   on arguments. (Tim Cowlishaw)
-* Yield the receiver to `any_instance` implementation blocks. (Sam Phippen)
 * Provide `instance_double` and `class_double` to create verifying doubles,
   ported from `rspec-fire`. (Xavier Shay)
 * `as_null_object` on a verifying double only responds to defined methods.
@@ -61,6 +61,31 @@ Bug Fixes:
   use `#inspect` rather than `#description` if `#description`
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
+
+### 2.99.0.beta1 / 2013-11-07
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.99.0.beta1)
+
+Deprecations
+
+* Expecting to use lambdas or other strong arity implementations for stub
+  methods with mis-matched arity is deprecated and support for them will be
+  removed in 3.0. Either provide the right amount of arguments or use a weak
+  arity implementation (methods with splats or procs). (Jon Rowe)
+* Using the same test double instance in multiple examples is deprecated. Test
+  doubles are only meant to live for one example. The mocks and stubs have
+  always been reset between examples; however, in 2.x the `as_null_object`
+  state was not reset and some users relied on this to have a null object
+  double that is used for many examples. This behavior will be removed in 3.0.
+  (Myron Marston)
+* Print a detailed warning when an `any_instance` implementation block is used
+  when the new `yield_receiver_to_any_instance_implementation_blocks` config
+  option is not explicitly set, as RSpec 3.0 will default to enabling this new
+  feature. (Sam Phippen)
+
+Enhancements:
+
+* Add a config option to yield the receiver to `any_instance` implementation
+  blocks. (Sam Phippen)
 
 ### 2.14.4 / 2013-10-15
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...v2.14.4)
