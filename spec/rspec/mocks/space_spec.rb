@@ -20,7 +20,7 @@ module RSpec::Mocks
         parent      = parent_class.new
         child       = child_class.new
 
-        grandparent_proxy = space.proxy_for(grandparent)
+        _                 = space.proxy_for(grandparent)
         parent_proxy      = space.proxy_for(parent)
         child_proxy       = space.proxy_for(child)
 
