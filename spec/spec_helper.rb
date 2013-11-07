@@ -59,6 +59,13 @@ RSpec.configure do |config|
     expectations.syntax = :expect
   end
 
+  # TODO: switch most things to the `expect` syntax (and configure only that here)
+  #       but keep a small number of specs that use the old syntax in order to test it
+  #       (using the "with syntax" shared context defined below).
+  config.mock_with :rspec do |mocks|
+    mocks.syntax = [:should, :expect]
+  end
+
   old_verbose = nil
   config.before(:each, :silence_warnings) do
     old_verbose = $VERBOSE
