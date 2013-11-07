@@ -181,7 +181,7 @@ module RSpec
           raise NameError,
             "#{ref.name} is not a defined constant. " +
             "Perhaps you misspelt it? " +
-            "Disable check with verify_constant_names configuration option."
+            "Disable check with verify_doubled_constant_names configuration option."
         end
 
         declare_double(type, ref, *args)
