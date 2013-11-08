@@ -50,7 +50,7 @@ Enhancements:
 Deprecations:
 
 * Using the old `:should` syntax without explicitly configuring it
-  is disabled. It will continue to work but will emit a deprecation
+  is deprecated. It will continue to work but will emit a deprecation
   warning in RSpec 3 if you do not explicitly enable it. (Sam Phippen)
 
 Bug Fixes:
