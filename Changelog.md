@@ -31,7 +31,7 @@ Enhancements:
   (Xavier Shay)
 * Provide `object_double` to create verified doubles of specific object
   instances. (Xavier Shay)
-* Provide 'verify_partial_doubles` configuration that provides `object_double`
+* Provide `verify_partial_doubles` configuration that provides `object_double`
   like verification behaviour on partial mocks. (Xavier Shay)
 * Improved performance of double creation, particularly those with many
   attributes. (Xavier Shay)
