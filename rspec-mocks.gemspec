@@ -23,6 +23,12 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 1.8.7'
 
+  private_key = File.expand_path('~/.gem/rspec-gem-private_key.pem')
+  if File.exists?(private_key)
+    s.signing_key = private_key
+    s.cert_chain = [File.expand_path('~/.gem/rspec-gem-public_cert.pem')]
+  end
+
   if RSpec::Mocks::Version::STRING =~ /[a-zA-Z]+/
     # pin to exact version for rc's and betas
     s.add_runtime_dependency "rspec-support", "= #{RSpec::Mocks::Version::STRING}"
