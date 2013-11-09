@@ -28,4 +28,17 @@ describe "double" do
     expect(dbl.foo).to eq(2)
     expect { reset dbl }.not_to raise_error
   end
+
+  it 'allows string representation of methods in constructor' do
+    dbl = double('foo' => 1)
+    expect(dbl.foo).to eq(1)
+  end
+
+  it 'allows setter methods to be stubbed' do
+    dbl = double('foo=' => 1)
+
+    # Note the specified return value is thrown away. This is a Ruby semantics
+    # thing. You cannot change the return value of assignment.
+    expect(dbl.foo = "bar").to eq("bar")
+  end
 end
