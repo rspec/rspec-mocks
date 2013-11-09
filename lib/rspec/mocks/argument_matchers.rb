@@ -203,7 +203,7 @@ module RSpec
       #   object.should_receive(:message).with(hash_including(:key))
       #   object.should_receive(:message).with(hash_including(:key, :key2 => val2))
       def hash_including(*args)
-        HashIncludingMatcher.new(anythingize_lonely_keys(*args))
+        HashIncludingMatcher.new(ArgumentMatchers.anythingize_lonely_keys(*args))
       end
 
       # Matches an array that includes the specified items at least once.
@@ -226,7 +226,7 @@ module RSpec
       #   object.should_receive(:message).with(hash_excluding(:key))
       #   object.should_receive(:message).with(hash_excluding(:key, :key2 => :val2))
       def hash_excluding(*args)
-        HashExcludingMatcher.new(anythingize_lonely_keys(*args))
+        HashExcludingMatcher.new(ArgumentMatchers.anythingize_lonely_keys(*args))
       end
 
       alias_method :hash_not_including, :hash_excluding
@@ -252,11 +252,10 @@ module RSpec
 
       alias_method :a_kind_of, :kind_of
 
-      private
-
-      def anythingize_lonely_keys(*args)
+      # @api private
+      def self.anythingize_lonely_keys(*args)
         hash = args.last.class == Hash ? args.delete_at(-1) : {}
-        args.each { | arg | hash[arg] = anything }
+        args.each { | arg | hash[arg] = AnyArgMatcher.new(nil) }
         hash
       end
     end
