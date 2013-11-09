@@ -1,20 +1,13 @@
-Feature: Verifying doubles
+Feature: Using an instance double
 
-  Verifying doubles are a stricter alternative to normal doubles that provide
-  guarantees about what is being verified.  When using verifying doubles, RSpec
-  will check that the methods being stubbed are actually present on the
-  underlying object if it is available. Prefer using veryifing doubles over
-  normal doubles.
+  An `instance_double` is the most common type of verifying double. It takes a
+  class name or object as its first argument, then verifies that any methods
+  being stubbed would be present on an _instance_ of that class. If any
+  argument matchers are specified, it also verifies that the number of
+  arguments is correct.
 
-  No checking will happen if the constant name is not defined, but when run
-  with the constant present (either as a full spec run or by explicitly
-  preloading collaborators) a failure will be triggered if an invalid method is
-  being stubbed.
-
-  This dual approach allows you to move very quickly and test components in
-  isolation, while giving you confidence that your doubles are not a complete
-  fiction. Testing in isolation is optional but recommend for classes that do
-  not depend on third-party components.
+  For methods handled by `method_missing`, see [dynamic
+  objects](./dynamic-objects).
 
   Background:
     Given a file named "app/models/user.rb" with:
@@ -23,13 +16,6 @@ Feature: Verifying doubles
         def suspend!
           notifier.notify("suspended as")
         end
-      end
-      """
-
-    Given a file named "app/models/console_notifier.rb" with:
-      """ruby
-      class ConsoleNotifier
-        # notify is not defined yet.
       end
       """
 
@@ -80,6 +66,38 @@ Feature: Verifying doubles
     When I run `rspec spec/unit/user_spec.rb`
     Then the examples should all pass
 
-  Scenario: spec fails with dependencies loaded
+  Scenario: spec passes with dependencies loaded and method implemented
+    Given a file named "app/models/console_notifier.rb" with:
+      """ruby
+      class ConsoleNotifier
+        def notify(msg)
+          puts message
+        end
+      end
+      """
+
+    When I run `rspec spec/unit/user_spec.rb`
+    Then the examples should all pass
+
+  Scenario: spec fails with dependencies loaded and method unimplemented
+    Given a file named "app/models/console_notifier.rb" with:
+      """ruby
+      class ConsoleNotifier
+      end
+      """
     When I run `rspec -r./spec/spec_helper spec/unit/user_spec.rb`
     Then the output should contain "1 example, 1 failure"
+    And the output should contain "ConsoleNotifier does not implement:"
+
+  Scenario: spec fails with dependencies loaded and incorrect arity
+    Given a file named "app/models/console_notifier.rb" with:
+      """ruby
+      class ConsoleNotifier
+        def notify(msg, color)
+          puts color + message
+        end
+      end
+      """
+    When I run `rspec -r./spec/spec_helper spec/unit/user_spec.rb`
+    Then the output should contain "1 example, 1 failure"
+    And the output should contain "Wrong number of arguments."
