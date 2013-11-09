@@ -56,11 +56,4 @@ describe RSpec::Mocks do
     end
   end
 
-  def file_contents_for(lib, filename)
-    # http://rubular.com/r/HYpUMftlG2
-    path = $LOAD_PATH.find { |p| p.match(/\/rspec-#{lib}(-[a-f0-9]+)?\/lib/) }
-    file = File.join(path, filename)
-    File.read(file)
-  end
-
 end
