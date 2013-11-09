@@ -23,7 +23,7 @@
   - stub_undefined_constant.feature
   - hiding_defined_constant.feature
 - verifying_doubles:
-  - introduction.feature
+  - instance_doubles.feature
   - class_doubles.feature
   - object_doubles.feature
   - dynamic_classes.feature
