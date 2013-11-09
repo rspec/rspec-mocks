@@ -28,7 +28,7 @@ module RSpec
       #   card.rank  #=> "A"
       #
       def double(*args)
-        declare_double(Mock, *args)
+        ExampleMethods.declare_double(Mock, *args)
       end
 
       # @overload instance_double(doubled_class)
@@ -43,7 +43,7 @@ module RSpec
       # [double](double).
       def instance_double(doubled_class, *args)
         ref = ObjectReference.for(doubled_class)
-        declare_verifying_double(InstanceVerifyingDouble, ref, *args)
+        ExampleMethods.declare_verifying_double(InstanceVerifyingDouble, ref, *args)
       end
 
       # @overload class_double(doubled_class)
@@ -58,7 +58,7 @@ module RSpec
       # [double](double).
       def class_double(doubled_class, *args)
         ref = ObjectReference.for(doubled_class)
-        declare_verifying_double(ClassVerifyingDouble, ref, *args)
+        ExampleMethods.declare_verifying_double(ClassVerifyingDouble, ref, *args)
       end
 
       # @overload object_double(object_or_name)
@@ -73,7 +73,7 @@ module RSpec
       # for verification. In all other ways it behaves like a [double](double).
       def object_double(object_or_name, *args)
         ref = ObjectReference.for(object_or_name, :allow_direct_object_refs)
-        declare_verifying_double(ObjectVerifyingDouble, ref, *args)
+        ExampleMethods.declare_verifying_double(ObjectVerifyingDouble, ref, *args)
       end
 
       # Disables warning messages about expectations being set on nil.
@@ -164,6 +164,7 @@ module RSpec
         Matchers::HaveReceived.new(method_name, &block)
       end
 
+      # @api private
       def self.included(klass)
         klass.class_exec do
           # This gets mixed in so that if `RSpec::Matchers` is included in
@@ -172,9 +173,8 @@ module RSpec
         end
       end
 
-    private
-
-      def declare_verifying_double(type, ref, *args)
+      # @api private
+      def self.declare_verifying_double(type, ref, *args)
         if RSpec::Mocks.configuration.verify_doubled_constant_names? &&
           !ref.defined?
 
@@ -187,7 +187,8 @@ module RSpec
         declare_double(type, ref, *args)
       end
 
-      def declare_double(type, *args)
+      # @api private
+      def self.declare_double(type, *args)
         args << {} unless Hash === args.last
         type.new(*args)
       end
