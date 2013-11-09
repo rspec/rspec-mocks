@@ -70,7 +70,7 @@ module RSpec
       end
     end
 
-    class VerifyingPartialMockProxy < PartialMockProxy
+    class VerifyingPartialDoubleProxy < PartialDoubleProxy
       include VerifyingProxyMethods
 
       def initialize(object, expectation_ordering)

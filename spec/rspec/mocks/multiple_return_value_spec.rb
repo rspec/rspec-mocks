@@ -56,7 +56,7 @@ module RSpec
       before(:each) do
         @double = double
         @return_values = [1,2,3]
-        @double.should_receive(:do_something).exactly(3).times.and_return(@return_values[0],@return_values[1],@return_values[2])
+        @double.should_receive(:do_something).exactly(3).times.and_return(@return_values[0], @return_values[1], @return_values[2])
       end
 
       it "returns values in order to consecutive calls" do
@@ -104,7 +104,7 @@ module RSpec
 
     describe "a message expectation with multiple return values with a specified count larger than the number of values" do
       before(:each) do
-        @double = RSpec::Mocks::Mock.new("double")
+        @double = RSpec::Mocks::Double.new("double")
         @double.should_receive(:do_something).exactly(3).times.and_return(11, 22)
       end
 

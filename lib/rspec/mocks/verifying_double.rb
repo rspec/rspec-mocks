@@ -1,4 +1,3 @@
-require 'rspec/mocks/mock'
 require 'rspec/mocks/verifying_proxy'
 
 module RSpec

@@ -1,8 +1,8 @@
 module RSpec
   module Mocks
-    # Implements the methods needed for a pure test double.  RSpec::Mocks::Mock
+    # Implements the methods needed for a pure test double.  RSpec::Mocks::Double
     # includes this module, and it is provided for cases where you want a
-    # pure test double without subclassing RSpec::Mocks::Mock.
+    # pure test double without subclassing RSpec::Mocks::Double.
     module TestDouble
       # Extends the TestDouble module onto the given object and
       # initializes it as a test double.
@@ -104,6 +104,12 @@ module RSpec
       def __mock_proxy
         ::RSpec::Mocks.proxy_for(self)
       end
+    end
+
+    # A generic test double object. `double`, `instance_double` and friends
+    # return an instance of this.
+    class Double
+      include TestDouble
     end
   end
 end

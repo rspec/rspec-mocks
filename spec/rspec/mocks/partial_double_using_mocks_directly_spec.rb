@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module RSpec::Mocks
-  describe "PartialMockUsingMocksDirectly" do
+  describe "PartialDoubleUsingMocksDirectly" do
     let(:klass) do
       Class.new do
         module MethodMissing

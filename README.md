@@ -125,7 +125,7 @@ generic kind of object: a Test Double.
 
 ### Test-Specific Extension
 
-a.k.a. Partial Stub/Mock, a Test-Specific Extension is an extension of a
+a.k.a. Partial Double, a Test-Specific Extension is an extension of a
 real object in a system that is instrumented with test-double like
 behaviour in the context of a test. This technique is very common in Ruby
 because we often see class objects acting as global namespaces for methods.

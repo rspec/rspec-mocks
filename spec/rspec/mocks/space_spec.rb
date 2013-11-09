@@ -8,7 +8,7 @@ module RSpec::Mocks
 
       it 'returns proxies' do
         space.proxy_for("")
-        expect(space.proxies_of(String).map(&:class)).to eq([PartialMockProxy])
+        expect(space.proxies_of(String).map(&:class)).to eq([PartialDoubleProxy])
       end
 
       it 'returns only the proxies whose object is an instance of the given class' do

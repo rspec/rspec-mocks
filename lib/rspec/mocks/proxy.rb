@@ -231,7 +231,7 @@ module RSpec
       end
     end
 
-    class PartialMockProxy < Proxy
+    class PartialDoubleProxy < Proxy
       def method_handle_for(message)
         if any_instance_class_recorder_observing_method?(@object.class, message)
           message = ::RSpec::Mocks.
