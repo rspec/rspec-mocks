@@ -1,8 +1,11 @@
 Feature: Using an instance double
 
   An `instance_double` is the most common type of verifying double. It takes a
-  class name as its first argument, then verifies that any methods being
-  stubbed would be present on an _instance_ of that class.
+  class name or object as its first argument, then verifies that any methods
+  being stubbed would be present on an _instance_ of that class.
+
+  For methods handled by `method_missing`, see [dynamic
+  objects](./dynamic-objects).
 
   Background:
     Given a file named "app/models/user.rb" with:

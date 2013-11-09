@@ -6,10 +6,10 @@ will check that the methods being stubbed are actually present on the
 underlying object if it is available. Prefer using veryifing doubles over
 normal doubles.
 
-No checking will happen if the underlying object or calss is not defined, but
+No checking will happen if the underlying object or class is not defined, but
 when run with it present (either as a full spec run or by explicitly preloading
 collaborators) a failure will be triggered if an invalid method is being
-stubbed.
+stubbed or a method is called with an invalid number of arguments.
 
 This dual approach allows you to move very quickly and test components in
 isolation, while giving you confidence that your doubles are not a complete
