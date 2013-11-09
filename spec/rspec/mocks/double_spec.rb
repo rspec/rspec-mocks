@@ -28,4 +28,9 @@ describe "double" do
     expect(dbl.foo).to eq(2)
     expect { reset dbl }.not_to raise_error
   end
+
+  it 'allows string representation of methods in constructor' do
+    dbl = double('foo' => 1)
+    expect(dbl.foo).to eq(1)
+  end
 end

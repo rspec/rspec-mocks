@@ -8,7 +8,7 @@ module RSpec
     class SimpleMessageExpectation
 
       def initialize(message, response, error_generator, backtrace_line = nil)
-        @message, @response, @error_generator, @backtrace_line = message, response, error_generator, backtrace_line
+        @message, @response, @error_generator, @backtrace_line = message.to_sym, response, error_generator, backtrace_line
         @received = false
       end
 
@@ -18,7 +18,7 @@ module RSpec
       end
 
       def matches?(message, *_)
-        @message == message
+        @message == message.to_sym
       end
 
       def called_max_times?
