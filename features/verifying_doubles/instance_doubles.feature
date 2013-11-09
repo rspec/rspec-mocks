@@ -2,7 +2,9 @@ Feature: Using an instance double
 
   An `instance_double` is the most common type of verifying double. It takes a
   class name or object as its first argument, then verifies that any methods
-  being stubbed would be present on an _instance_ of that class.
+  being stubbed would be present on an _instance_ of that class. If any
+  argument matchers are specified, it also verifies that the number of
+  arguments is correct.
 
   For methods handled by `method_missing`, see [dynamic
   objects](./dynamic-objects).
@@ -14,13 +16,6 @@ Feature: Using an instance double
         def suspend!
           notifier.notify("suspended as")
         end
-      end
-      """
-
-    Given a file named "app/models/console_notifier.rb" with:
-      """ruby
-      class ConsoleNotifier
-        # notify is not defined yet.
       end
       """
 
@@ -71,6 +66,38 @@ Feature: Using an instance double
     When I run `rspec spec/unit/user_spec.rb`
     Then the examples should all pass
 
-  Scenario: spec fails with dependencies loaded
+  Scenario: spec passes with dependencies loaded and method implemented
+    Given a file named "app/models/console_notifier.rb" with:
+      """ruby
+      class ConsoleNotifier
+        def notify(msg)
+          puts message
+        end
+      end
+      """
+
+    When I run `rspec spec/unit/user_spec.rb`
+    Then the examples should all pass
+
+  Scenario: spec fails with dependencies loaded and method unimplemented
+    Given a file named "app/models/console_notifier.rb" with:
+      """ruby
+      class ConsoleNotifier
+      end
+      """
     When I run `rspec -r./spec/spec_helper spec/unit/user_spec.rb`
     Then the output should contain "1 example, 1 failure"
+    And the output should contain "ConsoleNotifier does not implement:"
+
+  Scenario: spec fails with dependencies loaded and incorrect arity
+    Given a file named "app/models/console_notifier.rb" with:
+      """ruby
+      class ConsoleNotifier
+        def notify(msg, color)
+          puts color + message
+        end
+      end
+      """
+    When I run `rspec -r./spec/spec_helper spec/unit/user_spec.rb`
+    Then the output should contain "1 example, 1 failure"
+    And the output should contain "Wrong number of arguments."

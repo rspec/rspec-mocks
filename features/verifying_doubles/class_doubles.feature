@@ -1,7 +1,7 @@
 Feature: Using a class double
 
   `class_double` is provided as a complement to `instance_double`, with the
-  difference that it verifies class methods on the given class rather than
+  difference that it verifies _class_ methods on the given class rather than
   instance methods.
 
   In addition, it also provides a convenience method `as_stubbed_const` to
@@ -71,18 +71,3 @@ Feature: Using a class double
     When I run `rspec spec/user_spec.rb`
     Then the output should contain "1 example, 1 failure"
     And the output should contain "ConsoleNotifier does not implement:"
-
-  Scenario: adding `color` as a second argument to `ConsoleNotifier.notify`
-    Given a file named "lib/console_notifier.rb" with:
-      """ruby
-      class ConsoleNotifier
-        MAX_WIDTH = 80
-
-        def self.notify(message, color)
-          puts color + message
-        end
-      end
-      """
-    When I run `rspec spec/user_spec.rb`
-    Then the output should contain "1 example, 1 failure"
-     And the output should contain "Wrong number of arguments."
