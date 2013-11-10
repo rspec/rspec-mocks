@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RSpec::Mocks::Mock do
+describe RSpec::Mocks::Double do
 
   let(:obj) { double }
 

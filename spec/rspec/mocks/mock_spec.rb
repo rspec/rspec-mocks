@@ -2,16 +2,35 @@ require 'spec_helper'
 
 module RSpec
   module Mocks
-    describe Mock do
+    describe "::Mock" do
+      before { allow_deprecation }
+
+      it 'returns a reference to Double' do
+        expect(RSpec::Mocks::Mock).to be(RSpec::Mocks::Double)
+      end
+
+      it 'prints a deprecation warning' do
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+        RSpec::Mocks::Mock
+      end
+
+      it 'does not clobber the normal const missing behavior' do
+        expect {
+          RSpec::Mocks::AZBYCX
+        }.to raise_error(NameError, /uninitialized constant RSpec::Mocks::AZBYCX/)
+      end
+    end
+
+    describe Double do
       before(:each) { @double = double("test double") }
       after(:each)  { reset @double }
 
       it "has method_missing as private" do
-        expect(RSpec::Mocks::Mock.private_instance_methods).to include_method(:method_missing)
+        expect(RSpec::Mocks::Double.private_instance_methods).to include_method(:method_missing)
       end
 
       it "does not respond_to? method_missing (because it's private)" do
-        expect(RSpec::Mocks::Mock.new).not_to respond_to(:method_missing)
+        expect(RSpec::Mocks::Double.new).not_to respond_to(:method_missing)
       end
 
       it "reports line number of expectation of unreceived message" do
@@ -631,7 +650,7 @@ module RSpec
       end
 
       it "assigns stub return values" do
-        double = RSpec::Mocks::Mock.new('name', :message => :response)
+        double = RSpec::Mocks::Double.new('name', :message => :response)
         expect(double.message).to eq :response
       end
 
