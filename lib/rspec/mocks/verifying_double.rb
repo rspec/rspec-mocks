@@ -3,6 +3,7 @@ require 'rspec/mocks/verifying_proxy'
 module RSpec
   module Mocks
 
+    # @api private
     module VerifyingDouble
       def method_missing(message, *args, &block)
         # Null object conditional is an optimization. If not a null object,
@@ -16,6 +17,7 @@ module RSpec
     # A mock providing a custom proxy that can verify the validity of any
     # method stubs or expectations against the public instance methods of the
     # given class.
+    # @api private
     class InstanceVerifyingDouble
       include TestDouble
       include VerifyingDouble
@@ -36,6 +38,7 @@ module RSpec
 
     # An awkward module necessary because we cannot otherwise have
     # ClassVerifyingDouble inherit from Module and still share these methods.
+    # @api private
     module ObjectVerifyingDoubleMethods
       include TestDouble
       include VerifyingDouble
@@ -61,6 +64,7 @@ module RSpec
 
     # Similar to an InstanceVerifyingDouble, except that it verifies against
     # public methods of the given object.
+    # @api private
     class ObjectVerifyingDouble
       include ObjectVerifyingDoubleMethods
     end
@@ -68,6 +72,7 @@ module RSpec
     # Effectively the same as an ObjectVerifyingDouble (since a class is a type
     # of object), except with Module in the inheritance chain so that
     # transferring nested constants to work.
+    # @api private
     class ClassVerifyingDouble < Module
       include ObjectVerifyingDoubleMethods
     end
