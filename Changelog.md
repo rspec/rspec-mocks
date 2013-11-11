@@ -1,7 +1,15 @@
+### 2.99.0.beta2 Development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...2-99-maintenance)
+
+Deprecations:
+
+* Deprecate `RSpec::Mocks::Mock` in favor of `RSpec::Mocks::Double`.
+  (Myron Marston)
+
 ### 2.99.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.99.0.beta1)
 
-Deprecations
+Deprecations:
 
 * Expecting to use lambdas or other strong arity implementations for stub
   methods with mis-matched arity is deprecated and support for them will be

@@ -144,7 +144,7 @@ module RSpec
       def declare_double(declared_as, *args)
         args << {} unless Hash === args.last
         args.last[:__declared_as] = declared_as
-        RSpec::Mocks::Mock.new(*args)
+        RSpec::Mocks::Double.new(*args)
       end
 
       # This module exists to host the `expect` method for cases where

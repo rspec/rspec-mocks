@@ -104,7 +104,7 @@ module RSpec
 
     describe "a message expectation with multiple return values with a specified count larger than the number of values" do
       before(:each) do
-        @double = RSpec::Mocks::Mock.new("double")
+        @double = RSpec::Mocks::Double.new("double")
         @double.should_receive(:do_something).exactly(3).times.and_return(11, 22)
       end
 

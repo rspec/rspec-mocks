@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "AnyNumberOfTimes" do
   before(:each) do
-    @mock = RSpec::Mocks::Mock.new("test mock")
+    @mock = RSpec::Mocks::Double.new("test mock")
     allow(RSpec).to receive(:deprecate)
   end
 
