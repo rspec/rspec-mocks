@@ -8,12 +8,12 @@ class LoadedClass
   def defined_instance_method; end
   def self.defined_class_method; end
 
-  def respond_to?(method_name)
+  def respond_to?(method_name, include_all = false)
     return true if method_name == :dynamic_instance_method
     super
   end
 
-  def self.respond_to?(method_name)
+  def self.respond_to?(method_name, include_all = false)
     return true if method_name == :dynamic_class_method
     super
   end
@@ -23,6 +23,13 @@ class LoadedClass
   end
 
   class Nested; end
+
+private
+
+  def defined_private_method
+    "wink wink ;)"
+  end
+
 end
 
 module RSpec
@@ -77,6 +84,16 @@ module RSpec
             prevents { expect(o).to receive(:defined_class_method) }
             prevents { o.should_receive(:undefined_instance_method) }
             prevents { o.should_receive(:defined_class_method) }
+          end
+
+          it 'allows instance methods that are private' do
+            o = instance_double('LoadedClass')
+            allow(o).to receive(:defined_private_method)
+            o.send :defined_private_method
+
+            o2 = instance_double('LoadedClass')
+            expect(o2).to receive(:defined_private_method)
+            o2.send :defined_private_method
           end
 
           it 'does not allow dynamic methods to be expected' do
@@ -266,6 +283,8 @@ module RSpec
 
           expect(o).to receive(:defined_instance_method)
           o.defined_instance_method
+          expect(o).to receive(:defined_private_method)
+          o.send :defined_private_method
         end
 
         it 'can create a double that matches the interface of any arbitrary object' do
@@ -277,6 +296,8 @@ module RSpec
 
           expect(o).to receive(:defined_instance_method)
           o.defined_instance_method
+          expect(o).to receive(:defined_private_method)
+          o.send :defined_private_method
         end
 
         it 'does not allow transferring constants to an object' do

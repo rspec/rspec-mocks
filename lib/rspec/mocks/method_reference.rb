@@ -49,7 +49,7 @@ module RSpec
     class InstanceMethodReference < MethodReference
       private
       def method_implemented?(m)
-        m.method_defined?(@method_name)
+        m.method_defined?(@method_name) || m.private_method_defined?(@method_name)
       end
 
       # Ideally, we'd use `respond_to?` for `method_implemented?` but we need a
@@ -80,7 +80,7 @@ module RSpec
     class ObjectMethodReference < MethodReference
       private
       def method_implemented?(m)
-        m.respond_to?(@method_name)
+        m.respond_to?(@method_name, true)
       end
 
       def method_defined?(m)
