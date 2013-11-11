@@ -20,6 +20,7 @@ Breaking Changes for 3.0.0:
 * Blocks provided to `with` are always used as implementation. (Xavier Shay)
 * The config option (added in 2.99) to yield the receiver to
   `any_instance` implementation blocks now defaults to "on". (Sam Phippen)
+* Rename `RSpec::Mocks::Mock` to `RSpec::Mocks::Double`. (Myron Marston)
 
 Enhancements:
 

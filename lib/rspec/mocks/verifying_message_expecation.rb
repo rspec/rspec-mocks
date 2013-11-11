@@ -6,6 +6,7 @@ module RSpec
     # A message expectation that knows about the real implementation of the
     # message being expected, so that it can verify that any expectations
     # have the correct arity.
+    # @api private
     class VerifyingMessageExpectation < MessageExpectation
 
       # A level of indirection is used here rather than just passing in the

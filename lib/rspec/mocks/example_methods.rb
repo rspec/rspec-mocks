@@ -12,9 +12,9 @@ module RSpec
       # @param name [String/Symbol] (optional) used in
       #   clarify intent
       # @param stubs (Hash) (optional) hash of message/return-value pairs
-      # @return (Mock)
+      # @return (Double)
       #
-      # Constructs an instance of [RSpec::Mocks::Mock](RSpec::Mocks::Mock) configured
+      # Constructs an instance of [RSpec::Mocks::Double](RSpec::Mocks::Double) configured
       # with an optional name, used for reporting in failure messages, and an optional
       # hash of message/return-value pairs.
       #
@@ -28,7 +28,7 @@ module RSpec
       #   card.rank  #=> "A"
       #
       def double(*args)
-        ExampleMethods.declare_double(Mock, *args)
+        ExampleMethods.declare_double(Double, *args)
       end
 
       # @overload instance_double(doubled_class)

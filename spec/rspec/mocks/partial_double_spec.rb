@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module RSpec
   module Mocks
-    describe "using a Partial Mock," do
+    describe "A partial double" do
       let(:object) { Object.new }
 
       it "names the class in the failure message" do

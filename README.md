@@ -49,7 +49,7 @@ This is particularly nice when providing a list of test doubles to a method
 that iterates through them:
 
 ```ruby
-order.calculate_total_price(double(:price => 1.99),double(:price => 2.99))
+order.calculate_total_price(double(:price => 1.99), double(:price => 2.99))
 ```
 
 ## Consecutive return values
@@ -59,7 +59,7 @@ arguments to `and_return`.  The invocations cycle through the list. The last
 value is returned for any subsequent invocations:
 
 ```ruby
-allow(die).to receive(:roll).and_return(1,2,3)
+allow(die).to receive(:roll).and_return(1, 2, 3)
 die.roll # => 1
 die.roll # => 2
 die.roll # => 3
@@ -125,7 +125,7 @@ generic kind of object: a Test Double.
 
 ### Test-Specific Extension
 
-a.k.a. Partial Stub/Mock, a Test-Specific Extension is an extension of a
+a.k.a. Partial Double, a Test-Specific Extension is an extension of a
 real object in a system that is instrumented with test-double like
 behaviour in the context of a test. This technique is very common in Ruby
 because we often see class objects acting as global namespaces for methods.
@@ -206,7 +206,7 @@ expect(double).to receive(:msg).any_number_of_times
 ```ruby
 expect(double).to receive(:msg).ordered
 expect(double).to receive(:other_msg).ordered
-  #This will fail if the messages are received out of order
+  # This will fail if the messages are received out of order
 ```
 
 This can include the same message with different arguments:
@@ -234,11 +234,11 @@ expect(double).to receive(:msg).and_return(value)
 expect(double).to receive(:msg).exactly(3).times.and_return(value1, value2, value3)
   # returns value1 the first time, value2 the second, etc
 expect(double).to receive(:msg).and_raise(error)
-  #error can be an instantiated object or a class
-  #if it is a class, it must be instantiable with no args
+  # error can be an instantiated object or a class
+  # if it is a class, it must be instantiable with no args
 expect(double).to receive(:msg).and_throw(:msg)
-expect(double).to receive(:msg).and_yield(values,to,yield)
-expect(double).to receive(:msg).and_yield(values,to,yield).and_yield(some,other,values,this,time)
+expect(double).to receive(:msg).and_yield(values, to, yield)
+expect(double).to receive(:msg).and_yield(values, to, yield).and_yield(some, other, values, this, time)
   # for methods that yield to a block multiple times
 ```
 
@@ -249,8 +249,8 @@ allow(double).to receive(:msg).and_return(value)
 allow(double).to receive(:msg).and_return(value1, value2, value3)
 allow(double).to receive(:msg).and_raise(error)
 allow(double).to receive(:msg).and_throw(:msg)
-allow(double).to receive(:msg).and_yield(values,to,yield)
-allow(double).to receive(:msg).and_yield(values,to,yield).and_yield(some,other,values,this,time)
+allow(double).to receive(:msg).and_yield(values, to, yield)
+allow(double).to receive(:msg).and_yield(values, to, yield).and_yield(some, other, values, this, time)
 ```
 
 ## Arbitrary Handling

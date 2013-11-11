@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe RSpec::Mocks do
   describe "::setup" do
-    context "with an existing Mock::Space" do
+    context "with an existing Mocks::Space" do
       before do
         @orig_space = RSpec::Mocks::space
       end
@@ -19,8 +19,8 @@ describe RSpec::Mocks do
       end
     end
 
-    context "with no pre-existing Mock::Space" do
-      it "initializes a Mock::Space" do
+    context "with no pre-existing Mocks::Space" do
+      it "initializes a Mocks::Space" do
         RSpec::Mocks::space = nil
         RSpec::Mocks::setup(Object.new)
         expect(RSpec::Mocks::space).not_to be_nil
