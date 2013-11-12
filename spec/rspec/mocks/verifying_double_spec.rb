@@ -5,21 +5,33 @@ class LoadedClass
   N = :n
   INSTANCE = LoadedClass.new
 
-  def defined_instance_method; end
-  def self.defined_class_method; end
+  class << self
+
+    def respond_to?(method_name, include_all = false)
+      return true if method_name == :dynamic_class_method
+      super
+    end
+
+    def defined_class_method
+    end
+
+    def send
+      # fake out!
+    end
+
+  private
+
+    def defined_private_class_method
+    end
+
+  end
+
+  def defined_instance_method
+  end
 
   def respond_to?(method_name, include_all = false)
     return true if method_name == :dynamic_instance_method
     super
-  end
-
-  def self.respond_to?(method_name, include_all = false)
-    return true if method_name == :dynamic_class_method
-    super
-  end
-
-  def self.send
-    # fake out!
   end
 
   class Nested; end
@@ -172,8 +184,9 @@ module RSpec
           end
 
           it 'only allows class methods that exist to be stubbed' do
-            o = class_double('LoadedClass', :defined_class_method => 1)
+            o = class_double('LoadedClass', :defined_class_method => 1, :defined_private_class_method => 42)
             expect(o.defined_class_method).to eq(1)
+            expect(o.send :defined_private_class_method).to eq(42)
 
             prevents { o.stub(:undefined_instance_method) }
             prevents { o.stub(:defined_instance_method) }
@@ -182,7 +195,9 @@ module RSpec
           it 'only allows class methods that exist to be expected' do
             o = class_double('LoadedClass')
             expect(o).to receive(:defined_class_method)
+            expect(o).to receive(:defined_private_class_method)
             o.defined_class_method
+            o.send :defined_private_class_method
 
             prevents { expect(o).to receive(:undefined_instance_method) }
             prevents { expect(o).to receive(:defined_instance_method) }
