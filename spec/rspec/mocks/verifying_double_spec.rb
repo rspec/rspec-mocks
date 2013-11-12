@@ -5,24 +5,43 @@ class LoadedClass
   N = :n
   INSTANCE = LoadedClass.new
 
-  def defined_instance_method; end
-  def self.defined_class_method; end
+  class << self
 
-  def respond_to?(method_name)
+    def respond_to?(method_name, include_all = false)
+      return true if method_name == :dynamic_class_method
+      super
+    end
+
+    def defined_class_method
+    end
+
+    def send
+      # fake out!
+    end
+
+  private
+
+    def defined_private_class_method
+    end
+
+  end
+
+  def defined_instance_method
+  end
+
+  def respond_to?(method_name, include_all = false)
     return true if method_name == :dynamic_instance_method
     super
   end
 
-  def self.respond_to?(method_name)
-    return true if method_name == :dynamic_class_method
-    super
-  end
-
-  def self.send
-    # fake out!
-  end
-
   class Nested; end
+
+private
+
+  def defined_private_method
+    "wink wink ;)"
+  end
+
 end
 
 module RSpec
@@ -77,6 +96,16 @@ module RSpec
             prevents { expect(o).to receive(:defined_class_method) }
             prevents { o.should_receive(:undefined_instance_method) }
             prevents { o.should_receive(:defined_class_method) }
+          end
+
+          it 'allows instance methods that are private' do
+            o = instance_double('LoadedClass')
+            allow(o).to receive(:defined_private_method)
+            o.send :defined_private_method
+
+            o2 = instance_double('LoadedClass')
+            expect(o2).to receive(:defined_private_method)
+            o2.send :defined_private_method
           end
 
           it 'does not allow dynamic methods to be expected' do
@@ -155,8 +184,9 @@ module RSpec
           end
 
           it 'only allows class methods that exist to be stubbed' do
-            o = class_double('LoadedClass', :defined_class_method => 1)
+            o = class_double('LoadedClass', :defined_class_method => 1, :defined_private_class_method => 42)
             expect(o.defined_class_method).to eq(1)
+            expect(o.send :defined_private_class_method).to eq(42)
 
             prevents { o.stub(:undefined_instance_method) }
             prevents { o.stub(:defined_instance_method) }
@@ -165,7 +195,9 @@ module RSpec
           it 'only allows class methods that exist to be expected' do
             o = class_double('LoadedClass')
             expect(o).to receive(:defined_class_method)
+            expect(o).to receive(:defined_private_class_method)
             o.defined_class_method
+            o.send :defined_private_class_method
 
             prevents { expect(o).to receive(:undefined_instance_method) }
             prevents { expect(o).to receive(:defined_instance_method) }
@@ -266,6 +298,8 @@ module RSpec
 
           expect(o).to receive(:defined_instance_method)
           o.defined_instance_method
+          expect(o).to receive(:defined_private_method)
+          o.send :defined_private_method
         end
 
         it 'can create a double that matches the interface of any arbitrary object' do
@@ -277,6 +311,8 @@ module RSpec
 
           expect(o).to receive(:defined_instance_method)
           o.defined_instance_method
+          expect(o).to receive(:defined_private_method)
+          o.send :defined_private_method
         end
 
         it 'does not allow transferring constants to an object' do
