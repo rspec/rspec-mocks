@@ -27,7 +27,7 @@ module RSpec
         def setup_negative_expectation(subject, &block)
           # ensure `never` goes first for cases like `never.and_return(5)`,
           # where `and_return` is meant to raise an error
-          @recorded_customizations.unshift Customization.new(:never, [], nil)
+          @recorded_customizations.unshift ExpectationCustomization.new(:never, [], nil)
 
           warn_if_any_instance("expect", subject)
 
@@ -56,7 +56,7 @@ module RSpec
           next if method_defined?(method)
 
           define_method(method) do |*args, &block|
-            @recorded_customizations << Customization.new(method, args, block)
+            @recorded_customizations << ExpectationCustomization.new(method, args, block)
             self
           end
         end
@@ -93,18 +93,18 @@ module RSpec
           end
           expectation
         end
+      end
+    end
 
-        class Customization
-          def initialize(method_name, args, block)
-            @method_name = method_name
-            @args        = args
-            @block       = block
-          end
+    class ExpectationCustomization
+      def initialize(method_name, args, block)
+        @method_name = method_name
+        @args        = args
+        @block       = block
+      end
 
-          def playback_onto(expectation)
-            expectation.__send__(@method_name, *@args, &@block)
-          end
-        end
+      def playback_onto(expectation)
+        expectation.__send__(@method_name, *@args, &@block)
       end
     end
   end

@@ -124,6 +124,10 @@ module RSpec
             matcher
           end
 
+          def receive_message_chain(*messages, &block)
+            Matchers::ReceiveMessageChain.new(messages, &block)
+          end
+
           def allow(target)
             AllowanceTarget.new(target)
           end
@@ -152,6 +156,7 @@ module RSpec
         syntax_host.class_exec do
           undef receive
           undef receive_messages
+          undef receive_message_chain
           undef allow
           undef expect_any_instance_of
           undef allow_any_instance_of
@@ -366,6 +371,37 @@ module RSpec
       #
       #   allow(obj).to receive_messages(:speak => "Hello World")
       #   allow(obj).to receive_messages(:speak => "Hello", :meow => "Meow")
+      #
+      # @note This is only available when you have enabled the `expect` syntax.
+      #
+      # @method receive_message_chain
+      # @overload receive_message_chain(method1, method2)
+      # @overload receive_message_chain("method1.method2")
+      # @overload receive_message_chain(method1, method_to_value_hash)
+      #
+      # stubs/mocks a chain of messages on an object or test double.
+      #
+      # ## Warning:
+      #
+      # Chains can be arbitrarily long, which makes it quite painless to
+      # violate the Law of Demeter in violent ways, so you should consider any
+      # use of `receive_message_chain` a code smell. Even though not all code smells
+      # indicate real problems (think fluent interfaces), `receive_message_chain` still
+      # results in brittle examples.  For example, if you write
+      # `foo.receive_message_chain(:bar, :baz => 37)` in a spec and then the
+      # implementation calls `foo.baz.bar`, the stub will not work.
+      #
+      # @example
+      #
+      #     allow(double).to receive_message_chain("foo.bar") { :baz }
+      #     allow(double).to receive_message_chain(:foo, :bar => :baz)
+      #     allow(double).to receive_message_chain(:foo, :bar) { :baz }
+      #
+      #     # Given any of ^^ these three forms ^^:
+      #     double.foo.bar # => :baz
+      #
+      #     # Common use in Rails/ActiveRecord:
+      #     allow(Article).to receive_message_chain("recent.published") { [Article.new] }
       #
       # @note This is only available when you have enabled the `expect` syntax.
     end

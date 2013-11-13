@@ -117,9 +117,9 @@ module RSpec
       end
 
       # @private
-      def raise_only_valid_on_a_partial_mock(method)
-        __raise "#{intro} is a pure mock object. `#{method}` is only " +
-                "available on a partial mock object."
+      def raise_only_valid_on_a_partial_double(method)
+        __raise "#{intro} is a pure test double. `#{method}` is only " +
+                "available on a partial double."
       end
 
       # @private

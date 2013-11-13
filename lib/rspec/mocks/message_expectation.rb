@@ -139,7 +139,7 @@ module RSpec
       # Tells the object to delegate to the original unmodified method
       # when it receives the message.
       #
-      # @note This is only available on partial mock objects.
+      # @note This is only available on partial doubles.
       #
       # @example
       #
@@ -149,7 +149,7 @@ module RSpec
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
         if RSpec::Mocks::TestDouble === @method_double.object
-          @error_generator.raise_only_valid_on_a_partial_mock(:and_call_original)
+          @error_generator.raise_only_valid_on_a_partial_double(:and_call_original)
         else
           if implementation.inner_action
             RSpec.warning("You're overriding a previous implementation for this stub")
@@ -224,29 +224,12 @@ module RSpec
 
       # @private
       def invoke(parent_stub, *args, &block)
-        if yield_receiver_to_implementation_block?
-          args.unshift(orig_object)
-        end
+        invoke_incrementing_actual_calls_by(1, parent_stub, *args, &block)
+      end
 
-        if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
-          @actual_received_count += 1
-          @failed_fast = true
-          #args are the args we actually received, @argument_list_matcher is the
-          #list of args we were expecting
-          @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *args)
-        end
-
-        @order_group.handle_order_constraint self
-
-        begin
-          if implementation.present?
-            implementation.call(*args, &block)
-          elsif parent_stub
-            parent_stub.invoke(nil, *args, &block)
-          end
-        ensure
-          @actual_received_count += 1
-        end
+      # @private
+      def invoke_without_incrementing_received_count(parent_stub, *args, &block)
+        invoke_incrementing_actual_calls_by(0, parent_stub, *args, &block)
       end
 
       # @private
@@ -494,6 +477,32 @@ module RSpec
       end
 
     private
+
+      def invoke_incrementing_actual_calls_by(increment, parent_stub, *args, &block)
+        if yield_receiver_to_implementation_block?
+          args.unshift(orig_object)
+        end
+
+        if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
+          @actual_received_count += increment
+          @failed_fast = true
+          #args are the args we actually received, @argument_list_matcher is the
+          #list of args we were expecting
+          @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *args)
+        end
+
+        @order_group.handle_order_constraint self
+
+        begin
+          if implementation.present?
+            implementation.call(*args, &block)
+          elsif parent_stub
+            parent_stub.invoke(nil, *args, &block)
+          end
+        ensure
+          @actual_received_count += increment
+        end
+      end
 
       def failed_fast?
         @failed_fast

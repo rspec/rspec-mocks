@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'delegate'
 
 describe "and_call_original" do
-  context "on a partial mock object" do
+  context "on a partial double" do
     let(:klass) do
       Class.new do
         def meth_1
@@ -200,7 +200,7 @@ describe "and_call_original" do
     end
   end
 
-  context "on a partial mock object that overrides #method" do
+  context "on a partial double that overrides #method" do
     let(:request_klass) do
       Struct.new(:method, :url) do
         def perform
@@ -230,17 +230,17 @@ describe "and_call_original" do
     end
   end
 
-  context "on a pure mock object" do
+  context "on a pure test double" do
     let(:instance) { double }
 
-    it 'raises an error even if the mock object responds to the message' do
+    it 'raises an error even if the double object responds to the message' do
       expect(instance.to_s).to be_a(String)
       mock_expectation = instance.should_receive(:to_s)
       instance.to_s # to satisfy the expectation
 
       expect {
         mock_expectation.and_call_original
-      }.to raise_error(/and_call_original.*partial mock/i)
+      }.to raise_error(/pure test double.*and_call_original.*partial double/i)
     end
   end
 end
