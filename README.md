@@ -11,12 +11,11 @@ alike.
 
 ## Test Doubles
 
-A Test Double is an object that stands in for a real object in a test.
-RSpec creates test doubles that support method stubs and message
-expectations.
+A test double is an object that stands in for another object in your system
+during a code example. Use the `double` method to create one:
 
 ```ruby
-book = double("book")
+account = double("Account")
 ```
 
 Most of the time you will want some confidence that your doubles resemble an
