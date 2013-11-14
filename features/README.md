@@ -19,10 +19,6 @@ during a code example. Use the `double` method to create one:
 
     double_account = double("Account")
 
-You can also use the `mock` and `stub` methods to create test doubles, however
-these methods are there for backward compatibility only and will likely be
-deprecated and then removed from future versions.
-
 ## Method Stubs
 
 A method stub is an instruction to an object (real or test double) to return a
