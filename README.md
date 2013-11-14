@@ -15,7 +15,7 @@ A test double is an object that stands in for another object in your system
 during a code example. Use the `double` method to create one:
 
 ```ruby
-account = double("Account")
+book = double("book")
 ```
 
 Most of the time you will want some confidence that your doubles resemble an
