@@ -19,6 +19,21 @@ expectations.
 book = double("book")
 ```
 
+Most of the time you will want some confidence that your doubles resemble an
+existing object in your system. Verifying doubles are provided for this
+purpose. If the existing object is available, they will prevent you from adding
+stubs and expectations for methods that do not exist or that have an invalid
+number of parameters.
+
+```ruby
+book = instance_double("Book", :pages => 250)
+```
+
+Verifying doubles have some clever tricks to enable you to both test in
+isolation without your dependencies loaded while still being able to validate
+them against real objects. More detail is available in (their
+documentation)[https://github.com/rspec/rspec-mocks/blob/master/features/verifying_doubles].
+
 ## Method Stubs
 
 A method stub is an implementation that returns a pre-determined value.  Method
