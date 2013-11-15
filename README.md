@@ -12,7 +12,7 @@ alike.
 ## Test Doubles
 
 A test double is an object that stands in for another object in your system
-during a code example. Use the `double` method to create one:
+during a code example. Use the `double` method, passing in an optional identifier, to create one:
 
 ```ruby
 book = double("book")
