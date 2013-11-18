@@ -10,7 +10,7 @@ module RSpec
 
       def self.delegate_to(matcher_method)
         define_method(:to) do |matcher, &block|
-          unless Matchers::Receive === matcher || Matchers::ReceiveMessages === matcher
+          unless matcher_allowed?(matcher)
             raise_unsupported_matcher(:to, matcher)
           end
           define_matcher(matcher, matcher_method, &block)
@@ -21,8 +21,10 @@ module RSpec
         method_name = options.fetch(:from)
         define_method(method_name) do |matcher, &block|
           case matcher
-          when Matchers::Receive         then define_matcher(matcher, matcher_method, &block)
-          when Matchers::ReceiveMessages then raise_negation_unsupported(method_name, matcher)
+          when Matchers::Receive
+            define_matcher(matcher, matcher_method, &block)
+          when Matchers::ReceiveMessages, Matchers::ReceiveMessageChain
+            raise_negation_unsupported(method_name, matcher)
           else
             raise_unsupported_matcher(method_name, matcher)
           end
@@ -36,6 +38,17 @@ module RSpec
       end
 
     private
+
+      def matcher_allowed?(matcher)
+        ALLOWED_MATCHERS.include?(matcher.class)
+      end
+
+      #@api private
+      ALLOWED_MATCHERS = [
+        Matchers::Receive,
+        Matchers::ReceiveMessages,
+        Matchers::ReceiveMessageChain,
+      ]
 
       def define_matcher(matcher, name, &block)
         matcher.__send__(name, @target, &block)
@@ -87,4 +100,3 @@ module RSpec
     end
   end
 end
-

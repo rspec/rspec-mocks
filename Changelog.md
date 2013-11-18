@@ -10,6 +10,12 @@ Bug Fixes:
 * Fix regression in 3.0.0.beta1 that caused `double("string_name" => :value)`
   to stop working. (Xavier Shay)
 
+Enhancements:
+
+* Add receive_message_chain which provides the functionality of the old
+  stub_chain for the new allow/expect syntax. Use it like so: allow(...).to
+  receive_message_chain(:foo, :bar, :bazz). (Sam Phippen).
+
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v3.0.0.beta1)
 

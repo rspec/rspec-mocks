@@ -27,6 +27,10 @@ module VerifyAndResetHelpers
   def reset(object)
     RSpec::Mocks.proxy_for(object).reset
   end
+
+  def verify_all
+    RSpec::Mocks.space.verify_all
+  end
 end
 
 module DeprecationHelpers

@@ -49,6 +49,15 @@ module RSpec
           end
         end
 
+        # @api private
+        def expect_chain(*method_names_and_optional_return_values, &block)
+          @expectation_set = true
+          normalize_chain(*method_names_and_optional_return_values) do |method_name, args|
+            observe!(method_name)
+            message_chains.add(method_name, ExpectChainChain.new(self, *args, &block))
+          end
+        end
+
         # Initializes the recording a message expectation to be played back
         # against any instance of this object that invokes the submitted
         # method.
