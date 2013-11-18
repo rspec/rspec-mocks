@@ -10,7 +10,7 @@ Feature: standalone
       require "rspec/mocks/standalone"
 
       greeter = double("greeter")
-      greeter.stub(:say_hi) { "Hello!" }
+      allow(greeter).to receive(:say_hi) { "Hello!" }
       puts greeter.say_hi
       """
     When I run `ruby example.rb`

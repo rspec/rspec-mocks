@@ -1,3 +1,2 @@
 require 'rspec/mocks'
-
-RSpec::Mocks.setup(self)
+include RSpec::Mocks::ExampleMethods
