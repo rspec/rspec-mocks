@@ -56,16 +56,15 @@ describe RSpec::Mocks do
     end
   end
 
-  describe "ArgumentMatchers not overriding let definitions" do
-    WithMatchers = Class.new { include RSpec::Mocks::ArgumentMatchers }
-    methods = WithMatchers.new.methods - Object.new.methods
+  context "when there is a `let` declaration that overrides an argument matcher" do
+    let(:boolean) { :from_let }
 
-    methods.each do |method|
-      let(method) { :a_thing }
+    before do
+      expect(RSpec::Mocks::ArgumentMatchers.method_defined?(:boolean)).to be true
+    end
 
-      it "doesn't override a let named #{ method }" do
-        expect(send(method)).to be(:a_thing)
-      end
+    it 'allows the `let` definition to win' do
+      expect(boolean).to eq(:from_let)
     end
   end
 end
