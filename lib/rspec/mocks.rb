@@ -2,36 +2,36 @@ require 'rspec/mocks/framework'
 require 'rspec/mocks/version'
 
 module RSpec
-
+  # Contains top-level utility methods. While this contains a few
+  # public methods, these are not generally meant to be called from
+  # a test or example. They exist primarily for integration with
+  # test frameworks (such as rspec-core).
   module Mocks
     class << self
+      # Stores rspec-mocks' global state.
+      # @api private
       attr_accessor :space
     end
 
     self.space = RSpec::Mocks::Space.new
 
+    # Performs per-test/example setup. This should be called before
+    # an test or example begins.
     def self.setup(host)
       # Nothing to do for now
     end
 
+    # Verifies any message expectations that were set during the
+    # test or example. This should be called at the end of an example.
     def self.verify
       space.verify_all
     end
 
+    # Cleans up all test double state (including any methods that were
+    # redefined on partial doubles). This _must_ be called after
+    # each example, even if an error was raised during the example.
     def self.teardown
       space.reset_all
-    end
-
-    def self.proxy_for(object)
-      space.proxy_for(object)
-    end
-
-    def self.proxies_of(klass)
-      space.proxies_of(klass)
-    end
-
-    def self.any_instance_recorder_for(klass)
-      space.any_instance_recorder_for(klass)
     end
 
     # Adds an allowance (stub) on `subject`
@@ -71,6 +71,24 @@ module RSpec
       }
       ::RSpec::Mocks.proxy_for(subject).
         add_message_expectation(orig_caller, message, opts, &block)
+    end
+
+    # @api private
+    # Returns the mock proxy for the given object.
+    def self.proxy_for(object)
+      space.proxy_for(object)
+    end
+
+    # @api private
+    # Returns the mock proxies for instances of the given class.
+    def self.proxies_of(klass)
+      space.proxies_of(klass)
+    end
+
+    # @api private
+    # Returns the any instance recorder for the given class.
+    def self.any_instance_recorder_for(klass)
+      space.any_instance_recorder_for(klass)
     end
 
     # @api private
