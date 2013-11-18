@@ -8,8 +8,10 @@ module RSpec
       attr_accessor :space
     end
 
+    self.space = RSpec::Mocks::Space.new
+
     def self.setup(host)
-      self.space ||= RSpec::Mocks::Space.new
+      # Nothing to do for now
     end
 
     def self.verify
