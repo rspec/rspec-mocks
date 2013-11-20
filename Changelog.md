@@ -15,6 +15,9 @@ Enhancements:
 * Add receive_message_chain which provides the functionality of the old
   stub_chain for the new allow/expect syntax. Use it like so: allow(...).to
   receive_message_chain(:foo, :bar, :bazz). (Sam Phippen).
+* Change argument matchers to use `===` as their primary matching
+  protocol, as their semantics mirror that of a case or rescue statement
+  (which uses `===` for matching). (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v3.0.0.beta1)
