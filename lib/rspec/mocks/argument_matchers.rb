@@ -18,9 +18,6 @@ module RSpec
       end
 
       class AnyArgMatcher
-        def initialize(ignore)
-        end
-
         def ==(other)
           true
         end
@@ -43,9 +40,6 @@ module RSpec
       end
 
       class BooleanMatcher
-        def initialize(ignore)
-        end
-
         def ==(value)
           [true,false].include?(value)
         end
@@ -163,7 +157,7 @@ module RSpec
       #
       #   object.should_receive(:message).with(anything)
       def anything
-        AnyArgMatcher.new(nil)
+        AnyArgMatcher.new
       end
 
       # Matches no arguments.
@@ -191,7 +185,7 @@ module RSpec
       #
       #   object.should_receive(:message).with(boolean())
       def boolean
-        BooleanMatcher.new(nil)
+        BooleanMatcher.new
       end
 
       # Matches a hash that includes the specified key(s) or key/value pairs.
@@ -255,7 +249,7 @@ module RSpec
       # @api private
       def self.anythingize_lonely_keys(*args)
         hash = args.last.class == Hash ? args.delete_at(-1) : {}
-        args.each { | arg | hash[arg] = AnyArgMatcher.new(nil) }
+        args.each { | arg | hash[arg] = AnyArgMatcher.new }
         hash
       end
     end
