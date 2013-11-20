@@ -127,8 +127,6 @@ module RSpec::Mocks::Matchers
       end
 
       it "fails when with expect_any_instance_of is used and the entire chain is not called" do
-        o = Object.new
-
         expect {
           expect_any_instance_of(Object).to receive_message_chain(:to_a, :length => 3)
           verify_all
