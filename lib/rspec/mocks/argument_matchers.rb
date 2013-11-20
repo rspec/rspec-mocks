@@ -10,116 +10,6 @@ module RSpec
     #
     # @see ArgumentListMatcher
     module ArgumentMatchers
-      def self.values_match?(expected, actual)
-        expected === actual || actual == expected
-      end
-
-      class AnyArgsMatcher
-        def description
-          "any args"
-        end
-      end
-
-      class AnyArgMatcher
-        def ===(other)
-          true
-        end
-      end
-
-      class NoArgsMatcher
-        def description
-          "no args"
-        end
-      end
-
-      class BooleanMatcher
-        def ===(value)
-          true == value || false == value
-        end
-      end
-
-      class BaseHashMatcher
-        def initialize(expected)
-          @expected = expected
-        end
-
-        def ===(predicate, actual)
-          @expected.__send__(predicate) do |k, v|
-            actual.has_key?(k) && ArgumentMatchers.values_match?(v, actual[k])
-          end
-        rescue NoMethodError
-          false
-        end
-
-        def description(name)
-          "#{name}(#{@expected.inspect.sub(/^\{/,"").sub(/\}$/,"")})"
-        end
-      end
-
-      class HashIncludingMatcher < BaseHashMatcher
-        def ===(actual)
-          super(:all?, actual)
-        end
-
-        def description
-          super("hash_including")
-        end
-      end
-
-      class HashExcludingMatcher < BaseHashMatcher
-        def ===(actual)
-          super(:none?, actual)
-        end
-
-        def description
-          super("hash_not_including")
-        end
-      end
-
-      class ArrayIncludingMatcher
-        def initialize(expected)
-          @expected = expected
-        end
-
-        def ===(actual)
-          Set.new(actual).superset?(Set.new(@expected))
-        end
-
-        def description
-          "array_including(#{@expected.join(",")})"
-        end
-      end
-
-      class DuckTypeMatcher
-        def initialize(*methods_to_respond_to)
-          @methods_to_respond_to = methods_to_respond_to
-        end
-
-        def ===(value)
-          @methods_to_respond_to.all? {|message| value.respond_to?(message)}
-        end
-      end
-
-      class MatcherMatcher
-        def initialize(matcher)
-          @matcher = matcher
-        end
-
-        def ===(value)
-          @matcher.matches?(value)
-        end
-      end
-
-      class InstanceOf
-        def initialize(klass)
-          @klass = klass
-        end
-
-        def ===(actual)
-          actual.instance_of?(@klass)
-        end
-      end
-
       # Matches any args at all. Supports a more explicit variation of
       # `object.should_receive(:message)`
       #
@@ -231,6 +121,137 @@ module RSpec
         args.each { | arg | hash[arg] = AnyArgMatcher.new }
         hash
       end
+
+      # @api private
+      # Implements our matching semantics for two arbitrary values.
+      def self.values_match?(expected, actual)
+        # `===` provides the main matching semantics we want, but
+        # has some slight gotchas:
+        #
+        # * `Fixnum === Fixnum` returns false.
+        # * `/abc/ === /abc/`   returns false.
+        #
+        # So, for cases like these, we check `==` as well as a fallback.
+        expected === actual || actual == expected
+      end
+
+      # @api private
+      class AnyArgsMatcher
+        def description
+          "any args"
+        end
+      end
+
+      # @api private
+      class AnyArgMatcher
+        def ===(other)
+          true
+        end
+      end
+
+      # @api private
+      class NoArgsMatcher
+        def description
+          "no args"
+        end
+      end
+
+      # @api private
+      class BooleanMatcher
+        def ===(value)
+          true == value || false == value
+        end
+      end
+
+      # @api private
+      class BaseHashMatcher
+        def initialize(expected)
+          @expected = expected
+        end
+
+        def ===(predicate, actual)
+          @expected.__send__(predicate) do |k, v|
+            actual.has_key?(k) && ArgumentMatchers.values_match?(v, actual[k])
+          end
+        rescue NoMethodError
+          false
+        end
+
+        def description(name)
+          "#{name}(#{@expected.inspect.sub(/^\{/,"").sub(/\}$/,"")})"
+        end
+      end
+
+      # @api private
+      class HashIncludingMatcher < BaseHashMatcher
+        def ===(actual)
+          super(:all?, actual)
+        end
+
+        def description
+          super("hash_including")
+        end
+      end
+
+      # @api private
+      class HashExcludingMatcher < BaseHashMatcher
+        def ===(actual)
+          super(:none?, actual)
+        end
+
+        def description
+          super("hash_not_including")
+        end
+      end
+
+      # @api private
+      class ArrayIncludingMatcher
+        def initialize(expected)
+          @expected = expected
+        end
+
+        def ===(actual)
+          Set.new(actual).superset?(Set.new(@expected))
+        end
+
+        def description
+          "array_including(#{@expected.join(",")})"
+        end
+      end
+
+      # @api private
+      class DuckTypeMatcher
+        def initialize(*methods_to_respond_to)
+          @methods_to_respond_to = methods_to_respond_to
+        end
+
+        def ===(value)
+          @methods_to_respond_to.all? {|message| value.respond_to?(message)}
+        end
+      end
+
+      # @api private
+      class MatcherMatcher
+        def initialize(matcher)
+          @matcher = matcher
+        end
+
+        def ===(value)
+          @matcher.matches?(value)
+        end
+      end
+
+      # @api private
+      class InstanceOf
+        def initialize(klass)
+          @klass = klass
+        end
+
+        def ===(actual)
+          actual.instance_of?(@klass)
+        end
+      end
+
     end
   end
 end
