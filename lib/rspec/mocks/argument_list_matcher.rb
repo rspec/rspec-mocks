@@ -40,9 +40,8 @@ module RSpec
       #
       # @see ArgumentMatchers
       # @see #args_match?
-      def initialize(*expected_args, &block)
+      def initialize(*expected_args)
         @expected_args = expected_args
-        @block = expected_args.empty? ? block : nil
         @match_any_args = false
         @matchers = nil
 
@@ -64,7 +63,7 @@ module RSpec
       #
       # @see #initialize
       def args_match?(*args)
-        match_any_args? || block_passes?(*args) || matchers_match?(*args)
+        match_any_args? || matchers_match?(*args)
       end
 
       private
@@ -81,10 +80,6 @@ module RSpec
         [:failure_message_for_should, :failure_message].any? do |msg|
           object.respond_to?(msg)
         end && object.respond_to?(:matches?)
-      end
-
-      def block_passes?(*args)
-        @block.call(*args) if @block
       end
 
       def matchers_match?(*args)
