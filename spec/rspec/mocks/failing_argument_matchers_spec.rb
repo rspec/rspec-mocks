@@ -103,6 +103,17 @@ module RSpec
         end.to raise_error(ArgumentError, /must have at least one argument/)
       end
 
+      it "fails when given an arbitrary object that returns false from #===" do
+        matcher = double
+        matcher.should_receive(:===).with(4).at_least(:once).and_return(false)
+
+        @double.should_receive(:foo).with(matcher)
+
+        expect {
+          @double.foo(4)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
+      end
+
       it "fails with sensible message when args respond to #description" do
         arg = Class.new do
           def description
@@ -150,6 +161,21 @@ module RSpec
           @double.should_receive(:msg).with(arg)
           @double.msg 3
         end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (my_thing)\n       got: (3)")
+      end
+
+      it "fails a class against an unrelated class" do
+        @double.should_receive(:foo).with(Fixnum)
+        expect {
+          @double.foo(Hash)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
+      end
+
+      it "fails a class against an object of a different type" do
+        @double.should_receive(:foo).with(Fixnum)
+
+        expect {
+          @double.foo(3.2)
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
     end
   end

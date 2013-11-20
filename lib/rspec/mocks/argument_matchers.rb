@@ -10,6 +10,9 @@ module RSpec
     #
     # @see ArgumentListMatcher
     module ArgumentMatchers
+      def self.values_match?(expected, actual)
+        expected === actual || actual == expected
+      end
 
       class AnyArgsMatcher
         def description
@@ -18,7 +21,7 @@ module RSpec
       end
 
       class AnyArgMatcher
-        def ==(other)
+        def ===(other)
           true
         end
       end
@@ -29,51 +32,47 @@ module RSpec
         end
       end
 
-      class RegexpMatcher
-        def initialize(regexp)
-          @regexp = regexp
-        end
-
-        def ==(value)
-          Regexp === value ? value == @regexp : value =~ @regexp
-        end
-      end
-
       class BooleanMatcher
-        def ==(value)
+        def ===(value)
           true == value || false == value
         end
       end
 
-      class HashIncludingMatcher
+      class BaseHashMatcher
         def initialize(expected)
           @expected = expected
         end
 
-        def ==(actual)
-          @expected.all? {|k,v| actual.has_key?(k) && v == actual[k]}
+        def ===(predicate, actual)
+          @expected.__send__(predicate) do |k, v|
+            actual.has_key?(k) && ArgumentMatchers.values_match?(v, actual[k])
+          end
         rescue NoMethodError
           false
         end
 
-        def description
-          "hash_including(#{@expected.inspect.sub(/^\{/,"").sub(/\}$/,"")})"
+        def description(name)
+          "#{name}(#{@expected.inspect.sub(/^\{/,"").sub(/\}$/,"")})"
         end
       end
 
-      class HashExcludingMatcher
-        def initialize(expected)
-          @expected = expected
-        end
-
-        def ==(actual)
-          @expected.none? {|k,v| actual.has_key?(k) && v == actual[k]}
-        rescue NoMethodError
-          false
+      class HashIncludingMatcher < BaseHashMatcher
+        def ===(actual)
+          super(:all?, actual)
         end
 
         def description
-          "hash_not_including(#{@expected.inspect.sub(/^\{/,"").sub(/\}$/,"")})"
+          super("hash_including")
+        end
+      end
+
+      class HashExcludingMatcher < BaseHashMatcher
+        def ===(actual)
+          super(:none?, actual)
+        end
+
+        def description
+          super("hash_not_including")
         end
       end
 
@@ -82,7 +81,7 @@ module RSpec
           @expected = expected
         end
 
-        def ==(actual)
+        def ===(actual)
           Set.new(actual).superset?(Set.new(@expected))
         end
 
@@ -96,7 +95,7 @@ module RSpec
           @methods_to_respond_to = methods_to_respond_to
         end
 
-        def ==(value)
+        def ===(value)
           @methods_to_respond_to.all? {|message| value.respond_to?(message)}
         end
       end
@@ -106,18 +105,8 @@ module RSpec
           @matcher = matcher
         end
 
-        def ==(value)
+        def ===(value)
           @matcher.matches?(value)
-        end
-      end
-
-      class EqualityProxy
-        def initialize(given)
-          @given = given
-        end
-
-        def ==(expected)
-          @given == expected
         end
       end
 
@@ -126,18 +115,8 @@ module RSpec
           @klass = klass
         end
 
-        def ==(actual)
+        def ===(actual)
           actual.instance_of?(@klass)
-        end
-      end
-
-      class KindOf
-        def initialize(klass)
-          @klass = klass
-        end
-
-        def ==(actual)
-          actual.kind_of?(@klass)
         end
       end
 
@@ -241,7 +220,7 @@ module RSpec
       #
       #   object.should_receive(:message).with(kind_of(Thing))
       def kind_of(klass)
-        KindOf.new(klass)
+        klass
       end
 
       alias_method :a_kind_of, :kind_of

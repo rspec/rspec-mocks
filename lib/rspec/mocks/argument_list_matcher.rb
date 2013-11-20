@@ -70,8 +70,7 @@ module RSpec
 
       def matcher_for(arg)
         return ArgumentMatchers::MatcherMatcher.new(arg) if is_matcher?(arg)
-        return ArgumentMatchers::RegexpMatcher.new(arg)  if Regexp === arg
-        return ArgumentMatchers::EqualityProxy.new(arg)
+        arg
       end
 
       def is_matcher?(object)
@@ -83,7 +82,11 @@ module RSpec
       end
 
       def matchers_match?(*args)
-        @matchers == args
+        return false unless @matchers.count == args.count
+
+        @matchers.zip(args).all? do |(matcher, arg)|
+          ArgumentMatchers.values_match?(matcher, arg)
+        end
       end
 
       def match_any_args?
