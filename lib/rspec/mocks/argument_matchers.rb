@@ -41,7 +41,7 @@ module RSpec
 
       class BooleanMatcher
         def ==(value)
-          [true,false].include?(value)
+          true == value || false == value
         end
       end
 
