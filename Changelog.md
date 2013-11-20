@@ -4,11 +4,18 @@
 Breaking Changes for 3.0.0:
 
 * Rename `RSpec::Mocks::Mock` to `RSpec::Mocks::Double`. (Myron Marston)
+* Change how to integrate rspec-mocks in other test frameworks. You now
+  need to include `RSpec::Mocks::ExampleMethods` in your test context.
+  (Myron Marston)
 
 Bug Fixes:
 
 * Fix regression in 3.0.0.beta1 that caused `double("string_name" => :value)`
   to stop working. (Xavier Shay)
+* Fix the way rspec-mocks and rspec-core interact so that if users
+  define a `let` with the same name as one of the methods
+  from `RSpec::Mocks::ArgumentMatchers`, the user's `let` takes
+  precedence. (Michi Huber, Myron Marston)
 
 Enhancements:
 

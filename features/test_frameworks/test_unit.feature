@@ -13,31 +13,38 @@ Feature: Test::Unit integration
       require 'rspec/mocks'
 
       class RSpecMocksTest < Test::Unit::TestCase
-        def setup
-          RSpec::Mocks.setup(Object)
-          RSpec::Mocks.setup(self)
+        include RSpec::Mocks::ExampleMethods
+
+        def teardown
+          RSpec::Mocks.verify
+        ensure
+          RSpec::Mocks.teardown
         end
 
-        def test_passing_expectation
+        def test_passing_positive_expectation
           obj = Object.new
           expect(obj).to receive(:message)
           obj.message
         end
 
-        def test_failing_expectation
+        def test_failing_positive_expectation
+          obj = Object.new
+          expect(obj).to receive(:message)
+          obj.message
+        end
+
+        def test_passing_negative_expectation
+          obj = Object.new
+          expect(obj).to_not receive(:message)
+        end
+
+        def test_failing_negative_expectation
           obj = Object.new
           expect(obj).to_not receive(:message)
           obj.message
         end
-
-        def test_with_deprecation_warning
-          obj = Object.new
-          obj.stub(:old_message) { RSpec.deprecate(:old_message, :replacement => :message) }
-          obj.old_message
-        end
       end
       """
      When I run `ruby rspec_mocks_test.rb`
-     Then the output should contain "3 tests, 0 assertions, 0 failures, 1 errors" or "3 tests, 0 assertions, 1 failures, 0 errors"
+     Then the output should contain "4 tests, 0 assertions, 0 failures, 1 errors" or "4 tests, 0 assertions, 1 failures, 0 errors"
      And the output should contain "expected: 0 times with any arguments"
-     And the output should contain "old_message is deprecated"
