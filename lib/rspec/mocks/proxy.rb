@@ -192,6 +192,12 @@ module RSpec
         @error_generator.raise_missing_default_stub_error(expectation, *args)
       end
 
+      # @private
+      def visibility_for(method_name)
+        # This is the default (for test doubles). Subclasses override this.
+        :public
+      end
+
       private
 
       def method_double_for(message)
@@ -255,6 +261,19 @@ module RSpec
       def add_simple_stub(method_name, response)
         method_double_for(method_name).configure_method
         super
+      end
+
+      # @private
+      def visibility_for(method_name)
+        klass = class << @object; self; end
+
+        if klass.private_method_defined?(method_name)
+          :private
+        elsif klass.protected_method_defined?(method_name)
+          :protected
+        else
+          :public
+        end
       end
 
     private

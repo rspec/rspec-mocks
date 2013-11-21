@@ -35,15 +35,7 @@ module RSpec
 
       # @private
       def visibility
-        if TestDouble === @object
-          :public
-        elsif object_singleton_class.private_method_defined?(@method_name)
-          :private
-        elsif object_singleton_class.protected_method_defined?(@method_name)
-          :protected
-        else
-          :public
-        end
+        @proxy.visibility_for(@method_name)
       end
 
       # @private
