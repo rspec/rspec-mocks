@@ -87,6 +87,14 @@ module RSpec
           @double.should_receive(:random_call).with(array_including(1,2))
           @double.random_call([1,2])
         end
+
+        it "matches any arbitrary object using #===" do
+          matcher = double
+          matcher.should_receive(:===).with(4).and_return(true)
+
+          @double.should_receive(:foo).with(matcher)
+          @double.foo(4)
+        end
       end
 
       context "handling non-matcher arguments" do
@@ -120,6 +128,16 @@ module RSpec
           opts = {:a => "a", :b => "b"}
           @double.should_receive(:random_call).with(:a => "a", :b => "b")
           @double.random_call(opts)
+        end
+
+        it "matches a class against itself" do
+          @double.should_receive(:foo).with(Fixnum)
+          @double.foo(Fixnum)
+        end
+
+        it "matches a class against an instance of itself" do
+          @double.should_receive(:foo).with(Fixnum)
+          @double.foo(3)
         end
       end
     end

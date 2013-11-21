@@ -40,9 +40,8 @@ module RSpec
       #
       # @see ArgumentMatchers
       # @see #args_match?
-      def initialize(*expected_args, &block)
+      def initialize(*expected_args)
         @expected_args = expected_args
-        @block = expected_args.empty? ? block : nil
         @match_any_args = false
         @matchers = nil
 
@@ -64,15 +63,14 @@ module RSpec
       #
       # @see #initialize
       def args_match?(*args)
-        match_any_args? || block_passes?(*args) || matchers_match?(*args)
+        match_any_args? || matchers_match?(*args)
       end
 
       private
 
       def matcher_for(arg)
         return ArgumentMatchers::MatcherMatcher.new(arg) if is_matcher?(arg)
-        return ArgumentMatchers::RegexpMatcher.new(arg)  if Regexp === arg
-        return ArgumentMatchers::EqualityProxy.new(arg)
+        arg
       end
 
       def is_matcher?(object)
@@ -83,12 +81,12 @@ module RSpec
         end && object.respond_to?(:matches?)
       end
 
-      def block_passes?(*args)
-        @block.call(*args) if @block
-      end
-
       def matchers_match?(*args)
-        @matchers == args
+        return false unless @matchers.count == args.count
+
+        @matchers.zip(args).all? do |(matcher, arg)|
+          ArgumentMatchers.values_match?(matcher, arg)
+        end
       end
 
       def match_any_args?
