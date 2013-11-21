@@ -28,4 +28,4 @@ platforms :jruby do
 end
 
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')
-eval File.read("Gemfile-travis") if ENV["TRAVIS"] == "true"
+eval File.read(File.expand_path("./Gemfile-travis")) if ENV["TRAVIS"] == "true"
