@@ -37,10 +37,31 @@ module RSpec
         yield unless implemented?
       end
 
+      def visibility
+        @module_reference.when_loaded do |m|
+          return visibility_from(m)
+        end
+
+        # When it's not loaded, assume it's public. We don't want to
+        # wrongly treat the method as private.
+        :public
+      end
+
       private
+
       def original_method
         @module_reference.when_loaded do |m|
           self.defined? && find_method(m)
+        end
+      end
+
+      def self.visibility_for(klass, method_name)
+        if klass.private_method_defined?(method_name)
+          :private
+        elsif klass.protected_method_defined?(method_name)
+          :protected
+        elsif klass.method_defined?(method_name)
+          :public
         end
       end
     end
@@ -74,6 +95,10 @@ module RSpec
           m.instance_method(@method_name)
         end
       end
+
+      def visibility_from(m)
+        MethodReference.visibility_for(m, @method_name)
+      end
     end
 
     # @private
@@ -89,6 +114,20 @@ module RSpec
 
       def find_method(m)
         m.method(@method_name)
+      end
+
+      def visibility_from(m)
+        MethodReference.visibility_for(class << m; self; end, @method_name).tap do |vis|
+          # If the method is not defined on the class, `visibility_for` returns `nil`.
+          # However, it may be handled dynamically by `method_missing`, so here we
+          # check `respond_to` (passing false to not check private methods).
+          #
+          # This only considers the :public case, but I don't think it's possible to
+          # write `method_missing` in such a way that it handles a dynamic message
+          # with private or protected visibility. Ruby doesn't provide you with
+          # the caller info.
+          return :public if vis.nil? && m.respond_to?(@method_name, false)
+        end
       end
     end
   end

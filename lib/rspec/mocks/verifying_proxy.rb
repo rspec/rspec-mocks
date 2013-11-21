@@ -69,6 +69,10 @@ module RSpec
           h[k] = @method_reference_class.new(@doubled_module, k)
         end
       end
+
+      def visibility_for(method_name)
+        method_reference[method_name].visibility
+      end
     end
 
     # @api private

@@ -19,6 +19,11 @@ class LoadedClass
       # fake out!
     end
 
+  protected
+
+    def defined_protected_class_method
+    end
+
   private
 
     def defined_private_class_method
@@ -35,6 +40,11 @@ class LoadedClass
   end
 
   class Nested; end
+
+protected
+
+  def defined_protected_method
+  end
 
 private
 
@@ -98,14 +108,48 @@ module RSpec
             prevents { o.should_receive(:defined_class_method) }
           end
 
-          it 'allows instance methods that are private' do
-            o = instance_double('LoadedClass')
-            allow(o).to receive(:defined_private_method)
-            o.send :defined_private_method
+          describe "method visibility" do
+            shared_examples_for "preserves method visibility" do |visibility|
+              method_name = :"defined_#{visibility}_method"
 
-            o2 = instance_double('LoadedClass')
-            expect(o2).to receive(:defined_private_method)
-            o2.send :defined_private_method
+              it "can allow a #{visibility} instance method" do
+                o = instance_double('LoadedClass')
+                allow(o).to receive(method_name).and_return(3)
+                expect(o.send method_name).to eq(3)
+              end
+
+              it "can expect a #{visibility} instance method" do
+                o = instance_double('LoadedClass')
+                expect(o).to receive(method_name)
+                o.send method_name
+              end
+
+              it "preserves #{visibility} visibility when allowing a #{visibility} method" do
+                preserves_visibility(method_name, visibility) do
+                  instance_double('LoadedClass').tap do |o|
+                    allow(o).to receive(method_name)
+                  end
+                end
+              end
+
+              it "preserves #{visibility} visibility when expecting a #{visibility} method" do
+                preserves_visibility(method_name, visibility) do
+                  instance_double('LoadedClass').tap do |o|
+                    expect(o).to receive(method_name)
+                    o.send(method_name) # to satisfy the expectation
+                  end
+                end
+              end
+
+              it "preserves #{visibility} visibility on a null object" do
+                preserves_visibility(method_name, visibility) do
+                  instance_double('LoadedClass').as_null_object
+                end
+              end
+            end
+
+            include_examples "preserves method visibility", :private
+            include_examples "preserves method visibility", :protected
           end
 
           it 'does not allow dynamic methods to be expected' do
@@ -184,9 +228,8 @@ module RSpec
           end
 
           it 'only allows class methods that exist to be stubbed' do
-            o = class_double('LoadedClass', :defined_class_method => 1, :defined_private_class_method => 42)
+            o = class_double('LoadedClass', :defined_class_method => 1)
             expect(o.defined_class_method).to eq(1)
-            expect(o.send :defined_private_class_method).to eq(42)
 
             prevents { o.stub(:undefined_instance_method) }
             prevents { o.stub(:defined_instance_method) }
@@ -195,14 +238,56 @@ module RSpec
           it 'only allows class methods that exist to be expected' do
             o = class_double('LoadedClass')
             expect(o).to receive(:defined_class_method)
-            expect(o).to receive(:defined_private_class_method)
             o.defined_class_method
-            o.send :defined_private_class_method
 
             prevents { expect(o).to receive(:undefined_instance_method) }
             prevents { expect(o).to receive(:defined_instance_method) }
             prevents { o.should_receive(:undefined_instance_method) }
             prevents { o.should_receive(:defined_instance_method) }
+          end
+
+          describe "method visibility" do
+            shared_examples_for "preserves method visibility" do |visibility|
+              method_name = :"defined_#{visibility}_class_method"
+
+              it "can allow a #{visibility} instance method" do
+                o = class_double('LoadedClass')
+                allow(o).to receive(method_name).and_return(3)
+                expect(o.send method_name).to eq(3)
+              end
+
+              it "can expect a #{visibility} instance method" do
+                o = class_double('LoadedClass')
+                expect(o).to receive(method_name)
+                o.send method_name
+              end
+
+              it "preserves #{visibility} visibility when allowing a #{visibility} method" do
+                preserves_visibility(method_name, visibility) do
+                  class_double('LoadedClass').tap do |o|
+                    allow(o).to receive(method_name)
+                  end
+                end
+              end
+
+              it "preserves #{visibility} visibility when expecting a #{visibility} method" do
+                preserves_visibility(method_name, visibility) do
+                  class_double('LoadedClass').tap do |o|
+                    expect(o).to receive(method_name)
+                    o.send(method_name) # to satisfy the expectation
+                  end
+                end
+              end
+
+              it "preserves #{visibility} visibility on a null object" do
+                preserves_visibility(method_name, visibility) do
+                  class_double('LoadedClass').as_null_object
+                end
+              end
+            end
+
+            include_examples "preserves method visibility", :private
+            include_examples "preserves method visibility", :protected
           end
 
           it 'checks that stubbed methods are invoked with the correct arity' do
@@ -357,6 +442,22 @@ module RSpec
       it 'can only be named with a string or a module' do
         expect { instance_double(1) }.to raise_error(ArgumentError)
         expect { instance_double(nil) }.to raise_error(ArgumentError)
+      end
+
+      def preserves_visibility(method_name, visibility)
+        double = yield
+
+        expect {
+          # send bypasses visbility, so we use eval instead.
+          eval("double.#{method_name}")
+        }.to raise_error(NoMethodError, /#{visibility}/)
+
+        unless double.null_object?
+          # Null object doubles use `method_missing` and so the singleton class
+          # doesn't know what methods are defined.
+          singleton_class = class << double; self; end
+          expect(singleton_class.send("#{visibility}_method_defined?", method_name)).to be true
+        end
       end
     end
   end

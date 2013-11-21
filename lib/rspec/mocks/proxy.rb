@@ -265,15 +265,7 @@ module RSpec
 
       # @private
       def visibility_for(method_name)
-        klass = class << @object; self; end
-
-        if klass.private_method_defined?(method_name)
-          :private
-        elsif klass.protected_method_defined?(method_name)
-          :protected
-        else
-          :public
-        end
+        MethodReference.visibility_for(class << @object; self; end, method_name) || :public
       end
 
     private

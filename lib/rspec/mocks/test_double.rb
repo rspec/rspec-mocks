@@ -81,6 +81,12 @@ module RSpec
         proxy = __mock_proxy
         proxy.record_message_received(message, *args, &block)
 
+        # Defined private and protected methods will still trigger `method_missing`
+        # when called publicly. We want ruby's method visibility error to get raised,
+        # so we simply delegate to `super` in that case.
+        visibility = proxy.visibility_for(message)
+        return super if visibility == :private || visibility == :protected
+
         if proxy.null_object?
           case message
           when :to_int        then return 0
