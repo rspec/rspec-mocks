@@ -1024,6 +1024,28 @@ module RSpec
           expect(instance.existing_method).to eq :existing_method_return_value
         end
       end
+
+      context "when stubbing inherited method on both super and sub classes" do
+        let(:super_class) { Class.new { def foo; end } }
+        let(:sub_class) { Class.new(super_class) }
+
+        before do
+          super_class.any_instance.stub(:foo)
+        end
+
+        it "raises on defining stub immediately" do
+          pending('Ruby 1.9+ required') if RUBY_VERSION < '1.9'
+
+          expect {
+            sub_class.any_instance.stub(:foo)
+            # raised UnrestorableStubError above.
+            # without this guard, SystemStackError raised at `sub_class.new.foo`
+
+            sub_class.any_instance.unstub(:foo)
+            sub_class.new.foo
+          }.to raise_error(RSpec::Mocks::UnrestorableStubError)
+        end
+      end
     end
   end
 end
