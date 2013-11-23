@@ -83,8 +83,8 @@ module RSpec
     # @private
     class InstanceMethodReference < MethodReference
       private
-      def method_implemented?(m)
-        m.method_defined?(@method_name) || m.private_method_defined?(@method_name)
+      def method_implemented?(mod)
+        mod.method_defined?(@method_name) || mod.private_method_defined?(@method_name)
       end
 
       # Ideally, we'd use `respond_to?` for `method_implemented?` but we need a
@@ -101,37 +101,37 @@ module RSpec
       # This is necessary due to a bug in JRuby prior to 1.7.5 fixed in:
       # https://github.com/jruby/jruby/commit/99a0613fe29935150d76a9a1ee4cf2b4f63f4a27
       if RUBY_PLATFORM == 'java' && JRUBY_VERSION.split('.')[-1].to_i < 5
-        def find_method(m)
-          m.dup.instance_method(@method_name)
+        def find_method(mod)
+          mod.dup.instance_method(@method_name)
         end
       else
-        def find_method(m)
-          m.instance_method(@method_name)
+        def find_method(mod)
+          mod.instance_method(@method_name)
         end
       end
 
-      def visibility_from(m)
-        MethodReference.instance_method_visibility_for(m, @method_name)
+      def visibility_from(mod)
+        MethodReference.instance_method_visibility_for(mod, @method_name)
       end
     end
 
     # @private
     class ObjectMethodReference < MethodReference
       private
-      def method_implemented?(m)
-        m.respond_to?(@method_name, true)
+      def method_implemented?(object)
+        object.respond_to?(@method_name, true)
       end
 
-      def method_defined?(m)
-        (class << m; self; end).method_defined?(@method_name)
+      def method_defined?(object)
+        (class << object; self; end).method_defined?(@method_name)
       end
 
-      def find_method(m)
-        m.method(@method_name)
+      def find_method(object)
+        object.method(@method_name)
       end
 
-      def visibility_from(m)
-        MethodReference.method_visibility_for(m, @method_name)
+      def visibility_from(object)
+        MethodReference.method_visibility_for(object, @method_name)
       end
     end
   end
