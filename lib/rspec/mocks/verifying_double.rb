@@ -5,6 +5,14 @@ module RSpec
 
     # @api private
     module VerifyingDouble
+      def respond_to?(message, include_private=false)
+        if null_object?
+          __mock_proxy.method_reference[message].when_unimplemented { return false }
+        end
+
+        super
+      end
+
       def method_missing(message, *args, &block)
         # Null object conditional is an optimization. If not a null object,
         # validity of method expectations will have been checked at definition

@@ -188,7 +188,10 @@ module RSpec
             o = instance_double('LoadedClass').as_null_object
 
             expect(o.defined_instance_method).to eq(o)
+            expect(o).to respond_to(:defined_instance_method)
+
             prevents { o.undefined_method }
+            expect(o).not_to respond_to(:undefined_method)
           end
         end
 
