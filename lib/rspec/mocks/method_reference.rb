@@ -1,11 +1,13 @@
 module RSpec
   module Mocks
-    # Represents a method on a module that may or may not be defined.
+    # Represents a method on an object that may or may not be defined.
+    # The method may be an instance method on a module or a method on
+    # any object.
     #
     # @private
     class MethodReference
-      def initialize(module_reference, method_name)
-        @module_reference = module_reference
+      def initialize(object_reference, method_name)
+        @object_reference = object_reference
         @method_name = method_name
       end
 
@@ -13,7 +15,7 @@ module RSpec
       # a `NoMethodError`. It might be dynamically implemented by
       # `method_missing`.
       def implemented?
-        @module_reference.when_loaded do |m|
+        @object_reference.when_loaded do |m|
           method_implemented?(m)
         end
       end
@@ -21,7 +23,7 @@ module RSpec
       # A method is defined if we are able to get a `Method` object for it.
       # In that case, we can assert against metadata like the arity.
       def defined?
-        @module_reference.when_loaded do |m|
+        @object_reference.when_loaded do |m|
           method_defined?(m)
         end
       end
@@ -38,7 +40,7 @@ module RSpec
       end
 
       def visibility
-        @module_reference.when_loaded do |m|
+        @object_reference.when_loaded do |m|
           return visibility_from(m)
         end
 
@@ -50,7 +52,7 @@ module RSpec
       private
 
       def original_method
-        @module_reference.when_loaded do |m|
+        @object_reference.when_loaded do |m|
           self.defined? && find_method(m)
         end
       end
