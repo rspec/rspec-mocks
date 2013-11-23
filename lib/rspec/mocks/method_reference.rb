@@ -20,6 +20,21 @@ module RSpec
         end
       end
 
+      # Returns true if we definitively know that sending the method
+      # will result in a `NoMethodError`.
+      #
+      # This is not simply the inverse of `implemented?`: there are
+      # cases when we don't know if a method is implemented and
+      # both `implemented?` and `unimplemented?` will return false.
+      def unimplemented?
+        @object_reference.when_loaded do |m|
+          return !implemented?
+        end
+
+        # If it's not loaded, then it may be implemented but we can't check.
+        false
+      end
+
       # A method is defined if we are able to get a `Method` object for it.
       # In that case, we can assert against metadata like the arity.
       def defined?
@@ -32,11 +47,6 @@ module RSpec
         if original = original_method
           yield original
         end
-      end
-
-      # Yields to the block if the method is not implemented.
-      def when_unimplemented
-        yield unless implemented?
       end
 
       def visibility

@@ -6,11 +6,16 @@ module RSpec
     # @api private
     module VerifyingDouble
       def respond_to?(message, include_private=false)
-        if null_object?
-          __mock_proxy.method_reference[message].when_unimplemented { return false }
-        end
+        return super unless null_object?
 
-        super
+        method_ref = __mock_proxy.method_reference[message]
+
+        return case method_ref.visibility
+          when :public    then true
+          when :private   then include_private
+          when :protected then include_private || RUBY_VERSION.to_f < 2.0
+          else !method_ref.unimplemented?
+        end
       end
 
       def method_missing(message, *args, &block)

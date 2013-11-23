@@ -80,6 +80,20 @@ module RSpec
 
             expect(o.undefined_instance_method(:arg)).to eq(true)
           end
+
+          context 'for null objects' do
+            let(:o) { instance_double('NonLoadedClass').as_null_object }
+
+            it 'returns self from any message' do
+              expect(o.a.b.c).to be(o)
+            end
+
+            it 'reports it responds to any message' do
+              expect(o.respond_to?(:a)).to be true
+              expect(o.respond_to?(:a, false)).to be true
+              expect(o.respond_to?(:a, true)).to be true
+            end
+          end
         end
 
         describe 'when doubled class is loaded' do
@@ -184,14 +198,43 @@ module RSpec
             expect(o.defined_instance_method).to eq(1)
           end
 
-          it 'only allows defined methods for null objects' do
-            o = instance_double('LoadedClass').as_null_object
+          context 'for null objects' do
+            let(:o) { instance_double('LoadedClass').as_null_object }
 
-            expect(o.defined_instance_method).to eq(o)
-            expect(o).to respond_to(:defined_instance_method)
+            it 'only allows defined methods' do
+              expect(o.defined_instance_method).to eq(o)
+              prevents { o.undefined_method }
+            end
 
-            prevents { o.undefined_method }
-            expect(o).not_to respond_to(:undefined_method)
+            it 'reports what public messages it responds to accurately' do
+              expect(o.respond_to?(:defined_instance_method)).to be true
+              expect(o.respond_to?(:defined_instance_method, true)).to be true
+              expect(o.respond_to?(:defined_instance_method, false)).to be true
+
+              expect(o.respond_to?(:undefined_method)).to be false
+              expect(o.respond_to?(:undefined_method, true)).to be false
+              expect(o.respond_to?(:undefined_method, false)).to be false
+            end
+
+            it 'reports that it responds to defined private methods when the appropriate arg is passed' do
+              expect(o.respond_to?(:defined_private_method)).to be false
+              expect(o.respond_to?(:defined_private_method, true)).to be true
+              expect(o.respond_to?(:defined_private_method, false)).to be false
+            end
+
+            if RUBY_VERSION.to_f < 2.0 # respond_to?(:protected_method) changed behavior in Ruby 2.0.
+              it 'reports that it responds to protected methods' do
+                expect(o.respond_to?(:defined_protected_method)).to be true
+                expect(o.respond_to?(:defined_protected_method, true)).to be true
+                expect(o.respond_to?(:defined_protected_method, false)).to be true
+              end
+            else
+              it 'reports that it responds to protected methods when the appropriate arg is passed' do
+                expect(o.respond_to?(:defined_protected_method)).to be false
+                expect(o.respond_to?(:defined_protected_method, true)).to be true
+                expect(o.respond_to?(:defined_protected_method, false)).to be false
+              end
+            end
           end
         end
 

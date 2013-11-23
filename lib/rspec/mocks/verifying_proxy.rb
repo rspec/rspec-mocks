@@ -22,9 +22,7 @@ module RSpec
       end
 
       def ensure_implemented(method_name)
-        return unless @doubled_module.defined?
-
-        method_reference[method_name].when_unimplemented do
+        if method_reference[method_name].unimplemented?
           @error_generator.raise_unimplemented_error(
             @doubled_module,
             method_name
@@ -149,8 +147,8 @@ module RSpec
         yield original_method
       end
 
-      def when_unimplemented
-        yield unless @valid_method
+      def unimplemented?
+        !@valid_method
       end
     end
   end
