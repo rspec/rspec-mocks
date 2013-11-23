@@ -265,7 +265,9 @@ module RSpec
 
       # @private
       def visibility_for(method_name)
-        MethodReference.visibility_for(class << @object; self; end, method_name) || :public
+        # We fall back to :public because by default we allow undefined methods
+        # to be stubbed, and when we do so, we make them public.
+        MethodReference.method_visibility_for(@object, method_name) || :public
       end
 
     private

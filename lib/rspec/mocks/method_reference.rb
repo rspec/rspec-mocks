@@ -55,13 +55,27 @@ module RSpec
         end
       end
 
-      def self.visibility_for(klass, method_name)
+      def self.instance_method_visibility_for(klass, method_name)
         if klass.private_method_defined?(method_name)
           :private
         elsif klass.protected_method_defined?(method_name)
           :protected
         elsif klass.method_defined?(method_name)
           :public
+        end
+      end
+
+      def self.method_visibility_for(object, method_name)
+        instance_method_visibility_for(class << object; self; end, method_name).tap do |vis|
+          # If the method is not defined on the class, `instance_method_visibility_for`
+          # returns `nil`. However, it may be handled dynamically by `method_missing`,
+          # so here we check `respond_to` (passing false to not check private methods).
+          #
+          # This only considers the public case, but I don't think it's possible to
+          # write `method_missing` in such a way that it handles a dynamic message
+          # with private or protected visibility. Ruby doesn't provide you with
+          # the caller info.
+          return :public if vis.nil? && object.respond_to?(method_name, false)
         end
       end
     end
@@ -97,7 +111,7 @@ module RSpec
       end
 
       def visibility_from(m)
-        MethodReference.visibility_for(m, @method_name)
+        MethodReference.instance_method_visibility_for(m, @method_name)
       end
     end
 
@@ -117,17 +131,7 @@ module RSpec
       end
 
       def visibility_from(m)
-        MethodReference.visibility_for(class << m; self; end, @method_name).tap do |vis|
-          # If the method is not defined on the class, `visibility_for` returns `nil`.
-          # However, it may be handled dynamically by `method_missing`, so here we
-          # check `respond_to` (passing false to not check private methods).
-          #
-          # This only considers the :public case, but I don't think it's possible to
-          # write `method_missing` in such a way that it handles a dynamic message
-          # with private or protected visibility. Ruby doesn't provide you with
-          # the caller info.
-          return :public if vis.nil? && m.respond_to?(@method_name, false)
-        end
+        MethodReference.method_visibility_for(m, @method_name)
       end
     end
   end
