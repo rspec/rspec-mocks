@@ -16,6 +16,12 @@ Bug Fixes:
   define a `let` with the same name as one of the methods
   from `RSpec::Mocks::ArgumentMatchers`, the user's `let` takes
   precedence. (Michi Huber, Myron Marston)
+* Fix verified doubles so that their methods match the visibility
+  (public, protected or private) of the interface they verify
+  against. (Myron Marston)
+* Fix verified null object doubles so that they do not wrongly
+  report that they respond to anything. They only respond to methods
+  available on the interface they verify against. (Myron Marston)
 
 Enhancements:
 
