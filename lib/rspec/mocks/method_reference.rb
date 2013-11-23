@@ -67,6 +67,10 @@ module RSpec
         end
       end
 
+      class << self
+        alias method_defined_at_any_visibility? instance_method_visibility_for
+      end
+
       def self.method_visibility_for(object, method_name)
         instance_method_visibility_for(class << object; self; end, method_name).tap do |vis|
           # If the method is not defined on the class, `instance_method_visibility_for`
@@ -86,7 +90,7 @@ module RSpec
     class InstanceMethodReference < MethodReference
       private
       def method_implemented?(mod)
-        mod.method_defined?(@method_name) || mod.private_method_defined?(@method_name)
+        MethodReference.method_defined_at_any_visibility?(mod, @method_name)
       end
 
       # Ideally, we'd use `respond_to?` for `method_implemented?` but we need a

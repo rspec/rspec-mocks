@@ -172,7 +172,7 @@ module RSpec
         end
 
         def public_protected_or_private_method_defined?(method_name)
-          @klass.method_defined?(method_name) || @klass.private_method_defined?(method_name)
+          MethodReference.method_defined_at_any_visibility?(@klass, method_name)
         end
 
         def stop_observing!(method_name)
