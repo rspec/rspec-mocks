@@ -58,12 +58,12 @@ module RSpec
       end
 
       def self.instance_method_visibility_for(klass, method_name)
-        if klass.private_method_defined?(method_name)
+        if klass.public_method_defined?(method_name)
+          :public
+        elsif klass.private_method_defined?(method_name)
           :private
         elsif klass.protected_method_defined?(method_name)
           :protected
-        elsif klass.method_defined?(method_name)
-          :public
         end
       end
 
