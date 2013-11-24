@@ -78,21 +78,26 @@ module RSpec
       end
 
       def method_missing(message, *args, &block)
-        if __mock_proxy.null_object?
+        proxy = __mock_proxy
+        proxy.record_message_received(message, *args, &block)
+
+        # Defined private and protected methods will still trigger `method_missing`
+        # when called publicly. We want ruby's method visibility error to get raised,
+        # so we simply delegate to `super` in that case.
+        visibility = proxy.visibility_for(message)
+        return super if visibility == :private || visibility == :protected
+
+        if proxy.null_object?
           case message
           when :to_int        then return 0
           when :to_a, :to_ary then return nil
+          else return self
           end
         end
-        __mock_proxy.record_message_received(message, *args, &block)
 
-        begin
-          __mock_proxy.null_object? ? self : super
-        rescue NameError
-          # Required wrapping doubles in an Array on Ruby 1.9.2
-          raise NoMethodError if [:to_a, :to_ary].include? message
-          __mock_proxy.raise_unexpected_message_error(message, *args)
-        end
+        # Required wrapping doubles in an Array on Ruby 1.9.2
+        raise NoMethodError if [:to_a, :to_ary].include? message
+        proxy.raise_unexpected_message_error(message, *args)
       end
 
       def assign_stubs(stubs)

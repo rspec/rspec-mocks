@@ -79,7 +79,7 @@ module RSpec
 
       # @private
       def method_defined_on_klass?(klass = @klass)
-        klass.method_defined?(@method) || klass.private_method_defined?(@method)
+        MethodReference.method_defined_at_any_visibility?(klass, @method)
       end
 
       def method_owned_by_klass?

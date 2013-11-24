@@ -35,15 +35,7 @@ module RSpec
 
       # @private
       def visibility
-        if TestDouble === @object
-          'public'
-        elsif object_singleton_class.private_method_defined?(@method_name)
-          'private'
-        elsif object_singleton_class.protected_method_defined?(@method_name)
-          'protected'
-        else
-          'public'
-        end
+        @proxy.visibility_for(@method_name)
       end
 
       # @private
@@ -98,8 +90,7 @@ module RSpec
       # @private
       def restore_original_visibility
         return unless @original_visibility &&
-          (object_singleton_class.method_defined?(@method_name) ||
-           object_singleton_class.private_method_defined?(@method_name))
+          MethodReference.method_defined_at_any_visibility?(object_singleton_class, @method_name)
 
         object_singleton_class.__send__(*@original_visibility)
       end

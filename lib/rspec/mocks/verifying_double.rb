@@ -5,6 +5,19 @@ module RSpec
 
     # @api private
     module VerifyingDouble
+      def respond_to?(message, include_private=false)
+        return super unless null_object?
+
+        method_ref = __mock_proxy.method_reference[message]
+
+        return case method_ref.visibility
+          when :public    then true
+          when :private   then include_private
+          when :protected then include_private || RUBY_VERSION.to_f < 2.0
+          else !method_ref.unimplemented?
+        end
+      end
+
       def method_missing(message, *args, &block)
         # Null object conditional is an optimization. If not a null object,
         # validity of method expectations will have been checked at definition
