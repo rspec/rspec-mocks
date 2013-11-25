@@ -86,6 +86,8 @@ module RSpec
 
         def setup_method_substitute(host, method, block, *args)
           args << @message.to_sym
+          block = move_block_to_last_customization(block)
+
           expectation = host.__send__(method, *args, &(@block || block))
 
           @recorded_customizations.each do |customization|
@@ -93,10 +95,20 @@ module RSpec
           end
           expectation
         end
+
+        def move_block_to_last_customization(block)
+          last = @recorded_customizations.last
+          return block unless last
+
+          last.block ||= block
+          nil
+        end
       end
     end
 
     class ExpectationCustomization
+      attr_accessor :block
+
       def initialize(method_name, args, block)
         @method_name = method_name
         @args        = args
