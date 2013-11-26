@@ -34,6 +34,7 @@ module RSpec
       end
     end
 
+    # @private
     class MessageExpectation
       # @private
       attr_accessor :error_generator, :implementation

@@ -1,6 +1,7 @@
 module RSpec
   module Mocks
     module Matchers
+      # @private
       class Receive
         def initialize(message, block)
           @message                 = message
@@ -101,6 +102,7 @@ module RSpec
       end
     end
 
+    # @private
     class ExpectationCustomization
       attr_accessor :block
 
