@@ -175,6 +175,14 @@ module RSpec
         double.stub(:foo).with(:arg) { :with_block }.at_least(:once) { :at_least_block }
       end
 
+      it "does not warn about overriding the stub when `:with` is chained off the block" do
+        expect(RSpec).not_to receive(:warning)
+
+        obj = Object.new
+        stub = obj.stub(:foo) { }
+        stub.with(1)
+      end
+
       it 'can combine and_call_original, with, and_return' do
         obj = Struct.new(:value).new('original')
         obj.stub(:value).and_call_original

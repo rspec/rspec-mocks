@@ -524,8 +524,13 @@ module RSpec
       end
 
       def inner_implementation_action=(action)
-        RSpec.warning("You're overriding a previous implementation for this stub") if implementation.inner_action
-        implementation.inner_action = action if action
+        return unless action
+
+        if implementation.inner_action
+          RSpec.warning("You're overriding a previous implementation for this stub")
+        end
+
+        implementation.inner_action = action
       end
 
       def terminal_implementation_action=(action)
