@@ -47,7 +47,7 @@ describe "and_call_original" do
     end
 
     it 'warns when you override an existing implementation' do
-      expect(RSpec).to receive(:warning).with(/overriding a previous implementation/)
+      expect(RSpec).to receive(:warning).with(/overriding a previous stub implementation of `meth_1`.*#{__FILE__}:#{__LINE__ + 1}/)
       expect(instance).to receive(:meth_1) { true }.and_call_original
       instance.meth_1
     end

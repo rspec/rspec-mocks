@@ -151,9 +151,7 @@ module RSpec
         if RSpec::Mocks::TestDouble === @method_double.object
           @error_generator.raise_only_valid_on_a_partial_double(:and_call_original)
         else
-          if implementation.inner_action
-            RSpec.warning("You're overriding a previous implementation for this stub")
-          end
+          warn_about_stub_override if implementation.inner_action
           @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
           @yield_receiver_to_implementation_block = false
         end
@@ -525,16 +523,19 @@ module RSpec
 
       def inner_implementation_action=(action)
         return unless action
-
-        if implementation.inner_action
-          RSpec.warning("You're overriding a previous implementation for this stub")
-        end
-
+        warn_about_stub_override if implementation.inner_action
         implementation.inner_action = action
       end
 
       def terminal_implementation_action=(action)
         implementation.terminal_action = action
+      end
+
+      def warn_about_stub_override
+        RSpec.warning(
+          "You're overriding a previous stub implementation of `#{@message}`. " +
+          "Called from #{CallerFilter.first_non_rspec_line}."
+        )
       end
     end
 
