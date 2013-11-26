@@ -26,6 +26,9 @@ Bug Fixes:
   config so that it no longer is silenced by an extension gem such
   as rspec-rails when it calls `config.add_stub_and_should_receive_to`.
   (Sam Phippen)
+* Fix `expect` syntax so that it does not wrongly emit a "You're
+  overriding a previous implementation for this stub" warning when
+  you are not actually doing that. (Myron Marston)
 
 Enhancements:
 
