@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     module Matchers
-      #@api private
+      # @private
       class ReceiveMessageChain
         def initialize(chain, &block)
           @chain = chain

@@ -22,6 +22,13 @@ Bug Fixes:
 * Fix verified null object doubles so that they do not wrongly
   report that they respond to anything. They only respond to methods
   available on the interface they verify against. (Myron Marston)
+* Fix deprecation warning for use of old `:should` syntax w/o explicit
+  config so that it no longer is silenced by an extension gem such
+  as rspec-rails when it calls `config.add_stub_and_should_receive_to`.
+  (Sam Phippen)
+* Fix `expect` syntax so that it does not wrongly emit a "You're
+  overriding a previous implementation for this stub" warning when
+  you are not actually doing that. (Myron Marston)
 
 Enhancements:
 

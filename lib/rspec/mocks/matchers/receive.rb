@@ -1,17 +1,13 @@
 module RSpec
   module Mocks
     module Matchers
+      # @private
       class Receive
         def initialize(message, block)
           @message                 = message
           @block                   = block
           @recorded_customizations = []
-
-          # MRI, JRuby and RBX report the caller inconsistently; MRI
-          # reports an extra "in `new'" line in the backtrace that the
-          # others do not include. The safest way to find the right
-          # line is to search for the first line BEFORE rspec/mocks/syntax.rb.
-          @backtrace_line = CallerFilter.first_non_rspec_line
+          @backtrace_line          = CallerFilter.first_non_rspec_line
         end
 
         def name
@@ -86,6 +82,8 @@ module RSpec
 
         def setup_method_substitute(host, method, block, *args)
           args << @message.to_sym
+          block = move_block_to_last_customization(block)
+
           expectation = host.__send__(method, *args, &(@block || block))
 
           @recorded_customizations.each do |customization|
@@ -93,10 +91,21 @@ module RSpec
           end
           expectation
         end
+
+        def move_block_to_last_customization(block)
+          last = @recorded_customizations.last
+          return block unless last
+
+          last.block ||= block
+          nil
+        end
       end
     end
 
+    # @private
     class ExpectationCustomization
+      attr_accessor :block
+
       def initialize(method_name, args, block)
         @method_name = method_name
         @args        = args

@@ -1,6 +1,7 @@
 module RSpec
   module Mocks
     module Matchers
+      # @private
       class HaveReceived
         COUNT_CONSTRAINTS = %w(exactly at_least at_most times once twice)
         ARGS_CONSTRAINTS = %w(with)

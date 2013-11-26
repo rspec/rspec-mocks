@@ -93,6 +93,24 @@ module RSpec
           expect(receiver.foo(1)).to eq(:a)
           expect(receiver.foo(2)).to eq(:b)
         end
+
+        it 'allows do...end blocks to be passed to the fluent interface methods without getting a warning' do
+          expect(RSpec).not_to receive(:warning)
+
+          wrapped.to receive(:foo).with(1) do
+            :a
+          end
+
+          expect(receiver.foo(1)).to eq(:a)
+        end
+
+        it 'makes { } blocks trump do...end blocks when passed to a fluent interface method' do
+          wrapped.to receive(:foo).with(1) { :curly } do
+            :do_end
+          end
+
+          expect(receiver.foo(1)).to eq(:curly)
+        end
       end
 
       shared_examples_for "an expect syntax allowance" do |*options|

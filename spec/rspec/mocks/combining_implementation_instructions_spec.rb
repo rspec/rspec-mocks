@@ -171,8 +171,16 @@ module RSpec
       end
 
       it 'warns when the inner implementation block is overriden' do
-        expect(RSpec).to receive(:warning).with(/overriding a previous implementation/)
+        expect(RSpec).to receive(:warning).with(/overriding a previous stub implementation of `foo`.*#{__FILE__}:#{__LINE__ + 1}/)
         double.stub(:foo).with(:arg) { :with_block }.at_least(:once) { :at_least_block }
+      end
+
+      it "does not warn about overriding the stub when `:with` is chained off the block" do
+        expect(RSpec).not_to receive(:warning)
+
+        obj = Object.new
+        stub = obj.stub(:foo) { }
+        stub.with(1)
       end
 
       it 'can combine and_call_original, with, and_return' do
