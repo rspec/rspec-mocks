@@ -111,3 +111,16 @@ shared_context "with isolated configuration" do
   end
 end
 
+shared_context "with the default mocks syntax" do
+  orig_syntax = nil
+
+  before(:all) do
+    orig_syntax = RSpec::Mocks.configuration.syntax
+    RSpec::Mocks.configuration.reset_syntaxes_to_default
+  end
+
+  after(:all) do
+    RSpec::Mocks.configuration.syntax = orig_syntax
+  end
+
+end

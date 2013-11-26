@@ -24,7 +24,7 @@ module RSpec
       # @api private
       # Enables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
       def self.enable_should(syntax_host = default_should_syntax_host)
-        @warn_about_should = false
+        @warn_about_should = false if syntax_host == default_should_syntax_host
         return if should_enabled?(syntax_host)
 
         syntax_host.class_exec do
