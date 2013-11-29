@@ -270,11 +270,15 @@ module RSpec
       end
 
       it "is wrappable in an array" do
-        expect( Array(@double) ).to eq([@double])
+        with_isolated_stderr do
+          expect( Array(@double) ).to eq([@double])
+        end
       end
 
       it "is wrappable in an array when a null object" do
-        expect( Array(@double.as_null_object) ).to eq [@double]
+        with_isolated_stderr do
+          expect( Array(@double.as_null_object) ).to eq [@double]
+        end
       end
 
       it "responds to to_ary as a null object" do
