@@ -39,14 +39,15 @@ module RSpec
         end
       end
 
-      def syntax=(values)
-        if Array(values).include?(:expect)
+      def syntax=(*values)
+        syntaxes = values.flatten
+        if syntaxes.include?(:expect)
           Syntax.enable_expect
         else
           Syntax.disable_expect
         end
 
-        if Array(values).include?(:should)
+        if syntaxes.include?(:should)
           Syntax.enable_should
         else
           Syntax.disable_should
