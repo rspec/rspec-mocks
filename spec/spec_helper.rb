@@ -33,24 +33,14 @@ module VerifyAndResetHelpers
   end
 end
 
-module DeprecationHelpers
-  def expect_deprecation_with_call_site(file, line)
-    expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
-      expect(options[:call_site]).to include([file, line].join(':'))
-    end
-  end
-
-  def expect_warning_with_call_site(file, line)
-    expect(Kernel).to receive(:warn).with(/Called from #{file}:#{line}/)
-  end
-end
-
 module VerificationHelpers
   def prevents(&block)
     expect(&block).to \
       raise_error(RSpec::Mocks::MockExpectationError)
   end
 end
+
+require 'rspec/support/spec'
 
 RSpec.configure do |config|
   config.mock_with :rspec
@@ -81,7 +71,6 @@ RSpec.configure do |config|
   end
 
   config.include VerifyAndResetHelpers
-  config.include DeprecationHelpers
   config.include VerificationHelpers
 end
 

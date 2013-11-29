@@ -24,7 +24,7 @@ module RSpec
         stashed_method = stasher_for(obj, :hello)
         stashed_method.stash
 
-        def obj.hello; :overridden_hello; end
+        with_isolated_stderr { def obj.hello; :overridden_hello; end }
         expect(obj.hello).to eql :overridden_hello
 
         stashed_method.restore
@@ -39,7 +39,7 @@ module RSpec
         stashed_method = stasher_for(obj, :hello)
         stashed_method.stash
 
-        def obj.hello; :overridden_hello; end
+        with_isolated_stderr { def obj.hello; :overridden_hello; end }
         stashed_method.restore
         expect(obj.send(:hello)).to eql :hello_defined_on_singleton_class
       end
