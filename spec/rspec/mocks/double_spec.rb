@@ -285,7 +285,9 @@ module RSpec
         if RUBY_VERSION.to_f > 1.8
           expect(@double.as_null_object.to_a).to eq nil
         else
-          expect(@double.as_null_object.to_a).to eq [@double]
+          with_isolated_stderr do
+            expect(@double.as_null_object.to_a).to eq [@double]
+          end
         end
       end
 
