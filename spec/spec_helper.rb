@@ -1,17 +1,14 @@
+require 'rspec/support/spec'
+
+RSpec::Support::Spec.setup_simplecov do
+  minimum_coverage 97
+end
+
 require 'yaml'
 begin
   require 'psych'
 rescue LoadError
 end
-
-begin
-  require 'simplecov'
-
-  SimpleCov.start do
-    add_filter "bundle"
-  end
-rescue LoadError
-end unless ENV['NO_COVERAGE'] || RUBY_VERSION < '1.9.3'
 
 RSpec::Matchers.define :include_method do |expected|
   match do |actual|

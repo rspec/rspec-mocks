@@ -18,10 +18,7 @@ group :documentation do
   gem 'github-markup', '0.7.2'
 end
 
-if RUBY_VERSION >= '1.9.3'
-  gem 'simplecov'
-  gem 'cane'
-end
+gem 'simplecov', '~> 0.8'
 
 platforms :jruby do
   gem "jruby-openssl"
