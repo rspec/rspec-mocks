@@ -21,11 +21,6 @@ echo "Running all..."
 
 bin/rspec spec --format progress --profile
 
-if ruby -e 'exit RUBY_VERSION >= "1.9.3" && RUBY_ENGINE == "ruby"'
-then
-  bin/cane # Uses options from .cane
-fi
-
 echo
 echo "--------------------------------------------------------------------"
 echo
