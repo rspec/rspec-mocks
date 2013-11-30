@@ -32,9 +32,9 @@ Bug Fixes:
 
 Enhancements:
 
-* Add receive_message_chain which provides the functionality of the old
-  stub_chain for the new allow/expect syntax. Use it like so: allow(...).to
-  receive_message_chain(:foo, :bar, :bazz). (Sam Phippen).
+* Add `receive_message_chain` which provides the functionality of the old
+  `stub_chain` for the new allow/expect syntax. Use it like so: `allow(...).to
+  receive_message_chain(:foo, :bar, :bazz)`. (Sam Phippen).
 * Change argument matchers to use `===` as their primary matching
   protocol, as their semantics mirror that of a case or rescue statement
   (which uses `===` for matching). (Myron Marston)
@@ -73,7 +73,7 @@ Enhancements:
 * Provide `object_double` to create verified doubles of specific object
   instances. (Xavier Shay)
 * Provide `verify_partial_doubles` configuration that provides `object_double`
-  like verification behaviour on partial mocks. (Xavier Shay)
+  like verification behaviour on partial doubles. (Xavier Shay)
 * Improved performance of double creation, particularly those with many
   attributes. (Xavier Shay)
 * Default value of `transfer_nested_constants` option for constant stubbing can
