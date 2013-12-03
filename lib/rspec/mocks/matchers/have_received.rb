@@ -36,7 +36,7 @@ module RSpec
           generate_failure_message
         end
 
-        def negative_failure_message
+        def failure_message_when_negated
           generate_failure_message
         end
 
