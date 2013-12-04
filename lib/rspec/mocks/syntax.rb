@@ -10,11 +10,16 @@ module RSpec
       end
 
       # @api private
-      def self.warn_unless_should_configured(method_name)
+      def self.warn_unless_should_configured(method_name, expect_replacement = true)
         if @warn_about_should
+          if expect_replacement
+            replacement = "the new `:expect` syntax or explicitly enable `:should`"
+          else
+            replacement = "the `:should` syntax by explicitly enabling it"
+          end
           RSpec.deprecate(
             "Using `#{method_name}` from rspec-mocks' old `:should` syntax without explicitly enabling the syntax",
-            :replacement => "the new `:expect` syntax or explicitly enable `:should`"
+            :replacement => replacement
           )
 
           @warn_about_should = false
@@ -51,7 +56,7 @@ module RSpec
           end
 
           def unstub(message)
-            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__, false)
             ::RSpec::Mocks.space.proxy_for(self).remove_stub(message)
           end
 

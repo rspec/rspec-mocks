@@ -162,6 +162,20 @@ module RSpec
             o2.stub(:faces)
           end
 
+          it "warns about unstubbing once, regardless of how many times it is called" do
+            expect(RSpec).to receive(:deprecate).with(/Using.*without explicitly enabling/,
+              {:replacement => "the `:should` syntax by explicitly enabling it"})
+            o = Object.new
+            o2 = Object.new
+
+            allow(o).to receive(:faces)
+            allow(o2).to receive(:faces)
+
+            o.unstub(:faces)
+            o2.unstub(:faces)
+          end
+
+
           it "doesn't warn about stubbing after a reset and setting should" do
             expect(RSpec).not_to receive(:deprecate)
             RSpec::Mocks.configuration.reset_syntaxes_to_default
