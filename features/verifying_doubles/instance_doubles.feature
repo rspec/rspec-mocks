@@ -76,7 +76,7 @@ Feature: Using an instance double
       end
       """
 
-    When I run `rspec spec/unit/user_spec.rb`
+    When I run `rspec -r./spec/spec_helper spec/unit/user_spec.rb`
     Then the examples should all pass
 
   Scenario: spec fails with dependencies loaded and method unimplemented
