@@ -51,7 +51,7 @@ module RSpec
         when ArgumentMatchers::NoArgsMatcher
           @matchers = []
         else
-          @matchers = expected_args.collect {|arg| matcher_for(arg)}
+          @matchers = expected_args
         end
       end
 
@@ -67,19 +67,6 @@ module RSpec
       end
 
       private
-
-      def matcher_for(arg)
-        return ArgumentMatchers::MatcherMatcher.new(arg) if is_matcher?(arg)
-        arg
-      end
-
-      def is_matcher?(object)
-        return false if object.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
-
-        [:failure_message_for_should, :failure_message].any? do |msg|
-          object.respond_to?(msg)
-        end && object.respond_to?(:matches?)
-      end
 
       def matchers_match?(*args)
         return false unless @matchers.count == args.count
