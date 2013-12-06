@@ -231,17 +231,6 @@ module RSpec
       end
 
       # @api private
-      class MatcherMatcher
-        def initialize(matcher)
-          @matcher = matcher
-        end
-
-        def ===(value)
-          @matcher.matches?(value)
-        end
-      end
-
-      # @api private
       class InstanceOf
         def initialize(klass)
           @klass = klass
