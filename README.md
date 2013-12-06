@@ -30,8 +30,8 @@ book = instance_double("Book", :pages => 250)
 
 Verifying doubles have some clever tricks to enable you to both test in
 isolation without your dependencies loaded while still being able to validate
-them against real objects. More detail is available in (their
-documentation)[https://github.com/rspec/rspec-mocks/blob/master/features/verifying_doubles].
+them against real objects. More detail is available in [their
+documentation](https://github.com/rspec/rspec-mocks/blob/master/features/verifying_doubles).
 
 ## Method Stubs
 
