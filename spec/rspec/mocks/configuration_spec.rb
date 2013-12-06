@@ -164,7 +164,7 @@ module RSpec
 
           it "warns about unstubbing once, regardless of how many times it is called" do
             expect(RSpec).to receive(:deprecate).with(/Using.*without explicitly enabling/,
-              {:replacement => "the `:should` syntax by explicitly enabling it"})
+              {:replacement => "`allow(...).to_receive(:faces).and_call_original` or explicitly enable `:should`"})
             o = Object.new
             o2 = Object.new
 
