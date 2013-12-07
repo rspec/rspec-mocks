@@ -21,6 +21,29 @@ describe "and_call_original" do
 
     let(:instance) { klass.new }
 
+    context "when a method that exists has been stubbed previously" do
+      before { allow(instance).to receive(:meth_1).and_return(:override) }
+
+      it 'restores the original behavior' do
+        expect {
+          allow(instance).to receive(:meth_1).and_call_original
+        }.to change(instance, :meth_1).from(:override).to(:original)
+      end
+    end
+
+    context "when a non-existant method has been stubbed previously" do
+      it 'restores the original NameError behavior' do
+        message = nil
+        expect { instance.abcd }.to raise_error(NameError) { |msg| message = msg.message }
+
+        allow(instance).to receive(:abcd).and_return(:override)
+        expect(instance.abcd).to eq(:override)
+
+        allow(instance).to receive(:abcd).and_call_original
+        expect { instance.abcd }.to raise_error(NameError).with_message(message)
+      end
+    end
+
     it 'passes the received message through to the original method' do
       expect(instance).to receive(:meth_1).and_call_original
       expect(instance.meth_1).to eq(:original)
