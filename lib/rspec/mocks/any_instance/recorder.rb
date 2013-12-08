@@ -207,6 +207,7 @@ module RSpec
           if RSpec::Mocks.configuration.verify_partial_doubles?
             raise MockExpectationError unless @klass.method_defined?(method_name)
           end
+          ensure_restorable!(method_name)
 
           stop_observing!(method_name) if already_observing?(method_name)
           @observed_methods << method_name
@@ -224,6 +225,16 @@ module RSpec
             klass = ::RSpec::Mocks.method_handle_for(self, method_name).owner
             invoked_instance = ::RSpec::Mocks.any_instance_recorder_for(klass).instance_that_received(method_name)
             raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{self.inspect} but has already been received by #{invoked_instance}"
+          end
+        end
+
+        def ensure_restorable!(method_name)
+          return unless Method.public_instance_methods.include?(:source_location)
+          return unless public_protected_or_private_method_defined?(method_name)
+          return if @klass.public_instance_methods(false).include?(method_name)
+
+          if @klass.instance_method(method_name).source_location.first == __FILE__
+            raise RSpec::Mocks::UnrestorableStubError, "Original method is already stubbed"
           end
         end
       end

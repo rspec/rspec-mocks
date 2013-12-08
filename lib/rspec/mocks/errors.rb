@@ -7,6 +7,10 @@ module RSpec
     # @private
     class AmbiguousReturnError < StandardError
     end
+
+    # @private
+    class UnrestorableStubError < StandardError
+    end
   end
 end
 
