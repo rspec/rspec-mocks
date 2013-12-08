@@ -29,6 +29,8 @@ Bug Fixes:
 * Fix `expect` syntax so that it does not wrongly emit a "You're
   overriding a previous implementation for this stub" warning when
   you are not actually doing that. (Myron Marston)
+* Fix `any_instance.unstub` when used on sub classes for whom the super
+  class has had `any_instance.stub` invoked on. (Jon Rowe)
 
 Enhancements:
 

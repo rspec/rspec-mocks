@@ -97,6 +97,9 @@ module RSpec
         end
 
         context "behaves as 'every instance'" do
+          let(:super_class) { Class.new { def foo; 'bar'; end } }
+          let(:sub_class)   { Class.new(super_class) }
+
           it "stubs every instance in the spec" do
             klass.any_instance.stub(:foo).and_return(result = Object.new)
             expect(klass.new.foo).to eq(result)
@@ -114,6 +117,19 @@ module RSpec
 
             foo = 'foo'.freeze
             expect(foo.dup.concat 'bar').to eq 'foobar'
+          end
+
+          it 'handles stubbing on super and subclasses' do
+            super_class.any_instance.stub(:foo)
+            sub_class.any_instance.stub(:foo).and_return('baz')
+            expect(sub_class.new.foo).to eq('baz')
+          end
+
+          it 'handles method restoration on subclasses' do
+            super_class.any_instance.stub(:foo)
+            sub_class.any_instance.stub(:foo)
+            sub_class.any_instance.unstub(:foo)
+            expect(sub_class.new.foo).to eq("bar")
           end
         end
 

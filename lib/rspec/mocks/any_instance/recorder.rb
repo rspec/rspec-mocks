@@ -125,10 +125,36 @@ module RSpec
         end
 
         def already_observing?(method_name)
-          @observed_methods.include?(method_name)
+          @observed_methods.include?(method_name) || super_class_observing?(method_name)
         end
 
-        private
+      protected
+
+        def stop_observing!(method_name)
+          restore_method!(method_name)
+          @observed_methods.delete(method_name)
+          super_class_observers_for(method_name).each do |ancestor|
+            ::RSpec::Mocks.any_instance_recorder_for(ancestor).stop_observing!(method_name)
+          end
+        end
+
+      private
+
+        def ancestor_is_an_observer?(method_name)
+          lambda do |ancestor|
+            unless ancestor == @klass
+              ::RSpec::Mocks.any_instance_recorder_for(ancestor).already_observing?(method_name)
+            end
+          end
+        end
+
+        def super_class_observers_for(method_name)
+          @klass.ancestors.select(&ancestor_is_an_observer?(method_name))
+        end
+
+        def super_class_observing?(method_name)
+          @klass.ancestors.any?(&ancestor_is_an_observer?(method_name))
+        end
 
         def normalize_chain(*args)
           args.shift.to_s.split('.').map {|s| s.to_sym}.reverse.each {|a| args.unshift a}
@@ -150,11 +176,13 @@ module RSpec
         end
 
         def restore_original_method!(method_name)
-          alias_method_name = build_alias_method_name(method_name)
-          @klass.class_exec do
-            remove_method method_name
-            alias_method  method_name, alias_method_name
-            remove_method alias_method_name
+          if @klass.instance_method(method_name).owner == @klass
+            alias_method_name = build_alias_method_name(method_name)
+            @klass.class_exec do
+              remove_method method_name
+              alias_method  method_name, alias_method_name
+              remove_method alias_method_name
+            end
           end
         end
 
@@ -173,11 +201,6 @@ module RSpec
 
         def public_protected_or_private_method_defined?(method_name)
           MethodReference.method_defined_at_any_visibility?(@klass, method_name)
-        end
-
-        def stop_observing!(method_name)
-          restore_method!(method_name)
-          @observed_methods.delete(method_name)
         end
 
         def observe!(method_name)
