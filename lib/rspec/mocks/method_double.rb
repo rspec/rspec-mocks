@@ -16,6 +16,7 @@ module RSpec
         @method_is_proxied = false
         @expectations = []
         @stubs = []
+        @show_frozen_warnings = []
       end
 
       def original_method
@@ -85,6 +86,15 @@ module RSpec
         restore_original_visibility
 
         @method_is_proxied = false
+      rescue RuntimeError => e
+        frozen = object_singleton_class.frozen?
+        if frozen && !@show_frozen_warnings.include?(@method_name)
+          RSpec.warn_with "Unable to remove stub method #{@method_name} because the object was frozen.",
+            :call_site => nil
+          @show_frozen_warnings << @method_name
+        elsif !frozen
+          raise e
+        end
       end
 
       # @private

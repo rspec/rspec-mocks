@@ -10,6 +10,9 @@ Breaking Changes for 3.0.0:
 
 Bug Fixes:
 
+* Instead of crashing when cleaning up stub methods on a frozen object, it now
+  issues a warning explaining that it's impossible to clean up the stubs. 
+  (Justin Coyne)
 * Fix regression in 3.0.0.beta1 that caused `double("string_name" => :value)`
   to stop working. (Xavier Shay)
 * Fix the way rspec-mocks and rspec-core interact so that if users

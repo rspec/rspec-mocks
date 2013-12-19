@@ -216,6 +216,17 @@ module RSpec
           target.to receive(:foo).and_return(:baz)
           expect { reset object }.to change { object.foo }.from(:baz).to(:bar)
         end
+
+        context "on a frozen object" do
+          it "removes the method double" do
+            with_isolated_stderr do
+              target.to receive(:foo).and_return(:baz)
+              expect_warning_without_call_site(/Unable to remove stub method foo because the object was frozen./)
+              object.freeze
+              reset object
+            end
+          end
+        end
       end
 
       shared_examples_for "resets partial mocks of any instance cleanly" do
