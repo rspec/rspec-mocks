@@ -39,6 +39,20 @@ module RSpec
         end
       end
 
+      # Provides the ability to set either `expect`,
+      # `should` or both syntaxes. RSpec uses `expect`
+      # syntax by default. This is needed if you want to
+      # explicitly enable `should` syntax and/or explicitly
+      # disable `expect` syntax.
+      #
+      # @example
+      #
+      #   RSpec.configure do |rspec|
+      #     rspec.mock_with :rspec do |mocks|
+      #       mocks.syntax = [:expect, :should]
+      #     end
+      #  end
+      #
       def syntax=(*values)
         syntaxes = values.flatten
         if syntaxes.include?(:expect)
@@ -54,6 +68,15 @@ module RSpec
         end
       end
 
+      # Returns an array with a list of syntaxes
+      # that are enabled.
+      #
+      # @example
+      #
+      #   unless RSpec::Mocks.configuration.syntax.include?(:expect)
+      #     raise "this RSpec extension gem requires the rspec-mocks `:expect` syntax"
+      #   end
+      #
       def syntax
         syntaxes = []
         syntaxes << :should  if Syntax.should_enabled?

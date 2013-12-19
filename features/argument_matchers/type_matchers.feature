@@ -10,10 +10,10 @@ Feature: stub with argument constraints
       describe "stubbed an_instance_of() args spec" do
         it "works" do
           object = Object.new
-          object.stub(:foo).with(an_instance_of(Symbol)) do
+          allow(object).to receive(:foo).with(an_instance_of(Symbol)) do
             "symbol"
           end
-          object.stub(:foo).with(an_instance_of(String)) do
+          allow(object).to receive(:foo).with(an_instance_of(String)) do
             "string"
           end
 

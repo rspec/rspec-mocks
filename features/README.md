@@ -36,7 +36,7 @@ them against real objects.
 A method stub is an instruction to an object (real or test double) to return a
 known value in response to a message:
 
-    die.stub(:roll) { 3 }
+    allow(die).to receive(:roll) { 3 }
 
 This tells the `die` object to return the value `3` when it receives the `roll`
 message.
@@ -53,7 +53,7 @@ specific message during the course of a code example:
           account = Account.new
           account.logger = logger
 
-          logger.should_receive(:account_closed).with(account)
+          expect(logger).to receive(:account_closed).with(account)
 
           account.close
         end

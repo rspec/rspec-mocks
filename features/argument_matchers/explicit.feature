@@ -8,15 +8,15 @@ Feature: explicit arguments
       describe "stubbed explicit arguments" do
         it "works on stubs" do
           object = Object.new
-          object.stub(:foo).with(:this) do |arg|
+          allow(object).to receive(:foo).with(:this) do |arg|
             "got this"
           end
-          object.stub(:foo).with(:that) do |arg|
+          allow(object).to receive(:foo).with(:that) do |arg|
             "got that"
           end
 
-          object.foo(:this).should eq("got this")
-          object.foo(:that).should eq("got that")
+          expect(object.foo(:this)).to eq("got this")
+          expect(object.foo(:that)).to eq("got that")
         end
 
         it "works on doubles and expectations" do
@@ -36,10 +36,10 @@ Feature: explicit arguments
       describe "stubbed multiple explicit arguments" do
         it "works on stubs" do
           object = Object.new
-          object.stub(:foo).with(:this) do |arg|
+          allow(object).to receive(:foo).with(:this) do |arg|
             "got this"
           end
-          object.stub(:foo).with(:this, :that) do |arg1, arg2|
+          allow(object).to receive(:foo).with(:this, :that) do |arg1, arg2|
             "got this and that"
           end
 

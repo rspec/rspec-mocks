@@ -11,11 +11,11 @@ module RSpec
     # @see ArgumentListMatcher
     module ArgumentMatchers
       # Matches any args at all. Supports a more explicit variation of
-      # `object.should_receive(:message)`
+      # `expect(object).to receive(:message)`
       #
       # @example
       #
-      #   object.should_receive(:message).with(any_args)
+      #   expect(object).to receive(:message).with(any_args)
       def any_args
         AnyArgsMatcher.new
       end
@@ -24,7 +24,7 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(anything)
+      #   expect(object).to receive(:message).with(anything)
       def anything
         AnyArgMatcher.new
       end
@@ -33,7 +33,7 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(no_args)
+      #   expect(object).to receive(:message).with(no_args)
       def no_args
         NoArgsMatcher.new
       end
@@ -42,8 +42,8 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(duck_type(:hello))
-      #   object.should_receive(:message).with(duck_type(:hello, :goodbye))
+      #   expect(object).to receive(:message).with(duck_type(:hello))
+      #   expect(object).to receive(:message).with(duck_type(:hello, :goodbye))
       def duck_type(*args)
         DuckTypeMatcher.new(*args)
       end
@@ -52,7 +52,7 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(boolean())
+      #   expect(object).to receive(:message).with(boolean())
       def boolean
         BooleanMatcher.new
       end
@@ -62,9 +62,9 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(hash_including(:key => val))
-      #   object.should_receive(:message).with(hash_including(:key))
-      #   object.should_receive(:message).with(hash_including(:key, :key2 => val2))
+      #   expect(object).to receive(:message).with(hash_including(:key => val))
+      #   expect(object).to receive(:message).with(hash_including(:key))
+      #   expect(object).to receive(:message).with(hash_including(:key, :key2 => val2))
       def hash_including(*args)
         HashIncludingMatcher.new(ArgumentMatchers.anythingize_lonely_keys(*args))
       end
@@ -74,8 +74,8 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(array_including(1,2,3))
-      #   object.should_receive(:message).with(array_including([1,2,3]))
+      #   expect(object).to receive(:message).with(array_including(1,2,3))
+      #   expect(object).to receive(:message).with(array_including([1,2,3]))
       def array_including(*args)
         actually_an_array = Array === args.first && args.count == 1 ? args.first : args
         ArrayIncludingMatcher.new(actually_an_array)
@@ -85,9 +85,9 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(hash_excluding(:key => val))
-      #   object.should_receive(:message).with(hash_excluding(:key))
-      #   object.should_receive(:message).with(hash_excluding(:key, :key2 => :val2))
+      #   expect(object).to receive(:message).with(hash_excluding(:key => val))
+      #   expect(object).to receive(:message).with(hash_excluding(:key))
+      #   expect(object).to receive(:message).with(hash_excluding(:key, :key2 => :val2))
       def hash_excluding(*args)
         HashExcludingMatcher.new(ArgumentMatchers.anythingize_lonely_keys(*args))
       end
@@ -98,7 +98,7 @@ module RSpec
       #
       # @example
       #
-      #   object.should_receive(:message).with(instance_of(Thing))
+      #   expect(object).to receive(:message).with(instance_of(Thing))
       def instance_of(klass)
         InstanceOf.new(klass)
       end
@@ -108,7 +108,7 @@ module RSpec
       # Matches if `arg.kind_of?(klass)`
       # @example
       #
-      #   object.should_receive(:message).with(kind_of(Thing))
+      #   expect(object).to receive(:message).with(kind_of(Thing))
       def kind_of(klass)
         klass
       end

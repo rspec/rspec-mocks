@@ -27,21 +27,21 @@ Feature: stub a chain of methods
 
         context "given symbols representing methods" do
           it "returns the correct value" do
-            subject.stub_chain(:one, :two, :three).and_return(:four)
+            allow(subject).to receive_message_chain(:one, :two, :three).and_return(:four)
             expect(subject.one.two.three).to eq(:four)
           end
         end
 
         context "given a hash at the end" do
           it "returns the correct value" do
-            subject.stub_chain(:one, :two, :three => :four)
+            allow(subject).to receive_message_chain(:one, :two, :three => :four)
             expect(subject.one.two.three).to eq(:four)
           end
         end
 
         context "given a string of methods separated by dots" do
           it "returns the correct value" do
-            subject.stub_chain("one.two.three").and_return(:four)
+            allow(subject).to receive_message_chain("one.two.three").and_return(:four)
             expect(subject.one.two.three).to eq(:four)
           end
         end
