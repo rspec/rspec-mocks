@@ -4,12 +4,14 @@
     obj = double()
 
     # expect a message
-    obj.should_receive(:message)
+    expect(obj).to receive(:message)
 
     # specify a return value
-    obj.should_receive(:message) { :value }
-    obj.should_receive(:message => :value)
-    obj.should_receive(:message).and_return(:value)
+    expect(obj).to receive(:message) { :value }
+    expect(obj).to receive(:message).and_return(:value)
+
+    # specify multiple message/return value pairs
+    expect(obj).to receive_messages(:message => :value, :another_message => :another_value)
 
 These forms are somewhat interchangeable. The difference is that the
 block contents are evaluated lazily when the `obj` receives the
@@ -17,57 +19,57 @@ block contents are evaluated lazily when the `obj` receives the
 
 ### Fake implementation
 
-    obj.should_receive(:message) do |arg1, arg2|
+    expect(obj).to receive(:message) do |arg1, arg2|
       # set expectations about the args in this block
       # and set a return value
     end
 
 ### Using the original implementation
 
-    obj.should_receive(:message).and_call_original
+    expect(obj).to receive(:message).and_call_original
 
 ### Raising/Throwing
 
-    obj.should_receive(:message).and_raise("this error")
-    obj.should_receive(:message).and_throw(:this_symbol)
+    expect(obj).to receive(:message).and_raise("this error")
+    expect(obj).to receive(:message).and_throw(:this_symbol)
 
 You can also use the block format:
 
-    obj.should_receive(:message) { raise "this error" }
-    obj.should_receive(:message) { throw :this_symbol }
+    expect(obj).to receive(:message) { raise "this error" }
+    expect(obj).to receive(:message) { throw :this_symbol }
 
 ### Argument constraints
 
 #### Explicit arguments
 
-    obj.should_receive(:message).with('an argument')
-    obj.should_receive(:message).with('more_than', 'one_argument')
+    expect(obj).to receive(:message).with('an argument')
+    expect(obj).to receive(:message).with('more_than', 'one_argument')
 
 #### Argument matchers
 
-    obj.should_receive(:message).with(anything())
-    obj.should_receive(:message).with(an_instance_of(Money))
-    obj.should_receive(:message).with(hash_including(:a => 'b'))
+    expect(obj).to receive(:message).with(anything())
+    expect(obj).to receive(:message).with(an_instance_of(Money))
+    expect(obj).to receive(:message).with(hash_including(:a => 'b'))
 
 #### Regular expressions
 
-    obj.should_receive(:message).with(/abc/)
+    expect(obj).to receive(:message).with(/abc/)
 
 ### Counts
 
-    obj.should_receive(:message).once
-    obj.should_receive(:message).twice
-    obj.should_receive(:message).exactly(3).times
+    expect(obj).to receive(:message).once
+    expect(obj).to receive(:message).twice
+    expect(obj).to receive(:message).exactly(3).times
 
-    obj.should_receive(:message).at_least(:once)
-    obj.should_receive(:message).at_least(:twice)
-    obj.should_receive(:message).at_least(n).times
+    expect(obj).to receive(:message).at_least(:once)
+    expect(obj).to receive(:message).at_least(:twice)
+    expect(obj).to receive(:message).at_least(n).times
 
-    obj.should_receive(:message).at_most(:once)
-    obj.should_receive(:message).at_most(:twice)
-    obj.should_receive(:message).at_most(n).times
+    expect(obj).to receive(:message).at_most(:once)
+    expect(obj).to receive(:message).at_most(:twice)
+    expect(obj).to receive(:message).at_most(n).times
 
 ### Ordering
 
-    obj.should_receive(:one).ordered
-    obj.should_receive(:two).ordered
+    expect(obj).to receive(:one).ordered
+    expect(obj).to receive(:two).ordered

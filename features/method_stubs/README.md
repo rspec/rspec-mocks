@@ -20,7 +20,7 @@ block contents are evaluated lazily when the `obj` receives the
 
     allow(obj).to receive(:message) do |arg1, arg2|
       # set expectations about the args in this block
-      # and/or return  value
+      # and/or return value
     end
 
     obj.stub(:message) do |arg1, arg2|
@@ -49,6 +49,7 @@ You can also use the block format:
 #### Explicit arguments
 
     allow(obj).to receive(:message).with('an argument') { ... }
+    allow(obj).to receive(:message).with('more than', 'an argument') { ... }
 
     obj.stub(:message).with('an argument') { ... }
     obj.stub(:message).with('more_than', 'one_argument') { ... }

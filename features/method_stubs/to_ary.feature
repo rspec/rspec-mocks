@@ -18,7 +18,7 @@ Feature: double handling to_ary
       describe "#to_ary" do
         shared_examples "to_ary" do
           it "can be overridden with a stub" do
-            obj.stub(:to_ary) { :non_nil_value }
+            allow(obj).to receive(:to_ary) { :non_nil_value }
             expect(obj.to_ary).to be(:non_nil_value)
           end
 

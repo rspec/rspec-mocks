@@ -4,10 +4,10 @@ Argument matchers can be used:
 
 * In stubs to constrain the scope of the stubbed method
 
-    obj.stub(:foo).with(:bar) do |arg|
+    allow(obj).to receive(:foo).with(:bar) do |arg|
       #do something for :bar
     end
-    obj.stub(:foo).with(:baz) do |arg|
+    allow(obj).to receive(:foo).with(:baz) do |arg|
       #do something for :baz
     end
 
@@ -17,11 +17,11 @@ Argument matchers can be used:
     obj = double()
 
     #expect a message with given args
-    obj.should_receive(:message).with('an argument')
+    expect(obj).to receive(:message).with('an argument')
 
 If more control is needed, one can use a block
 
-    obj.should_receive(:message) do |arg1,  arg2|
+    expect(obj).to receive(:message) do |arg1,  arg2|
       # set expectations about the args in this block
       # and optionally set a return value
     end

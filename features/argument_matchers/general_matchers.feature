@@ -11,7 +11,7 @@ Feature: General matchers
       describe "stubbed anything() args spec" do
         it "works" do
           object = Object.new
-          object.stub(:foo).with(anything) do
+          allow(object).to receive(:foo).with(anything) do
             "anything"
           end
 
@@ -29,7 +29,7 @@ Feature: General matchers
       describe "stubbed any_args() args spec" do
         it "works" do
           object = Object.new
-          object.stub(:foo).with(any_args) do
+          allow(object).to receive(:foo).with(any_args) do
             "anything"
           end
 
@@ -48,10 +48,10 @@ Feature: General matchers
       describe "stubbed no_args() args spec" do
         it "works for no args" do
           object = Object.new
-          object.stub(:foo).with(no_args) do
+          allow(object).to receive(:foo).with(no_args) do
             "nothing"
           end
-          object.stub(:foo).with(anything) do
+          allow(object).to receive(:foo).with(anything) do
             "something"
           end
 

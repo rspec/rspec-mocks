@@ -5,13 +5,13 @@ module RSpec
     # Wrapper for matching arguments against a list of expected values. Used by
     # the `with` method on a `MessageExpectation`:
     #
-    #     object.should_receive(:message).with(:a, 'b', 3)
+    #     expect(object).to receive(:message).with(:a, 'b', 3)
     #     object.message(:a, 'b', 3)
     #
     # Values passed to `with` can be literal values or argument matchers that
     # match against the real objects .e.g.
     #
-    #     object.should_receive(:message).with(hash_including(:a => 'b'))
+    #     expect(object).to receive(:message).with(hash_including(:a => 'b'))
     #
     # Can also be used directly to match the contents of any `Array`. This
     # enables 3rd party mocking libs to take advantage of rspec's argument

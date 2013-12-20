@@ -92,11 +92,11 @@ module RSpec
       #
       # @example
       #
-      #   counter.stub(:count).and_return(1)
+      #   allow(counter).to receive(:count).and_return(1)
       #   counter.count # => 1
       #   counter.count # => 1
       #
-      #   counter.stub(:count).and_return(1,2,3)
+      #   allow(counter).to receive(:count).and_return(1,2,3)
       #   counter.count # => 1
       #   counter.count # => 2
       #   counter.count # => 3
@@ -105,11 +105,11 @@ module RSpec
       #   # etc
       #
       #   # Supported, but ...
-      #   counter.stub(:count).and_return { 1 }
+      #   allow(counter).to receive(:count).and_return { 1 }
       #   counter.count # => 1
       #
       #   # ... this is prefered
-      #   counter.stub(:count) { 1 }
+      #   allow(counter).to receive(:count) { 1 }
       #   counter.count # => 1
       def and_return(*values, &implementation)
         if negative?
@@ -144,7 +144,7 @@ module RSpec
       #
       # @example
       #
-      #   counter.should_receive(:increment).and_call_original
+      #   expect(counter).to receive(:increment).and_call_original
       #   original_count = counter.count
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
@@ -175,10 +175,10 @@ module RSpec
       #
       # @example
       #
-      #   car.stub(:go).and_raise
-      #   car.stub(:go).and_raise(OutOfGas)
-      #   car.stub(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
-      #   car.stub(:go).and_raise(OutOfGas.new(2, :oz))
+      #   allow(car).to receive(:go).and_raise
+      #   allow(car).to receive(:go).and_raise(OutOfGas)
+      #   allow(car).to receive(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
+      #   allow(car).to receive(:go).and_raise(OutOfGas.new(2, :oz))
       def and_raise(exception = RuntimeError, message = nil)
         if exception.respond_to?(:exception)
           exception = message ? exception.exception(message) : exception.exception
@@ -196,8 +196,8 @@ module RSpec
       #
       # @example
       #
-      #   car.stub(:go).and_throw(:out_of_gas)
-      #   car.stub(:go).and_throw(:out_of_gas, :level => 0.1)
+      #   allow(car).to receive(:go).and_throw(:out_of_gas)
+      #   allow(car).to receive(:go).and_throw(:out_of_gas, :level => 0.1)
       def and_throw(*args)
         self.terminal_implementation_action = Proc.new { throw(*args) }
         nil
@@ -332,14 +332,14 @@ module RSpec
       #
       # @example
       #
-      #   cart.stub(:add) { :failure }
-      #   cart.stub(:add).with(Book.new(:isbn => 1934356379)) { :success }
+      #   allow(cart).to receive(:add) { :failure }
+      #   allow(cart).to receive(:add).with(Book.new(:isbn => 1934356379)) { :success }
       #   cart.add(Book.new(:isbn => 1234567890))
       #   # => :failure
       #   cart.add(Book.new(:isbn => 1934356379))
       #   # => :success
       #
-      #   cart.should_receive(:add).with(Book.new(:isbn => 1934356379)) { :success }
+      #   expect(cart).to receive(:add).with(Book.new(:isbn => 1934356379)) { :success }
       #   cart.add(Book.new(:isbn => 1234567890))
       #   # => failed expectation
       #   cart.add(Book.new(:isbn => 1934356379))
@@ -360,7 +360,7 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_receive(:deal_card).exactly(10).times
+      #   expect(dealer).to receive(:deal_card).exactly(10).times
       def exactly(n, &block)
         self.inner_implementation_action = block
         set_expected_received_count :exactly, n
@@ -372,7 +372,7 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_receive(:deal_card).at_least(9).times
+      #   expect(dealer).to receive(:deal_card).at_least(9).times
       def at_least(n, &block)
         set_expected_received_count :at_least, n
 
@@ -390,7 +390,7 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_receive(:deal_card).at_most(10).times
+      #   expect(dealer).to receive(:deal_card).at_most(10).times
       def at_most(n, &block)
         self.inner_implementation_action = block
         set_expected_received_count :at_most, n
@@ -401,9 +401,9 @@ module RSpec
       #
       # @example
       #
-      #   dealer.should_receive(:deal_card).exactly(10).times
-      #   dealer.should_receive(:deal_card).at_least(10).times
-      #   dealer.should_receive(:deal_card).at_most(10).times
+      #   expect(dealer).to receive(:deal_card).exactly(10).times
+      #   expect(dealer).to receive(:deal_card).at_least(10).times
+      #   expect(dealer).to receive(:deal_card).at_most(10).times
       def times(&block)
         self.inner_implementation_action = block
         self
@@ -413,7 +413,7 @@ module RSpec
       #
       # @example
       #
-      #   car.should_receive(:stop).never
+      #   expect(car).to receive(:stop).never
       def never
         ErrorGenerator.raise_double_negation_error("expect(obj)") if negative?
         @expected_received_count = 0
@@ -424,7 +424,7 @@ module RSpec
       #
       # @example
       #
-      #   car.should_receive(:go).once
+      #   expect(car).to receive(:go).once
       def once(&block)
         self.inner_implementation_action = block
         set_expected_received_count :exactly, 1
@@ -435,7 +435,7 @@ module RSpec
       #
       # @example
       #
-      #   car.should_receive(:go).twice
+      #   expect(car).to receive(:go).twice
       def twice(&block)
         self.inner_implementation_action = block
         set_expected_received_count :exactly, 2
@@ -446,9 +446,9 @@ module RSpec
       #
       # @example
       #
-      #   api.should_receive(:prepare).ordered
-      #   api.should_receive(:run).ordered
-      #   api.should_receive(:finish).ordered
+      #   expect(api).to receive(:prepare).ordered
+      #   expect(api).to receive(:run).ordered
+      #   expect(api).to receive(:finish).ordered
       def ordered(&block)
         self.inner_implementation_action = block
         @ordered = true
