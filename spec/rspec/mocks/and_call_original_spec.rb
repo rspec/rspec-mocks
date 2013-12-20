@@ -33,14 +33,13 @@ describe "and_call_original" do
 
     context "when a non-existant method has been stubbed previously" do
       it 'restores the original NameError behavior' do
-        message = nil
-        expect { instance.abcd }.to raise_error(NameError) { |msg| message = msg.message }
+        expect { instance.abcd }.to raise_error(NameError).with_message(/abcd/)
 
         allow(instance).to receive(:abcd).and_return(:override)
         expect(instance.abcd).to eq(:override)
 
         allow(instance).to receive(:abcd).and_call_original
-        expect { instance.abcd }.to raise_error(NameError).with_message(message)
+        expect { instance.abcd }.to raise_error(NameError).with_message(/abcd/)
       end
     end
 
