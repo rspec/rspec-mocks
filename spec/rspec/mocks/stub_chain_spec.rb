@@ -40,9 +40,7 @@ module RSpec
         it "accepts any number of arguments to the stubbed messages in the chain" do
           object.stub_chain(:msg1, :msg2).and_return(:return_value)
 
-          expect {
-            object.msg1("nonsense", :value).msg2("another", :nonsense, 3.0, "value")
-          }.not_to raise_error
+          expect(object.msg1("nonsense", :value).msg2("another", :nonsense, 3.0, "value")).to eq(:return_value)
         end
 
         context "using and_return" do
