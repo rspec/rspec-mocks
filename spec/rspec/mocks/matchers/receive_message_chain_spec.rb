@@ -102,8 +102,16 @@ module RSpec::Mocks::Matchers
         expect(object.to_a.length).to eq(3)
       end
 
-      it "accepts any number of arguments to the stubbed messages in the chain" do
+      it "accepts any number of arguments to the stubbed messages" do
         allow(object).to receive_message_chain(:msg1, :msg2).and_return(:return_value)
+
+        expect {
+          object.msg1("nonsense", :value).msg2("another", :nonsense, 3.0, "value")
+        }.not_to raise_error
+      end
+
+      it "accepts any number of arguments to the stubbed messages with an inline hash return value" do
+        allow(object).to receive_message_chain(:msg1, :msg2 => :return_value)
 
         expect {
           object.msg1("nonsense", :value).msg2("another", :nonsense, 3.0, "value")
