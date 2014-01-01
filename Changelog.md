@@ -31,6 +31,9 @@ Bug Fixes:
   you are not actually doing that. (Myron Marston)
 * Fix `any_instance.unstub` when used on sub classes for whom the super
   class has had `any_instance.stub` invoked on. (Jon Rowe)
+* Fix regression in `stub_chain`/`receive_message_chain` that caused
+  it to raise an `ArgumentError` when passing args to the stubbed
+  methods. (Sam Phippen)
 
 Enhancements:
 
