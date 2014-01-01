@@ -212,7 +212,7 @@ module RSpec
           @observed_methods << method_name
           backup_method!(method_name)
           @klass.__send__(:define_method, method_name) do |*args, &blk|
-            klass = ::RSpec::Mocks.method_handle_for(self, method_name).owner
+            klass = ::RSpec::Support.method_handle_for(self, method_name).owner
             ::RSpec::Mocks.any_instance_recorder_for(klass).playback!(self, method_name)
             self.__send__(method_name, *args, &blk)
           end
@@ -221,7 +221,7 @@ module RSpec
         def mark_invoked!(method_name)
           backup_method!(method_name)
           @klass.__send__(:define_method, method_name) do |*args, &blk|
-            klass = ::RSpec::Mocks.method_handle_for(self, method_name).owner
+            klass = ::RSpec::Support.method_handle_for(self, method_name).owner
             invoked_instance = ::RSpec::Mocks.any_instance_recorder_for(klass).instance_that_received(method_name)
             raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{self.inspect} but has already been received by #{invoked_instance}"
           end
