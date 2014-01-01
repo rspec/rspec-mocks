@@ -54,7 +54,7 @@ module RSpec
         # @private
         def stash
           return if !method_defined_directly_on_klass?
-          @original_method ||= ::RSpec::Mocks.method_handle_for(@object, @method)
+          @original_method ||= ::RSpec::Support.method_handle_for(@object, @method)
         end
 
         # @private

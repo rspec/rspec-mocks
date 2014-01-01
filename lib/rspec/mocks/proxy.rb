@@ -246,7 +246,7 @@ module RSpec
             build_alias_method_name(message)
         end
 
-        ::RSpec::Mocks.method_handle_for(@object, message)
+        ::RSpec::Support.method_handle_for(@object, message)
       rescue NameError
         nil
       end
