@@ -1,4 +1,5 @@
 require 'rspec/mocks/argument_matchers'
+require 'rspec/support/fuzzy_matcher'
 
 module RSpec
   module Mocks
@@ -35,23 +36,17 @@ module RSpec
       # @param [Block] block a block with arity matching the expected
       #
       # Initializes an `ArgumentListMatcher` with a collection of literal
-      # values and/or argument matchers, or a block that handles the evaluation
-      # for you.
+      # values and/or argument matchers.
       #
       # @see ArgumentMatchers
       # @see #args_match?
       def initialize(*expected_args)
         @expected_args = expected_args
-        @match_any_args = false
-        @matchers = nil
 
-        case expected_args.first
-        when ArgumentMatchers::AnyArgsMatcher
-          @match_any_args = true
-        when ArgumentMatchers::NoArgsMatcher
-          @matchers = []
-        else
-          @matchers = expected_args
+        @matchers = case expected_args.first
+          when ArgumentMatchers::AnyArgsMatcher then Array
+          when ArgumentMatchers::NoArgsMatcher  then []
+          else expected_args
         end
       end
 
@@ -63,21 +58,7 @@ module RSpec
       #
       # @see #initialize
       def args_match?(*args)
-        match_any_args? || matchers_match?(*args)
-      end
-
-      private
-
-      def matchers_match?(*args)
-        return false unless @matchers.count == args.count
-
-        @matchers.zip(args).all? do |(matcher, arg)|
-          ArgumentMatchers.values_match?(matcher, arg)
-        end
-      end
-
-      def match_any_args?
-        @match_any_args
+        Support::FuzzyMatcher.values_match?(@matchers, args)
       end
 
       # Value that will match all argument lists.

@@ -123,19 +123,6 @@ module RSpec
       end
 
       # @api private
-      # Implements our matching semantics for two arbitrary values.
-      def self.values_match?(expected, actual)
-        # `===` provides the main matching semantics we want, but
-        # has some slight gotchas:
-        #
-        # * `Fixnum === Fixnum` returns false.
-        # * `/abc/ === /abc/`   returns false.
-        #
-        # So, for cases like these, we check `==` as well as a fallback.
-        expected === actual || actual == expected
-      end
-
-      # @api private
       class AnyArgsMatcher
         def description
           "any args"
@@ -171,7 +158,7 @@ module RSpec
 
         def ===(predicate, actual)
           @expected.__send__(predicate) do |k, v|
-            actual.has_key?(k) && ArgumentMatchers.values_match?(v, actual[k])
+            actual.has_key?(k) && Support::FuzzyMatcher.values_match?(v, actual[k])
           end
         rescue NoMethodError
           false
