@@ -12,6 +12,11 @@ describe RSpec::Mocks do
       RSpec::Mocks::setup(Object.new)
     end
 
+    it "does not print a deprecation warning when self (the example group) is passed." do
+      expect(RSpec).not_to receive(:deprecate)
+      RSpec::Mocks::setup(self)
+    end
+
     context "with an existing Mock::Space" do
       before do
         @orig_space = RSpec::Mocks::space
