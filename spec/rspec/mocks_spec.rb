@@ -2,6 +2,16 @@ require "spec_helper"
 
 describe RSpec::Mocks do
   describe "::setup" do
+    it "prints a deprecation warning when given a non-rspec host" do
+      expect(RSpec).to receive(:deprecate).with(/The host argument to `RSpec::Mocks.setup`/)
+      RSpec::Mocks::setup(Object.new)
+    end
+
+    it "prints the deprecation warning with the correct line" do
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      RSpec::Mocks::setup(Object.new)
+    end
+
     context "with an existing Mock::Space" do
       before do
         @orig_space = RSpec::Mocks::space
@@ -12,9 +22,9 @@ describe RSpec::Mocks do
       end
 
       it "memoizes the space" do
-        RSpec::Mocks::setup(Object.new)
+        RSpec::Mocks::setup
         space = RSpec::Mocks::space
-        RSpec::Mocks::setup(Object.new)
+        RSpec::Mocks::setup
         expect(RSpec::Mocks::space).to equal(space)
       end
     end
@@ -22,7 +32,7 @@ describe RSpec::Mocks do
     context "with no pre-existing Mock::Space" do
       it "initializes a Mock::Space" do
         RSpec::Mocks::space = nil
-        RSpec::Mocks::setup(Object.new)
+        RSpec::Mocks::setup
         expect(RSpec::Mocks::space).not_to be_nil
       end
     end
