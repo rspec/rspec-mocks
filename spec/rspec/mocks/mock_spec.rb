@@ -17,7 +17,7 @@ module RSpec
       it 'does not clobber the normal const missing behavior' do
         expect {
           RSpec::Mocks::AZBYCX
-        }.to raise_error(NameError, /uninitialized constant RSpec::Mocks::AZBYCX/)
+        }.to raise_error(NameError, /RSpec::Mocks::AZBYCX/)
       end
     end
 
