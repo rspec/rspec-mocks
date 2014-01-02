@@ -15,6 +15,10 @@ Feature: Test::Unit integration
       class RSpecMocksTest < Test::Unit::TestCase
         include RSpec::Mocks::ExampleMethods
 
+        def setup
+          RSpec::Mocks.setup
+        end
+
         def teardown
           RSpec::Mocks.verify
         ensure
