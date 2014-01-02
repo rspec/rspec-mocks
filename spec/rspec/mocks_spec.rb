@@ -3,8 +3,12 @@ require "spec_helper"
 describe RSpec::Mocks do
   describe "::setup" do
     it "prints a deprecation warning when given a non-rspec host" do
-      expect(RSpec).to receive(:deprecate).with(/The host argument to `RSpec::Mocks.setup`/)
-      RSpec::Mocks::setup(Object.new)
+      o = Object.new
+      expect(RSpec).to receive(:deprecate).with(
+        "The host argument to `RSpec::Mocks.setup`",
+        :replacement=>"`include RSpec::Mocks::ExampleMethods` in #{o}"
+      )
+      RSpec::Mocks::setup(o)
     end
 
     it "prints the deprecation warning with the correct line" do

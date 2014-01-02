@@ -9,15 +9,19 @@ module RSpec
 
       def setup(host=nil)
         host_is_from_rspec_core = defined?(::RSpec::Core::ExampleGroup) && host.is_a?(::RSpec::Core::ExampleGroup)
-        if host && !host_is_from_rspec_core
-          RSpec.deprecate("The host argument to `RSpec::Mocks.setup` has been removed in RSpec 3.0.0. Instead include `RSpec::Mocks::ExampleMethods` in the appropriate scope")
-        end
-
         if host
+          unless host_is_from_rspec_core
+            RSpec.deprecate(
+              "The host argument to `RSpec::Mocks.setup`",
+              :replacement => "`include RSpec::Mocks::ExampleMethods` in #{host.inspect}"
+            )
+          end
+
           (class << host; self; end).class_eval do
             include RSpec::Mocks::ExampleMethods
           end
         end
+
         self.space ||= RSpec::Mocks::Space.new
       end
 
