@@ -22,7 +22,7 @@ module RSpec
 
     # Performs per-test/example setup. This should be called before
     # an test or example begins.
-    def self.setup(host=nil)
+    def self.setup
       self.space = MOCK_SPACE
     end
 
