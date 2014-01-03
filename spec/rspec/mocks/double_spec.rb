@@ -138,14 +138,22 @@ module RSpec
         )
       end
 
-      it "passes when receiving message specified as not to be received with wrong args" do
-        @double.should_not_receive(:not_expected).with("unexpected text")
-        @double.not_expected "really unexpected text"
-        verify @double
+      context "when specifying a message should not be received with specific args" do
+        context "using `should_not_receive`" do
+          it 'passes when receiving the message with different args' do
+            @double.should_not_receive(:not_expected).with("unexpected text")
+            @double.not_expected "really unexpected text"
+            verify @double
+          end
+        end
 
-        @double.should_receive(:not_expected).with("unexpected text").never
-        @double.not_expected "really unexpected text"
-        verify @double
+        context "using `should_receive().never`" do
+          it 'passes when receiving the message with different args' do
+            @double.should_receive(:not_expected).with("unexpected text").never
+            @double.not_expected "really unexpected text"
+            verify @double
+          end
+        end
       end
 
       it 'does not get confused when `should_not_received` is used with a string and symbol message' do
