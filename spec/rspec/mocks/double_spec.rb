@@ -560,34 +560,6 @@ module RSpec
         verify double #should throw if reset didn't work
       end
 
-      it "works even after method_missing starts raising NameErrors instead of NoMethodErrors" do
-        # Object#method_missing throws either NameErrors or NoMethodErrors.
-        #
-        # On a fresh ruby program Object#method_missing:
-        #  * raises a NoMethodError when called directly
-        #  * raises a NameError when called indirectly
-        #
-        # Once Object#method_missing has been called at least once (on any object)
-        # it starts behaving differently:
-        #  * raises a NameError when called directly
-        #  * raises a NameError when called indirectly
-        #
-        # There was a bug in Double#method_missing that relied on the fact
-        # that calling Object#method_missing directly raises a NoMethodError.
-        # This example tests that the bug doesn't exist anymore.
-
-
-        # Ensures that method_missing always raises NameErrors.
-        a_method_that_doesnt_exist rescue
-
-
-        @double.should_receive(:foobar)
-        @double.foobar
-        verify @double
-
-        expect { @double.foobar }.to raise_error(RSpec::Mocks::MockExpectationError)
-      end
-
       it "temporarily replaces a method stub on a double" do
         @double.stub(:msg).and_return(:stub_value)
         @double.should_receive(:msg).with(:arg).and_return(:double_value)
