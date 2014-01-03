@@ -9,6 +9,9 @@ Breaking Changes for 3.0.0:
   (Myron Marston)
 * Prevent RSpec mocks' doubles and partial doubles from being used outside of
   the per-test lifecycle (e.g. from a `before(:all)` hook). (Sam Phippen)
+* Remove the `host` argument of `RSpec::Mocks.setup`. Instead
+  `RSpec::Mocks::ExampleMethods` should be included directly in the scope where
+  RSpec's mocking capabilities are used. (Sam Phippen)
 
 Bug Fixes:
 
