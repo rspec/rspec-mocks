@@ -128,7 +128,6 @@ module RSpec
 
       # @private
       def reset
-        @method_doubles.each_value {|d| d.reset}
         @messages_received.clear
       end
 
@@ -236,6 +235,15 @@ module RSpec
     end
 
     # @private
+    class TestDoubleProxy < Proxy
+      def reset
+        @method_doubles.clear
+        object.__disallow_further_usage!
+        super
+      end
+    end
+
+    # @private
     class PartialDoubleProxy < Proxy
       def method_handle_for(message)
         if any_instance_class_recorder_observing_method?(@object.class, message)
@@ -266,6 +274,11 @@ module RSpec
         # We fall back to :public because by default we allow undefined methods
         # to be stubbed, and when we do so, we make them public.
         MethodReference.method_visibility_for(@object, method_name) || :public
+      end
+
+      def reset
+        @method_doubles.each_value {|d| d.reset}
+        super
       end
 
     private

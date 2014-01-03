@@ -5,6 +5,10 @@ module RSpec
     end
 
     # @private
+    class ExpiredTestDoubleError < MockExpectationError
+    end
+
+    # @private
     class AmbiguousReturnError < StandardError
     end
   end

@@ -62,12 +62,17 @@ module RSpec
 
       # @private
       def __build_mock_proxy(order_group)
-        Proxy.new(self, order_group, @name)
+        __raise_expired_error or TestDoubleProxy.new(self, order_group, @name)
+      end
+
+      def __disallow_further_usage!
+        @__expired = true
       end
 
     private
 
       def __initialize_as_test_double(name=nil, stubs={})
+        @__expired = false
         if Hash === name && stubs.empty?
           stubs = name
           @name = nil
@@ -108,6 +113,11 @@ module RSpec
 
       def __mock_proxy
         ::RSpec::Mocks.proxy_for(self)
+      end
+
+      def __raise_expired_error
+        return false unless @__expired
+        ErrorGenerator.new(self, @name).raise_expired_test_double_error
       end
     end
 

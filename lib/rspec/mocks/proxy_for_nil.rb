@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     # @private
-    class ProxyForNil < Proxy
+    class ProxyForNil < PartialDoubleProxy
 
       def initialize(order_group)
         @warn_about_expectations = true

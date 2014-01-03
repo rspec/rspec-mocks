@@ -50,6 +50,60 @@ module RSpec
         expect(dbl.foo = "bar").to eq("bar")
       end
 
+      context "after it has been torn down" do
+        let(:dbl) { double }
+
+        before do
+          expect(dbl).to receive(:foo).at_least(:once)
+          allow(dbl).to receive(:bar)
+          dbl.foo
+
+          RSpec::Mocks.verify
+          RSpec::Mocks.teardown
+          RSpec::Mocks.setup
+        end
+
+        it 'disallows previously mocked methods' do
+          expect { dbl.foo }.to raise_error(ExpiredTestDoubleError)
+        end
+
+        it 'disallows previously stubbed methods' do
+          expect { dbl.bar }.to raise_error(ExpiredTestDoubleError)
+        end
+
+        it 'disallows stubbing new methods (with receive)' do
+          expect {
+            allow(dbl).to receive(:bazz)
+          }.to raise_error(ExpiredTestDoubleError)
+        end
+
+        it 'disallows stubbing new methods (with receive_messages)' do
+          expect {
+            allow(dbl).to receive_messages(:bazz => 3)
+          }.to raise_error(ExpiredTestDoubleError)
+        end
+
+        it 'disallows stubbing new message chains' do
+          expect {
+            allow(dbl).to receive_message_chain(:bazz, :bam, :goo)
+          }.to raise_error(ExpiredTestDoubleError)
+        end
+
+        it 'disallows mocking new methods' do
+          expect {
+            expect(dbl).to receive(:bazz)
+          }.to raise_error(ExpiredTestDoubleError)
+        end
+
+        it 'disallows being turned into a null object' do
+          expect { dbl.as_null_object }.to raise_error(ExpiredTestDoubleError)
+        end
+
+        it 'disallows being checked for nullness' do
+          expect { dbl.null_object? }.to raise_error(ExpiredTestDoubleError)
+        end
+      end
+
       it "reports line number of expectation of unreceived message" do
         expected_error_line = __LINE__; @double.should_receive(:wont_happen).with("x", 3)
         begin

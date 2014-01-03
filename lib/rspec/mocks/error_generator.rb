@@ -63,6 +63,14 @@ module RSpec
         ]
       end
 
+      def raise_expired_test_double_error
+        raise ExpiredTestDoubleError,
+          "#{intro} was originally created in one example but has leaked into " +
+          "another example and can no longer be used. rspec-mocks' doubles are " +
+          "designed to only last for one example, and you need to create a new " +
+          "one in each example you wish to use it for."
+      end
+
       # @private
       def received_part_of_expectation_error(actual_received_count, *args)
         "received: #{count_message(actual_received_count)}" +
