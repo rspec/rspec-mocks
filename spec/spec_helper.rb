@@ -43,8 +43,6 @@ RSpec.configure do |config|
   config.mock_with :rspec
   config.color_enabled = true
   config.order = :random
-  config.run_all_when_everything_filtered = true
-  config.filter_run_including :focus
 
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
