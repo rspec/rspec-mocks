@@ -63,9 +63,11 @@ module RSpec
       end
 
       it "matches against a Matcher" do
+        # This spec is generating warnings on 1.8.7, not sure why so
+        # this does with_isolated_stderr to kill them. @samphippen 3rd Jan 2013.
         expect do
           @double.should_receive(:msg).with(equal(3))
-          @double.msg(37)
+          with_isolated_stderr { @double.msg(37) }
         end.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"double\" received :msg with unexpected arguments\n  expected: (equal 3)\n       got: (37)")
       end
 
