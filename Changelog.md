@@ -5,6 +5,9 @@ Deprecations:
 
 * Deprecate `RSpec::Mocks::Mock` in favor of `RSpec::Mocks::Double`.
   (Myron Marston)
+* Deprecate the `host` argument of `RSpec::Mocks.setup`. Instead
+  `RSpec::Mocks::ExampleMethods` should be included directly in the scope where
+  RSpec's mocking capabilities are used.
 
 ### 2.99.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.99.0.beta1)
