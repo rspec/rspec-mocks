@@ -50,5 +50,22 @@ describe Marshal, 'extensions' do
         expect(Marshal.load(serialized)).to be_nil
       end
     end
+
+    context 'outside the per-test lifecycle' do
+      def outside_per_test_lifecycle
+        RSpec::Mocks.teardown
+        yield
+      ensure
+        RSpec::Mocks.setup
+      end
+
+      it 'does not duplicate the object before serialization' do
+        obj = UndupableObject.new
+        outside_per_test_lifecycle do
+          serialized = Marshal.dump(obj)
+          expect(Marshal.load(serialized)).to be_an(UndupableObject)
+        end
+      end
+    end
   end
 end

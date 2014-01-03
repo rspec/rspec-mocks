@@ -20,6 +20,10 @@ module RSpec
       def verify_all
       end
 
+      def registered?(object)
+        false
+      end
+
       private
 
       def raise_lifecycle_message
