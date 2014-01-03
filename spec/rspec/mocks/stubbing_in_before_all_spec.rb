@@ -4,7 +4,7 @@ require "delegate"
 describe "Stubbing/mocking methods in before(:all) blocks" do
   old_rspec = nil
 
-  shared_examples_for "A stub/mock in a before(:all) block" do |message_expectation_block|
+  shared_examples_for "A stub/mock in a before(:all) block" do
     the_error = nil
     before(:all) do
       begin
