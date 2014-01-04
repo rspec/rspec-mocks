@@ -1,10 +1,7 @@
 require "spec_helper"
-require "delegate"
 
-describe "Stubbing/mocking methods in before(:all) blocks" do
-  old_rspec = nil
-
-  shared_examples_for "A stub/mock in a before(:all) block" do
+describe "Using rspec-mocks features in before(:all) blocks" do
+  shared_examples_for "fails in a before(:all) block" do
     the_error = nil
     before(:all) do
       begin
@@ -22,7 +19,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#stub" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.stub(:foo)
       end
@@ -30,7 +27,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#unstub" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.unstub(:foo)
       end
@@ -38,7 +35,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#should_receive" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.should_receive(:foo)
       end
@@ -46,7 +43,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#should_not_receive" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.should_not_receive(:foo)
       end
@@ -54,7 +51,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#any_instance" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.any_instance.should_receive(:foo)
       end
@@ -62,7 +59,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#stub_chain" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.stub_chain(:foo)
       end
@@ -70,7 +67,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#expect(...).to receive" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         expect(Object).to receive(:foo)
       end
@@ -78,7 +75,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#allow(...).to receive" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         allow(Object).to receive(:foo)
       end
@@ -86,7 +83,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#expect_any_instance_of(...).to receive" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         expect_any_instance_of(Object).to receive(:foo)
       end
@@ -94,7 +91,7 @@ describe "Stubbing/mocking methods in before(:all) blocks" do
   end
 
   describe "#allow_any_instance_of(...).to receive" do
-    it_behaves_like "A stub/mock in a before(:all) block" do
+    include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         allow_any_instance_of(Object).to receive(:foo)
       end
