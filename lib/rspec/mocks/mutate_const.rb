@@ -138,7 +138,6 @@ module RSpec
 
         const
       end
-      private_class_method :unmutated
 
       # Queries rspec-mocks to find out information about the named constant.
       #
@@ -190,8 +189,6 @@ module RSpec
       #  so you can hide constants in other contexts (e.g. helper
       #  classes).
       def self.hide(constant_name)
-        return unless recursive_const_defined?(constant_name)
-
         mutate(ConstantHider.new(constant_name, nil, { }))
         nil
       end
@@ -225,6 +222,7 @@ module RSpec
       # @api private
       class ConstantHider < BaseMutator
         def mutate
+          return unless @defined = recursive_const_defined?(full_constant_name)
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
@@ -232,6 +230,8 @@ module RSpec
         end
 
         def to_constant
+          return Constant.unmutated(full_constant_name) unless @defined
+
           const = super
           const.hidden = true
           const.previously_defined = true
@@ -240,6 +240,7 @@ module RSpec
         end
 
         def reset
+          return unless @defined
           @context.const_set(@const_name, @original_value)
         end
       end

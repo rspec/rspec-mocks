@@ -13,6 +13,10 @@ module RSpec
         raise_lifecycle_message
       end
 
+      def register_constant_mutator(mutator)
+        raise_lifecycle_message
+      end
+
       def reset_all
       end
 

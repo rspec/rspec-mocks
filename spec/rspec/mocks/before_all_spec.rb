@@ -18,6 +18,38 @@ describe "Using rspec-mocks features in before(:all) blocks" do
     end
   end
 
+  describe "#stub_const" do
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        stub_const("SomeNewConst", Class.new)
+      end
+
+      it 'does not stub the const' do
+        expect(defined?(SomeNewConst)).to be_falsey
+      end
+    end
+  end
+
+  describe "#hide_const(for an undefined const)" do
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        hide_const("Foo")
+      end
+    end
+  end
+
+  describe "#hide_const(for a defined const)" do
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        hide_const("Float")
+      end
+
+      it 'does not hide the const' do
+        expect(defined?(Float)).to be_truthy
+      end
+    end
+  end
+
   describe "#stub" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
