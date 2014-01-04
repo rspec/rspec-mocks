@@ -139,6 +139,25 @@ module RSpec
           def allow_any_instance_of(klass)
             AnyInstanceAllowanceTarget.new(klass)
           end
+
+          # I don't feel like this is the right location for this but I'm not sure
+          # where to actually put it. It's more of a helper than it is part of
+          # the expectation syntax.
+          #
+          # It also feels too verbose compared to the above methods.
+          def spy_on(target, *messages)
+            messages.each do |message|
+              case target
+              when TestDouble then allow(target).to receive(message)
+              else
+                if target.respond_to?(message)
+                  allow(target).to receive(message).and_call_original
+                else
+                  allow(target).to receive(message)
+                end
+              end
+            end
+          end
         end
 
         RSpec::Mocks::ExampleMethods::ExpectHost.class_exec do
@@ -160,6 +179,7 @@ module RSpec
           undef allow
           undef expect_any_instance_of
           undef allow_any_instance_of
+          undef spy_on
         end
 
         RSpec::Mocks::ExampleMethods::ExpectHost.class_exec do
@@ -407,4 +427,3 @@ module RSpec
     end
   end
 end
-
