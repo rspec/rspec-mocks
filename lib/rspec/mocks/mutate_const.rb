@@ -146,7 +146,7 @@ module RSpec
       # @return [Constant] an object contaning information about the named
       #   constant.
       def self.original(name)
-        mutator = ConstantMutator.find(name)
+        mutator = ::RSpec::Mocks.space.constant_mutator_for(name)
         mutator ? mutator.to_constant : unmutated(name)
       end
     end
@@ -239,7 +239,7 @@ module RSpec
           const
         end
 
-        def rspec_reset
+        def reset
           @context.const_set(@const_name, @original_value)
         end
       end
@@ -268,7 +268,7 @@ module RSpec
           const
         end
 
-        def rspec_reset
+        def reset
           @context.__send__(:remove_const, @const_name)
           @context.const_set(@const_name, @original_value)
         end
@@ -338,7 +338,7 @@ module RSpec
           const
         end
 
-        def rspec_reset
+        def reset
           @deepest_defined_const.__send__(:remove_const, @const_to_remove)
         end
       end
@@ -349,38 +349,8 @@ module RSpec
       #
       # @api private
       def self.mutate(mutator)
-        register_mutator(mutator)
+        ::RSpec::Mocks.space.register_constant_mutator(mutator)
         mutator.mutate
-      end
-
-      # Resets all stubbed constants. This is called automatically
-      # by rspec-mocks when an example finishes.
-      #
-      # @api private
-      def self.reset_all
-        # We use reverse order so that if the same constant
-        # was stubbed multiple times, the original value gets
-        # properly restored.
-        mutators.reverse.each { |s| s.rspec_reset }
-
-        mutators.clear
-      end
-
-      # The list of constant mutators that have been used for
-      # the current example.
-      #
-      # @api private
-      def self.mutators
-        @mutators ||= []
-      end
-
-      # @api private
-      def self.register_mutator(mutator)
-        mutators << mutator
-      end
-
-      def self.find(name)
-        mutators.find { |s| s.full_constant_name == name }
       end
 
       # Used internally by the constant stubbing to raise a helpful

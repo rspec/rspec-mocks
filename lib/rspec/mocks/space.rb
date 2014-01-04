@@ -38,6 +38,7 @@ module RSpec
       def initialize
         @proxies                 = {}
         @any_instance_recorders  = {}
+        @constant_mutators       = []
       end
 
       def verify_all
@@ -51,7 +52,7 @@ module RSpec
       end
 
       def reset_all
-        ConstantMutator.reset_all
+        @constant_mutators.reverse.each { |mut| mut.reset }
 
         proxies.each_value do |object|
           object.reset
@@ -60,10 +61,19 @@ module RSpec
         proxies.clear
         any_instance_recorders.clear
         expectation_ordering.clear
+        @constant_mutators.clear
       end
 
       def expectation_ordering
         @expectation_ordering ||= OrderGroup.new
+      end
+
+      def register_constant_mutator(mutator)
+        @constant_mutators << mutator
+      end
+
+      def constant_mutator_for(name)
+        @constant_mutators.find { |m| m.full_constant_name == name }
       end
 
       def any_instance_recorder_for(klass)
