@@ -249,7 +249,7 @@ module RSpec
 
             # Simply resetting the proxy doesn't work
             # what we need to have happen is
-            # ::RSpec::Mocks.any_instance_recorder_for(klass).stop_all_observation!
+            # ::RSpec::Mocks.space.any_instance_recorder_for(klass).stop_all_observation!
             # but that is never invoked in ::
             expect {
               verify_all

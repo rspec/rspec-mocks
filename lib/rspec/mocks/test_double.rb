@@ -112,7 +112,7 @@ module RSpec
       end
 
       def __mock_proxy
-        ::RSpec::Mocks.proxy_for(self)
+        ::RSpec::Mocks.space.proxy_for(self)
       end
 
       def __raise_expired_error

@@ -71,12 +71,12 @@ module RSpec
         end
 
         def setup_mock_proxy_method_substitute(subject, method, block)
-          proxy = ::RSpec::Mocks.proxy_for(subject)
+          proxy = ::RSpec::Mocks.space.proxy_for(subject)
           setup_method_substitute(proxy, method, block, @backtrace_line)
         end
 
         def setup_any_instance_method_substitute(subject, method, block)
-          any_instance_recorder = ::RSpec::Mocks.any_instance_recorder_for(subject)
+          any_instance_recorder = ::RSpec::Mocks.space.any_instance_recorder_for(subject)
           setup_method_substitute(any_instance_recorder, method, block)
         end
 

@@ -55,7 +55,7 @@ module RSpec
       orig_caller = opts.fetch(:expected_from) {
         CallerFilter.first_non_rspec_line
       }
-      ::RSpec::Mocks.proxy_for(subject).
+      ::RSpec::Mocks.space.proxy_for(subject).
         add_stub(orig_caller, message, opts, &block)
     end
 
@@ -74,26 +74,8 @@ module RSpec
       orig_caller = opts.fetch(:expected_from) {
         CallerFilter.first_non_rspec_line
       }
-      ::RSpec::Mocks.proxy_for(subject).
+      ::RSpec::Mocks.space.proxy_for(subject).
         add_message_expectation(orig_caller, message, opts, &block)
-    end
-
-    # @api private
-    # Returns the mock proxy for the given object.
-    def self.proxy_for(object)
-      space.proxy_for(object)
-    end
-
-    # @api private
-    # Returns the mock proxies for instances of the given class.
-    def self.proxies_of(klass)
-      space.proxies_of(klass)
-    end
-
-    # @api private
-    # Returns the any instance recorder for the given class.
-    def self.any_instance_recorder_for(klass)
-      space.any_instance_recorder_for(klass)
     end
 
     # @private
