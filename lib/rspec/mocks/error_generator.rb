@@ -1,5 +1,23 @@
 module RSpec
   module Mocks
+    # @public
+    # Raised when a message expectation is not satisfied.
+    MockExpectationError = Class.new(Exception)
+
+    # @public
+    # Raised when a test double is used after it has been torn
+    # down (typically at the end of an rspec-core example).
+    ExpiredTestDoubleError = Class.new(MockExpectationError)
+
+    # @public
+    # Raised when doubles or partial doubles are used outside of the per-test lifecycle.
+    OutsideOfExampleError = Class.new(StandardError)
+
+    # @private
+    UnsupportedMatcherError  = Class.new(StandardError)
+    # @private
+    NegationUnsupportedError = Class.new(StandardError)
+
     # @private
     class ErrorGenerator
       attr_writer :opts

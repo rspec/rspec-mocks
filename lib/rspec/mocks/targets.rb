@@ -1,8 +1,5 @@
 module RSpec
   module Mocks
-    UnsupportedMatcherError  = Class.new(StandardError)
-    NegationUnsupportedError = Class.new(StandardError)
-
     class TargetBase
       def initialize(target)
         @target = target

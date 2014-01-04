@@ -1,10 +1,6 @@
 module RSpec
   module Mocks
     # @private
-    # Raised when doubles or partial doubles are used outside of the per-test lifecycle.
-    OutsideOfExampleError = Class.new(StandardError)
-
-    # @private
     class ErrorSpace
       def proxy_for(*args)
         raise_lifecycle_message
