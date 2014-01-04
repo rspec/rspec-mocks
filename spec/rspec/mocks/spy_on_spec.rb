@@ -65,6 +65,3 @@ class Widget
     @size = size
   end
 end
-
-def call_methods(dub)
-end
