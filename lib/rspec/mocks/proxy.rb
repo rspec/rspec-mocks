@@ -124,8 +124,6 @@ module RSpec
       # @private
       def verify
         @method_doubles.each_value {|d| d.verify}
-      ensure
-        reset
       end
 
       # @private

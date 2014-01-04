@@ -5,10 +5,6 @@ module RSpec
     describe Matchers::Receive do
       include_context "with syntax", :expect
 
-      def verify_all
-        ::RSpec::Mocks.space.verify_all
-      end
-
       describe "expectations/allowances on any instance recorders" do
         include_context "with syntax", [:expect, :should]
 
@@ -225,7 +221,7 @@ module RSpec
         it "removes the method double" do
           target.to receive(:foo).and_return(:baz)
           expect {
-            ::RSpec::Mocks.space.verify_all
+            verify_all
           }.to change { object.foo }.from(:baz).to(:bar)
         end
       end

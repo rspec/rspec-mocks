@@ -8,6 +8,8 @@ describe RSpec::Mocks do
       expect do
         RSpec::Mocks::verify
       end.to raise_error(RSpec::Mocks::MockExpectationError)
+
+      RSpec::Mocks.teardown # so the mocks aren't re-verified after this example
     end
   end
 
