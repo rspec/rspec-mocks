@@ -27,6 +27,10 @@ module RSpec
         false
       end
 
+      def new_scope
+        Space.new
+      end
+
     private
 
       def raise_lifecycle_message
@@ -43,6 +47,10 @@ module RSpec
         @proxies                 = {}
         @any_instance_recorders  = {}
         @constant_mutators       = []
+      end
+
+      def new_scope
+        NestedSpace.new(self)
       end
 
       def verify_all
@@ -83,7 +91,7 @@ module RSpec
       def any_instance_recorder_for(klass)
         id = klass.__id__
         any_instance_recorders.fetch(id) do
-          any_instance_recorders[id] = AnyInstance::Recorder.new(klass)
+          any_instance_recorder_not_found_for(id, klass)
         end
       end
 
@@ -97,24 +105,32 @@ module RSpec
 
       def proxy_for(object)
         id = id_for(object)
-        proxies.fetch(id) do
-          proxies[id] = case object
-                        when NilClass   then ProxyForNil.new(expectation_ordering)
-                        when TestDouble then object.__build_mock_proxy(expectation_ordering)
-                        else
-                          if RSpec::Mocks.configuration.verify_partial_doubles?
-                            VerifyingPartialDoubleProxy.new(object, expectation_ordering)
-                          else
-                            PartialDoubleProxy.new(object, expectation_ordering)
-                          end
-                        end
-        end
+        proxies.fetch(id) { proxy_not_found_for(id, object) }
       end
 
       alias ensure_registered proxy_for
 
       def registered?(object)
         proxies.has_key?(id_for object)
+      end
+
+    private
+
+      def proxy_not_found_for(id, object)
+        proxies[id] = case object
+          when NilClass   then ProxyForNil.new(expectation_ordering)
+          when TestDouble then object.__build_mock_proxy(expectation_ordering)
+          else
+            if RSpec::Mocks.configuration.verify_partial_doubles?
+              VerifyingPartialDoubleProxy.new(object, expectation_ordering)
+            else
+              PartialDoubleProxy.new(object, expectation_ordering)
+            end
+        end
+      end
+
+      def any_instance_recorder_not_found_for(id, klass)
+        any_instance_recorders[id] = AnyInstance::Recorder.new(klass)
       end
 
       if defined?(::BasicObject) && !::BasicObject.method_defined?(:__id__) # for 1.9.2
@@ -134,6 +150,35 @@ module RSpec
         def id_for(object)
           object.__id__
         end
+      end
+    end
+
+    class NestedSpace < Space
+      def initialize(parent)
+        @parent = parent
+        super()
+      end
+
+      def proxies_of(klass)
+        super + @parent.proxies_of(klass)
+      end
+
+      def constant_mutator_for(name)
+        super || @parent.constant_mutator_for(name)
+      end
+
+      def registered?(object)
+        super || @parent.registered?(object)
+      end
+
+    private
+
+      def proxy_not_found_for(id, object)
+        @parent.proxies[id] || super
+      end
+
+      def any_instance_recorder_not_found_for(id, klass)
+        @parent.any_instance_recorders[id] || super
       end
     end
   end

@@ -8,21 +8,10 @@ module RSpec
   # a test or example. They exist primarily for integration with
   # test frameworks (such as rspec-core).
   module Mocks
-    ROOT_SPACE = RSpec::Mocks::RootSpace.new
-    MOCK_SPACE = RSpec::Mocks::Space.new
-
-    class << self
-      # Stores rspec-mocks' global state.
-      # @api private
-      attr_accessor :space
-    end
-
-    self.space = ROOT_SPACE
-
     # Performs per-test/example setup. This should be called before
     # an test or example begins.
     def self.setup
-      self.space = MOCK_SPACE
+      @space_stack << (@space = space.new_scope)
     end
 
     # Verifies any message expectations that were set during the
@@ -36,7 +25,8 @@ module RSpec
     # each example, even if an error was raised during the example.
     def self.teardown
       space.reset_all
-      self.space = ROOT_SPACE
+      @space_stack.pop
+      @space = @space_stack.last || @root_space
     end
 
     # Adds an allowance (stub) on `subject`
@@ -55,8 +45,7 @@ module RSpec
       orig_caller = opts.fetch(:expected_from) {
         CallerFilter.first_non_rspec_line
       }
-      ::RSpec::Mocks.space.proxy_for(subject).
-        add_stub(orig_caller, message, opts, &block)
+      space.proxy_for(subject).add_stub(orig_caller, message, opts, &block)
     end
 
     # Sets a message expectation on `subject`.
@@ -74,9 +63,12 @@ module RSpec
       orig_caller = opts.fetch(:expected_from) {
         CallerFilter.first_non_rspec_line
       }
-      ::RSpec::Mocks.space.proxy_for(subject).
-        add_message_expectation(orig_caller, message, opts, &block)
+      space.proxy_for(subject).add_message_expectation(orig_caller, message, opts, &block)
     end
+
+    class << self; attr_reader :space; end
+    @space_stack = []
+    @root_space  = @space = RSpec::Mocks::RootSpace.new
 
     # @private
     IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
