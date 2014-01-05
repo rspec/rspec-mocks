@@ -215,12 +215,12 @@ module RSpec
       end
 
       def count_message(count, expectation_count_type=nil)
-        return "at least #{pretty_print(count.abs)}" if count < 0 || expectation_count_type == :at_least
-        return "at most #{pretty_print(count)}" if expectation_count_type == :at_most
-        return pretty_print(count)
+        return "at least #{times(count.abs)}" if count < 0 || expectation_count_type == :at_least
+        return "at most #{times(count)}" if expectation_count_type == :at_most
+        return times(count)
       end
 
-      def pretty_print(count)
+      def times(count)
         "#{count} time#{count == 1 ? '' : 's'}"
       end
 

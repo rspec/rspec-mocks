@@ -29,5 +29,17 @@ module RSpec::Mocks
       end
     end
 
+    it 'can be diffed in a failure when it has references to an error generator via a proxy' do
+      space1 = Space.new
+      space2 = Space.new
+
+      space1.proxy_for("")
+      space2.proxy_for("")
+
+      expect {
+        expect(space1).to eq(space2)
+      }.to raise_error(RSpec::Expectations::ExpectationNotMetError, /Diff/)
+    end
+
   end
 end
