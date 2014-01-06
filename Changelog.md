@@ -48,6 +48,9 @@ Enhancements:
 * Change argument matchers to use `===` as their primary matching
   protocol, as their semantics mirror that of a case or rescue statement
   (which uses `===` for matching). (Myron Marston)
+* Add `RSpec::Mocks.with_temporary_scope`, which allows you to create
+  temporary rspec-mocks scopes in arbitrary places (such as a
+  `before(:all)` hook). (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v3.0.0.beta1)

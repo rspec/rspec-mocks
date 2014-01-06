@@ -66,6 +66,17 @@ module RSpec
       space.proxy_for(subject).add_message_expectation(orig_caller, message, opts, &block)
     end
 
+    def self.with_temporary_scope
+      setup
+
+      begin
+        yield
+        verify
+      ensure
+        teardown
+      end
+    end
+
     class << self; attr_reader :space; end
     @space_stack = []
     @root_space  = @space = RSpec::Mocks::RootSpace.new

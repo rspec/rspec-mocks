@@ -55,6 +55,129 @@ describe RSpec::Mocks do
     end
   end
 
+  describe ".with_temporary_scope" do
+    context "in a before(:all) with a stubbed double" do
+      before(:all) do
+        RSpec::Mocks.with_temporary_scope do
+          @calculator = double
+          allow(@calculator).to receive(:add) { |a, b| a + b }
+          @sum = @calculator.add(3, 4)
+        end
+
+        capture_error { @calculator.add(1, 10) }
+      end
+
+      it 'allows the stubbed double to be used' do
+        expect(@sum).to eq(7)
+      end
+
+      it 'does not allow the double to be used in the examples' do
+        expect {
+          @calculator.add(1, 2)
+        }.to raise_error(RSpec::Mocks::ExpiredTestDoubleError)
+      end
+
+      it 'does not allow the double to be used after the scope in before(:all)' do
+        expect(@error).to be_a(RSpec::Mocks::OutsideOfExampleError)
+      end
+    end
+
+    context "in a before(:all) with a stubbed const" do
+      before(:all) do
+        RSpec::Mocks.with_temporary_scope do
+          stub_const("ValueX", 3)
+          stub_const("ValueY", 4)
+          @sum = ValueX + ValueY
+        end
+
+        capture_error { ValueX + ValueY }
+      end
+
+      it 'allows the stubbed constants to be used' do
+        expect(@sum).to eq(7)
+      end
+
+      it 'does not allow the stubbed constants to be used in the examples' do
+        expect(defined?(ValueX)).to be_falsey
+        expect(defined?(ValueY)).to be_falsey
+      end
+
+      it 'does not allow the stubbed constants to be used after the scope in before(:all)' do
+        expect(@error).to be_a(NameError)
+        expect(@error.message).to include("ValueX")
+      end
+    end
+
+    context "in a before(:all) with a unmet mock expectation" do
+      before(:all) do
+        capture_error do
+          RSpec::Mocks.with_temporary_scope do
+            calculator = double
+            expect(calculator).to receive(:add)
+          end
+        end
+      end
+
+      it 'fails with a mock expectation error' do
+        expect(@error).to be_a(RSpec::Mocks::MockExpectationError)
+      end
+    end
+
+    context "in a before(:all) with an any_instance stub" do
+      before(:all) do
+        RSpec::Mocks.with_temporary_scope do
+          allow_any_instance_of(String).to receive(:sum_with) { |val, x| val + x }
+          @sum = "foo".sum_with("bar")
+        end
+
+        capture_error { "you".sum_with("me") }
+      end
+
+      it 'allows the stub to be used' do
+        expect(@sum).to eq("foobar")
+      end
+
+      it 'does not allow the double to be used in the examples' do
+        expect {
+          "foo".sum_with("baz")
+        }.to raise_error(NameError, /sum_with/)
+      end
+
+      it 'does not allow the double to be used after the scope in before(:all)' do
+        expect(@error).to be_a(NameError)
+        expect(@error.message).to include("sum_with")
+      end
+    end
+
+    it 'tears down even if an error occurs' do
+      foo = Object.new
+
+      expect {
+        RSpec::Mocks.with_temporary_scope do
+          allow(foo).to receive(:bar)
+          raise "boom"
+        end
+      }.to raise_error("boom")
+
+      expect(foo).not_to respond_to(:bar)
+    end
+
+    it 'does not verify if an error occurs before the block completes' do
+      expect {
+        RSpec::Mocks.with_temporary_scope do
+          foo   = Object.new
+          expect(foo).to receive(:bar)
+          raise "boom"
+        end
+      }.to raise_error("boom") # rather than MockExpectationError
+    end
+
+    def capture_error
+      yield
+    rescue Exception => @error
+    end
+  end
+
   context "when there is a `let` declaration that overrides an argument matcher" do
     let(:boolean) { :from_let }
 
