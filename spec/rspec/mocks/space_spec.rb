@@ -3,7 +3,77 @@ require 'spec_helper'
 module RSpec::Mocks
   describe Space do
     let(:space) { Space.new }
+    let(:dbl_1) { Object.new }
+    let(:dbl_2) { Object.new }
 
+    describe "#verify_all" do
+      it "verifies all mocks within" do
+        verifies = []
+
+        space.proxy_for(dbl_1).stub(:verify) { verifies << :dbl_1 }
+        space.proxy_for(dbl_2).stub(:verify) { verifies << :dbl_2 }
+
+        space.verify_all
+
+        expect(verifies).to match_array([:dbl_1, :dbl_2])
+      end
+
+      def define_singleton_method_on_recorder_for(klass, name, &block)
+        recorder = space.any_instance_recorder_for(klass)
+        (class << recorder; self; end).send(:define_method, name, &block)
+      end
+
+      it 'verifies all any_instance recorders within' do
+        klass_1, klass_2 = Class.new, Class.new
+
+        verifies = []
+
+        # We can't `stub` a method on the recorder because it defines its own `stub`...
+        define_singleton_method_on_recorder_for(klass_1, :verify) { verifies << :klass_1 }
+        define_singleton_method_on_recorder_for(klass_2, :verify) { verifies << :klass_2 }
+
+        space.verify_all
+
+        expect(verifies).to match_array([:klass_1, :klass_2])
+      end
+    end
+
+    describe "#reset_all" do
+      it "resets all mocks within" do
+        resets = []
+
+        space.proxy_for(dbl_1).stub(:reset) { resets << :dbl_1 }
+        space.proxy_for(dbl_2).stub(:reset) { resets << :dbl_2 }
+
+        space.reset_all
+
+        expect(resets).to match_array([:dbl_1, :dbl_2])
+      end
+
+      it "does not leak mock proxies between examples" do
+        space.ensure_registered(dbl_1)
+        space.ensure_registered(dbl_2)
+
+        expect {
+          space.reset_all
+        }.to change { space.proxies.size }.to(0)
+      end
+
+      it 'does not leak any instance recorders between examples' do
+        space.any_instance_recorder_for(Class.new)
+        expect {
+          space.reset_all
+        }.to change { space.any_instance_recorders.size }.to(0)
+      end
+
+      it "resets the ordering" do
+        space.expectation_ordering.register :some_expectation
+
+        expect {
+          space.reset_all
+        }.to change { space.expectation_ordering.empty? }.from(false).to(true)
+      end
+    end
 
     describe "#proxies_of(klass)" do
       it 'returns proxies' do
@@ -55,6 +125,18 @@ module RSpec::Mocks
 
       expect(subspace.proxies.values).to include(proxy2)
       expect(subspace.proxies.values).not_to include(proxy1)
+    end
+
+    it "only adds an instance once" do
+      m1 = double("mock1")
+
+      expect {
+        space.ensure_registered(m1)
+      }.to change { space.proxies }
+
+      expect {
+        space.ensure_registered(m1)
+      }.not_to change { space.proxies }
     end
 
     [:ensure_registered, :proxy_for].each do |method|
@@ -164,6 +246,16 @@ module RSpec::Mocks
       expect {
         expect(space1).to eq(space2)
       }.to raise_error(RSpec::Expectations::ExpectationNotMetError, /Diff/)
+    end
+
+    it 'removes an any_instance_recorder when requested' do
+      klass = Class.new
+
+      space.any_instance_recorder_for(klass)
+
+      expect {
+        space.remove_any_instance_recorder_for(klass)
+      }.to change { space.any_instance_recorders.size }.by(-1)
     end
 
     def in_new_space_scope
