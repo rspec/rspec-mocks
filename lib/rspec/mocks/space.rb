@@ -55,26 +55,13 @@ module RSpec
       end
 
       def verify_all
-        proxies.each_value do |object|
-          object.verify
-        end
-
-        any_instance_recorders.each_value do |recorder|
-          recorder.verify
-        end
+        proxies.each_value { |proxy| proxy.verify }
+        any_instance_recorders.each_value { |recorder| recorder.verify }
       end
 
       def reset_all
-        @constant_mutators.reverse.each { |mut| mut.reset }
-
-        proxies.each_value do |object|
-          object.reset
-        end
-
-        proxies.clear
-        any_instance_recorders.clear
-        @expectation_ordering.clear
-        @constant_mutators.clear
+        proxies.each_value { |proxy| proxy.reset }
+        @constant_mutators.reverse.each { |mut| mut.idempotently_reset }
       end
 
       def register_constant_mutator(mutator)

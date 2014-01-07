@@ -207,6 +207,7 @@ module RSpec
           @transfer_nested_constants = transfer_nested_constants
           @context_parts             = @full_constant_name.split('::')
           @const_name                = @context_parts.pop
+          @reset_performed           = false
         end
 
         def to_constant
@@ -214,6 +215,11 @@ module RSpec
           const.original_value = original_value
 
           const
+        end
+
+        def idempotently_reset
+          reset unless @reset_performed
+          @reset_performed = true
         end
       end
 

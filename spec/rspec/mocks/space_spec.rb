@@ -49,30 +49,6 @@ module RSpec::Mocks
 
         expect(resets).to match_array([:dbl_1, :dbl_2])
       end
-
-      it "does not leak mock proxies between examples" do
-        space.ensure_registered(dbl_1)
-        space.ensure_registered(dbl_2)
-
-        expect {
-          space.reset_all
-        }.to change { space.proxies.size }.to(0)
-      end
-
-      it 'does not leak any instance recorders between examples' do
-        space.any_instance_recorder_for(Class.new)
-        expect {
-          space.reset_all
-        }.to change { space.any_instance_recorders.size }.to(0)
-      end
-
-      it "resets the ordering" do
-        space.expectation_ordering.register :some_expectation
-
-        expect {
-          space.reset_all
-        }.to change { space.expectation_ordering.empty? }.from(false).to(true)
-      end
     end
 
     describe "#proxies_of(klass)" do
