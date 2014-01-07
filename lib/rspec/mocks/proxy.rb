@@ -194,7 +194,7 @@ module RSpec
         :public
       end
 
-      private
+    private
 
       def method_double_for(message)
         @method_doubles[message.to_sym]
@@ -315,7 +315,7 @@ module RSpec
         super
       end
 
-      private
+    private
 
       def warn method_name
         source = CallerFilter.first_non_rspec_line
