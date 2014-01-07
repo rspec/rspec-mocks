@@ -12,6 +12,10 @@ Breaking Changes for 3.0.0:
 * Remove the `host` argument of `RSpec::Mocks.setup`. Instead
   `RSpec::Mocks::ExampleMethods` should be included directly in the scope where
   RSpec's mocking capabilities are used. (Sam Phippen)
+* Make test doubles raise errors if you attempt to use them after they
+  get reset, to help surface issues when you accidentally retain
+  references to test doubles and attempt to reuse them in another
+  example. (Myron Marston)
 
 Bug Fixes:
 
