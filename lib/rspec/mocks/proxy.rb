@@ -14,7 +14,6 @@ module RSpec
         @order_group = order_group
         @name = name
         @error_generator = ErrorGenerator.new(object, name)
-        @expectation_ordering = RSpec::Mocks::space.expectation_ordering
         @messages_received = []
         @options = options
         @null_object = false
@@ -47,12 +46,12 @@ module RSpec
         meth_double = method_double_for(method_name)
 
         if null_object? && !block
-          meth_double.add_default_stub(@error_generator, @expectation_ordering, location, opts) do
+          meth_double.add_default_stub(@error_generator, @order_group, location, opts) do
             @object
           end
         end
 
-        meth_double.add_expectation @error_generator, @expectation_ordering, location, opts, &block
+        meth_double.add_expectation @error_generator, @order_group, location, opts, &block
       end
 
       # @private
@@ -66,7 +65,7 @@ module RSpec
 
         meth_double.build_expectation(
           @error_generator,
-          @expectation_ordering
+          @order_group
         )
       end
 
@@ -103,7 +102,7 @@ module RSpec
 
       # @private
       def add_stub(location, method_name, opts={}, &implementation)
-        method_double_for(method_name).add_stub @error_generator, @expectation_ordering, location, opts, &implementation
+        method_double_for(method_name).add_stub @error_generator, @order_group, location, opts, &implementation
       end
 
       # @private
