@@ -9,6 +9,7 @@ module RSpec
       let(:dbl_2) { Object.new }
 
       before do
+        space.outside_example = false
         space.ensure_registered(dbl_1)
         space.ensure_registered(dbl_2)
       end

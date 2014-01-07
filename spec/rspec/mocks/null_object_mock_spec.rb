@@ -92,6 +92,7 @@ module RSpec
       it "preserves its nullness to subsequent examples to " +
          "maintain compatibility with <= 2.13" do
         RSpec::Mocks.teardown
+        RSpec::Mocks.setup
         allow(RSpec).to receive(:deprecate)
         expect(@double).to be_null_object
         expect { @double.some.long.message.chain }.not_to raise_error
@@ -99,6 +100,7 @@ module RSpec
 
       it 'prints a deprecation warning when a double is re-used between examples' do
         RSpec::Mocks.teardown
+        RSpec::Mocks.setup
         expect(RSpec).to receive(:deprecate).with(/null-ness/)
         expect { @double.some.long.message.chain }.not_to raise_error
       end

@@ -167,6 +167,9 @@ module RSpec
       #  so you can stub constants in other contexts (e.g. helper
       #  classes).
       def self.stub(constant_name, value, options = {})
+        space = RSpec::Mocks.space
+        space.print_out_of_example_deprecation if space.outside_example
+
         mutator = if recursive_const_defined?(constant_name, &raise_on_invalid_const)
           DefinedConstantReplacer
         else
@@ -187,6 +190,9 @@ module RSpec
       #  so you can hide constants in other contexts (e.g. helper
       #  classes).
       def self.hide(constant_name)
+        space = RSpec::Mocks.space
+        space.print_out_of_example_deprecation if space.outside_example
+
         return unless recursive_const_defined?(constant_name)
 
         mutate(ConstantHider.new(constant_name, nil, { }))

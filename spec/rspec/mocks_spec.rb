@@ -37,14 +37,6 @@ describe RSpec::Mocks do
         expect(RSpec::Mocks::space).to equal(space)
       end
     end
-
-    context "with no pre-existing Mock::Space" do
-      it "initializes a Mock::Space" do
-        RSpec::Mocks::space = nil
-        RSpec::Mocks::setup
-        expect(RSpec::Mocks::space).not_to be_nil
-      end
-    end
   end
 
   describe "::verify" do
@@ -61,7 +53,8 @@ describe RSpec::Mocks do
     it "delegates to the space" do
       foo = double
       foo.should_receive(:bar)
-      RSpec::Mocks::teardown
+      RSpec::Mocks.teardown
+      RSpec::Mocks.setup
       expect do
         foo.bar
       end.to raise_error(/received unexpected message/)

@@ -21,8 +21,7 @@ module RSpec
             include RSpec::Mocks::ExampleMethods
           end
         end
-
-        self.space ||= RSpec::Mocks::Space.new
+        space.outside_example = false
       end
 
       def verify
@@ -31,6 +30,7 @@ module RSpec
 
       def teardown
         space.reset_all
+        space.outside_example = true
       end
 
       def proxy_for(object)
@@ -106,6 +106,8 @@ module RSpec
 
     # @private
     IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
+
+    self.space = RSpec::Mocks::Space.new
   end
 end
 
