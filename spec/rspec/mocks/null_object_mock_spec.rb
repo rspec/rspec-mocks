@@ -97,13 +97,6 @@ module RSpec
         expect(@double).to be_null_object
         expect { @double.some.long.message.chain }.not_to raise_error
       end
-
-      it 'prints a deprecation warning when a double is re-used between examples' do
-        RSpec::Mocks.teardown
-        RSpec::Mocks.setup
-        expect(RSpec).to receive(:deprecate).with(/null-ness/)
-        expect { @double.some.long.message.chain }.not_to raise_error
-      end
     end
 
     describe "#as_null_object" do

@@ -51,13 +51,11 @@ describe RSpec::Mocks do
 
   describe "::teardown" do
     it "delegates to the space" do
-      foo = double
-      foo.should_receive(:bar)
+      foo = "foo"
+      foo.stub(:reverse) { "reversed" }
       RSpec::Mocks.teardown
       RSpec::Mocks.setup
-      expect do
-        foo.bar
-      end.to raise_error(/received unexpected message/)
+      expect(foo.reverse).to eq("oof")
     end
   end
 

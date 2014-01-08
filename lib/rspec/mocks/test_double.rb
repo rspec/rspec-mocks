@@ -34,6 +34,7 @@ module RSpec
 
       # Returns true if this object has received `as_null_object`
       def null_object?
+        __warn_of_expired_use_if_expired
         @__null_object
       end
 
@@ -64,20 +65,21 @@ module RSpec
 
       # @private
       def __build_mock_proxy
-        proxy = Proxy.new(self, @name, @options || {})
-
-        if null_object?
-          proxy.as_null_object
-          RSpec.deprecate "Relying on a test double's null-ness to persist between examples"
-        end
-
+        proxy = TestDoubleProxy.new(self, @name, @options || {})
+        __warn_of_expired_use_if_expired
+        proxy.as_null_object if @__null_object
         proxy
+      end
+
+      def __warn_if_used_further!
+        @__expired = true
       end
 
     private
 
       def __initialize_as_test_double(name=nil, stubs_and_options={})
         @__null_object = false
+        @__expired     = false
 
         if name.is_a?(Hash) && stubs_and_options.empty?
           stubs_and_options = name
@@ -128,6 +130,12 @@ module RSpec
       def assign_stubs(stubs)
         stubs.each_pair do |message, response|
           Mocks.allow_message(self, message).and_return(response)
+        end
+      end
+
+      def __warn_of_expired_use_if_expired
+        if @__expired
+          RSpec.deprecate "Continuing to use a test double after it has been reset (e.g. in a subsequent example)"
         end
       end
 

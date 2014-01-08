@@ -219,5 +219,12 @@ module RSpec
         method_double[method_name].stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
       end
     end
+
+    class TestDoubleProxy < Proxy
+      def reset
+        object.__warn_if_used_further!
+        super
+      end
+    end
   end
 end
