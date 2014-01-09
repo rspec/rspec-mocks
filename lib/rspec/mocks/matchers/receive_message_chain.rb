@@ -26,13 +26,13 @@ module RSpec
         end
 
         def setup_any_instance_allowance(subject, &block)
-          recorder = ::RSpec::Mocks.any_instance_recorder_for(subject)
+          recorder = ::RSpec::Mocks.space.any_instance_recorder_for(subject)
           chain = recorder.stub_chain(*@chain, &(@block || block))
           replay_customizations(chain)
         end
 
         def setup_any_instance_expectation(subject, &block)
-          recorder = ::RSpec::Mocks.any_instance_recorder_for(subject)
+          recorder = ::RSpec::Mocks.space.any_instance_recorder_for(subject)
           chain = recorder.expect_chain(*@chain, &(@block || block))
           replay_customizations(chain)
         end

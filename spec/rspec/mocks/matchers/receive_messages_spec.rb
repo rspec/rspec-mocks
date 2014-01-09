@@ -64,7 +64,7 @@ module RSpec
       let(:expectation_error) do
         failure = nil
         begin
-          RSpec::Mocks.space.verify_all
+          verify_all
         rescue RSpec::Mocks::MockExpectationError => error
           failure = error
         end
@@ -74,7 +74,7 @@ module RSpec
       it "sets up multiple expectations" do
         expect(obj).to receive_messages(:a => 1, :b => 2)
         obj.a
-        expect { RSpec::Mocks.space.verify_all }.to raise_error RSpec::Mocks::MockExpectationError
+        expect { verify_all }.to raise_error RSpec::Mocks::MockExpectationError
       end
 
       it 'fails with a sensible message' do

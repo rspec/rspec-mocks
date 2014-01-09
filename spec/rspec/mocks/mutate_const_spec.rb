@@ -488,6 +488,18 @@ module RSpec
           it("returns nil for the original value")      { expect(const.original_value).to be_nil }
         end
 
+        context 'for a previously undefined hidden constant' do
+          before { hide_const("SomeUndefinedConst") }
+          let(:const) { Constant.original("SomeUndefinedConst") }
+
+          it("exposes its name")                      { expect(const.name).to eq("SomeUndefinedConst") }
+          it("indicates it was previously undefined") { expect(const).not_to be_previously_defined }
+          it("indicates it has not been mutated")     { expect(const).not_to be_mutated }
+          it("indicates it has not not been stubbed") { expect(const).not_to be_stubbed }
+          it("indicates it has not been hidden")      { expect(const).not_to be_hidden }
+          it("returns nil for the original value")    { expect(const.original_value).to be_nil }
+        end
+
         context 'for a previously defined hidden constant' do
           before { hide_const("TestClass::M") }
           let(:const) { Constant.original("TestClass::M") }

@@ -82,7 +82,7 @@ module RSpec
             raise RSpec::Mocks::MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
           end
           message_chains.remove_stub_chains_for!(method_name)
-          ::RSpec::Mocks.proxies_of(@klass).each do |proxy|
+          ::RSpec::Mocks.space.proxies_of(@klass).each do |proxy|
             stubs[method_name].each { |stub| proxy.remove_single_stub(method_name, stub) }
           end
           stubs[method_name].clear
@@ -134,7 +134,8 @@ module RSpec
           restore_method!(method_name)
           @observed_methods.delete(method_name)
           super_class_observers_for(method_name).each do |ancestor|
-            ::RSpec::Mocks.any_instance_recorder_for(ancestor).stop_observing!(method_name)
+            ::RSpec::Mocks.space.
+              any_instance_recorder_for(ancestor).stop_observing!(method_name)
           end
         end
 
@@ -143,7 +144,8 @@ module RSpec
         def ancestor_is_an_observer?(method_name)
           lambda do |ancestor|
             unless ancestor == @klass
-              ::RSpec::Mocks.any_instance_recorder_for(ancestor).already_observing?(method_name)
+              ::RSpec::Mocks.space.
+                any_instance_recorder_for(ancestor).already_observing?(method_name)
             end
           end
         end
@@ -213,7 +215,7 @@ module RSpec
           backup_method!(method_name)
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             klass = ::RSpec::Support.method_handle_for(self, method_name).owner
-            ::RSpec::Mocks.any_instance_recorder_for(klass).playback!(self, method_name)
+            ::RSpec::Mocks.space.any_instance_recorder_for(klass).playback!(self, method_name)
             self.__send__(method_name, *args, &blk)
           end
         end
@@ -222,7 +224,7 @@ module RSpec
           backup_method!(method_name)
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             klass = ::RSpec::Support.method_handle_for(self, method_name).owner
-            invoked_instance = ::RSpec::Mocks.any_instance_recorder_for(klass).instance_that_received(method_name)
+            invoked_instance = ::RSpec::Mocks.space.any_instance_recorder_for(klass).instance_that_received(method_name)
             raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{self.inspect} but has already been received by #{invoked_instance}"
           end
         end

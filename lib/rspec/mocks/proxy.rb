@@ -14,7 +14,6 @@ module RSpec
         @order_group = order_group
         @name = name
         @error_generator = ErrorGenerator.new(object, name)
-        @expectation_ordering = RSpec::Mocks::space.expectation_ordering
         @messages_received = []
         @options = options
         @null_object = false
@@ -47,12 +46,12 @@ module RSpec
         meth_double = method_double_for(method_name)
 
         if null_object? && !block
-          meth_double.add_default_stub(@error_generator, @expectation_ordering, location, opts) do
+          meth_double.add_default_stub(@error_generator, @order_group, location, opts) do
             @object
           end
         end
 
-        meth_double.add_expectation @error_generator, @expectation_ordering, location, opts, &block
+        meth_double.add_expectation @error_generator, @order_group, location, opts, &block
       end
 
       # @private
@@ -66,7 +65,7 @@ module RSpec
 
         meth_double.build_expectation(
           @error_generator,
-          @expectation_ordering
+          @order_group
         )
       end
 
@@ -103,7 +102,7 @@ module RSpec
 
       # @private
       def add_stub(location, method_name, opts={}, &implementation)
-        method_double_for(method_name).add_stub @error_generator, @expectation_ordering, location, opts, &implementation
+        method_double_for(method_name).add_stub @error_generator, @order_group, location, opts, &implementation
       end
 
       # @private
@@ -124,13 +123,10 @@ module RSpec
       # @private
       def verify
         @method_doubles.each_value {|d| d.verify}
-      ensure
-        reset
       end
 
       # @private
       def reset
-        @method_doubles.each_value {|d| d.reset}
         @messages_received.clear
       end
 
@@ -198,7 +194,7 @@ module RSpec
         :public
       end
 
-      private
+    private
 
       def method_double_for(message)
         @method_doubles[message.to_sym]
@@ -238,10 +234,19 @@ module RSpec
     end
 
     # @private
+    class TestDoubleProxy < Proxy
+      def reset
+        @method_doubles.clear
+        object.__disallow_further_usage!
+        super
+      end
+    end
+
+    # @private
     class PartialDoubleProxy < Proxy
       def method_handle_for(message)
         if any_instance_class_recorder_observing_method?(@object.class, message)
-          message = ::RSpec::Mocks.
+          message = ::RSpec::Mocks.space.
             any_instance_recorder_for(@object.class).
             build_alias_method_name(message)
         end
@@ -270,13 +275,51 @@ module RSpec
         MethodReference.method_visibility_for(@object, method_name) || :public
       end
 
+      def reset
+        @method_doubles.each_value {|d| d.reset}
+        super
+      end
+
     private
 
       def any_instance_class_recorder_observing_method?(klass, method_name)
-        return true if ::RSpec::Mocks.any_instance_recorder_for(klass).already_observing?(method_name)
+        return true if ::RSpec::Mocks.space.any_instance_recorder_for(klass).already_observing?(method_name)
         superklass = klass.superclass
         return false if superklass.nil?
         any_instance_class_recorder_observing_method?(superklass, method_name)
+      end
+    end
+
+    # @private
+    class ProxyForNil < PartialDoubleProxy
+      def initialize(order_group)
+        @warn_about_expectations = true
+        super(nil, order_group)
+      end
+
+      attr_accessor :warn_about_expectations
+      alias warn_about_expectations? warn_about_expectations
+
+      def add_message_expectation(location, method_name, opts={}, &block)
+        warn(method_name) if warn_about_expectations?
+        super
+      end
+
+      def add_negative_message_expectation(location, method_name, &implementation)
+        warn(method_name) if warn_about_expectations?
+        super
+      end
+
+      def add_stub(location, method_name, opts={}, &implementation)
+        warn(method_name) if warn_about_expectations?
+        super
+      end
+
+    private
+
+      def warn method_name
+        source = CallerFilter.first_non_rspec_line
+        Kernel.warn("An expectation of :#{method_name} was set on nil. Called from #{source}. Use allow_message_expectations_on_nil to disable warnings.")
       end
     end
   end

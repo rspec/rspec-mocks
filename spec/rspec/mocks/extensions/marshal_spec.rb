@@ -13,23 +13,6 @@ describe Marshal, 'extensions' do
   end
 
   describe '#dump' do
-    context 'when rspec-mocks has not been fully initialized' do
-      def without_space
-        stashed_space, RSpec::Mocks.space = RSpec::Mocks.space, nil
-        yield
-      ensure
-        RSpec::Mocks.space = stashed_space
-      end
-
-      it 'does not duplicate the object before serialization' do
-        obj = UndupableObject.new
-        without_space do
-          serialized = Marshal.dump(obj)
-          expect(Marshal.load(serialized)).to be_an(UndupableObject)
-        end
-      end
-    end
-
     context 'when rspec-mocks has been fully initialized' do
       it 'duplicates objects with stubbed or mocked implementations before serialization' do
         obj = double(:foo => "bar")

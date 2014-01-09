@@ -51,12 +51,12 @@ module RSpec
       end
 
       def find_matching_stub
-        ::RSpec::Mocks.proxy_for(object).
+        ::RSpec::Mocks.space.proxy_for(object).
           __send__(:find_matching_method_stub, chain.first.to_sym)
       end
 
       def find_matching_expectation
-        ::RSpec::Mocks.proxy_for(object).
+        ::RSpec::Mocks.space.proxy_for(object).
           __send__(:find_matching_expectation, chain.first.to_sym)
       end
     end

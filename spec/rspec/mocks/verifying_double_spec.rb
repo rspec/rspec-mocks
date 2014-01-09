@@ -373,7 +373,8 @@ module RSpec
             expect(object).to receive(:defined_class_method)
 
             expect(LoadedClass).to eq(object)
-            ::RSpec::Mocks.space.reset_all
+            ::RSpec::Mocks.teardown
+            ::RSpec::Mocks.setup
             expect(LoadedClass).to eq(original)
           end
 

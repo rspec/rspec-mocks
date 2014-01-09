@@ -63,7 +63,7 @@ module RSpec
           def as_null_object
             ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             @_null_object = true
-            ::RSpec::Mocks.proxy_for(self).as_null_object
+            ::RSpec::Mocks.space.proxy_for(self).as_null_object
           end
 
           def null_object?
@@ -73,14 +73,14 @@ module RSpec
 
           def received_message?(message, *args, &block)
             ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
-            ::RSpec::Mocks.proxy_for(self).received_message?(message, *args, &block)
+            ::RSpec::Mocks.space.proxy_for(self).received_message?(message, *args, &block)
           end
 
           unless Class.respond_to? :any_instance
             Class.class_exec do
               def any_instance
                 ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
-                ::RSpec::Mocks.any_instance_recorder_for(self)
+                ::RSpec::Mocks.space.any_instance_recorder_for(self)
               end
             end
           end

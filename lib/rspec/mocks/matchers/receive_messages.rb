@@ -54,11 +54,11 @@ module RSpec
       private
 
         def proxy_on(subject)
-          ::RSpec::Mocks.proxy_for(subject)
+          ::RSpec::Mocks.space.proxy_for(subject)
         end
 
         def any_instance_of(subject)
-          ::RSpec::Mocks.any_instance_recorder_for(subject)
+          ::RSpec::Mocks.space.any_instance_recorder_for(subject)
         end
 
         def each_message_on(host)

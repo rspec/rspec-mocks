@@ -138,7 +138,6 @@ module RSpec
 
         const
       end
-      private_class_method :unmutated
 
       # Queries rspec-mocks to find out information about the named constant.
       #
@@ -146,7 +145,7 @@ module RSpec
       # @return [Constant] an object contaning information about the named
       #   constant.
       def self.original(name)
-        mutator = ConstantMutator.find(name)
+        mutator = ::RSpec::Mocks.space.constant_mutator_for(name)
         mutator ? mutator.to_constant : unmutated(name)
       end
     end
@@ -190,8 +189,6 @@ module RSpec
       #  so you can hide constants in other contexts (e.g. helper
       #  classes).
       def self.hide(constant_name)
-        return unless recursive_const_defined?(constant_name)
-
         mutate(ConstantHider.new(constant_name, nil, { }))
         nil
       end
@@ -210,6 +207,7 @@ module RSpec
           @transfer_nested_constants = transfer_nested_constants
           @context_parts             = @full_constant_name.split('::')
           @const_name                = @context_parts.pop
+          @reset_performed           = false
         end
 
         def to_constant
@@ -218,6 +216,11 @@ module RSpec
 
           const
         end
+
+        def idempotently_reset
+          reset unless @reset_performed
+          @reset_performed = true
+        end
       end
 
       # Hides a defined constant for the duration of an example.
@@ -225,6 +228,7 @@ module RSpec
       # @api private
       class ConstantHider < BaseMutator
         def mutate
+          return unless @defined = recursive_const_defined?(full_constant_name)
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
@@ -232,6 +236,8 @@ module RSpec
         end
 
         def to_constant
+          return Constant.unmutated(full_constant_name) unless @defined
+
           const = super
           const.hidden = true
           const.previously_defined = true
@@ -239,7 +245,8 @@ module RSpec
           const
         end
 
-        def rspec_reset
+        def reset
+          return unless @defined
           @context.const_set(@const_name, @original_value)
         end
       end
@@ -268,7 +275,7 @@ module RSpec
           const
         end
 
-        def rspec_reset
+        def reset
           @context.__send__(:remove_const, @const_name)
           @context.const_set(@const_name, @original_value)
         end
@@ -338,7 +345,7 @@ module RSpec
           const
         end
 
-        def rspec_reset
+        def reset
           @deepest_defined_const.__send__(:remove_const, @const_to_remove)
         end
       end
@@ -349,38 +356,8 @@ module RSpec
       #
       # @api private
       def self.mutate(mutator)
-        register_mutator(mutator)
+        ::RSpec::Mocks.space.register_constant_mutator(mutator)
         mutator.mutate
-      end
-
-      # Resets all stubbed constants. This is called automatically
-      # by rspec-mocks when an example finishes.
-      #
-      # @api private
-      def self.reset_all
-        # We use reverse order so that if the same constant
-        # was stubbed multiple times, the original value gets
-        # properly restored.
-        mutators.reverse.each { |s| s.rspec_reset }
-
-        mutators.clear
-      end
-
-      # The list of constant mutators that have been used for
-      # the current example.
-      #
-      # @api private
-      def self.mutators
-        @mutators ||= []
-      end
-
-      # @api private
-      def self.register_mutator(mutator)
-        mutators << mutator
-      end
-
-      def self.find(name)
-        mutators.find { |s| s.full_constant_name == name }
       end
 
       # Used internally by the constant stubbing to raise a helpful

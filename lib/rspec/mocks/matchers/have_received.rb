@@ -93,7 +93,7 @@ module RSpec
         end
 
         def mock_proxy
-          RSpec::Mocks.proxy_for(@subject)
+          RSpec::Mocks.space.proxy_for(@subject)
         end
       end
     end

@@ -1,5 +1,23 @@
 module RSpec
   module Mocks
+    # @public
+    # Raised when a message expectation is not satisfied.
+    MockExpectationError = Class.new(Exception)
+
+    # @public
+    # Raised when a test double is used after it has been torn
+    # down (typically at the end of an rspec-core example).
+    ExpiredTestDoubleError = Class.new(MockExpectationError)
+
+    # @public
+    # Raised when doubles or partial doubles are used outside of the per-test lifecycle.
+    OutsideOfExampleError = Class.new(StandardError)
+
+    # @private
+    UnsupportedMatcherError  = Class.new(StandardError)
+    # @private
+    NegationUnsupportedError = Class.new(StandardError)
+
     # @private
     class ErrorGenerator
       attr_writer :opts
@@ -61,6 +79,14 @@ module RSpec
           calculator.range_description,
           actual
         ]
+      end
+
+      def raise_expired_test_double_error
+        raise ExpiredTestDoubleError,
+          "#{intro} was originally created in one example but has leaked into " +
+          "another example and can no longer be used. rspec-mocks' doubles are " +
+          "designed to only last for one example, and you need to create a new " +
+          "one in each example you wish to use it for."
       end
 
       # @private
@@ -189,12 +215,12 @@ module RSpec
       end
 
       def count_message(count, expectation_count_type=nil)
-        return "at least #{pretty_print(count.abs)}" if count < 0 || expectation_count_type == :at_least
-        return "at most #{pretty_print(count)}" if expectation_count_type == :at_most
-        return pretty_print(count)
+        return "at least #{times(count.abs)}" if count < 0 || expectation_count_type == :at_least
+        return "at most #{times(count)}" if expectation_count_type == :at_most
+        return times(count)
       end
 
-      def pretty_print(count)
+      def times(count)
         "#{count} time#{count == 1 ? '' : 's'}"
       end
 

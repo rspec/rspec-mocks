@@ -18,15 +18,24 @@ end
 
 module VerifyAndResetHelpers
   def verify(object)
-    RSpec::Mocks.proxy_for(object).verify
+    proxy = RSpec::Mocks.space.proxy_for(object)
+    proxy.verify
+  ensure
+    proxy.reset # so it doesn't fail the verify after the example completes
   end
 
   def reset(object)
-    RSpec::Mocks.proxy_for(object).reset
+    RSpec::Mocks.space.proxy_for(object).reset
   end
 
   def verify_all
     RSpec::Mocks.space.verify_all
+  ensure
+    reset_all
+  end
+
+  def reset_all
+    RSpec::Mocks.space.reset_all
   end
 end
 

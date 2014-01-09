@@ -1,14 +1,5 @@
 require 'spec_helper'
 
-def remove_last_describe_from_world
-  RSpec::world.example_groups.pop
-end
-
-def empty_example_group
-  RSpec::Core::ExampleGroup.describe(Object, 'Empty Behaviour Group') { }
-  remove_last_describe_from_world
-end
-
 module RSpec
   module Mocks
     describe "an expectation set on nil" do
@@ -44,18 +35,12 @@ module RSpec
 
     describe "#allow_message_expectations_on_nil" do
       it "does not affect subsequent examples" do
-        example_group = ::RSpec::Core::ExampleGroup.describe
-        reporter      = ::RSpec.configuration.reporter
-        example_group.it("when called in one example that doesn't end up setting an expectation on nil") do
-                        allow_message_expectations_on_nil
-                      end
-        example_group.it("should not effect the next example ran") do
-                        Kernel.should_receive(:warn)
-                        nil.should_receive(:foo)
-                        nil.foo
-                      end
-
-        expect(example_group.run reporter).to eq true
+        allow_message_expectations_on_nil
+        RSpec::Mocks.teardown
+        RSpec::Mocks.setup
+        Kernel.should_receive(:warn)
+        nil.should_receive(:foo)
+        nil.foo
       end
 
       it 'doesnt error when marshalled' do
