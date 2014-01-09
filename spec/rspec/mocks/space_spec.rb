@@ -5,6 +5,7 @@ module RSpec::Mocks
 
     describe "#proxies_of(klass)" do
       let(:space) { Space.new }
+      before { space.outside_example = false }
 
       it 'returns proxies' do
         space.proxy_for("")

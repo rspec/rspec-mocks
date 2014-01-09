@@ -28,4 +28,41 @@ describe "double" do
     expect(dbl.foo).to eq(2)
     expect { reset dbl }.not_to raise_error
   end
+
+  context "after it has been torn down" do
+    let(:dbl) { double }
+
+    before do
+      expect(dbl).to receive(:foo).at_least(:once)
+      allow(dbl).to receive(:bar)
+      dbl.foo
+
+      RSpec::Mocks.verify
+      RSpec::Mocks.teardown
+      RSpec::Mocks.setup
+    end
+
+    it 'warns when stubbing new methods (with receive)' do
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      allow(dbl).to receive(:bazz).and_return(3)
+      expect(dbl.bazz).to eq(3)
+    end
+
+    it 'warns when mocking new methods' do
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      expect(dbl).to receive(:bazz)
+      dbl.bazz
+    end
+
+    it 'warns when turned into a null object' do
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      dbl.as_null_object
+      dbl.foo.bar.bazz.goo
+    end
+
+    it 'warns when checked for nullness' do
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      dbl.null_object?
+    end
+  end
 end
