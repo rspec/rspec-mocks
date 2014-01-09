@@ -132,6 +132,13 @@ module RSpec
           expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
         end
 
+        it 'can generate a description after mocks have been torn down (e.g. when rspec-core requests it)' do
+          matcher = have_received(:expected_method).with(:expected_args).once
+          matcher.matches?(double(:expected_method => 1))
+          RSpec::Mocks.teardown
+          expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
+        end
+
         context "counts" do
           let(:dbl) { double(:expected_method => nil) }
 
