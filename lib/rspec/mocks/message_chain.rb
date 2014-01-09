@@ -20,17 +20,17 @@ module RSpec
             chain_on(matching_expectation.invoke_without_incrementing_received_count(nil), *chain, &@block)
           else
             next_in_chain = Double.new
-            expectation(object, chain.shift, next_in_chain)
+            expectation(object, chain.shift) { next_in_chain }
             chain_on(next_in_chain, *chain, &@block)
           end
         else
-          ::RSpec::Mocks.allow_message(object, chain.shift, {}, &block)
+          expectation(object, chain.shift, &@block)
         end
       end
 
     private
 
-      def expectation(object, message, returned_object)
+      def expectation(object, message, &return_block)
         raise NotImplementedError.new
       end
 
@@ -70,8 +70,8 @@ module RSpec
 
       private
 
-      def expectation(object, message, returned_object)
-        ::RSpec::Mocks.expect_message(object, message, {}) { returned_object }
+      def expectation(object, message, &return_block)
+        ::RSpec::Mocks.expect_message(object, message, {}, &return_block)
       end
     end
 
@@ -83,8 +83,8 @@ module RSpec
 
       private
 
-      def expectation(object, message, returned_object)
-        ::RSpec::Mocks.allow_message(object, message, {}) { returned_object }
+      def expectation(object, message, &return_block)
+        ::RSpec::Mocks.allow_message(object, message, {}, &return_block)
       end
     end
   end

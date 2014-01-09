@@ -114,10 +114,18 @@ module RSpec::Mocks::Matchers
         expect(object.msg1("nonsense", :value).msg2("another", :nonsense, 3.0, "value")).to eq(:return_value)
       end
 
-      it "raises when expect is used and the entire chain isn't called" do
+      it "raises when expect is used and some of the messages in the chain aren't called" do
         expect {
           expect(object).to receive_message_chain(:to_a, :farce, :length => 3)
           object.to_a
+          verify_all
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
+      end
+
+      it "raises when expect is used and all but the last message in the chain are called" do
+        expect {
+          expect(object).to receive_message_chain(:foo, :bar, :baz)
+          object.foo.bar
           verify_all
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
