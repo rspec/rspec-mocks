@@ -34,17 +34,19 @@ module RSpec
         super
       end
 
-      def send(name, *args, &block)
+      # Redefining `__send__` causes ruby to issue a warning.
+      old, $stderr = $stderr, StringIO.new
+      def __send__(name, *args, &block)
         @__sending_message = name
         super
       ensure
         @__sending_message = nil
       end
-
-      # Redefining `__send__` causes ruby to issue a warning.
-      old, $stderr = $stderr, StringIO.new
-      alias __send__ send
       $stderr = old
+
+      def send(name, *args, &block)
+        __send__(name, *args, &block)
+      end
 
       def __initialize_as_test_double(*args)
         super
