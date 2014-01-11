@@ -97,8 +97,15 @@ module RSpec
         # Defined private and protected methods will still trigger `method_missing`
         # when called publicly. We want ruby's method visibility error to get raised,
         # so we simply delegate to `super` in that case.
+        # ...well, we would delegate to `super`, but there's a JRuby
+        # bug, so we raise our own visibility error instead:
+        # https://github.com/jruby/jruby/issues/1398
         visibility = proxy.visibility_for(message)
-        return super if visibility == :private || visibility == :protected
+        if visibility == :private || visibility == :protected
+          ErrorGenerator.new(self, @name).raise_non_public_error(
+            message, visibility
+          )
+        end
 
         # Required wrapping doubles in an Array on Ruby 1.9.2
         raise NoMethodError if [:to_a, :to_ary].include? message
