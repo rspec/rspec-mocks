@@ -34,6 +34,9 @@ class LoadedClass
   def defined_instance_method
   end
 
+  def send(*)
+  end
+
   def respond_to?(method_name, include_all = false)
     return true if method_name == :dynamic_instance_method
     super
@@ -122,6 +125,12 @@ module RSpec
             prevents { o.should_receive(:defined_class_method) }
           end
 
+          it 'allows `send` to be stubbed if it is defined on the class' do
+            o = instance_double('LoadedClass')
+            allow(o).to receive(:send).and_return("received")
+            expect(o.send(:msg)).to eq("received")
+          end
+
           describe "method visibility" do
             shared_examples_for "preserves method visibility" do |visibility|
               method_name = :"defined_#{visibility}_method"
@@ -149,7 +158,7 @@ module RSpec
               it "preserves #{visibility} visibility when expecting a #{visibility} method" do
                 preserves_visibility(method_name, visibility) do
                   instance_double('LoadedClass').tap do |o|
-                    expect(o).to receive(method_name)
+                    expect(o).to receive(method_name).at_least(:once)
                     o.send(method_name) # to satisfy the expectation
                   end
                 end
@@ -204,6 +213,8 @@ module RSpec
             it 'only allows defined methods' do
               expect(o.defined_instance_method).to eq(o)
               prevents { o.undefined_method }
+              prevents { o.send(:undefined_method) }
+              prevents { o.__send__(:undefined_method) }
             end
 
             it 'reports what public messages it responds to accurately' do
@@ -319,7 +330,7 @@ module RSpec
               it "preserves #{visibility} visibility when expecting a #{visibility} method" do
                 preserves_visibility(method_name, visibility) do
                   class_double('LoadedClass').tap do |o|
-                    expect(o).to receive(method_name)
+                    expect(o).to receive(method_name).at_least(:once)
                     o.send(method_name) # to satisfy the expectation
                   end
                 end
@@ -497,13 +508,25 @@ module RSpec
         expect {
           # send bypasses visbility, so we use eval instead.
           eval("double.#{method_name}")
-        }.to raise_error(NoMethodError, /#{visibility}/)
+        }.to raise_error(NoMethodError, a_message_indicating_visibility_violation(method_name, visibility))
+
+        expect { double.send(method_name) }.not_to raise_error
+        expect { double.__send__(method_name) }.not_to raise_error
 
         unless double.null_object?
           # Null object doubles use `method_missing` and so the singleton class
           # doesn't know what methods are defined.
           singleton_class = class << double; self; end
           expect(singleton_class.send("#{visibility}_method_defined?", method_name)).to be true
+        end
+      end
+
+      RSpec::Matchers.define :a_message_indicating_visibility_violation do |method_name, visibility|
+        match do |msg|
+          # This should NOT Be just `msg.match(visibility)` because the method being called
+          # has the visibility name in it. We want to ensure it's a message that ruby is
+          # stating is of the given visibility.
+          msg.match("#{visibility} ") && msg.match(method_name.to_s)
         end
       end
     end

@@ -74,6 +74,13 @@ module RSpec
       end
 
       # @private
+      def raise_non_public_error(method_name, visibility)
+        raise NoMethodError, "%s method `%s' called on %s" % [
+          visibility, method_name, intro
+        ]
+      end
+
+      # @private
       def raise_arity_error(calculator, actual)
         __raise "Wrong number of arguments. Expected %s, got %s." % [
           calculator.range_description,
@@ -81,6 +88,7 @@ module RSpec
         ]
       end
 
+      # @private
       def raise_expired_test_double_error
         raise ExpiredTestDoubleError,
           "#{intro} was originally created in one example but has leaked into " +

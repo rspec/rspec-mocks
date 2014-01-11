@@ -50,6 +50,12 @@ module RSpec
         expect(dbl.foo = "bar").to eq("bar")
       end
 
+      it 'allows `send` to be stubbed' do
+        dbl = double
+        allow(dbl).to receive(:send).and_return("received")
+        expect(dbl.send(:some_msg)).to eq("received")
+      end
+
       context "after it has been torn down" do
         let(:dbl) { double }
 
