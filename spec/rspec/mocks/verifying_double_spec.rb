@@ -497,13 +497,22 @@ module RSpec
         expect {
           # send bypasses visbility, so we use eval instead.
           eval("double.#{method_name}")
-        }.to raise_error(NoMethodError, /#{visibility}/)
+        }.to raise_error(NoMethodError, a_message_indicating_visibility_violation(method_name, visibility))
 
         unless double.null_object?
           # Null object doubles use `method_missing` and so the singleton class
           # doesn't know what methods are defined.
           singleton_class = class << double; self; end
           expect(singleton_class.send("#{visibility}_method_defined?", method_name)).to be true
+        end
+      end
+
+      RSpec::Matchers.define :a_message_indicating_visibility_violation do |method_name, visibility|
+        match do |msg|
+          # This should NOT Be just `msg.match(visibility)` because the method being called
+          # has the visibility name in it. We want to ensure it's a message that ruby is
+          # stating is of the given visibility.
+          msg.match("#{visibility} ") && msg.match(method_name.to_s)
         end
       end
     end

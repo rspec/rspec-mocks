@@ -22,7 +22,7 @@ module RSpec
         # Null object conditional is an optimization. If not a null object,
         # validity of method expectations will have been checked at definition
         # time.
-        __mock_proxy.ensure_implemented(message) if null_object?
+        __mock_proxy.ensure_publicly_implemented(message, self) if null_object?
         super
       end
     end

@@ -29,6 +29,15 @@ module RSpec
           )
         end
       end
+
+      def ensure_publicly_implemented(method_name, object)
+        ensure_implemented(method_name)
+        visibility = method_reference[method_name].visibility
+
+        unless visibility == :public
+          @error_generator.raise_non_public_error(method_name, visibility)
+        end
+      end
     end
 
     # A verifying proxy mostly acts like a normal proxy, except that it
