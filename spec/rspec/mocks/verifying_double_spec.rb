@@ -34,6 +34,9 @@ class LoadedClass
   def defined_instance_method
   end
 
+  def send(*)
+  end
+
   def respond_to?(method_name, include_all = false)
     return true if method_name == :dynamic_instance_method
     super
@@ -120,6 +123,12 @@ module RSpec
             prevents { expect(o).to receive(:defined_class_method) }
             prevents { o.should_receive(:undefined_instance_method) }
             prevents { o.should_receive(:defined_class_method) }
+          end
+
+          it 'allows `send` to be stubbed if it is defined on the class' do
+            o = instance_double('LoadedClass')
+            allow(o).to receive(:send).and_return("received")
+            expect(o.send(:msg)).to eq("received")
           end
 
           describe "method visibility" do
