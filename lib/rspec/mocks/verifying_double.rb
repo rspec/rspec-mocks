@@ -1,4 +1,5 @@
 require 'rspec/mocks/verifying_proxy'
+require 'stringio'
 
 module RSpec
   module Mocks
@@ -22,8 +23,32 @@ module RSpec
         # Null object conditional is an optimization. If not a null object,
         # validity of method expectations will have been checked at definition
         # time.
-        __mock_proxy.ensure_publicly_implemented(message, self) if null_object?
+        if null_object?
+          if @__sending_message == message
+            __mock_proxy.ensure_implemented(message)
+          else
+            __mock_proxy.ensure_publicly_implemented(message, self)
+          end
+        end
+
         super
+      end
+
+      def send(name, *args, &block)
+        @__sending_message = name
+        super
+      ensure
+        @__sending_message = nil
+      end
+
+      # Redefining `__send__` causes ruby to issue a warning.
+      old, $stderr = $stderr, StringIO.new
+      alias __send__ send
+      $stderr = old
+
+      def __initialize_as_test_double(*args)
+        super
+        @__sending_message = nil
       end
     end
 

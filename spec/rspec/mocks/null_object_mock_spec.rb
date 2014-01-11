@@ -69,6 +69,16 @@ module RSpec
         verify @double
       end
 
+      it 'allows unexpected message sends using `send`' do
+        val = @double.send(:foo).send(:bar)
+        expect(val).to equal(@double)
+      end
+
+      it 'allows unexpected message sends using `send`' do
+        val = @double.__send__(:foo).__send__(:bar)
+        expect(val).to equal(@double)
+      end
+
       it "allows expected message with different args first" do
         @double.should_receive(:message).with(:expected_arg)
         @double.message(:unexpected_arg)
