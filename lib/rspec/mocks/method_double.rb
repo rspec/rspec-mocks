@@ -77,6 +77,7 @@ module RSpec
 
       # @private
       def restore_original_method
+        return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
         object_singleton_class.__send__(:remove_method, @method_name)
@@ -86,14 +87,14 @@ module RSpec
         restore_original_visibility
 
         @method_is_proxied = false
-      rescue RuntimeError => e
-        frozen = object_singleton_class.frozen?
-        if frozen && !@show_frozen_warnings.include?(@method_name)
+      end
+
+      # @private
+      def show_frozen_warning
+        if !@show_frozen_warnings.include?(@method_name)
           RSpec.warn_with "Unable to remove stub method #{@method_name} because the object was frozen.",
             :call_site => nil
           @show_frozen_warnings << @method_name
-        elsif !frozen
-          raise e
         end
       end
 
