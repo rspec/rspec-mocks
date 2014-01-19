@@ -214,13 +214,19 @@ module RSpec
         end
 
         context "on a frozen object" do
-          it "removes the method double" do
-            with_isolated_stderr do
-              target.to receive(:foo).and_return(:baz)
-              expect_warning_without_call_site(/Unable to remove stub method foo because the object was frozen./)
-              object.freeze
-              reset object
-            end
+          it "warns about being unable to remove the method double" do
+            target.to receive(:foo).and_return(:baz)
+            expect_warning_without_call_site(/Unable to remove stub method foo because the object was frozen./)
+            object.freeze
+            reset object
+          end
+
+          it "includes the spec location in the warning" do
+            line = __LINE__ - 1
+            target.to receive(:foo).and_return(:baz)
+            expect_warning_without_call_site(/#{__FILE__}:#{line}/)
+            object.freeze
+            reset object
           end
         end
       end
