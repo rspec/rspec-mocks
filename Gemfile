@@ -30,3 +30,16 @@ platforms :rbx do
 end
 
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')
+if ENV["TRAVIS"] == true
+  gem "rake",     "~> 10.0.0"
+  gem "cucumber", "~> 1.1.9"
+  gem "aruba",    "~> 0.5"
+
+  gem "nokogiri", "1.5.2"
+  gem "coderay",  "~> 1.0.9"
+
+
+  gem "mocha",    "~> 0.13.0"
+  gem "rr",       "~> 1.0.4"
+  gem "flexmock", "~> 0.9.0"
+end
