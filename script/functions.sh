@@ -50,15 +50,20 @@ function run_specs_and_record_done {
 function run_cukes {
   # force jRuby to use client mode JVM or a compilation mode thats as close as possible,
   # idea taken from https://github.com/jruby/jruby/wiki/Improving-startup-time
+  #
   # Note that we delay setting this until we run the cukes because we've seen
   # spec failures in our spec suite due to problems with this mode.
   export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
   # Prepare RUBYOPT for scenarios that are shelling out to ruby,
   # and PATH for those that are using `rspec` or `rake`.
-  RUBYOPT="-I${PWD}/../bundle -rbundler/setup" \
-     PATH="${PWD}/bin:$PATH" \
-     bin/cucumber --strict
+  #RUBYOPT="-I${PWD}/../bundle -rbundler/setup" \
+     #PATH="${PWD}/bin:$PATH" \
+     #bin/cucumber --strict
+
+  # We would like to use the above command but it causes SystemStackError
+  # on some rubies and we're not yet sure why.
+  bundle exec cucumber --strict
 }
 
 function run_specs_one_by_one {
