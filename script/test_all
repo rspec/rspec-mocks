@@ -58,6 +58,27 @@ cp -r "./" "$TMPDIR/rspec-ci/rspec-mocks"
 #Change to the CI directory
 cd $TMPDIR/rspec-ci
 
+travis_retry() {
+  local result=0
+  local count=1
+  while [ $count -le 3 ]; do
+    [ $result -ne 0 ] && {
+      echo -e "\n\033[33;1mThe command \"$@\" failed. Retrying, $count of 3.\033[0m\n" >&2
+    }
+    "$@"
+    result=$?
+    [ $result -eq 0 ] && break
+    count=$(($count + 1))
+    sleep 1
+  done
+
+  [ $count -eq 3 ] && {
+    echo "\n\033[33;1mThe command \"$@\" failed 3 times.\033[0m\n" >&2
+  }
+
+  return $result
+}
+
 # The steps to test the gems are the same, this function does them.
 function test_gem {
     git clone git://github.com/rspec/rspec-$1 --depth 1
@@ -68,7 +89,7 @@ function test_gem {
     git branch
     bundle_flags=`cat .travis.yml | grep bundler_args | tr -d '"' | grep -o " .*"`
 
-    bundle install $bundle_flags
+    travis_retry bundle install $bundle_flags
     bin/rspec -b
     cd ../
 }
