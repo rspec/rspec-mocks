@@ -27,7 +27,7 @@ travis_retry() {
   return $result
 }
 
-function is_mri() {
+function is_mri {
   if ruby -e "exit(!defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby')"; then
     # RUBY_ENGINE only returns 'ruby' on MRI.
     # MRI 1.8.7 lacks the constant but all other rubies have it (including JRuby in 1.8 mode)
@@ -35,6 +35,18 @@ function is_mri() {
   else
     return 1
   fi;
+}
+
+function is_mri_192 {
+  if is_mri; then
+    if ruby -e "exit(RUBY_VERSION == '1.9.2')"; then
+      return 0
+    else
+      return 1
+    fi
+  else
+    return 1
+  fi
 }
 
 function clone_repo {
@@ -55,15 +67,18 @@ function run_cukes {
   # spec failures in our spec suite due to problems with this mode.
   export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
-  # Prepare RUBYOPT for scenarios that are shelling out to ruby,
-  # and PATH for those that are using `rspec` or `rake`.
-  #RUBYOPT="-I${PWD}/../bundle -rbundler/setup" \
-     #PATH="${PWD}/bin:$PATH" \
-     #bin/cucumber --strict
-
-  # We would like to use the above command but it causes SystemStackError
-  # on some rubies and we're not yet sure why.
-  bundle exec cucumber --strict
+  if is_mri_192; then
+    # For some reason we get SystemStackError on 1.9.2 when using
+    # the bin/cucumber approach below. That approach is faster
+    # (as it avoids the bundler tax), so we use it on rubies where we can.
+    bundle exec cucumber --strict
+  else
+    # Prepare RUBYOPT for scenarios that are shelling out to ruby,
+    # and PATH for those that are using `rspec` or `rake`.
+    RUBYOPT="-I${PWD}/../bundle -rbundler/setup" \
+       PATH="${PWD}/bin:$PATH" \
+       bin/cucumber --strict
+  fi
 }
 
 function run_specs_one_by_one {
