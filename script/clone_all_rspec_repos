@@ -1,4 +1,6 @@
 #!/bin/bash
+# This file was generated on 2014-01-24T19:39:30-08:00 from the rspec-dev repo.
+# DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 set -e -x
 source script/functions.sh
