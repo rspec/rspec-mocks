@@ -65,7 +65,10 @@ module RSpec
       def initialize(doubled_module, *args)
         @doubled_module = doubled_module
 
-        __initialize_as_test_double(doubled_module, *args)
+        __initialize_as_test_double(
+          "#{doubled_module.description} (instance)",
+          *args
+        )
       end
 
       def __build_mock_proxy(order_group)
@@ -86,7 +89,7 @@ module RSpec
       def initialize(doubled_module, *args)
         @doubled_module = doubled_module
 
-        __initialize_as_test_double(doubled_module, *args)
+        __initialize_as_test_double(doubled_module.description, *args)
       end
 
       def __build_mock_proxy(order_group)

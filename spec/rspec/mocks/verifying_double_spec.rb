@@ -131,6 +131,14 @@ module RSpec
             expect(o.send(:msg)).to eq("received")
           end
 
+          it 'gives a descriptive error message for NoMethodError' do
+            o = instance_double("LoadedClass")
+            expect {
+              o.defined_private_method
+            }.to raise_error(NoMethodError,
+                               /Double "LoadedClass \(instance\)"/)
+          end
+
           describe "method visibility" do
             shared_examples_for "preserves method visibility" do |visibility|
               method_name = :"defined_#{visibility}_method"
@@ -301,6 +309,13 @@ module RSpec
             prevents { expect(o).to receive(:defined_instance_method) }
             prevents { o.should_receive(:undefined_instance_method) }
             prevents { o.should_receive(:defined_instance_method) }
+          end
+
+          it 'gives a descriptive error message for NoMethodError' do
+            o = class_double("LoadedClass")
+            expect {
+              o.defined_private_class_method
+            }.to raise_error(NoMethodError, /Double "LoadedClass"/)
           end
 
           describe "method visibility" do
