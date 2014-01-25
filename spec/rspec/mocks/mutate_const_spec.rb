@@ -451,6 +451,18 @@ module RSpec
           it("returns nil for the original value")      { expect(const.original_value).to be_nil }
         end
 
+        context 'for a previously undefined parent of a stubbed constant' do
+          before { stub_const("TestClass::UndefinedModule::Undefined", :other) }
+          let(:const) { Constant.original("TestClass::UndefinedModule") }
+
+          it("exposes its name")                        { expect(const.name).to eq("TestClass::UndefinedModule") }
+          it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
+          it("indicates it has been mutated")           { expect(const).to be_mutated }
+          it("indicates it has been stubbed")           { expect(const).to be_stubbed }
+          it("indicates it has not been hidden")        { expect(const).not_to be_hidden }
+          it("returns nil for the original value")      { expect(const.original_value).to be_nil }
+        end
+
         context 'for a previously undefined unstubbed constant' do
           let(:const) { Constant.original("TestClass::Undefined") }
 

@@ -84,6 +84,13 @@ module RSpec
             expect(o.undefined_instance_method(:arg)).to eq(true)
           end
 
+          it 'handles classes that are materialized after mocking' do
+            stub_const "A::B", Object.new
+            o = instance_double "A", :undefined_instance_method => true
+
+            expect(o.undefined_instance_method).to eq(true)
+          end
+
           context 'for null objects' do
             let(:o) { instance_double('NonLoadedClass').as_null_object }
 
