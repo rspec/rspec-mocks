@@ -43,6 +43,8 @@ Bug Fixes:
 * Fix regression in `stub_chain`/`receive_message_chain` that caused
   it to raise an `ArgumentError` when passing args to the stubbed
   methods. (Sam Phippen)
+* Correct stub of undefined parent modules all the way down when stubbing a
+  nested constant. (Xavier Shay)
 
 Enhancements:
 

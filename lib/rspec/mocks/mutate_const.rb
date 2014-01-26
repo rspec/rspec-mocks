@@ -322,19 +322,15 @@ module RSpec
       # @api private
       class UndefinedConstantSetter < BaseMutator
         def mutate
-          remaining_parts = @context_parts.dup
-          @deepest_defined_const = @context_parts.inject(Object) do |klass, name|
-            break klass unless const_defined_on?(klass, name)
-            remaining_parts.shift
-            get_const_defined_on(klass, name)
+          @parent = @context_parts.inject(Object) do |klass, name|
+            if const_defined_on?(klass, name)
+              get_const_defined_on(klass, name)
+            else
+              ConstantMutator.stub(name_for(klass, name), Module.new)
+            end
           end
 
-          context = remaining_parts.inject(@deepest_defined_const) do |klass, name|
-            klass.const_set(name, Module.new)
-          end
-
-          @const_to_remove = remaining_parts.first || @const_name
-          context.const_set(@const_name, @mutated_value)
+          @parent.const_set(@const_name, @mutated_value)
         end
 
         def to_constant
@@ -346,7 +342,18 @@ module RSpec
         end
 
         def reset
-          @deepest_defined_const.__send__(:remove_const, @const_to_remove)
+          @parent.__send__(:remove_const, @const_name)
+        end
+
+      private
+
+        def name_for(parent, name)
+          root = if parent == Object
+            ''
+          else
+            parent.name
+          end
+          root + '::' + name
         end
       end
 
