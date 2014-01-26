@@ -7,11 +7,15 @@ module RSpec
         subject { described_class.new(test_method) }
 
         def within_range?(arity)
-          subject.within_range?(arity)
+          subject.matches?([nil] * arity)
+        end
+
+        def matches?(args)
+          subject.matches?(args)
         end
 
         def description
-          subject.range_description
+          subject.error_description([])[/Expected (.*),/, 1]
         end
 
         describe 'with a method with arguments' do
@@ -71,6 +75,70 @@ module RSpec
           else
             it 'is described with no upper bound' do
               expect(description).to eq("2 or more")
+            end
+          end
+        end
+
+        if keyword_args_supported?
+          describe 'a method with optional keyword arguments' do
+            eval <<-RUBY
+              def arity_kw(x, y:1, z:2); end
+            RUBY
+
+            let(:test_method) { method(:arity_kw) }
+
+            it 'returns false unless all required keywords args are present' do
+              expect(within_range?(1)).to eq(true)
+              expect(within_range?(2)).to eq(true)
+              expect(within_range?(3)).to eq(false)
+            end
+          end
+        end
+
+        if required_keyword_args_supported?
+          describe 'a method with required keyword arguments' do
+            eval <<-RUBY
+              def arity_required_kw(x, y:, z:, a: 'default'); end
+            RUBY
+
+            let(:test_method) { method(:arity_required_kw) }
+
+            it 'returns false unless all required keywords args are present' do
+              expect(matches?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
+              expect(matches?([nil, {:a => 0, :y => 1}])).to eq(false)
+              expect(matches?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(false)
+              expect(matches?([nil, nil])).to eq(false)
+            end
+
+            it 'is described precisely' do
+              expect(subject.error_description([nil, {:a => 0}])).to \
+                eq("Missing required keyword arguments: y, z")
+            end
+
+            it 'is described precisely when arity is wrong' do
+              expect(subject.error_description([{:z => 0, :y => 1}])).to \
+                eq("Wrong number of arguments. Expected 2, got 1.")
+            end
+          end
+
+          describe 'a method with required keyword arguments and a splat' do
+            eval <<-RUBY
+              def arity_required_kw_splat(w, *x, y:, z:, a: 'default'); end
+            RUBY
+
+            let(:test_method) { method(:arity_required_kw_splat) }
+
+            it 'returns false unless all required keywords args are present' do
+              expect(matches?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
+              expect(matches?([nil, {:a => 0, :y => 1}])).to eq(false)
+              expect(matches?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
+              expect(matches?([nil, nil, nil])).to eq(false)
+              expect(matches?([])).to eq(false)
+            end
+
+            it 'is described precisely' do
+              expect(subject.error_description([nil, {:y => 1}])).to \
+                eq("Missing required keyword arguments: z")
             end
           end
         end

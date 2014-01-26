@@ -81,11 +81,8 @@ module RSpec
       end
 
       # @private
-      def raise_arity_error(calculator, actual)
-        __raise "Wrong number of arguments. Expected %s, got %s." % [
-          calculator.range_description,
-          actual
-        ]
+      def raise_arity_error(calculator, actual_args)
+        __raise calculator.error_description(actual_args)
       end
 
       # @private

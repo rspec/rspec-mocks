@@ -9,18 +9,44 @@ module RSpec
       end
 
       # @api private
-      def within_range?(actual)
-        min_arity <= actual && actual <= max_arity
+      def matches?(actual_args)
+        missing_required_keyword_args(actual_args).empty? &&
+          within_range?(actual_args.length)
       end
 
       # @api private
+      def error_description(actual_args)
+        missing = missing_required_keyword_args(actual_args)
+        if missing.empty?
+          "Wrong number of arguments. Expected %s, got %s." % [
+            range_description,
+            actual_args.length
+          ]
+        else
+          "Missing required keyword arguments: %s" % [
+            missing.join(", ")
+          ]
+        end
+      end
+
+      private
+
       def range_description
         return min_arity.to_s if min_arity == max_arity
         return "#{min_arity} or more" if max_arity == INFINITY
         "#{min_arity} to #{max_arity}"
       end
 
-      private
+      def within_range?(actual)
+        min_arity <= actual && actual <= max_arity
+      end
+
+      def missing_required_keyword_args(actual_args)
+        keyword_args = actual_args.last
+        keyword_args = {} unless keyword_args.is_a?(Hash)
+
+        required_keyword_args - keyword_args.keys
+      end
 
       def method
         @method
@@ -31,24 +57,47 @@ module RSpec
         Method.method_defined?(:parameters)
       end
 
-      def min_arity
-        return method.arity if method.arity >= 0
-        # `~` inverts the one's complement and gives us the number of
-        # required arguments.
-        ~method.arity
-      end
-
       if supports_optional_and_splat_args?
+        def required_keyword_args
+          method.parameters.map {|type, name|
+            name if type == :keyreq
+          }.compact
+        end
+
+        def min_arity
+          if method.arity >= 0
+            method.arity
+          else
+            # `~` inverts the one's complement and gives us the number of
+            # required arguments.
+            ~method.arity
+          end + parameter_modifier(:keyreq)
+        end
+
         def max_arity
           params = method.parameters
           if params.any? {|(type, _)| type == :rest }
             # Method takes a splat argument
             return INFINITY
           else
-            params.count {|(type, _)| type != :block }
+            # TODO: Optional keyword args
+            params.count {|(type, _)|
+              ![:block, :keyreq, :key].include?(type)
+            } + parameter_modifier(:key)
           end
         end
       else
+        def required_keyword_args
+          []
+        end
+
+        def min_arity
+          return method.arity if method.arity >= 0
+          # `~` inverts the one's complement and gives us the number of
+          # required arguments.
+          ~method.arity
+        end
+
         def max_arity
           # On 1.8, Method#parameters does not exist.  There is no way to
           # distinguish between default and splat args, so there is no way to
@@ -57,6 +106,12 @@ module RSpec
           # tolerant of splat args).
           method.arity < 0 ? INFINITY : method.arity
         end
+      end
+
+      def parameter_modifier(parameter_type)
+        mod = method.parameters.any? {|type, _|
+          type == parameter_type
+        } ? 1 : 0
       end
 
       INFINITY = 1/0.0

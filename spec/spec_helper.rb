@@ -115,5 +115,12 @@ shared_context "with the default mocks syntax" do
   after(:all) do
     RSpec::Mocks.configuration.syntax = orig_syntax
   end
+end
 
+def keyword_args_supported?
+  RUBY_VERSION >= '2.0.0' && RUBY_ENGINE != 'rbx'
+end
+
+def required_keyword_args_supported?
+  RUBY_VERSION >= '2.1.0' && RUBY_ENGINE != 'rbx'
 end
