@@ -86,3 +86,8 @@ module RSpec
   end
 end
 
+# This is required so that pending code blocks can be run to see if they pass
+# yet.
+RSpec.configuration.pending_executors << lambda {|block|
+  RSpec::Mocks.with_temporary_scope(&block)
+}
