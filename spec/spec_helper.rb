@@ -1,4 +1,5 @@
 require 'rspec/support/spec'
+require 'rspec/mocks/ruby_features'
 
 RSpec::Support::Spec.setup_simplecov do
   minimum_coverage 97
@@ -76,6 +77,8 @@ RSpec.configure do |config|
 
   config.include VerifyAndResetHelpers
   config.include VerificationHelpers
+  config.extend RSpec::Mocks::RubyFeatures
+  config.include RSpec::Mocks::RubyFeatures
 end
 
 shared_context "with syntax" do |syntax|
@@ -115,12 +118,4 @@ shared_context "with the default mocks syntax" do
   after(:all) do
     RSpec::Mocks.configuration.syntax = orig_syntax
   end
-end
-
-def keyword_args_supported?
-  RUBY_VERSION >= '2.0.0' && RUBY_ENGINE != 'rbx'
-end
-
-def required_keyword_args_supported?
-  RUBY_VERSION >= '2.1.0' && RUBY_ENGINE != 'rbx'
 end

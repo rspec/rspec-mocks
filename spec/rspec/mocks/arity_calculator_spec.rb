@@ -61,14 +61,14 @@ module RSpec
             expect(within_range?(2)).to eq(true)
             expect(within_range?(3)).to eq(true)
 
-            if ArityCalculator.supports_optional_and_splat_args?
+            if optional_and_splat_args_supported?
               expect(within_range?(4)).to eq(false)
             else
               expect(within_range?(4)).to eq(true)
             end
           end
 
-          if ArityCalculator.supports_optional_and_splat_args?
+          if optional_and_splat_args_supported?
             it 'is described as a range' do
               expect(description).to eq("2 to 3")
             end

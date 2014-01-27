@@ -1,9 +1,10 @@
+require 'rspec/mocks/ruby_features'
+
 module RSpec
   module Mocks
 
     # Figures out the valid arity range for a method. Surprisingly non-trivial.
     class ArityCalculator
-
       def initialize(method)
         @method = method
       end
@@ -41,23 +42,24 @@ module RSpec
         min_arity <= actual && actual <= max_arity
       end
 
-      def missing_required_keyword_args(actual_args)
-        keyword_args = actual_args.last
-        keyword_args = {} unless keyword_args.is_a?(Hash)
+      if RubyFeatures.required_keyword_args_supported?
+        def missing_required_keyword_args(actual_args)
+          keyword_args = actual_args.last
+          keyword_args = {} unless keyword_args.is_a?(Hash)
 
-        required_keyword_args - keyword_args.keys
+          required_keyword_args - keyword_args.keys
+        end
+      else
+        def missing_required_keyword_args(_)
+          []
+        end
       end
 
       def method
         @method
       end
 
-      # @api private
-      def self.supports_optional_and_splat_args?
-        Method.method_defined?(:parameters)
-      end
-
-      if supports_optional_and_splat_args?
+      if RubyFeatures.optional_and_splat_args_supported?
         def required_keyword_args
           method.parameters.map {|type, name|
             name if type == :keyreq

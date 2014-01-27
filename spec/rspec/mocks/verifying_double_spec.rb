@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 class LoadedClass
+  extend RSpec::Mocks::RubyFeatures
+
   M = :m
   N = :n
   INSTANCE = LoadedClass.new
