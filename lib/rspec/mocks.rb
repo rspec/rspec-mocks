@@ -85,4 +85,3 @@ module RSpec
     IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
   end
 end
-

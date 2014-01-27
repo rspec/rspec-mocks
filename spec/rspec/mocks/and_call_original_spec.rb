@@ -266,4 +266,3 @@ describe "and_call_original" do
     end
   end
 end
-

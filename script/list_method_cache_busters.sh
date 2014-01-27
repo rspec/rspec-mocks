@@ -20,4 +20,3 @@ grep private_constant -R lib | grep -v -f $IGNORE_FILE | egrep -v "$COMMENT_LINE
 grep public_constant -R lib | grep -v -f $IGNORE_FILE | egrep -v "$COMMENT_LINE_RE"
 grep "Marshal.load" -R lib | grep -v -f $IGNORE_FILE | egrep -v "$COMMENT_LINE_RE"
 grep "OpenStruct.new" -R lib | grep -v -f $IGNORE_FILE | egrep -v "$COMMENT_LINE_RE"
-
