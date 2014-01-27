@@ -94,7 +94,6 @@ module RSpec
             # Method takes a splat argument
             return INFINITY
           else
-            # TODO: Optional keyword args
             params.count {|(type, _)|
               ![:block, :keyreq, :key].include?(type)
             } + parameter_modifier(:key)
