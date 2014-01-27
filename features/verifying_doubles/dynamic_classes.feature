@@ -69,4 +69,3 @@ Feature: Dynamic classes
 
     When I run `rspec spec/user_spec.rb`
     Then the examples should all pass
-

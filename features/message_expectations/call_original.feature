@@ -21,4 +21,3 @@ Feature: Calling the original method
       """
     When I run `rspec call_original_spec.rb`
     Then the examples should all pass
-

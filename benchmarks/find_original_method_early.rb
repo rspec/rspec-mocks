@@ -62,4 +62,3 @@ Find original - partial mock         1.040000   0.000000   1.040000 (  1.046354)
 Find original - test double          0.980000   0.010000   0.990000 (  0.983577)
 
 =end
-

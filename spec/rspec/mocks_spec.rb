@@ -190,4 +190,3 @@ describe RSpec::Mocks do
     end
   end
 end
-

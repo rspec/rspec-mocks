@@ -124,4 +124,3 @@ describe RSpec::Mocks::Double do
     end
   end
 end
-

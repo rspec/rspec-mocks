@@ -76,4 +76,3 @@ Feature: Stub Defined Constant
       """
     When I run `rspec stub_const_spec.rb`
     Then the examples should all pass
-
