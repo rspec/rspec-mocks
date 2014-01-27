@@ -2,16 +2,16 @@ require 'spec_helper'
 
 module RSpec
   module Mocks
-    describe ArityCalculator do
+    describe MethodSignature do
       describe '#verify!' do
         subject { described_class.new(test_method) }
 
         def within_range?(arity)
-          subject.matches?([nil] * arity)
+          subject.accepts?([nil] * arity)
         end
 
-        def matches?(args)
-          subject.matches?(args)
+        def accepts?(args)
+          subject.accepts?(args)
         end
 
         def description
@@ -104,10 +104,10 @@ module RSpec
             let(:test_method) { method(:arity_required_kw) }
 
             it 'returns false unless all required keywords args are present' do
-              expect(matches?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
-              expect(matches?([nil, {:a => 0, :y => 1}])).to eq(false)
-              expect(matches?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(false)
-              expect(matches?([nil, nil])).to eq(false)
+              expect(accepts?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
+              expect(accepts?([nil, {:a => 0, :y => 1}])).to eq(false)
+              expect(accepts?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(false)
+              expect(accepts?([nil, nil])).to eq(false)
             end
 
             it 'is described precisely' do
@@ -129,11 +129,11 @@ module RSpec
             let(:test_method) { method(:arity_required_kw_splat) }
 
             it 'returns false unless all required keywords args are present' do
-              expect(matches?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
-              expect(matches?([nil, {:a => 0, :y => 1}])).to eq(false)
-              expect(matches?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
-              expect(matches?([nil, nil, nil])).to eq(false)
-              expect(matches?([])).to eq(false)
+              expect(accepts?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
+              expect(accepts?([nil, {:a => 0, :y => 1}])).to eq(false)
+              expect(accepts?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
+              expect(accepts?([nil, nil, nil])).to eq(false)
+              expect(accepts?([])).to eq(false)
             end
 
             it 'is described precisely' do

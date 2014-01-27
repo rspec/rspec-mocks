@@ -3,14 +3,26 @@ require 'rspec/mocks/ruby_features'
 module RSpec
   module Mocks
 
-    # Figures out the valid arity range for a method. Surprisingly non-trivial.
-    class ArityCalculator
+    # Figures out wheter a given method can accept various arguments.
+    # Surprisingly non-trivial.
+    #
+    # The concept of arity here is weird, especially when considering keyword
+    # arguments. It does not match up with Ruby's `arity` method (which is even
+    # weirder). The best intepretation of the methods here is "the min/max
+    # valid length of an array representation of the method arguments."
+    #
+    # Since keyword arguments are represented as a hash at this level, they can
+    # only ever add one to the arity, no matter how many there are. A splatted
+    # argument will set the maximum arity to infinity.
+    #
+    # @api private
+    class MethodSignature
       def initialize(method)
         @method = method
       end
 
       # @api private
-      def matches?(actual_args)
+      def accepts?(actual_args)
         missing_required_keyword_args(actual_args).empty? &&
           within_range?(actual_args.length)
       end

@@ -1,4 +1,4 @@
-require 'rspec/mocks/arity_calculator'
+require 'rspec/mocks/method_signature'
 
 module RSpec
   module Mocks
@@ -46,12 +46,12 @@ module RSpec
         return if method_reference.nil?
 
         method_reference.when_defined do |method|
-          calculator = ArityCalculator.new(method)
-          unless calculator.matches?(actual_args)
+          signature = MethodSignature.new(method)
+          unless signature.accepts?(actual_args)
             # Fail fast is required, otherwise the message expecation will fail
             # as well ("expected method not called") and clobber this one.
             @failed_fast = true
-            @error_generator.raise_arity_error(calculator, actual_args)
+            @error_generator.raise_arity_error(signature, actual_args)
           end
         end
       end

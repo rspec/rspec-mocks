@@ -24,7 +24,7 @@ module RSpec
             args = ["abc123", "xyz987"]
             subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             expect(error_generator).to receive(:raise_arity_error).
-              with(instance_of(ArityCalculator), args)
+              with(instance_of(MethodSignature), args)
 
             subject.with(*args)
           end
@@ -50,7 +50,7 @@ module RSpec
           it 'matches arity to 0' do
             subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             expect(error_generator).to receive(:raise_arity_error).
-              with(instance_of(ArityCalculator), [])
+              with(instance_of(MethodSignature), [])
 
             subject.with(no_args)
           end
