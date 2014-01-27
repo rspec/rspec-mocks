@@ -111,7 +111,7 @@ module RSpec
       end
 
       def parameter_modifier(parameter_type)
-        mod = method.parameters.any? {|type, _|
+        method.parameters.any? {|type, _|
           type == parameter_type
         } ? 1 : 0
       end
