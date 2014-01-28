@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 class LoadedClass
+  extend RSpec::Mocks::RubyFeatures
+
   M = :m
   N = :n
   INSTANCE = LoadedClass.new
@@ -32,6 +34,14 @@ class LoadedClass
   end
 
   def defined_instance_method
+  end
+
+  if required_keyword_args_supported?
+    # Need to eval this since it is invalid syntax on earlier rubies.
+    eval <<-RUBY
+      def kw_args_method(optional_arg:'hello', required_arg:)
+      end
+    RUBY
   end
 
   def send(*)
@@ -214,7 +224,23 @@ module RSpec
             o = instance_double('LoadedClass', :defined_instance_method => 25)
             expect {
               o.defined_instance_method(:a)
-            }.to raise_error(ArgumentError)
+            }.to raise_error(ArgumentError,
+                               "Wrong number of arguments. Expected 0, got 1.")
+          end
+
+          if required_keyword_args_supported?
+            it 'allows keyword arguments' do
+              o = instance_double('LoadedClass', :kw_args_method => true)
+              expect(o.kw_args_method(:required_arg => 'something')).to eq(true)
+            end
+
+            it 'checks that stubbed methods with required keyword args are ' +
+               'invoked with the required arguments' do
+              o = instance_double('LoadedClass', :kw_args_method => true)
+              expect {
+                o.kw_args_method(:optional_arg => 'something')
+              }.to raise_error(ArgumentError)
+            end
           end
 
           it 'allows class to be specified by constant' do

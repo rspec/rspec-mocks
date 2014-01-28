@@ -57,6 +57,8 @@ Enhancements:
 * Add `RSpec::Mocks.with_temporary_scope`, which allows you to create
   temporary rspec-mocks scopes in arbitrary places (such as a
   `before(:all)` hook). (Myron Marston)
+* Support keyword arguments when checking arity with verifying doubles.
+  (Xavier Shay)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v3.0.0.beta1)

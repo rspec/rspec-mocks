@@ -298,7 +298,10 @@ module RSpec
         allow(object).to receive(:implemented)
         expect {
           object.implemented('bogus')
-        }.to raise_error(ArgumentError, /wrong number of arguments \(1 for 0\)/)
+        }.to raise_error(
+          ArgumentError,
+          a_string_including("Wrong number of arguments. Expected 0, got 1.")
+        )
       end
     end
   end

@@ -118,17 +118,17 @@ module RSpec
       end
 
       def proxy_method_invoked(obj, *args, &block)
-        ensure_arity!(args.length)
+        ensure_arity!(args)
         super
       end
 
     private
 
-      def ensure_arity!(arity)
+      def ensure_arity!(actual_args)
         @method_reference.when_defined do |method|
-          calculator = ArityCalculator.new(method)
-          unless calculator.within_range?(arity)
-            raise ArgumentError, "wrong number of arguments (#{arity} for #{method.arity})"
+          verifier = MethodSignatureVerifier.new(method, actual_args)
+          unless verifier.valid?
+            raise ArgumentError, verifier.error
           end
         end
       end

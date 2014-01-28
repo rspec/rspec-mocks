@@ -1,4 +1,4 @@
-require 'rspec/mocks/arity_calculator'
+require 'rspec/mocks/method_signature_verifier'
 
 module RSpec
   module Mocks
@@ -26,32 +26,32 @@ module RSpec
       # @override
       def with(*args, &block)
         unless ArgumentMatchers::AnyArgsMatcher === args.first
-          expected_arity = if ArgumentMatchers::NoArgsMatcher === args.first
-            0
+          expected_args = if ArgumentMatchers::NoArgsMatcher === args.first
+            []
           elsif args.length > 0
-            args.length
+            args
           else
             # No arguments given, this will raise.
             super
           end
 
-          ensure_arity!(expected_arity)
+          ensure_arity!(expected_args)
         end
         super
       end
 
     private
 
-      def ensure_arity!(actual)
+      def ensure_arity!(actual_args)
         return if method_reference.nil?
 
         method_reference.when_defined do |method|
-          calculator = ArityCalculator.new(method)
-          unless calculator.within_range?(actual)
+          verifier = MethodSignatureVerifier.new(method, actual_args)
+          unless verifier.valid?
             # Fail fast is required, otherwise the message expecation will fail
             # as well ("expected method not called") and clobber this one.
             @failed_fast = true
-            @error_generator.raise_arity_error(calculator, actual)
+            @error_generator.raise_arity_error(verifier)
           end
         end
       end
