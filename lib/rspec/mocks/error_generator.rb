@@ -81,8 +81,8 @@ module RSpec
       end
 
       # @private
-      def raise_arity_error(signature, actual_args)
-        __raise signature.error_description(actual_args)
+      def raise_arity_error(verifier)
+        __raise verifier.error
       end
 
       # @private

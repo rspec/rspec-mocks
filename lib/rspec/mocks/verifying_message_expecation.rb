@@ -1,4 +1,4 @@
-require 'rspec/mocks/method_signature'
+require 'rspec/mocks/method_signature_verifier'
 
 module RSpec
   module Mocks
@@ -46,12 +46,12 @@ module RSpec
         return if method_reference.nil?
 
         method_reference.when_defined do |method|
-          signature = MethodSignature.new(method)
-          unless signature.accepts?(actual_args)
+          verifier = MethodSignatureVerifier.new(method, actual_args)
+          unless verifier.valid?
             # Fail fast is required, otherwise the message expecation will fail
             # as well ("expected method not called") and clobber this one.
             @failed_fast = true
-            @error_generator.raise_arity_error(signature, actual_args)
+            @error_generator.raise_arity_error(verifier)
           end
         end
       end

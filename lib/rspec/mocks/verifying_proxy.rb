@@ -126,9 +126,9 @@ module RSpec
 
       def ensure_arity!(actual_args)
         @method_reference.when_defined do |method|
-          signature = MethodSignature.new(method)
-          unless signature.accepts?(actual_args)
-            raise ArgumentError, signature.error_description(actual_args)
+          verifier = MethodSignatureVerifier.new(method, actual_args)
+          unless verifier.valid?
+            raise ArgumentError, verifier.error
           end
         end
       end

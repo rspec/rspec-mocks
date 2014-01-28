@@ -7,27 +7,21 @@ module RSpec
     # Surprisingly non-trivial.
     #
     # @api private
-    class MethodSignature
-      def initialize(method)
+    class MethodSignatureVerifier
+      def initialize(method, args)
         @method = method
+        @args   = args
       end
 
       # @api private
-      def accepts?(args)
-        non_keyword_args, keyword_args = *classify(args)
-
-        (required_keyword_args - keyword_args).empty? &&
-          (keyword_args - allowed_keyword_args).empty? &&
-          within_range?(non_keyword_args.length)
+      def valid?
+         missing_keyword_args.empty? &&
+          invalid_keyword_args.empty? &&
+          valid_non_keyword_args?
       end
 
       # @api private
-      def error_description(actual_args)
-        non_keyword_args, keyword_args = *classify(actual_args)
-
-        missing_keyword_args = required_keyword_args - keyword_args
-        invalid_keyword_args = keyword_args - allowed_keyword_args
-
+      def error
         if missing_keyword_args.any?
           "Missing required keyword arguments: %s" % [
             missing_keyword_args.join(", ")
@@ -36,9 +30,9 @@ module RSpec
           "Invalid keyword arguments provided: %s" % [
             invalid_keyword_args.join(", ")
           ]
-        else
+        elsif !valid_non_keyword_args?
           "Wrong number of arguments. Expected %s, got %s." % [
-            range_description,
+            non_kw_args_error,
             non_keyword_args.length
           ]
         end
@@ -50,17 +44,40 @@ module RSpec
         @method
       end
 
-      def classify(args)
-        keyword_args = if allowed_keyword_args.any? && args.last.is_a?(Hash)
-          args.pop.keys
-        else
-          []
-        end
-
-        [args, keyword_args]
+      def valid_non_keyword_args?
+        actual = non_keyword_args.length
+        min_non_keyword_args <= actual && actual <= max_non_keyword_args
       end
 
-      def range_description
+      def non_keyword_args
+        split_args(@args)[0]
+      end
+
+      def keyword_args
+        split_args(@args)[1]
+      end
+
+      def missing_keyword_args
+        required_keyword_args - keyword_args
+      end
+
+      def invalid_keyword_args
+        keyword_args - allowed_keyword_args
+      end
+
+      def split_args(args)
+        @split_args ||= begin
+          keyword_args = if allowed_keyword_args.any? && args.last.is_a?(Hash)
+            args.pop.keys
+          else
+            []
+          end
+
+          [args, keyword_args]
+        end
+      end
+
+      def non_kw_args_error
         if min_non_keyword_args == max_non_keyword_args
           return min_non_keyword_args.to_s
         end
@@ -70,23 +87,6 @@ module RSpec
         end
 
         "#{min_non_keyword_args} to #{max_non_keyword_args}"
-      end
-
-      def within_range?(actual)
-        min_non_keyword_args <= actual && actual <= max_non_keyword_args
-      end
-
-      if RubyFeatures.required_keyword_args_supported?
-        def missing_required_keyword_args(actual_args)
-          keyword_args = actual_args.last
-          keyword_args = {} unless keyword_args.is_a?(Hash)
-
-          required_keyword_args - keyword_args.keys
-        end
-      else
-        def missing_required_keyword_args(_)
-          []
-        end
       end
 
       if RubyFeatures.optional_and_splat_args_supported?
@@ -129,18 +129,6 @@ module RSpec
         end
       end
 
-      if RubyFeatures.required_keyword_args_supported?
-        def required_keyword_args
-          method.parameters.map {|type, name|
-            name if type == :keyreq
-          }.compact
-        end
-      else
-        def required_keyword_args
-          []
-        end
-      end
-
       if RubyFeatures.keyword_args_supported?
         def allowed_keyword_args
           method.parameters.map {|type, name|
@@ -150,6 +138,18 @@ module RSpec
 
       else
         def allowed_keyword_args
+          []
+        end
+      end
+
+      if RubyFeatures.required_keyword_args_supported?
+        def required_keyword_args
+          method.parameters.map {|type, name|
+            name if type == :keyreq
+          }.compact
+        end
+      else
+        def required_keyword_args
           []
         end
       end
