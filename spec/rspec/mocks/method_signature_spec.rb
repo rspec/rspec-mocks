@@ -87,10 +87,23 @@ module RSpec
 
             let(:test_method) { method(:arity_kw) }
 
-            it 'returns false unless all required keywords args are present' do
+            it 'does not require any of the arguments' do
               expect(within_range?(1)).to eq(true)
-              expect(within_range?(2)).to eq(true)
-              expect(within_range?(3)).to eq(false)
+              expect(within_range?(2)).to eq(false)
+            end
+
+            it 'does not allow an invalid keyword arguments' do
+              expect(accepts?([nil, :a => 1])).to eq(false)
+            end
+
+            it 'is described precisely' do
+              expect(subject.error_description([nil, {:a => 0, :b => 1}])).to \
+                eq("Invalid keyword arguments provided: a, b")
+            end
+
+            it 'is described precisely when arity is wrong' do
+              expect(subject.error_description([])).to \
+                eq("Wrong number of arguments. Expected 1, got 0.")
             end
           end
         end
@@ -117,7 +130,7 @@ module RSpec
 
             it 'is described precisely when arity is wrong' do
               expect(subject.error_description([{:z => 0, :y => 1}])).to \
-                eq("Wrong number of arguments. Expected 2, got 1.")
+                eq("Wrong number of arguments. Expected 1, got 0.")
             end
           end
 
