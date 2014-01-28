@@ -93,7 +93,7 @@ module RSpec
             end
 
             it 'does not allow an invalid keyword arguments' do
-              expect(accepts?([nil, :a => 1])).to eq(false)
+              expect(accepts?([nil, {:a => 1}])).to eq(false)
             end
 
             it 'is described precisely' do
