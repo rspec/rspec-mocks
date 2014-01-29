@@ -32,29 +32,36 @@ module RSpec
         end
 
         def invalid_kw_args_from(given_kw_args)
+          return [] if @allows_any_kw_args
           given_kw_args - @allowed_kw_args
         end
 
         def has_kw_args_in?(args)
-          args.last.is_a?(Hash) && @allowed_kw_args.any?
+          return false unless args.last.is_a?(Hash)
+          return false if args.count <= min_non_kw_args
+
+          @allows_any_kw_args || @allowed_kw_args.any?
         end
 
         def classify_parameters
           optional_non_kw_args = @min_non_kw_args = 0
           optional_kw_args, @required_kw_args = [], []
+          @allows_any_kw_args = false
 
           @method.parameters.each do |(type, name)|
             case type
               # def foo(a:)
-              when :keyreq then @required_kw_args << name
+              when :keyreq  then @required_kw_args << name
               # def foo(a: 1)
-              when :key    then optional_kw_args << name
+              when :key     then optional_kw_args << name
+              # def foo(**kw_args)
+              when :keyrest then @allows_any_kw_args = true
               # def foo(a)
-              when :req    then @min_non_kw_args += 1
+              when :req     then @min_non_kw_args += 1
               # def foo(a = 1)
-              when :opt    then optional_non_kw_args += 1
+              when :opt     then optional_non_kw_args += 1
               # def foo(*a)
-              when :rest   then optional_non_kw_args = INFINITY
+              when :rest    then optional_non_kw_args = INFINITY
             end
           end
 

@@ -137,8 +137,8 @@ module RSpec
             end
 
             it 'is described precisely when arity is wrong' do
-              expect(error_for(:z => 0, :y => 1)).to \
-                eq("Wrong number of arguments. Expected 1, got 0.")
+              expect(error_for(nil, nil, :z => 0, :y => 1)).to \
+                eq("Wrong number of arguments. Expected 1, got 2.")
             end
           end
 
@@ -160,6 +160,48 @@ module RSpec
             it 'is described precisely' do
               expect(error_for(nil, :y => 1)).to \
                 eq("Missing required keyword arguments: z")
+            end
+          end
+
+          describe 'a method with required keyword arguments and a keyword arg splat' do
+            eval <<-RUBY
+              def arity_kw_arg_splat(x:, **rest); end
+            RUBY
+
+            let(:test_method) { method(:arity_kw_arg_splat) }
+
+            it 'allows extra undeclared keyword args' do
+              expect(valid?(:x => 1)).to eq(true)
+              expect(valid?(:x => 1, :y => 2)).to eq(true)
+            end
+
+           it 'is described precisely' do
+              expect(error_for(:y => 1)).to \
+                eq("Missing required keyword arguments: x")
+            end
+          end
+
+          describe 'a method with a required arg and a keyword arg splat' do
+            eval <<-RUBY
+              def arity_kw_arg_splat(x, **rest); end
+            RUBY
+
+            let(:test_method) { method(:arity_kw_arg_splat) }
+
+            it 'allows a single arg and any number of keyword args' do
+              expect(valid?(nil)).to eq(true)
+              expect(valid?(nil, :x => 1)).to eq(true)
+              expect(valid?(nil, :x => 1, :y => 2)).to eq(true)
+              expect(valid?(:x => 1)).to eq(true)
+
+              expect(valid?).to eq(false)
+              expect(valid?(nil, nil)).to eq(false)
+              expect(valid?(nil, nil, :x => 1)).to eq(false)
+            end
+
+            it 'is described precisely' do
+              expect(error_for()).to \
+                eq("Wrong number of arguments. Expected 1, got 0.")
             end
           end
         end
