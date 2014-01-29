@@ -82,9 +82,12 @@ module RSpec
     #
     # @api private
     class MethodSignatureVerifier
+      # @api private
+      attr_reader :non_kw_args, :kw_args
+
       def initialize(method, args)
         @signature = MethodSignature.new(method)
-        @args      = args
+        @non_kw_args, @kw_args = split_args(args)
       end
 
       # @api private
@@ -119,14 +122,6 @@ module RSpec
         @signature.min_non_kw_args <= actual && actual <= @signature.max_non_kw_args
       end
 
-      def non_kw_args
-        split_args(@args)[0]
-      end
-
-      def kw_args
-        split_args(@args)[1]
-      end
-
       def missing_kw_args
         @signature.required_kw_args - kw_args
       end
@@ -136,15 +131,13 @@ module RSpec
       end
 
       def split_args(args)
-        @split_args ||= begin
-          kw_args = if @signature.allowed_kw_args.any? && args.last.is_a?(Hash)
-            args.pop.keys
-          else
-            []
-          end
-
-          [args, kw_args]
+        kw_args = if @signature.allowed_kw_args.any? && args.last.is_a?(Hash)
+          args.pop.keys
+        else
+          []
         end
+
+        [args, kw_args]
       end
     end
   end
