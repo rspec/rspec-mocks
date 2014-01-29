@@ -128,7 +128,7 @@ module RSpec
         @method_reference.when_defined do |method|
           verifier = MethodSignatureVerifier.new(method, actual_args)
           unless verifier.valid?
-            raise ArgumentError, verifier.error
+            raise ArgumentError, verifier.error_message
           end
         end
       end

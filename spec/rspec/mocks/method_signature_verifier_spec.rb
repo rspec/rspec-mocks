@@ -15,11 +15,11 @@ module RSpec
         end
 
         def description
-          described_class.new(test_method, []).error[/Expected (.*),/, 1]
+          described_class.new(test_method, []).error_message[/Expected (.*),/, 1]
         end
 
         def error_for(*args)
-          described_class.new(test_method, args).error
+          described_class.new(test_method, args).error_message
         end
 
         describe 'with a method with arguments' do

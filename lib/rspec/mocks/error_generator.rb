@@ -82,7 +82,7 @@ module RSpec
 
       # @private
       def raise_arity_error(verifier)
-        __raise verifier.error
+        __raise verifier.error_message
       end
 
       # @private

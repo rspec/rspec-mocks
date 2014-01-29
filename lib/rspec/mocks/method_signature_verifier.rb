@@ -115,7 +115,7 @@ module RSpec
       end
 
       # @api private
-      def error
+      def error_message
         if missing_kw_args.any?
           "Missing required keyword arguments: %s" % [
             missing_kw_args.join(", ")
