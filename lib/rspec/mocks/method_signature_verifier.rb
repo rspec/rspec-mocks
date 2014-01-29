@@ -37,7 +37,7 @@ module RSpec
         end
 
         def has_kw_args_in?(args)
-          return false unless args.last.is_a?(Hash)
+          return false unless Hash === args.last
           return false if args.count <= min_non_kw_args
 
           @allows_any_kw_args || @allowed_kw_args.any?

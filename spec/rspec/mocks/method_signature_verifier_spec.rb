@@ -113,6 +113,10 @@ module RSpec
               expect(error_for()).to \
                 eq("Wrong number of arguments. Expected 1, got 0.")
             end
+
+            it 'does not blow up when given a BasicObject as the last arg' do
+              expect(valid?(BasicObject.new)).to eq(true)
+            end
           end
         end
 
