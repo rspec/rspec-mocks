@@ -81,7 +81,7 @@ module RSpec
       end
 
       # @private
-      def raise_arity_error(verifier)
+      def raise_invalid_arguments_error(verifier)
         __raise verifier.error_message
       end
 

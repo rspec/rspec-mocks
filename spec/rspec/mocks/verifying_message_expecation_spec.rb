@@ -23,7 +23,7 @@ module RSpec
           it 'raises error' do
             args = ["abc123", "xyz987"]
             subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
-            expect(error_generator).to receive(:raise_arity_error).
+            expect(error_generator).to receive(:raise_invalid_arguments_error).
               with(instance_of(MethodSignatureVerifier))
 
             subject.with(*args)
@@ -33,7 +33,7 @@ module RSpec
         describe 'when called with arguments' do
           it 'matches arity against the number of arguments' do
             subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
-            expect(error_generator).not_to receive(:raise_arity_error)
+            expect(error_generator).not_to receive(:raise_invalid_arguments_error)
 
             subject.with("abc123")
           end
@@ -49,7 +49,7 @@ module RSpec
         describe 'when called with no arguments matcher' do
           it 'matches arity to 0' do
             subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
-            expect(error_generator).to receive(:raise_arity_error).
+            expect(error_generator).to receive(:raise_invalid_arguments_error).
               with(instance_of(MethodSignatureVerifier))
 
             subject.with(no_args)
