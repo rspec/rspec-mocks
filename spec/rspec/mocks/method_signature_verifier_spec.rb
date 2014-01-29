@@ -10,7 +10,7 @@ module RSpec
           described_class.new(test_method, [nil] * arity).valid?
         end
 
-        def valid?(args)
+        def valid?(*args)
           described_class.new(test_method, args).valid?
         end
 
@@ -18,7 +18,7 @@ module RSpec
           described_class.new(test_method, []).error[/Expected (.*),/, 1]
         end
 
-        def error_for(args)
+        def error_for(*args)
           described_class.new(test_method, args).error
         end
 
@@ -34,7 +34,7 @@ module RSpec
           end
 
           it 'does not treat a last-arg hash as kw args' do
-            expect(valid?([1, {}])).to eq(true)
+            expect(valid?(1, {})).to eq(true)
           end
 
           it 'is described precisely' do
@@ -96,21 +96,21 @@ module RSpec
             let(:test_method) { method(:arity_kw) }
 
             it 'does not require any of the arguments' do
-              expect(valid?([nil])).to eq(true)
-              expect(valid?([nil, nil])).to eq(false)
+              expect(valid?(nil)).to eq(true)
+              expect(valid?(nil, nil)).to eq(false)
             end
 
             it 'does not allow an invalid keyword arguments' do
-              expect(valid?([nil, {:a => 1}])).to eq(false)
+              expect(valid?(nil, :a => 1)).to eq(false)
             end
 
             it 'is described precisely' do
-              expect(error_for([nil, {:a => 0, :b => 1}])).to \
+              expect(error_for(nil, :a => 0, :b => 1)).to \
                 eq("Invalid keyword arguments provided: a, b")
             end
 
             it 'is described precisely when arity is wrong' do
-              expect(error_for([])).to \
+              expect(error_for()).to \
                 eq("Wrong number of arguments. Expected 1, got 0.")
             end
           end
@@ -125,19 +125,19 @@ module RSpec
             let(:test_method) { method(:arity_required_kw) }
 
             it 'returns false unless all required keywords args are present' do
-              expect(valid?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
-              expect(valid?([nil, {:a => 0, :y => 1}])).to eq(false)
-              expect(valid?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(false)
-              expect(valid?([nil, nil])).to eq(false)
+              expect(valid?(nil, :a => 0, :y => 1, :z => 2)).to eq(true)
+              expect(valid?(nil, :a => 0, :y => 1)).to eq(false)
+              expect(valid?(nil, nil, :a => 0, :y => 1, :z => 2)).to eq(false)
+              expect(valid?(nil, nil)).to eq(false)
             end
 
             it 'is described precisely' do
-              expect(error_for([nil, {:a => 0}])).to \
+              expect(error_for(nil, :a => 0)).to \
                 eq("Missing required keyword arguments: y, z")
             end
 
             it 'is described precisely when arity is wrong' do
-              expect(error_for([{:z => 0, :y => 1}])).to \
+              expect(error_for(:z => 0, :y => 1)).to \
                 eq("Wrong number of arguments. Expected 1, got 0.")
             end
           end
@@ -150,15 +150,15 @@ module RSpec
             let(:test_method) { method(:arity_required_kw_splat) }
 
             it 'returns false unless all required keywords args are present' do
-              expect(valid?([nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
-              expect(valid?([nil, {:a => 0, :y => 1}])).to eq(false)
-              expect(valid?([nil, nil, {:a => 0, :y => 1, :z => 2}])).to eq(true)
-              expect(valid?([nil, nil, nil])).to eq(false)
-              expect(valid?([])).to eq(false)
+              expect(valid?(nil, :a => 0, :y => 1, :z => 2)).to eq(true)
+              expect(valid?(nil, :a => 0, :y => 1)).to eq(false)
+              expect(valid?(nil, nil, :a => 0, :y => 1, :z => 2)).to eq(true)
+              expect(valid?(nil, nil, nil)).to eq(false)
+              expect(valid?).to eq(false)
             end
 
             it 'is described precisely' do
-              expect(error_for([nil, {:y => 1}])).to \
+              expect(error_for(nil, :y => 1)).to \
                 eq("Missing required keyword arguments: z")
             end
           end
