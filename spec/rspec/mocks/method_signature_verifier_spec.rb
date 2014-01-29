@@ -33,6 +33,10 @@ module RSpec
             expect(valid_non_kw_args?(3)).to eq(false)
           end
 
+          it 'does not treat a last-arg hash as kw args' do
+            expect(valid?([1, {}])).to eq(true)
+          end
+
           it 'is described precisely' do
             expect(description).to eq("2")
           end
