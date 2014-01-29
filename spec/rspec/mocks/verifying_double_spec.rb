@@ -36,7 +36,7 @@ class LoadedClass
   def defined_instance_method
   end
 
-  if required_keyword_args_supported?
+  if required_kw_args_supported?
     # Need to eval this since it is invalid syntax on earlier rubies.
     eval <<-RUBY
       def kw_args_method(optional_arg:'hello', required_arg:)
@@ -228,7 +228,7 @@ module RSpec
                                "Wrong number of arguments. Expected 0, got 1.")
           end
 
-          if required_keyword_args_supported?
+          if required_kw_args_supported?
             it 'allows keyword arguments' do
               o = instance_double('LoadedClass', :kw_args_method => true)
               expect(o.kw_args_method(:required_arg => 'something')).to eq(true)

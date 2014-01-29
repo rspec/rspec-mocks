@@ -83,7 +83,7 @@ module RSpec
           end
         end
 
-        if keyword_args_supported?
+        if kw_args_supported?
           describe 'a method with optional keyword arguments' do
             eval <<-RUBY
               def arity_kw(x, y:1, z:2); end
@@ -112,7 +112,7 @@ module RSpec
           end
         end
 
-        if required_keyword_args_supported?
+        if required_kw_args_supported?
           describe 'a method with required keyword arguments' do
             eval <<-RUBY
               def arity_required_kw(x, y:, z:, a: 'default'); end

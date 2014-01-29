@@ -15,25 +15,25 @@ module RSpec
 
       # @api private
       def valid?
-         missing_keyword_args.empty? &&
-          invalid_keyword_args.empty? &&
-          valid_non_keyword_args?
+         missing_kw_args.empty? &&
+          invalid_kw_args.empty? &&
+          valid_non_kw_args?
       end
 
       # @api private
       def error
-        if missing_keyword_args.any?
+        if missing_kw_args.any?
           "Missing required keyword arguments: %s" % [
-            missing_keyword_args.join(", ")
+            missing_kw_args.join(", ")
           ]
-        elsif invalid_keyword_args.any?
+        elsif invalid_kw_args.any?
           "Invalid keyword arguments provided: %s" % [
-            invalid_keyword_args.join(", ")
+            invalid_kw_args.join(", ")
           ]
-        elsif !valid_non_keyword_args?
+        elsif !valid_non_kw_args?
           "Wrong number of arguments. Expected %s, got %s." % [
             non_kw_args_error,
-            non_keyword_args.length
+            non_kw_args.length
           ]
         end
       end
@@ -44,53 +44,53 @@ module RSpec
         @method
       end
 
-      def valid_non_keyword_args?
-        actual = non_keyword_args.length
-        min_non_keyword_args <= actual && actual <= max_non_keyword_args
+      def valid_non_kw_args?
+        actual = non_kw_args.length
+        min_non_kw_args <= actual && actual <= max_non_kw_args
       end
 
-      def non_keyword_args
+      def non_kw_args
         split_args(@args)[0]
       end
 
-      def keyword_args
+      def kw_args
         split_args(@args)[1]
       end
 
-      def missing_keyword_args
-        required_keyword_args - keyword_args
+      def missing_kw_args
+        required_kw_args - kw_args
       end
 
-      def invalid_keyword_args
-        keyword_args - allowed_keyword_args
+      def invalid_kw_args
+        kw_args - allowed_kw_args
       end
 
       def split_args(args)
         @split_args ||= begin
-          keyword_args = if allowed_keyword_args.any? && args.last.is_a?(Hash)
+          kw_args = if allowed_kw_args.any? && args.last.is_a?(Hash)
             args.pop.keys
           else
             []
           end
 
-          [args, keyword_args]
+          [args, kw_args]
         end
       end
 
       def non_kw_args_error
-        if min_non_keyword_args == max_non_keyword_args
-          return min_non_keyword_args.to_s
+        if min_non_kw_args == max_non_kw_args
+          return min_non_kw_args.to_s
         end
 
-        if max_non_keyword_args == INFINITY
-          return "#{min_non_keyword_args} or more"
+        if max_non_kw_args == INFINITY
+          return "#{min_non_kw_args} or more"
         end
 
-        "#{min_non_keyword_args} to #{max_non_keyword_args}"
+        "#{min_non_kw_args} to #{max_non_kw_args}"
       end
 
       if RubyFeatures.optional_and_splat_args_supported?
-        def min_non_keyword_args
+        def min_non_kw_args
           if method.arity >= 0
             method.arity
           else
@@ -100,7 +100,7 @@ module RSpec
           end
         end
 
-        def max_non_keyword_args
+        def max_non_kw_args
           params = method.parameters
           if params.any? {|(type, _)| type == :rest }
             # Method takes a splat argument
@@ -112,14 +112,14 @@ module RSpec
           end
         end
       else
-        def min_non_keyword_args
+        def min_non_kw_args
           return method.arity if method.arity >= 0
           # `~` inverts the one's complement and gives us the number of
           # required arguments.
           ~method.arity
         end
 
-        def max_non_keyword_args
+        def max_non_kw_args
           # On 1.8, Method#parameters does not exist.  There is no way to
           # distinguish between default and splat args, so there is no way to
           # have it work correctly for both default and splat args, as far as I
@@ -129,27 +129,27 @@ module RSpec
         end
       end
 
-      if RubyFeatures.keyword_args_supported?
-        def allowed_keyword_args
+      if RubyFeatures.kw_args_supported?
+        def allowed_kw_args
           method.parameters.map {|type, name|
             name if [:keyreq, :key].include?(type)
           }.compact
         end
 
       else
-        def allowed_keyword_args
+        def allowed_kw_args
           []
         end
       end
 
-      if RubyFeatures.required_keyword_args_supported?
-        def required_keyword_args
+      if RubyFeatures.required_kw_args_supported?
+        def required_kw_args
           method.parameters.map {|type, name|
             name if type == :keyreq
           }.compact
         end
       else
-        def required_keyword_args
+        def required_kw_args
           []
         end
       end
