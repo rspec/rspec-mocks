@@ -27,7 +27,17 @@ module RSpec
       end
 
       if RubyFeatures.optional_and_splat_args_supported?
-        attr_reader :allowed_kw_args, :required_kw_args
+        def missing_kw_args_from(given_kw_args)
+          @required_kw_args - given_kw_args
+        end
+
+        def invalid_kw_args_from(given_kw_args)
+          given_kw_args - @allowed_kw_args
+        end
+
+        def has_kw_args_in?(args)
+          args.last.is_a?(Hash) && @allowed_kw_args.any?
+        end
 
         def classify_parameters
           optional_non_kw_args = @min_non_kw_args = 0
@@ -52,12 +62,16 @@ module RSpec
           @allowed_kw_args = @required_kw_args + optional_kw_args
         end
       else
-        def allowed_kw_args
+        def missing_kw_args_from(given_kw_args)
           []
         end
 
-        def required_kw_args
+        def invalid_kw_args_from(given_kw_args)
           []
+        end
+
+        def has_kw_args_in?(args)
+          false
         end
 
         def classify_parameters
@@ -123,15 +137,15 @@ module RSpec
       end
 
       def missing_kw_args
-        @signature.required_kw_args - kw_args
+        @signature.missing_kw_args_from(kw_args)
       end
 
       def invalid_kw_args
-        kw_args - @signature.allowed_kw_args
+        @signature.invalid_kw_args_from(kw_args)
       end
 
       def split_args(args)
-        kw_args = if @signature.allowed_kw_args.any? && args.last.is_a?(Hash)
+        kw_args = if @signature.has_kw_args_in?(args)
           args.pop.keys
         else
           []
