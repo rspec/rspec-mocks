@@ -108,7 +108,7 @@ module RSpec
 
       def initialize(method, args)
         @signature = MethodSignature.new(method)
-        @non_kw_args, @kw_args = split_args(args)
+        @non_kw_args, @kw_args = split_args(*args)
       end
 
       # @api private
@@ -151,7 +151,7 @@ module RSpec
         @signature.invalid_kw_args_from(kw_args)
       end
 
-      def split_args(args)
+      def split_args(*args)
         kw_args = if @signature.has_kw_args_in?(args)
           args.pop.keys
         else

@@ -117,6 +117,12 @@ module RSpec
             it 'does not blow up when given a BasicObject as the last arg' do
               expect(valid?(BasicObject.new)).to eq(true)
             end
+
+            it 'does not mutate the provided args array' do
+              args = [nil, { :y => 1 }]
+              described_class.new(test_method, args).valid?
+              expect(args).to eq([nil, { :y => 1 }])
+            end
           end
         end
 
