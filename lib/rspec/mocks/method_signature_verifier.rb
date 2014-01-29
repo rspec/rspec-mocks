@@ -15,15 +15,11 @@ module RSpec
       end
 
       def non_kw_args_error
-        if min_non_kw_args == max_non_kw_args
-          return min_non_kw_args.to_s
+        case max_non_kw_args
+          when min_non_kw_args then min_non_kw_args.to_s
+          when INFINITY then "#{min_non_kw_args} or more"
+          else "#{min_non_kw_args} to #{max_non_kw_args}"
         end
-
-        if max_non_kw_args == INFINITY
-          return "#{min_non_kw_args} or more"
-        end
-
-        "#{min_non_kw_args} to #{max_non_kw_args}"
       end
 
       if RubyFeatures.optional_and_splat_args_supported?
