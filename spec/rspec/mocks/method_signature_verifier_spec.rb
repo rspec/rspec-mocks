@@ -14,7 +14,7 @@ module RSpec
           described_class.new(signature, args).valid?
         end
 
-        def description
+        def error_description
           described_class.new(signature, []).error_message[/Expected (.*),/, 1]
         end
 
@@ -37,8 +37,8 @@ module RSpec
             expect(valid?(1, {})).to eq(true)
           end
 
-          it 'is described precisely' do
-            expect(description).to eq("2")
+          it 'describes the arity precisely' do
+            expect(error_description).to eq("2")
           end
         end
 
@@ -54,8 +54,8 @@ module RSpec
             expect(valid_non_kw_args?(3)).to eq(true)
           end
 
-          it 'is described with no upper bound' do
-            expect(description).to eq("1 or more")
+          it 'describes the arity with no upper bound' do
+            expect(error_description).to eq("1 or more")
           end
         end
 
@@ -77,12 +77,12 @@ module RSpec
           end
 
           if optional_and_splat_args_supported?
-            it 'is described as a range' do
-              expect(description).to eq("2 to 3")
+            it 'describes the arity as a range' do
+              expect(error_description).to eq("2 to 3")
             end
           else
-            it 'is described with no upper bound' do
-              expect(description).to eq("2 or more")
+            it 'describes the arity with no upper bound' do
+              expect(error_description).to eq("2 or more")
             end
           end
         end
@@ -104,12 +104,12 @@ module RSpec
               expect(valid?(nil, :a => 1)).to eq(false)
             end
 
-            it 'is described precisely' do
+            it 'mentions the invalid keyword args in the error' do
               expect(error_for(nil, :a => 0, :b => 1)).to \
                 eq("Invalid keyword arguments provided: a, b")
             end
 
-            it 'is described precisely when arity is wrong' do
+            it 'describes invalid arity precisely' do
               expect(error_for()).to \
                 eq("Wrong number of arguments. Expected 1, got 0.")
             end
@@ -141,7 +141,7 @@ module RSpec
               expect(valid?(nil, nil)).to eq(false)
             end
 
-            it 'is described precisely' do
+            it 'mentions the missing required keyword args in the error' do
               expect(error_for(nil, :a => 0)).to \
                 eq("Missing required keyword arguments: y, z")
             end
@@ -167,7 +167,7 @@ module RSpec
               expect(valid?).to eq(false)
             end
 
-            it 'is described precisely' do
+            it 'mentions missing required keyword args in the error' do
               expect(error_for(nil, :y => 1)).to \
                 eq("Missing required keyword arguments: z")
             end
@@ -185,7 +185,7 @@ module RSpec
               expect(valid?(:x => 1, :y => 2)).to eq(true)
             end
 
-           it 'is described precisely' do
+            it 'mentions missing required keyword args in the error' do
               expect(error_for(:y => 1)).to \
                 eq("Missing required keyword arguments: x")
             end
@@ -209,7 +209,7 @@ module RSpec
               expect(valid?(nil, nil, :x => 1)).to eq(false)
             end
 
-            it 'is described precisely' do
+            it 'describes the arity precisely' do
               expect(error_for()).to \
                 eq("Wrong number of arguments. Expected 1, got 0.")
             end
@@ -226,8 +226,8 @@ module RSpec
             expect(valid_non_kw_args?(2)).to eq(false)
           end
 
-          it 'is described precisely' do
-            expect(description).to eq("1")
+          it 'describes the arity precisely' do
+            expect(error_description).to eq("1")
           end
         end
       end
