@@ -14,7 +14,7 @@ module RSpec
         classify_parameters
       end
 
-      def non_kw_args_error
+      def non_kw_args_arity_description
         case max_non_kw_args
           when min_non_kw_args then min_non_kw_args.to_s
           when INFINITY then "#{min_non_kw_args} or more"
@@ -126,7 +126,7 @@ module RSpec
           ]
         elsif !valid_non_kw_args?
           "Wrong number of arguments. Expected %s, got %s." % [
-            @signature.non_kw_args_error,
+            @signature.non_kw_args_arity_description,
             non_kw_args.length
           ]
         end
