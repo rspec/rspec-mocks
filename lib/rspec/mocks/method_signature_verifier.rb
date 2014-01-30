@@ -102,8 +102,8 @@ module RSpec
       # @api private
       attr_reader :non_kw_args, :kw_args
 
-      def initialize(method, args)
-        @signature = MethodSignature.new(method)
+      def initialize(signature, args)
+        @signature = signature
         @non_kw_args, @kw_args = split_args(*args)
       end
 

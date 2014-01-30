@@ -125,8 +125,8 @@ module RSpec
     private
 
       def validate_arguments!(actual_args)
-        @method_reference.when_defined do |method|
-          verifier = MethodSignatureVerifier.new(method, actual_args)
+        @method_reference.with_signature do |signature|
+          verifier = MethodSignatureVerifier.new(signature, actual_args)
           unless verifier.valid?
             raise ArgumentError, verifier.error_message
           end
@@ -152,8 +152,8 @@ module RSpec
         save_original_method!
       end
 
-      def when_defined
-        yield original_method
+      def with_signature
+        yield MethodSignature.new(original_method)
       end
 
       def unimplemented?

@@ -4,22 +4,22 @@ module RSpec
   module Mocks
     describe MethodSignatureVerifier do
       describe '#verify!' do
-        subject { described_class.new(test_method) }
+        let(:signature) { MethodSignature.new(test_method) }
 
         def valid_non_kw_args?(arity)
-          described_class.new(test_method, [nil] * arity).valid?
+          described_class.new(signature, [nil] * arity).valid?
         end
 
         def valid?(*args)
-          described_class.new(test_method, args).valid?
+          described_class.new(signature, args).valid?
         end
 
         def description
-          described_class.new(test_method, []).error_message[/Expected (.*),/, 1]
+          described_class.new(signature, []).error_message[/Expected (.*),/, 1]
         end
 
         def error_for(*args)
-          described_class.new(test_method, args).error_message
+          described_class.new(signature, args).error_message
         end
 
         describe 'with a method with arguments' do
@@ -120,7 +120,7 @@ module RSpec
 
             it 'does not mutate the provided args array' do
               args = [nil, { :y => 1 }]
-              described_class.new(test_method, args).valid?
+              described_class.new(signature, args).valid?
               expect(args).to eq([nil, { :y => 1 }])
             end
           end
