@@ -22,6 +22,10 @@ module RSpec
           described_class.new(signature, args).error_message
         end
 
+        def signature_description
+          signature.description
+        end
+
         describe 'with a method with arguments' do
           def arity_two(x, y); end
 
@@ -40,6 +44,10 @@ module RSpec
           it 'describes the arity precisely' do
             expect(error_description).to eq("2")
           end
+
+          it 'mentions only the arity in the description' do
+            expect(signature_description).to eq("arity of 2")
+          end
         end
 
         describe 'a method with splat arguments' do
@@ -56,6 +64,10 @@ module RSpec
 
           it 'describes the arity with no upper bound' do
             expect(error_description).to eq("1 or more")
+          end
+
+          it 'mentions only the arity in the description' do
+            expect(signature_description).to eq("arity of 1 or more")
           end
         end
 
@@ -123,6 +135,10 @@ module RSpec
               described_class.new(signature, args).valid?
               expect(args).to eq([nil, { :y => 1 }])
             end
+
+            it 'mentions the arity and optional kw args in the description' do
+              expect(signature_description).to eq("arity of 1 and optional keyword args (:y, :z)")
+            end
           end
         end
 
@@ -150,6 +166,11 @@ module RSpec
               expect(error_for(nil, nil, :z => 0, :y => 1)).to \
                 eq("Wrong number of arguments. Expected 1, got 2.")
             end
+
+            it 'mentions the arity, optional kw args and required kw args in the description' do
+              expect(signature_description).to \
+                eq("arity of 1 and optional keyword args (:a) and required keyword args (:y, :z)")
+            end
           end
 
           describe 'a method with required keyword arguments and a splat' do
@@ -171,6 +192,11 @@ module RSpec
               expect(error_for(nil, :y => 1)).to \
                 eq("Missing required keyword arguments: z")
             end
+
+            it 'mentions the arity, optional kw args and required kw args in the description' do
+              expect(signature_description).to \
+                eq("arity of 1 or more and optional keyword args (:a) and required keyword args (:y, :z)")
+            end
           end
 
           describe 'a method with required keyword arguments and a keyword arg splat' do
@@ -188,6 +214,11 @@ module RSpec
             it 'mentions missing required keyword args in the error' do
               expect(error_for(:y => 1)).to \
                 eq("Missing required keyword arguments: x")
+            end
+
+            it 'mentions the required kw args and keyword splat in the description' do
+              expect(signature_description).to \
+                eq("required keyword args (:x) and any additional keyword args")
             end
           end
 
@@ -212,6 +243,11 @@ module RSpec
             it 'describes the arity precisely' do
               expect(error_for()).to \
                 eq("Wrong number of arguments. Expected 1, got 0.")
+            end
+
+            it 'mentions the required kw args and keyword splat in the description' do
+              expect(signature_description).to \
+                eq("arity of 1 and any additional keyword args")
             end
           end
         end

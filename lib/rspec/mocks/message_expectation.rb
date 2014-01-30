@@ -554,10 +554,13 @@ module RSpec
 
         @error_generator.raise_missing_block_error @args_to_yield unless block
         value = nil
+        block_signature = BlockSignature.new(block)
+
         @args_to_yield.each do |args|
-          if block.arity > -1 && args.length != block.arity
-            @error_generator.raise_wrong_arity_error args, block.arity
+          unless MethodSignatureVerifier.new(block_signature, args).valid?
+            @error_generator.raise_wrong_arity_error(args, block_signature)
           end
+
           value = @eval_context ? @eval_context.instance_exec(*args, &block) : block.call(*args)
         end
         value

@@ -23,6 +23,30 @@ module RSpec
       end
 
       if RubyFeatures.optional_and_splat_args_supported?
+        def description
+          @description ||= begin
+            parts = []
+
+            unless non_kw_args_arity_description == "0"
+              parts << "arity of #{non_kw_args_arity_description}"
+            end
+
+            if @optional_kw_args.any?
+              parts << "optional keyword args (#{@optional_kw_args.map(&:inspect).join(", ")})"
+            end
+
+            if @required_kw_args.any?
+              parts << "required keyword args (#{@required_kw_args.map(&:inspect).join(", ")})"
+            end
+
+            if @allows_any_kw_args
+              parts << "any additional keyword args"
+            end
+
+            parts.join(" and ")
+          end
+        end
+
         def missing_kw_args_from(given_kw_args)
           @required_kw_args - given_kw_args
         end
@@ -41,7 +65,7 @@ module RSpec
 
         def classify_parameters
           optional_non_kw_args = @min_non_kw_args = 0
-          optional_kw_args, @required_kw_args = [], []
+          @optional_kw_args, @required_kw_args = [], []
           @allows_any_kw_args = false
 
           @method.parameters.each do |(type, name)|
@@ -49,7 +73,7 @@ module RSpec
               # def foo(a:)
               when :keyreq  then @required_kw_args << name
               # def foo(a: 1)
-              when :key     then optional_kw_args << name
+              when :key     then @optional_kw_args << name
               # def foo(**kw_args)
               when :keyrest then @allows_any_kw_args = true
               # def foo(a)
@@ -62,9 +86,13 @@ module RSpec
           end
 
           @max_non_kw_args = @min_non_kw_args  + optional_non_kw_args
-          @allowed_kw_args = @required_kw_args + optional_kw_args
+          @allowed_kw_args = @required_kw_args + @optional_kw_args
         end
       else
+        def description
+          "arity of #{non_kw_args_arity_description}"
+        end
+
         def missing_kw_args_from(given_kw_args)
           []
         end
@@ -92,6 +120,24 @@ module RSpec
       end
 
       INFINITY = 1/0.0
+    end
+
+    # Deals with the slightly different semantics of block arguments.
+    # For methods, arguments are required unless a default value is provided.
+    # For blocks, arguments are optional, even if no default value is provided.
+    #
+    # However, we want to treat block args as required since you virtually always
+    # want to pass a value for each received argument and our `and_yield` has
+    # treated block args as required for many years.
+    #
+    # @api private
+    class BlockSignature < MethodSignature
+      if RubyFeatures.optional_and_splat_args_supported?
+        def classify_parameters
+          super
+          @min_non_kw_args = @max_non_kw_args unless @max_non_kw_args == INFINITY
+        end
+      end
     end
 
     # Figures out wheter a given method can accept various arguments.
