@@ -520,10 +520,27 @@ module RSpec
         end.last
       end
 
-      def arg_slice_for(args, arity)
-        if arity >= 0
-          args.slice(0, arity)
-        else
+      if RUBY_VERSION.to_f > 1.8
+        def arg_slice_for(args, arity)
+          if arity >= 0
+            args.slice(0, arity)
+          else
+            args
+          end
+        end
+      else
+        # 1.8.7's `arity` lies somtimes:
+        # Given:
+        #   def print_arity(&b) puts b.arity; end
+        #
+        # This prints 1:
+        #   print_arity { |a, b, c, &bl| }
+        #
+        # But this prints 3:
+        #   print_arity { |a, b, c| }
+        #
+        # Given that it lies, we can't trust it and we don't slice the args.
+        def arg_slice_for(args, arity)
           args
         end
       end
