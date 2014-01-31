@@ -535,13 +535,13 @@ module RSpec
         it 'prevents creation of instance doubles for unloaded constants' do
           expect {
             instance_double('LoadedClas')
-          }.to raise_error(NameError)
+          }.to raise_error(VerifyingDoubleNotDefinedError)
         end
 
         it 'prevents creation of class doubles for unloaded constants' do
           expect {
             class_double('LoadedClas')
-          }.to raise_error(NameError)
+          }.to raise_error(VerifyingDoubleNotDefinedError)
         end
       end
 
