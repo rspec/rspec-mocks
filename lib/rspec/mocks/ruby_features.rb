@@ -10,15 +10,15 @@ module RSpec
       end
       module_function :optional_and_splat_args_supported?
 
-      def keyword_args_supported?
+      def kw_args_supported?
         RUBY_VERSION >= '2.0.0' && RUBY_ENGINE != 'rbx'
       end
-      module_function :keyword_args_supported?
+      module_function :kw_args_supported?
 
-      def required_keyword_args_supported?
+      def required_kw_args_supported?
         RUBY_VERSION >= '2.1.0' && RUBY_ENGINE != 'rbx'
       end
-      module_function :required_keyword_args_supported?
+      module_function :required_kw_args_supported?
     end
   end
 end

@@ -108,7 +108,7 @@ module RSpec
       end
 
       # When set to true, partial mocks will be verified the same as object
-      # doubles. Any stubs will have their arity checked against the original
+      # doubles. Any stubs will have their arguments checked against the original
       # method, and methods that do not exist cannot be stubbed.
       def verify_partial_doubles=(val)
         @verify_partial_doubles = !!val

@@ -83,8 +83,8 @@ module RSpec
       end
 
       # @private
-      def raise_arity_error(verifier)
-        __raise verifier.error
+      def raise_invalid_arguments_error(verifier)
+        __raise verifier.error_message
       end
 
       # @private
@@ -145,8 +145,8 @@ module RSpec
       end
 
       # @private
-      def raise_wrong_arity_error(args_to_yield, arity)
-        __raise "#{intro} yielded |#{arg_list(*args_to_yield)}| to block with arity of #{arity}"
+      def raise_wrong_arity_error(args_to_yield, signature)
+        __raise "#{intro} yielded |#{arg_list(*args_to_yield)}| to block with #{signature.description}"
       end
 
       # @private

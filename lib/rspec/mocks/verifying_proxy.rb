@@ -43,7 +43,7 @@ module RSpec
     # A verifying proxy mostly acts like a normal proxy, except that it
     # contains extra logic to try and determine the validity of any expectation
     # set on it. This includes whether or not methods have been defined and the
-    # arity of method calls.
+    # validatiy of arguments on method calls.
     #
     # In all other ways this behaves like a normal proxy. It only adds the
     # verification behaviour to specific methods then delegates to the parent
@@ -64,7 +64,7 @@ module RSpec
         @method_reference_class = method_reference_class
 
         # A custom method double is required to pass through a way to lookup
-        # methods to determine their arity. This is only relevant if the doubled
+        # methods to determine their parameters. This is only relevant if the doubled
         # class is loaded.
         @method_doubles = Hash.new do |h, k|
           h[k] = VerifyingMethodDouble.new(@object, k, self, method_reference[k])
@@ -91,7 +91,7 @@ module RSpec
         @doubled_module = DirectObjectReference.new(object)
 
         # A custom method double is required to pass through a way to lookup
-        # methods to determine their arity.
+        # methods to determine their parameters.
         @method_doubles = Hash.new do |h, k|
           h[k] = VerifyingExistingMethodDouble.new(object, k, self)
         end
@@ -118,17 +118,17 @@ module RSpec
       end
 
       def proxy_method_invoked(obj, *args, &block)
-        ensure_arity!(args)
+        validate_arguments!(args)
         super
       end
 
     private
 
-      def ensure_arity!(actual_args)
-        @method_reference.when_defined do |method|
-          verifier = MethodSignatureVerifier.new(method, actual_args)
+      def validate_arguments!(actual_args)
+        @method_reference.with_signature do |signature|
+          verifier = MethodSignatureVerifier.new(signature, actual_args)
           unless verifier.valid?
-            raise ArgumentError, verifier.error
+            raise ArgumentError, verifier.error_message
           end
         end
       end
@@ -152,8 +152,8 @@ module RSpec
         save_original_method!
       end
 
-      def when_defined
-        yield original_method
+      def with_signature
+        yield MethodSignature.new(original_method)
       end
 
       def unimplemented?
