@@ -18,6 +18,8 @@ module RSpec
     # @private
     NegationUnsupportedError = Class.new(StandardError)
 
+    VerifyingDoubleNotDefinedError = Class.new(StandardError)
+
     # @private
     class ErrorGenerator
       attr_writer :opts
