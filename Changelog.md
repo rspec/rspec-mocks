@@ -45,6 +45,8 @@ Bug Fixes:
   methods. (Sam Phippen)
 * Correct stub of undefined parent modules all the way down when stubbing a
   nested constant. (Xavier Shay)
+* Raise `VerifyingDoubleNotDefinedError` when a constant is not defined for
+  a verifying class double. (Maurício Linhares)
 
 Enhancements:
 
