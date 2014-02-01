@@ -151,6 +151,16 @@ Enhancements:
 * Add a config option to yield the receiver to `any_instance` implementation
   blocks. (Sam Phippen)
 
+### 2.14.5 / 2014-02-01
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.14.5)
+
+Bug Fixes:
+
+* Fix regression that caused block implementations to not receive all
+  args on 1.8.7 if the block also receives a block, due to Proc#arity
+  reporting `1` no matter how many args the block receives if it
+  receives a block, too. (Myron Marston)
+
 ### 2.14.4 / 2013-10-15
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.3...v2.14.4)
 
