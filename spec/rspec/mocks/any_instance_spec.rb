@@ -214,6 +214,8 @@ module RSpec
         end
 
         context "with a block" do
+          before { allow_unavoidable_1_8_deprecation }
+
           it "stubs a method" do
             klass.any_instance.stub(:foo) { 1 }
             expect(klass.new.foo).to eq(1)
