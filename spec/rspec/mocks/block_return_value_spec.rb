@@ -1,6 +1,17 @@
 require "spec_helper"
 
 describe "a double declaration with a block handed to:" do
+  # The "receives a block" part is important: 1.8.7 has a bug that reports the
+  # wrong arity when a block receives a block.
+  it 'forwards all given args to the block, even when it receives a block', :unless => RUBY_VERSION.to_s == '1.8.6' do
+    obj = Object.new
+    yielded_args = []
+    eval("obj.stub(:foo) { |*args, &bl| yielded_args << args }")
+    obj.foo(1, 2, 3)
+
+    expect(yielded_args).to eq([[1, 2, 3]])
+  end
+
   describe "should_receive" do
     it "returns the value of executing the block" do
       obj = Object.new
