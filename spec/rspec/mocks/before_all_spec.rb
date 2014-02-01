@@ -39,7 +39,7 @@ describe "using rspec-mocks constructs in before(:all)" do
   describe "an any_instance stub" do
     before(:all) do
       deprecations.clear
-      Object.any_instance.stub(:foo) { 13 }
+      Object.any_instance.stub(:foo => 13)
     end
 
     it 'works in examples and prints a deprecation' do

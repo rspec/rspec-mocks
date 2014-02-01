@@ -20,8 +20,6 @@ module VerifyAndResetHelpers
   end
 end
 
-# TODO: This is duplicated in rspec-core, should be extracted into
-# rspec-support when that project gets started.
 module HelperMethods
   def expect_deprecation_with_call_site(file, line)
     expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
@@ -31,6 +29,10 @@ module HelperMethods
 
   def allow_deprecation
     allow(RSpec.configuration.reporter).to receive(:deprecation)
+  end
+
+  def allow_unavoidable_1_8_deprecation
+    allow_deprecation if RUBY_VERSION.to_f < 1.9
   end
 end
 

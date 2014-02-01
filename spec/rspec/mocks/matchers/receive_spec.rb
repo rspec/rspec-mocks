@@ -178,6 +178,8 @@ module RSpec
       end
 
       describe "allow_any_instance_of(...).to receive" do
+        before { allow_unavoidable_1_8_deprecation }
+
         include_examples "an expect syntax allowance" do
           let(:klass)    { Class.new }
           let(:wrapped)  { allow_any_instance_of(klass) }
@@ -199,6 +201,8 @@ module RSpec
       end
 
       describe "expect_any_instance_of(...).to receive" do
+        before { allow_unavoidable_1_8_deprecation }
+
         include_examples "an expect syntax expectation", :does_not_report_line_num do
           let(:klass)    { Class.new }
           let(:wrapped)  { expect_any_instance_of(klass) }
