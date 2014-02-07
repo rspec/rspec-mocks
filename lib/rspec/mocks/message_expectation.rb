@@ -52,8 +52,8 @@ module RSpec
       # If the message is received more times than there are values, the last
       # value is received for every subsequent call.
       #
-      # The block format is still supported, but is unofficially deprecated in
-      # favor of just passing a block to the stub method.
+      # The block format is deprecated in favor of just passing a block to the
+      # stub method.
       #
       # @example
       #
@@ -69,11 +69,11 @@ module RSpec
       #   counter.count # => 3
       #   # etc
       #
-      #   # Supported, but ...
+      #   # Deprecated ...
       #   counter.stub(:count).and_return { 1 }
       #   counter.count # => 1
       #
-      #   # ... this is prefered
+      #   # ... use this instead
       #   counter.stub(:count) { 1 }
       #   counter.count # => 1
       def and_return(*values, &implementation)
@@ -84,7 +84,8 @@ module RSpec
         @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
 
         if implementation
-          # TODO: deprecate `and_return { value }`
+          RSpec.deprecate('`and_return { value }`',
+                          :replacement => '`and_return(value)` or an implementation block without `and_return`')
           self.inner_implementation_action = implementation
         else
           self.terminal_implementation_action = AndReturnImplementation.new(values)

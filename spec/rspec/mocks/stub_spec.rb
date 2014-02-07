@@ -285,6 +285,7 @@ module RSpec
       end
 
       it "calculates return value by executing block passed to #and_return" do
+        allow_deprecation
         @stub.stub(:something).with("a","b","c").and_return { |a,b,c| c+b+a }
         expect(@stub.something("a","b","c")).to eq "cba"
         verify @stub
