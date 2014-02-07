@@ -88,6 +88,12 @@ module RSpec
                           :replacement => '`and_return(value)` or an implementation block without `and_return`')
           self.inner_implementation_action = implementation
         else
+          if values.empty?
+            RSpec.warn_deprecation('`and_return` without arguments is deprecated. ' +
+                                   'Remove the `and_return`. ' +
+                                   "Called from #{CallerFilter.first_non_rspec_line}.")
+          end
+
           self.terminal_implementation_action = AndReturnImplementation.new(values)
         end
 

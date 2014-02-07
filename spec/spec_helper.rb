@@ -28,6 +28,14 @@ module HelperMethods
     end
   end
 
+  def expect_warn_deprecation_with_call_site(file, line, snippet=//)
+    expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
+      message = options[:message]
+      expect(message).to match(snippet)
+      expect(message).to include([file, line].join(':'))
+    end
+  end
+
   def allow_deprecation
     allow(RSpec.configuration.reporter).to receive(:deprecation)
   end
