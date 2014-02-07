@@ -235,12 +235,6 @@ module RSpec
         verify @double
       end
 
-      it "allows block to calculate return values" do
-        @double.should_receive(:something).with("a","b","c").and_return { |a,b,c| c+b+a }
-        expect(@double.something("a","b","c")).to eq "cba"
-        verify @double
-      end
-
       it "allows parameter as return value" do
         @double.should_receive(:something).with("a","b","c").and_return("booh")
         expect(@double.something("a","b","c")).to eq "booh"

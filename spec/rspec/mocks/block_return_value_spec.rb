@@ -50,7 +50,7 @@ describe "a double declaration with a block handed to:" do
     end
   end
 
-  %w[once twice ordered and_return].each do |method|
+  %w[once twice ordered].each do |method|
     describe method do
       it "returns the value of executing the block" do
         obj = Object.new

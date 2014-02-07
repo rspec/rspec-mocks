@@ -16,6 +16,7 @@ Breaking Changes for 3.0.0:
   get reset, to help surface issues when you accidentally retain
   references to test doubles and attempt to reuse them in another
   example. (Myron Marston)
+* Remove support for `and_return { value }` and `and_return` without arguments. (Yuji Nakayama)
 
 Bug Fixes:
 
