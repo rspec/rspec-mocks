@@ -77,7 +77,6 @@ module RSpec
 
       # @overload and_return(value)
       # @overload and_return(first_value, second_value)
-      # @overload and_return(&block)
       #
       # Tells the object to return a value when it receives the message.  Given
       # more than one value, the first value is returned the first time the
@@ -86,9 +85,6 @@ module RSpec
       #
       # If the message is received more times than there are values, the last
       # value is received for every subsequent call.
-      #
-      # The block format is still supported, but is unofficially deprecated in
-      # favor of just passing a block to the stub method.
       #
       # @example
       #
@@ -103,29 +99,19 @@ module RSpec
       #   counter.count # => 3
       #   counter.count # => 3
       #   # etc
-      #
-      #   # Supported, but ...
-      #   allow(counter).to receive(:count).and_return { 1 }
-      #   counter.count # => 1
-      #
-      #   # ... this is prefered
-      #   allow(counter).to receive(:count) { 1 }
-      #   counter.count # => 1
-      def and_return(*values, &implementation)
+      def and_return(*values)
         if negative?
           raise "`and_return` is not supported with negative message expectations"
-        else
-          @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
-
-          if implementation
-            # TODO: deprecate `and_return { value }`
-            self.inner_implementation_action = implementation
-          else
-            self.terminal_implementation_action = AndReturnImplementation.new(values)
-          end
-
-          nil
         end
+
+        if block_given?
+          raise ArgumentError, "Implementation blocks aren't supported with `and_return`"
+        end
+
+        @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
+        self.terminal_implementation_action = AndReturnImplementation.new(values)
+
+        nil
       end
 
       def and_yield_receiver_to_implementation

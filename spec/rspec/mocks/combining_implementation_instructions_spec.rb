@@ -84,15 +84,6 @@ module RSpec
         end
       end
 
-      it 'can combine and_yield and and_return with a block' do
-        dbl = double
-        dbl.stub(:foo).and_yield(5).and_return { :return }
-
-        expect { |b|
-          expect(dbl.foo(&b)).to eq(:return)
-        }.to yield_with_args(5)
-      end
-
       it 'can combine and_yield and and_raise' do
         dbl = double
         dbl.stub(:foo).and_yield(5).and_raise("boom")
