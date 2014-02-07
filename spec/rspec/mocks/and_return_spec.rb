@@ -12,6 +12,12 @@ module RSpec
           }.to raise_error(ArgumentError, /implementation block/i)
         end
       end
+
+      context 'when no argument is passed' do
+        it 'raises ArgumentError' do
+          expect { obj.stub(:foo).and_return }.to raise_error(ArgumentError)
+        end
+      end
     end
   end
 end

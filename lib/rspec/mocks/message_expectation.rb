@@ -99,7 +99,7 @@ module RSpec
       #   counter.count # => 3
       #   counter.count # => 3
       #   # etc
-      def and_return(*values)
+      def and_return(first_value, *values)
         if negative?
           raise "`and_return` is not supported with negative message expectations"
         end
@@ -108,6 +108,7 @@ module RSpec
           raise ArgumentError, "Implementation blocks aren't supported with `and_return`"
         end
 
+        values.unshift(first_value)
         @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
         self.terminal_implementation_action = AndReturnImplementation.new(values)
 
