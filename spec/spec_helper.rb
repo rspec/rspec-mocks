@@ -21,9 +21,18 @@ module VerifyAndResetHelpers
 end
 
 module HelperMethods
-  def expect_deprecation_with_call_site(file, line)
+  def expect_deprecation_with_call_site(file, line, snippet=//)
     expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
       expect(options[:call_site]).to include([file, line].join(':'))
+      expect(options[:deprecated]).to match(snippet)
+    end
+  end
+
+  def expect_warn_deprecation_with_call_site(file, line, snippet=//)
+    expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
+      message = options[:message]
+      expect(message).to match(snippet)
+      expect(message).to include([file, line].join(':'))
     end
   end
 

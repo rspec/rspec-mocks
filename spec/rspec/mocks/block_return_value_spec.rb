@@ -94,7 +94,7 @@ describe "a double declaration with a block handed to:" do
     end
   end
 
-  %w[once twice ordered and_return].each do |method|
+  %w[once twice ordered].each do |method|
     describe method do
       it "returns the value of executing the block" do
         obj = Object.new
@@ -118,6 +118,48 @@ describe "a double declaration with a block handed to:" do
         obj.stub(:foo).send(method, &lambda { 'bar' })
         expect(obj.foo(1, 2)).to eq('bar')
       end
+    end
+  end
+
+  describe 'and_return' do
+    before do
+      allow_deprecation
+    end
+
+    it "returns the value of executing the block" do
+      obj = Object.new
+      obj.stub(:foo).and_return { 'bar' }
+      expect(obj.foo).to eq('bar')
+    end
+
+    it "does not complain if a lambda block and mismatched arguments are passed" do
+      obj = Object.new
+      obj.stub(:foo).and_return(&lambda { 'bar' })
+      expect(obj.foo(1, 2)).to eq('bar')
+    end
+
+    it 'warns of deprecation of `and_return { value }`' do
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 3, '`and_return { value }`')
+
+      obj = Object.new
+      obj.stub(:foo).and_return { 'bar' }
+      expect(obj.foo(1, 2)).to eq('bar')
+    end
+
+    it 'warns of deprection if argument counts dont match' do
+      warned = false
+
+      expect(RSpec).to receive(:deprecate).at_least(1) do |message, opts|
+        next unless message == "stubbing implementations with mismatched arity"
+        expect(opts[:call_site]).to match %r%/spec/rspec/mocks/block_return_value_spec.rb%
+        warned = true
+      end
+
+      obj = Object.new
+      obj.stub(:foo).and_return(&lambda { 'bar' })
+      expect(obj.foo(1, 2)).to eq('bar')
+
+      expect(warned).to be true
     end
   end
 

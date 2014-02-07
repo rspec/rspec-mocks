@@ -11,6 +11,7 @@ Deprecations:
 * Deprecate using any of rspec-mocks' features outside the per-test
   lifecycle (e.g. from a `before(:all)` hook). (Myron Marston)
 * Deprecate re-using a test double in another example. (Myron Marston)
+* Deprecate `and_return { value }` and `and_return` without arguments. (Yuji Nakayama)
 
 ### 2.99.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.99.0.beta1)

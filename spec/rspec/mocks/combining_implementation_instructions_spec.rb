@@ -91,6 +91,8 @@ module RSpec
       end
 
       it 'can combine and_yield and and_return with a block' do
+        allow_deprecation
+
         dbl = double
         dbl.stub(:foo).and_yield(5).and_return { :return }
 

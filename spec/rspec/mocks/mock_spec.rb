@@ -161,6 +161,7 @@ module RSpec
       end
 
       it "allows block to calculate return values" do
+        allow_deprecation
         @double.should_receive(:something).with("a","b","c").and_return { |a,b,c| c+b+a }
         expect(@double.something("a","b","c")).to eq "cba"
         verify @double
