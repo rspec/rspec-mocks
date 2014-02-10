@@ -968,7 +968,7 @@ module RSpec
 
       context 'when used in conjunction with a `dup`' do
         it "doesn't cause an infinite loop" do
-          pending "This intermittently fails on JRuby" if RUBY_PLATFORM == 'java'
+          skip "This intermittently fails on JRuby" if RUBY_PLATFORM == 'java'
 
           Object.any_instance.stub(:some_method)
           o = Object.new
