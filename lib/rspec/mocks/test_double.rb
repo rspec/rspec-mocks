@@ -53,7 +53,7 @@ module RSpec
         inspect.gsub('<','[').gsub('>',']')
       end
 
-      alias_method :to_str, :to_s
+      #alias_method :to_str, :to_s
 
       # @private
       def respond_to?(message, incl_private=false)
