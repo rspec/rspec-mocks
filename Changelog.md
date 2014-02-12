@@ -1,6 +1,12 @@
 ### 3.0.0.rc1 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta2...master)
 
+Enhancements:
+
+* Instead of crashing when cleaning up stub methods on a frozen object, it now
+  issues a warning explaining that it's impossible to clean up the stubs.
+  (Justin Coyne and Sam Phippen)
+
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
 
@@ -37,9 +43,6 @@ Enhancements:
 
 Bug Fixes:
 
-* Instead of crashing when cleaning up stub methods on a frozen object, it now
-  issues a warning explaining that it's impossible to clean up the stubs. 
-  (Justin Coyne)
 * Fix regression in 3.0.0.beta1 that caused `double("string_name" => :value)`
   to stop working. (Xavier Shay)
 * Fix the way rspec-mocks and rspec-core interact so that if users

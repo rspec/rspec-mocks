@@ -67,6 +67,10 @@ module RSpec
         @__expired = true
       end
 
+      def freeze
+        RSpec.warn_with("WARNING: you attempted to freeze a test double. This is explicitly a no-op as freezing doubles can lead to undesired behaviour when resetting tests.")
+      end
+
     private
 
       def __initialize_as_test_double(name=nil, stubs={})

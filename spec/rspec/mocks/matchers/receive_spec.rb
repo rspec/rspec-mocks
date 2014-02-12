@@ -216,7 +216,7 @@ module RSpec
         context "on a frozen object" do
           it "warns about being unable to remove the method double" do
             target.to receive(:foo).and_return(:baz)
-            expect_warning_without_call_site(/Unable to remove stub method foo because the object was frozen./)
+            expect_warning_without_call_site(/rspec-mocks was unable to restore the original `foo` method on #{object.inspect}/)
             object.freeze
             reset object
           end
@@ -224,7 +224,7 @@ module RSpec
           it "includes the spec location in the warning" do
             line = __LINE__ - 1
             target.to receive(:foo).and_return(:baz)
-            expect_warning_without_call_site(/#{__FILE__}:#{line}/)
+            expect_warning_without_call_site(/#{RSpec::Core::Metadata.relative_path(__FILE__)}:#{line}/)
             object.freeze
             reset object
           end

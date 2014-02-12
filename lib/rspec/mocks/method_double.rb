@@ -16,7 +16,6 @@ module RSpec
         @method_is_proxied = false
         @expectations = []
         @stubs = []
-        @show_frozen_warnings = []
       end
 
       def original_method
@@ -91,11 +90,11 @@ module RSpec
 
       # @private
       def show_frozen_warning
-        if !@show_frozen_warnings.include?(@method_name)
-          RSpec.warn_with "Unable to remove stub method #{@method_name} because the object was frozen.",
-            :call_site => nil
-          @show_frozen_warnings << @method_name
-        end
+        RSpec.warn_with(
+          "WARNING: rspec-mocks was unable to restore the original `#{@method_name}` method on #{@object.inspect} because it has been frozen.  If you reuse this object, `#{@method_name}` will continue to respond with its stub implementation.",
+          :call_site                      => nil,
+          :use_spec_location_as_call_site => true
+        )
       end
 
       # @private
