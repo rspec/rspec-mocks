@@ -467,7 +467,7 @@ module RSpec
           }.to raise_error(/Module or String expected/)
         end
 
-        it "trying to raise a class_double raises a TypeError" do
+        it "trying to raise a class_double raises a TypeError", :unless => RUBY_VERSION == '1.9.2' do
           subject = Object.new
           class_double("StubbedError").as_stubbed_const
           allow(subject).to receive(:some_method).and_raise(StubbedError)
