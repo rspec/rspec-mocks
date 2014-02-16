@@ -330,6 +330,37 @@ Stubs in `before(:context)` are not supported. The reason is that all stubs and 
 
 Instead of `before(:context)`, use `before(:example)`.
 
+## Settings mocks or stubs on any instance of a class
+
+rspec-mocks provides two methods, `allow_any_instance_of` and
+`expect_any_instance_of`, that will allow you to stub or mock any instance
+of a class. They are used in place for `allow` or `expect`:
+
+```ruby
+allow_any_instance_of(Widget).to receive(:name).and_return("Wibble")
+expect_any_instance_of(Widget).to receive(:name).and_return("Wobble")
+```
+
+These methods add the appropriate stub or expectation to all instances of
+`Widget`.
+
+This feature is sometimes useful when working with legacy code, though in
+general we discourage its use for a number of reasons:
+
+* The `rspec-mocks` API is designed for individual object instances, but this
+  feature operates on entire classes of objects. As a result there are some
+  sematically confusing edge cases. For example in
+  `expect_any_instance_of(Widget).to receive(:name).twice` it isn't clear
+  whether each specific instance is allowed to receive `name` twice, or if two
+  receives total are allowed. (It's the former.)
+* Using this feature is often a design smell. It may be
+  that your test is trying to do too much or that the object under test is too
+  complex.
+* It is the most complicated feature of `rspec-mocks`, and has historically
+  received the most bug reports. (None of the core team actively use it,
+  which doesn't help.)
+
+
 ## Further Reading
 
 There are many different viewpoints about the meaning of mocks and stubs. If
