@@ -330,23 +330,30 @@ Stubs in `before(:all)` are not supported. The reason is that all stubs and mock
 
 Instead of `before(:all)`, use `before(:each)`.
 
-## Testing Legacy Code
+## Settings mocks or stubs on any instance of a class
 
-Sometimes when testing and refactoring legacy codebases the existing code is
-not factored well enough to add method stubs or method expectations directly
-on the specific instances involved in the tests. Two methods, `allow_any_instance_of`
-and `expect_any_instance_of`, can allow you to overcome these hurdles. They
-are used in place for `allow` or `expect`:
+Occasionally the desire to stub or mock any instance of a class will arise.
+This desire should be considered design feedback from your tests. It may be
+that your test is trying to do too much or that the object under test is too
+complex. If the latter is the case, then you should refactor in such a way
+that the dependency can be easily replaced.
+
+That said, rspec-mocks provides two methods, `allow_any_instance_of` and
+`expect_any_instance_of`, that will allow you to stub or mock any instance
+of a class. They are used in place for `allow` or `expect`:
 
 ```ruby
-allow_any_instance_of(Widget).to receive(:name).and_return("Floobit")
-expect_any_instance_of(Widget).to receive(:name).and_return("Flibble")
+allow_any_instance_of(Widget).to receive(:name).and_return("Wibble")
+expect_any_instance_of(Widget).to receive(:name).and_return("Wobble")
 ```
-
 These methods add the appropriate stub or expectation to all instances of
-`Widget`. Their use is strongly discouraged under normal circumstances but
-they can be useful when establishing baseline test coverage of a legacy
-codebase before refactoring to more testable patterns.
+`Widget`.
+
+The use of these methods is strongly discouraged. `rspec-mocks` was designed
+to work on specific instances rather than entire classes of objects. This
+shift is semantics can lead to some confusion or ambiguity in the rspec-mocks
+API. As a result of this complexity this feature has historically had more
+bugs than the single instance API.
 
 ## Further Reading
 
