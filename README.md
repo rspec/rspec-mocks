@@ -330,6 +330,24 @@ Stubs in `before(:all)` are not supported. The reason is that all stubs and mock
 
 Instead of `before(:all)`, use `before(:each)`.
 
+## Testing Legacy Code
+
+Sometimes when testing and refactoring legacy codebases the existing code is
+not factored well enough to add method stubs or method expectations directly
+on the specific instances involved in the tests. Two methods, `allow_any_instance_of`
+and `expect_any_instance_of`, can allow you to overcome these hurdles. They
+are used in place for `allow` or `expect`:
+
+```ruby
+allow_any_instance_of(Widget).to receive(:name).and_return("Floobit")
+expect_any_instance_of(Widget).to receive(:name).and_return("Flibble")
+```
+
+These methods add the appropriate stub or expectation to all instances of
+`Widget`. Their use is strongly discouraged under normal circumstances but
+they can be useful when establishing baseline test coverage of a legacy
+codebase before refactoring to more testable patterns.
+
 ## Further Reading
 
 There are many different viewpoints about the meaning of mocks and stubs. If
