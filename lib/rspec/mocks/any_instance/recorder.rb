@@ -97,9 +97,6 @@ module RSpec
           if @expectation_set && !message_chains.all_expectations_fulfilled?
             raise RSpec::Mocks::MockExpectationError, "Exactly one instance should have received the following message(s) but didn't: #{message_chains.unfulfilled_expectations.sort.join(', ')}"
           end
-        ensure
-          stop_all_observation!
-          ::RSpec::Mocks.space.remove_any_instance_recorder_for(@klass)
         end
 
         # @private

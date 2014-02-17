@@ -765,6 +765,7 @@ module RSpec
 
               it "restores the class to its original state after each example when no instance is created" do
                 space.verify_all
+                space.reset_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -774,6 +775,7 @@ module RSpec
                 klass.new.existing_method
 
                 space.verify_all
+                space.reset_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -784,6 +786,7 @@ module RSpec
                 klass.new.existing_method
 
                 space.verify_all
+                space.reset_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -794,6 +797,7 @@ module RSpec
               before :each do
                 klass.any_instance.stub(:private_method).and_return(:something)
                 space.verify_all
+                space.reset_all
               end
 
               it "cleans up the backed up method" do
@@ -816,6 +820,7 @@ module RSpec
                 klass.any_instance.should_receive(:private_method).and_return(:something)
                 klass.new.private_method
                 space.verify_all
+                space.reset_all
               end
 
               it "cleans up the backed up method" do
@@ -863,6 +868,7 @@ module RSpec
               klass.any_instance.should_receive(:existing_method).and_return(Object.new)
               klass.new.existing_method
               space.verify_all
+              space.reset_all
 
               expect(klass.new.existing_method).to eq(existing_method_return_value)
             end
