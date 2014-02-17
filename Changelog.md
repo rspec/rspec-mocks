@@ -24,7 +24,7 @@ Enhancements:
   `stub_chain` for the new allow/expect syntax. Use it like so: `allow(...).to
   receive_message_chain(:foo, :bar, :bazz)`. (Sam Phippen).
 * Change argument matchers to use `===` as their primary matching
-  protocol, as their semantics mirror that of a case or rescue statement
+  protocol, since their semantics mirror that of a case or rescue statement
   (which uses `===` for matching). (Myron Marston)
 * Add `RSpec::Mocks.with_temporary_scope`, which allows you to create
   temporary rspec-mocks scopes in arbitrary places (such as a
