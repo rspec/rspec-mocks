@@ -18,6 +18,20 @@ Breaking Changes for 3.0.0:
   example. (Myron Marston)
 * Remove support for `and_return { value }` and `and_return` without arguments. (Yuji Nakayama)
 
+Enhancements:
+
+* Add `receive_message_chain` which provides the functionality of the old
+  `stub_chain` for the new allow/expect syntax. Use it like so: `allow(...).to
+  receive_message_chain(:foo, :bar, :bazz)`. (Sam Phippen).
+* Change argument matchers to use `===` as their primary matching
+  protocol, as their semantics mirror that of a case or rescue statement
+  (which uses `===` for matching). (Myron Marston)
+* Add `RSpec::Mocks.with_temporary_scope`, which allows you to create
+  temporary rspec-mocks scopes in arbitrary places (such as a
+  `before(:all)` hook). (Myron Marston)
+* Support keyword arguments when checking arity with verifying doubles.
+  (Xavier Shay)
+
 Bug Fixes:
 
 * Fix regression in 3.0.0.beta1 that caused `double("string_name" => :value)`
@@ -48,20 +62,6 @@ Bug Fixes:
   nested constant. (Xavier Shay)
 * Raise `VerifyingDoubleNotDefinedError` when a constant is not defined for
   a verifying class double. (Maurício Linhares)
-
-Enhancements:
-
-* Add `receive_message_chain` which provides the functionality of the old
-  `stub_chain` for the new allow/expect syntax. Use it like so: `allow(...).to
-  receive_message_chain(:foo, :bar, :bazz)`. (Sam Phippen).
-* Change argument matchers to use `===` as their primary matching
-  protocol, as their semantics mirror that of a case or rescue statement
-  (which uses `===` for matching). (Myron Marston)
-* Add `RSpec::Mocks.with_temporary_scope`, which allows you to create
-  temporary rspec-mocks scopes in arbitrary places (such as a
-  `before(:all)` hook). (Myron Marston)
-* Support keyword arguments when checking arity with verifying doubles.
-  (Xavier Shay)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v3.0.0.beta1)
