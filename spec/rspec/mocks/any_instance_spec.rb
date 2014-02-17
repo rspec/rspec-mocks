@@ -1039,6 +1039,21 @@ module RSpec
 
           expect(instance.existing_method).to eq :existing_method_return_value
         end
+
+        it "restores the original behaviour, even if the expectation fails" do
+          klass.any_instance.should_receive(:existing_method).with(1).and_return(:stubbed_return_value)
+
+          instance = klass.new
+          begin
+            instance.existing_method
+            verify_all
+          rescue RSpec::Mocks::MockExpectationError => e
+          end
+
+          reset_all
+
+          expect(instance.existing_method).to eq :existing_method_return_value
+        end
       end
     end
   end
