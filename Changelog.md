@@ -129,6 +129,21 @@ Bug Fixes:
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
 
+### 2.99.0.beta2 / 2014-02-17
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v2.99.0.beta2)
+
+Deprecations:
+
+* Deprecate `RSpec::Mocks::Mock` in favor of `RSpec::Mocks::Double`.
+  (Myron Marston)
+* Deprecate the `host` argument of `RSpec::Mocks.setup`. Instead
+  `RSpec::Mocks::ExampleMethods` should be included directly in the scope where
+  RSpec's mocking capabilities are used. (Sam Phippen)
+* Deprecate using any of rspec-mocks' features outside the per-test
+  lifecycle (e.g. from a `before(:all)` hook). (Myron Marston)
+* Deprecate re-using a test double in another example. (Myron Marston)
+* Deprecate `and_return { value }` and `and_return` without arguments. (Yuji Nakayama)
+
 ### 2.99.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.99.0.beta1)
 
