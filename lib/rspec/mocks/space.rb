@@ -62,6 +62,8 @@ module RSpec
       def reset_all
         proxies.each_value { |proxy| proxy.reset }
         @constant_mutators.reverse.each { |mut| mut.idempotently_reset }
+        any_instance_recorders.each_value { |recorder| recorder.stop_all_observation! }
+        any_instance_recorders.clear
       end
 
       def register_constant_mutator(mutator)
@@ -77,10 +79,6 @@ module RSpec
         any_instance_recorders.fetch(id) do
           any_instance_recorder_not_found_for(id, klass)
         end
-      end
-
-      def remove_any_instance_recorder_for(klass)
-        any_instance_recorders.delete(klass.__id__)
       end
 
       def proxies_of(klass)

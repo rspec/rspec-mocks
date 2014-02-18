@@ -764,7 +764,7 @@ module RSpec
               end
 
               it "restores the class to its original state after each example when no instance is created" do
-                space.verify_all
+                verify_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -773,7 +773,7 @@ module RSpec
               it "restores the class to its original state after each example when one instance is created" do
                 klass.new.existing_method
 
-                space.verify_all
+                verify_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -783,7 +783,7 @@ module RSpec
                 klass.new.existing_method
                 klass.new.existing_method
 
-                space.verify_all
+                verify_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -793,7 +793,8 @@ module RSpec
             context "private methods" do
               before :each do
                 klass.any_instance.stub(:private_method).and_return(:something)
-                space.verify_all
+
+                verify_all
               end
 
               it "cleans up the backed up method" do
@@ -815,7 +816,8 @@ module RSpec
               before :each do
                 klass.any_instance.should_receive(:private_method).and_return(:something)
                 klass.new.private_method
-                space.verify_all
+
+                verify_all
               end
 
               it "cleans up the backed up method" do
@@ -862,7 +864,8 @@ module RSpec
             it "ensures that the next spec does not see that expectation" do
               klass.any_instance.should_receive(:existing_method).and_return(Object.new)
               klass.new.existing_method
-              space.verify_all
+
+              verify_all
 
               expect(klass.new.existing_method).to eq(existing_method_return_value)
             end
@@ -1036,6 +1039,21 @@ module RSpec
           expect(instance.existing_method).to eq :stubbed_return_value
 
           verify_all
+
+          expect(instance.existing_method).to eq :existing_method_return_value
+        end
+
+        it "restores the original behaviour, even if the expectation fails" do
+          klass.any_instance.should_receive(:existing_method).with(1).and_return(:stubbed_return_value)
+
+          instance = klass.new
+          begin
+            instance.existing_method
+            verify_all
+          rescue RSpec::Mocks::MockExpectationError => e
+          end
+
+          reset_all
 
           expect(instance.existing_method).to eq :existing_method_return_value
         end

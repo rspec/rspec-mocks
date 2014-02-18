@@ -100,6 +100,7 @@ module RSpec
         expect_any_instance_of(Object).to receive_messages(:a => 1, :b => 2)
         obj.a
         expect { RSpec::Mocks.space.verify_all }.to raise_error RSpec::Mocks::MockExpectationError
+        RSpec::Mocks.space.reset_all
       end
 
       it_behaves_like "complains when given blocks"
