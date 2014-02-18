@@ -224,16 +224,6 @@ module RSpec::Mocks
       }.to raise_error(RSpec::Expectations::ExpectationNotMetError, /Diff/)
     end
 
-    it 'removes an any_instance_recorder when requested' do
-      klass = Class.new
-
-      space.any_instance_recorder_for(klass)
-
-      expect {
-        space.remove_any_instance_recorder_for(klass)
-      }.to change { space.any_instance_recorders.size }.by(-1)
-    end
-
     def in_new_space_scope
       RSpec::Mocks.setup
       yield

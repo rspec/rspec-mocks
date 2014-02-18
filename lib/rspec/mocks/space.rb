@@ -81,10 +81,6 @@ module RSpec
         end
       end
 
-      def remove_any_instance_recorder_for(klass)
-        any_instance_recorders.delete(klass.__id__)
-      end
-
       def proxies_of(klass)
         proxies.values.select { |proxy| klass === proxy.object }
       end
