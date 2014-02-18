@@ -53,8 +53,6 @@ module RSpec
         inspect.gsub('<','[').gsub('>',']')
       end
 
-      alias_method :to_str, :to_s
-
       # @private
       def respond_to?(message, incl_private=false)
         __mock_proxy.null_object? ? true : super
