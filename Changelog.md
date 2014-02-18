@@ -62,6 +62,8 @@ Bug Fixes:
   nested constant. (Xavier Shay)
 * Raise `VerifyingDoubleNotDefinedError` when a constant is not defined for
   a verifying class double. (Maurício Linhares)
+* Remove `Double#to_str`, which caused confusing `raise some_double`
+  behavior. (Maurício Linhares)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v3.0.0.beta1)
