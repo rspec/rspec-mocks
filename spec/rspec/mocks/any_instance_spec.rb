@@ -377,6 +377,7 @@ module RSpec
             klass.any_instance.should_not_receive(:bar)
             klass.new.foo
             RSpec::Mocks.space.verify_all
+            RSpec::Mocks.space.reset_all
           end
         end
 
@@ -399,24 +400,36 @@ module RSpec
 
           it "fails if an instance is created but no invocation occurs" do
             expect do
-              klass.any_instance.should_receive(:foo)
-              klass.new
-              RSpec::Mocks.space.verify_all
+              begin
+                klass.any_instance.should_receive(:foo)
+                klass.new
+                RSpec::Mocks.space.verify_all
+              ensure
+                RSpec::Mocks.space.reset_all
+              end
             end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
           end
 
           it "fails if no instance is created" do
             expect do
-              klass.any_instance.should_receive(:foo).and_return(1)
-              RSpec::Mocks.space.verify_all
+              begin
+                klass.any_instance.should_receive(:foo).and_return(1)
+                RSpec::Mocks.space.verify_all
+              ensure
+                RSpec::Mocks.space.reset_all
+              end
             end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
           end
 
           it "fails if no instance is created and there are multiple expectations" do
             expect do
-              klass.any_instance.should_receive(:foo)
-              klass.any_instance.should_receive(:bar)
-              RSpec::Mocks.space.verify_all
+              begin
+                klass.any_instance.should_receive(:foo)
+                klass.any_instance.should_receive(:bar)
+                RSpec::Mocks.space.verify_all
+              ensure
+                RSpec::Mocks.space.reset_all
+              end
             end.to raise_error(RSpec::Mocks::MockExpectationError, 'Exactly one instance should have received the following message(s) but didn\'t: bar, foo')
           end
 
@@ -478,24 +491,36 @@ module RSpec
 
           it "fails if an instance is created but no invocation occurs" do
             expect do
-              klass.any_instance.should_receive(:existing_method)
-              klass.new
-              RSpec::Mocks.space.verify_all
+              begin
+                klass.any_instance.should_receive(:existing_method)
+                klass.new
+                RSpec::Mocks.space.verify_all
+              ensure
+                RSpec::Mocks.space.reset_all
+              end
             end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
           end
 
           it "fails if no instance is created" do
             expect do
-              klass.any_instance.should_receive(:existing_method)
-              RSpec::Mocks.space.verify_all
+              begin
+                klass.any_instance.should_receive(:existing_method)
+                RSpec::Mocks.space.verify_all
+              ensure
+                RSpec::Mocks.space.reset_all
+              end
             end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
           end
 
           it "fails if no instance is created and there are multiple expectations" do
             expect do
-              klass.any_instance.should_receive(:existing_method)
-              klass.any_instance.should_receive(:another_existing_method)
-              RSpec::Mocks.space.verify_all
+              begin
+                klass.any_instance.should_receive(:existing_method)
+                klass.any_instance.should_receive(:another_existing_method)
+                RSpec::Mocks.space.verify_all
+              ensure
+                RSpec::Mocks.space.reset_all
+              end
             end.to raise_error(RSpec::Mocks::MockExpectationError, 'Exactly one instance should have received the following message(s) but didn\'t: another_existing_method, existing_method')
           end
 
@@ -588,16 +613,24 @@ module RSpec
 
             it "fails when no instances are declared" do
               expect do
-                klass.any_instance.should_receive(:foo).once
-                RSpec::Mocks.space.verify_all
+                begin
+                  klass.any_instance.should_receive(:foo).once
+                  RSpec::Mocks.space.verify_all
+                ensure
+                  RSpec::Mocks.space.reset_all
+                end
               end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
             end
 
             it "fails when an instance is declared but there are no invocations" do
               expect do
-                klass.any_instance.should_receive(:foo).once
-                klass.new
-                RSpec::Mocks.space.verify_all
+                begin
+                  klass.any_instance.should_receive(:foo).once
+                  klass.new
+                  RSpec::Mocks.space.verify_all
+                ensure
+                  RSpec::Mocks.space.reset_all
+                end
               end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
             end
 
@@ -722,9 +755,13 @@ module RSpec
 
               it "fails when the other expecations are not met" do
                 expect do
-                  klass.any_instance.should_receive(:foo).never
-                  klass.any_instance.should_receive(:existing_method).and_return(5)
-                  RSpec::Mocks.space.verify_all
+                  begin
+                    klass.any_instance.should_receive(:foo).never
+                    klass.any_instance.should_receive(:existing_method).and_return(5)
+                    RSpec::Mocks.space.verify_all
+                  ensure
+                    RSpec::Mocks.space.reset_all
+                  end
                 end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
               end
             end
@@ -760,9 +797,13 @@ module RSpec
 
               it "fails when the other expecations are not met" do
                 expect do
-                  klass.any_instance.should_receive(:foo).any_number_of_times
-                  klass.any_instance.should_receive(:existing_method).and_return(5)
-                  RSpec::Mocks.space.verify_all
+                  begin
+                    klass.any_instance.should_receive(:foo).any_number_of_times
+                    klass.any_instance.should_receive(:existing_method).and_return(5)
+                    RSpec::Mocks.space.verify_all
+                  ensure
+                    RSpec::Mocks.space.reset_all
+                  end
                 end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
               end
             end
@@ -787,6 +828,7 @@ module RSpec
 
               it "restores the class to its original state after each example when no instance is created" do
                 space.verify_all
+                space.reset_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -796,6 +838,7 @@ module RSpec
                 klass.new.existing_method
 
                 space.verify_all
+                space.reset_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -806,6 +849,7 @@ module RSpec
                 klass.new.existing_method
 
                 space.verify_all
+                space.reset_all
 
                 expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be false
                 expect(klass.new.existing_method).to eq(existing_method_return_value)
@@ -816,6 +860,7 @@ module RSpec
               before :each do
                 klass.any_instance.stub(:private_method).and_return(:something)
                 space.verify_all
+                space.reset_all
               end
 
               it "cleans up the backed up method" do
@@ -838,6 +883,7 @@ module RSpec
                 klass.any_instance.should_receive(:private_method).and_return(:something)
                 klass.new.private_method
                 space.verify_all
+                space.reset_all
               end
 
               it "cleans up the backed up method" do
@@ -885,6 +931,7 @@ module RSpec
               klass.any_instance.should_receive(:existing_method).and_return(Object.new)
               klass.new.existing_method
               space.verify_all
+              space.reset_all
 
               expect(klass.new.existing_method).to eq(existing_method_return_value)
             end
@@ -897,6 +944,7 @@ module RSpec
             klass.any_instance.stub(:existing_method).and_return(true)
 
             RSpec::Mocks.space.verify_all
+            RSpec::Mocks.space.reset_all
             expect(klass.new).to respond_to(:existing_method)
             expect(klass.new.existing_method).to eq(existing_method_return_value)
           end
@@ -1178,6 +1226,7 @@ module RSpec
           expect(instance.existing_method).to eq :stubbed_return_value
 
           RSpec::Mocks.verify
+          RSpec::Mocks.teardown
 
           expect(instance.existing_method).to eq :existing_method_return_value
         end

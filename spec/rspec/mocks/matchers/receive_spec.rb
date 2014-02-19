@@ -9,6 +9,10 @@ module RSpec
         ::RSpec::Mocks.space.verify_all
       end
 
+      def reset_all
+        ::RSpec::Mocks.space.reset_all
+      end
+
       shared_examples_for "a receive matcher" do |*options|
         it 'allows the caller to configure how the subject responds' do
           wrapped.to receive(:foo).and_return(5)
@@ -105,6 +109,8 @@ module RSpec
           expect {
             verify_all
           }.to raise_error(RSpec::Mocks::MockExpectationError)
+
+          reset_all
         end
 
         it "reports the line number of expectation of unreceived message", :pending => options.include?(:does_not_report_line_num) do
