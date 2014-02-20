@@ -1,4 +1,4 @@
-### 2.14.6 development
+### 2.14.6 / 2014-02-20
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.5...v2.14.6)
 
 Bug Fixes:
