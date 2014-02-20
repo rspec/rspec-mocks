@@ -1,11 +1,6 @@
 ### 2.99.0.rc1 Development
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta2...2-99-maintenance)
 
-Bug Fixes:
-
-* Ensure `any_instance` expectations and mocks are torn down regardless of
-  expectation failures. (Sam Phippen)
-
 ### 2.99.0.beta2 / 2014-02-17
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v2.99.0.beta2)
 
@@ -45,6 +40,14 @@ Enhancements:
 
 * Add a config option to yield the receiver to `any_instance` implementation
   blocks. (Sam Phippen)
+
+### 2.14.6 / 2014-02-20
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.5...v2.14.6)
+
+Bug Fixes:
+
+* Ensure `any_instance` method stubs and expectations are torn down regardless of
+  expectation failures. (Sam Phippen)
 
 ### 2.14.5 / 2014-02-01
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.14.5)
