@@ -1,3 +1,11 @@
+### 2.14.6 development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.14.5)
+
+Bug Fixes:
+
+* Ensure `any_instance` expectations and mocks are torn down regardless of
+  expectation failures. (Sam Phippen)
+
 ### 2.14.5 / 2014-02-01
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.4...v2.14.5)
 
