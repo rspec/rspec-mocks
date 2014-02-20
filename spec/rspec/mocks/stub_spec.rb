@@ -326,6 +326,20 @@ module RSpec
               reset object
               expect(object.existing_method).to eq :original_value_prepended
             end
+
+            it 'wont unnecessarily pollute the name space' do
+              klass = Class.new do
+                class << self; prepend ToBePrepended; end
+                def self.existing_method
+                  :original_value
+                end
+              end
+
+              allow(klass).to receive(:existing_method) { :stubbed }
+              allow(klass).to receive(:existing_method_2) { :stubbed }
+
+              expect(klass.singleton_class.ancestors[1]).to eq ToBePrepended
+            end
           end
         end
       end

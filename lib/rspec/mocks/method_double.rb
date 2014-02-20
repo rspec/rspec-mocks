@@ -78,7 +78,9 @@ module RSpec
         return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
-        definition_target.__send__(:remove_method, @method_name)
+        # on 2.0.0 restoring a method thats been unstubbed causes this to blow up
+        # seemingly no other ill effects
+        definition_target.__send__(:remove_method, @method_name) rescue NameError
 
         if @method_stasher.method_is_stashed?
           @method_stasher.restore
