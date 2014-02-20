@@ -98,16 +98,6 @@ module RSpec
         expect(r1).to be(r2)
         expect(r1).not_to be(r3)
       end
-
-      it 'removes an any_instance_recorder when requested' do
-        klass = Class.new
-
-        space.any_instance_recorder_for(klass)
-
-        expect {
-          space.remove_any_instance_recorder_for(klass)
-        }.to change { space.any_instance_recorders.size }.by(-1)
-      end
     end
   end
 end

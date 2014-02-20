@@ -29,6 +29,11 @@ module RSpec
         end
 
         proxies.clear
+
+        any_instance_recorders.each_value do |recorder|
+          recorder.stop_all_observation!
+        end
+
         any_instance_recorders.clear
         expectation_ordering.clear
       end
@@ -43,10 +48,6 @@ module RSpec
         any_instance_recorders.fetch(id) do
           any_instance_recorders[id] = AnyInstance::Recorder.new(klass)
         end
-      end
-
-      def remove_any_instance_recorder_for(klass)
-        any_instance_recorders.delete(klass.__id__)
       end
 
       def proxies_of(klass)
