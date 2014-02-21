@@ -76,6 +76,7 @@ module RSpec
 
       # @private
       def restore_original_method
+        return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
         object_singleton_class.__send__(:remove_method, @method_name)
@@ -85,6 +86,15 @@ module RSpec
         restore_original_visibility
 
         @method_is_proxied = false
+      end
+
+      # @private
+      def show_frozen_warning
+        RSpec.warn_with(
+          "WARNING: rspec-mocks was unable to restore the original `#{@method_name}` method on #{@object.inspect} because it has been frozen.  If you reuse this object, `#{@method_name}` will continue to respond with its stub implementation.",
+          :call_site                      => nil,
+          :use_spec_location_as_call_site => true
+        )
       end
 
       # @private

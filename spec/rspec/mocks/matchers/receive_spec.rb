@@ -212,6 +212,23 @@ module RSpec
           target.to receive(:foo).and_return(:baz)
           expect { reset object }.to change { object.foo }.from(:baz).to(:bar)
         end
+
+        context "on a frozen object" do
+          it "warns about being unable to remove the method double" do
+            target.to receive(:foo).and_return(:baz)
+            expect_warning_without_call_site(/rspec-mocks was unable to restore the original `foo` method on #{object.inspect}/)
+            object.freeze
+            reset object
+          end
+
+          it "includes the spec location in the warning" do
+            line = __LINE__ - 1
+            target.to receive(:foo).and_return(:baz)
+            expect_warning_without_call_site(/#{RSpec::Core::Metadata.relative_path(__FILE__)}:#{line}/)
+            object.freeze
+            reset object
+          end
+        end
       end
 
       shared_examples_for "resets partial mocks of any instance cleanly" do
