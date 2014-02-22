@@ -86,14 +86,6 @@ module RSpec
         expect(expectation_error.backtrace[0]).to match(/#{__FILE__}:#{line}/)
       end
 
-      describe 'when verifying fails' do
-        it 'cleans up all remaining expectations' do
-          expect(obj).to receive_messages(:a => 1, :b => 2)
-          expect { RSpec::Mocks.space.verify_all }.to raise_error RSpec::Mocks::MockExpectationError
-          expect { RSpec::Mocks.space.verify_all }.not_to raise_error
-        end
-      end
-
       it_behaves_like "complains when given blocks"
       it_behaves_like "handles partially mocked objects correctly"
     end

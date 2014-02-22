@@ -35,6 +35,15 @@ module RSpec::Mocks
 
         expect(verifies).to match_array([:klass_1, :klass_2])
       end
+
+      it 'does not reset the proxies (as that should be delayed until reset_all)' do
+        proxy = space.proxy_for(dbl_1)
+        reset = false
+        (class << proxy; self; end).__send__(:define_method, :reset) { reset = true }
+
+        space.verify_all
+        expect(reset).to eq(false)
+      end
     end
 
     describe "#reset_all" do
