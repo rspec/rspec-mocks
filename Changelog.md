@@ -7,6 +7,12 @@ Enhancements:
   issues a warning explaining that it's impossible to clean up the stubs.
   (Justin Coyne and Sam Phippen)
 
+Bug Fixes:
+
+* Fix regression introduced in 3.0.0.bet2 that caused
+  `double.as_null_object.to_str` to return the double rather
+  than a string. (Myron Marston)
+
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
 
