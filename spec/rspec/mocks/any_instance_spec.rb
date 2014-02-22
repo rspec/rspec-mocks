@@ -1021,7 +1021,7 @@ module RSpec
           begin
             instance.existing_method
             verify_all
-          rescue RSpec::Mocks::MockExpectationError => e
+          rescue RSpec::Mocks::MockExpectationError
           end
 
           reset_all
