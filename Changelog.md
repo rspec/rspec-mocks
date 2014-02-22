@@ -12,6 +12,9 @@ Bug Fixes:
 * Fix regression introduced in 3.0.0.bet2 that caused
   `double.as_null_object.to_str` to return the double rather
   than a string. (Myron Marston)
+* Fix bug in `expect(dbl).to receive_message_chain(:foo, :bar)` where it was
+  not setting an expectation for the last message in the chain.
+  (Jonathan del Strother)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
