@@ -1,3 +1,5 @@
+require 'rspec/mocks/matchers/expectation_customization'
+
 module RSpec
   module Mocks
     module Matchers

@@ -14,19 +14,7 @@ require 'rspec/mocks/order_group'
 require 'rspec/mocks/error_generator'
 require 'rspec/mocks/space'
 require 'rspec/mocks/extensions/marshal'
-require 'rspec/mocks/any_instance/chain'
-require 'rspec/mocks/any_instance/stub_chain'
-require 'rspec/mocks/any_instance/stub_chain_chain'
-require 'rspec/mocks/any_instance/expect_chain_chain'
-require 'rspec/mocks/any_instance/expectation_chain'
-require 'rspec/mocks/any_instance/message_chains'
-require 'rspec/mocks/any_instance/recorder'
 require 'rspec/mocks/mutate_const'
-require 'rspec/mocks/matchers/have_received'
-require 'rspec/mocks/matchers/receive'
-require 'rspec/mocks/matchers/receive_messages'
-require 'rspec/mocks/matchers/receive_message_chain'
-require 'rspec/mocks/message_chain'
 require 'rspec/mocks/targets'
 require 'rspec/mocks/syntax'
 require 'rspec/mocks/configuration'
@@ -114,5 +102,18 @@ module RSpec
 
     # @private
     IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
+
+    # To speed up boot time a bit, delay loading optional or rarely
+    # used features until their first use.
+    autoload :AnyInstance, "rspec/mocks/any_instance"
+    autoload :ExpectChain, "rspec/mocks/message_chain"
+    autoload :StubChain,   "rspec/mocks/message_chain"
+
+    module Matchers
+      autoload :HaveReceived,        "rspec/mocks/matchers/have_received"
+      autoload :Receive,             "rspec/mocks/matchers/receive"
+      autoload :ReceiveMessageChain, "rspec/mocks/matchers/receive_message_chain"
+      autoload :ReceiveMessages,     "rspec/mocks/matchers/receive_messages"
+    end
   end
 end
