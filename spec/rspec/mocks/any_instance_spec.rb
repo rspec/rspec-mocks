@@ -48,12 +48,12 @@ module RSpec
           end
 
           it "raises an error if 'with' follows 'and_return'" do
-            pending "see Github issue #42"
+            skip "see Github issue #42"
             expect { klass.any_instance.should_receive(:foo).and_return(1).with("1") }.to raise_error(NoMethodError)
           end
 
           it "raises an error if 'with' follows 'and_raise'" do
-            pending "see Github issue #42"
+            skip "see Github issue #42"
             expect { klass.any_instance.should_receive(:foo).and_raise(1).with("1") }.to raise_error(NoMethodError)
           end
         end
