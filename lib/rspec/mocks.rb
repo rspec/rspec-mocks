@@ -1,6 +1,25 @@
-require 'rspec/mocks/framework'
-require 'rspec/mocks/version'
 require 'rspec/support'
+require 'rspec/support/caller_filter'
+require 'rspec/support/warnings'
+
+require 'rspec/mocks/instance_method_stasher'
+require 'rspec/mocks/method_double'
+require 'rspec/mocks/argument_matchers'
+require 'rspec/mocks/example_methods'
+require 'rspec/mocks/proxy'
+require 'rspec/mocks/test_double'
+require 'rspec/mocks/argument_list_matcher'
+require 'rspec/mocks/message_expectation'
+require 'rspec/mocks/order_group'
+require 'rspec/mocks/error_generator'
+require 'rspec/mocks/space'
+require 'rspec/mocks/extensions/marshal'
+require 'rspec/mocks/mutate_const'
+require 'rspec/mocks/targets'
+require 'rspec/mocks/syntax'
+require 'rspec/mocks/configuration'
+require 'rspec/mocks/verifying_double'
+require 'rspec/mocks/version'
 
 module RSpec
   # Contains top-level utility methods. While this contains a few
@@ -83,5 +102,18 @@ module RSpec
 
     # @private
     IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
+
+    # To speed up boot time a bit, delay loading optional or rarely
+    # used features until their first use.
+    autoload :AnyInstance, "rspec/mocks/any_instance"
+    autoload :ExpectChain, "rspec/mocks/message_chain"
+    autoload :StubChain,   "rspec/mocks/message_chain"
+
+    module Matchers
+      autoload :HaveReceived,        "rspec/mocks/matchers/have_received"
+      autoload :Receive,             "rspec/mocks/matchers/receive"
+      autoload :ReceiveMessageChain, "rspec/mocks/matchers/receive_message_chain"
+      autoload :ReceiveMessages,     "rspec/mocks/matchers/receive_messages"
+    end
   end
 end

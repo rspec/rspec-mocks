@@ -37,15 +37,8 @@ module RSpec
     private
 
       def matcher_allowed?(matcher)
-        ALLOWED_MATCHERS.include?(matcher.class)
+        matcher.class.name.start_with?("RSpec::Mocks::Matchers".freeze)
       end
-
-      #@api private
-      ALLOWED_MATCHERS = [
-        Matchers::Receive,
-        Matchers::ReceiveMessages,
-        Matchers::ReceiveMessageChain,
-      ]
 
       def define_matcher(matcher, name, &block)
         matcher.__send__(name, @target, &block)
