@@ -69,8 +69,6 @@ module RSpec
       end
 
       # @private
-
-      # @private
       def expected_args
         @argument_list_matcher.expected_args
       end
