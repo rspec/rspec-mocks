@@ -48,7 +48,7 @@ module RSpec
         __send__(name, *args, &block)
       end
 
-      def __initialize_as_test_double(*args)
+      def initialize(*args)
         super
         @__sending_message = nil
       end
@@ -65,7 +65,7 @@ module RSpec
       def initialize(doubled_module, *args)
         @doubled_module = doubled_module
 
-        __initialize_as_test_double(
+        super(
           "#{doubled_module.description} (instance)",
           *args
         )
@@ -88,8 +88,7 @@ module RSpec
 
       def initialize(doubled_module, *args)
         @doubled_module = doubled_module
-
-        __initialize_as_test_double(doubled_module.description, *args)
+        super(doubled_module.description, *args)
       end
 
       def __build_mock_proxy(order_group)

@@ -1,6 +1,10 @@
 ### 3.0.0.rc1 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta2...master)
 
+Breaking Changes for 3.0.0:
+
+* Remove `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
+
 Enhancements:
 
 * Instead of crashing when cleaning up stub methods on a frozen object, it now
