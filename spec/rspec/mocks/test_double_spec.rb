@@ -3,6 +3,8 @@ require 'spec_helper'
 module RSpec
   module Mocks
     describe TestDouble do
+      before { allow_deprecation }
+
       before(:all) do
         Module.class_eval do
           private
@@ -29,6 +31,11 @@ module RSpec
       it 'sets the test double name when a name is passed' do
         double = Module.new { TestDouble.extend_onto(self, "MyDouble") }
         expect { double.foo }.to raise_error(/Mock "MyDouble" received/)
+      end
+
+      it 'warns when `extend_onto` is used' do
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /RSpec::Mocks::TestDouble.extend_onto/)
+        Module.new { TestDouble.extend_onto(self) }
       end
 
       [[:should, :expect], [:expect], [:should]].each do |syntax|

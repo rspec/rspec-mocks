@@ -13,6 +13,7 @@ module RSpec
       #   RSpec::Mocks::TestDouble.extend_onto(module, "MyMixin", :foo => "bar")
       #   module.foo  #=> "bar"
       def self.extend_onto(object, name=nil, stubs_and_options={})
+        RSpec.deprecate("`RSpec::Mocks::TestDouble.extend_onto(...)`")
         object.extend self
         object.send(:__initialize_as_test_double, name, stubs_and_options)
       end

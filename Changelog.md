@@ -1,6 +1,10 @@
 ### 2.99.0.rc1 Development
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta2...2-99-maintenance)
 
+Deprecations:
+
+* Deprecate `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
+
 ### 2.99.0.beta2 / 2014-02-17
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v2.99.0.beta2)
 

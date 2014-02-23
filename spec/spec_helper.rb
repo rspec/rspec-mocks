@@ -37,7 +37,7 @@ module HelperMethods
   end
 
   def allow_deprecation
-    allow(RSpec.configuration.reporter).to receive(:deprecation)
+    RSpec::Mocks.allow_message(RSpec.configuration.reporter, :deprecation)
   end
 
   def allow_unavoidable_1_8_deprecation
