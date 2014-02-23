@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Mocks
     shared_examples_for "complains when given blocks" do

@@ -1,5 +1,3 @@
-require "spec_helper"
-
 describe "a double declaration with a block handed to:" do
   describe "should_receive" do
     it "returns the value of executing the block" do

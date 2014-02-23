@@ -1,5 +1,3 @@
-require "spec_helper"
-
 module RSpec::Mocks
   describe Syntax do
     context "when the should syntax is enabled on a non-default syntax host" do
