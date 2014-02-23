@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 TOP_LEVEL_VALUE_CONST = 7
 
 class TestClass

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Mocks
     describe "a double _not_ acting as a null object" do

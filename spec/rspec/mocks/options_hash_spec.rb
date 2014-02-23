@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Mocks
     describe "calling :should_receive with an options hash" do

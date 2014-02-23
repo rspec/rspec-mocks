@@ -1,5 +1,3 @@
-require "spec_helper"
-
 describe "a double receiving to_ary" do
   shared_examples "to_ary" do
     it "can be overridden with a stub" do

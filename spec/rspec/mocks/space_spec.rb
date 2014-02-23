@@ -1,4 +1,3 @@
-require 'spec_helper'
 
 module RSpec::Mocks
   describe Space do

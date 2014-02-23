@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 class LoadedClass
   extend RSpec::Mocks::RubyFeatures
 

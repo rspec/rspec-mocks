@@ -1,6 +1,3 @@
-require "spec_helper"
-
-
 module RSpec::Mocks::Matchers
   describe "receive_message_chain" do
     let(:object) { double(:object) }
