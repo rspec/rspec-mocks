@@ -68,7 +68,7 @@ module RSpec
         new(object, *chain, &blk).setup_chain
       end
 
-      private
+    private
 
       def expectation(object, message, &return_block)
         ::RSpec::Mocks.expect_message(object, message, {}, &return_block)
@@ -81,7 +81,7 @@ module RSpec
         new(object, *chain, &blk).setup_chain
       end
 
-      private
+    private
 
       def expectation(object, message, &return_block)
         ::RSpec::Mocks.allow_message(object, message, {}, &return_block)
