@@ -316,6 +316,31 @@ module RSpec
             allow(o).to receive(:undefined_instance_method).with(:arg).and_return(1)
             expect(o.undefined_instance_method(:arg)).to eq(1)
           end
+
+          context "when stubbing a private module method" do
+            before(:all) do
+              Module.class_exec do
+                private
+                def use; end
+              end
+            end
+
+            after(:all) do
+              Module.class_exec do
+                undef use
+              end
+            end
+
+            it 'can mock private module methods' do
+              double = Module.new
+              allow(double).to receive(:use)
+              expect { double.use }.to raise_error(/private method `use' called/)
+
+              double = class_double("NonloadedClass")
+              expect(double).to receive(:use).and_return(:ok)
+              expect(double.use).to be(:ok)
+            end
+          end
         end
 
         describe 'when doubled class is loaded' do
