@@ -202,9 +202,6 @@ module RSpec
       def raise_method_not_stubbed_error
         raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
       end
-
-      # @private
-      IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
     end
   end
 end
