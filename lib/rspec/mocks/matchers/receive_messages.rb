@@ -66,7 +66,6 @@ module RSpec
             yield host, message, value
           end
         end
-
       end
     end
   end

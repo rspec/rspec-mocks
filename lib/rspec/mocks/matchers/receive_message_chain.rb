@@ -54,7 +54,7 @@ module RSpec
         alias matches? setup_expectation
         alias does_not_match? setup_negative_expectation
 
-        private
+      private
 
         def replay_customizations(chain)
           @recorded_customizations.each do |customization|

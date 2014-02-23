@@ -8,7 +8,7 @@ module RSpec
           @expectation_fulfilled = false
         end
 
-        private
+      private
 
         def create_message_expectation_on(instance)
           ::RSpec::Mocks::StubChain.stub_chain_on(instance, *@expectation_args, &@expectation_block)

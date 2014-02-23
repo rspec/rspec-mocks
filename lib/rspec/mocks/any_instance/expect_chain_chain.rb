@@ -16,7 +16,7 @@ module RSpec
           super.tap { @expectation_fulfilled = true }
         end
 
-        private
+      private
 
         def create_message_expectation_on(instance)
           ::RSpec::Mocks::ExpectChain.expect_chain_on(instance, *@expectation_args, &@expectation_block)

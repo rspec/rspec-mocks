@@ -9,7 +9,7 @@ module RSpec
           true
         end
 
-        private
+      private
 
         def create_message_expectation_on(instance)
           proxy = ::RSpec::Mocks.space.proxy_for(instance)

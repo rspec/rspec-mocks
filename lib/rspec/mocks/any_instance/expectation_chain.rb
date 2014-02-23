@@ -12,7 +12,8 @@ module RSpec
           super
         end
 
-        private
+      private
+
         def verify_invocation_order(rspec_method_name, *args, &block)
         end
       end
@@ -20,7 +21,7 @@ module RSpec
       # @api private
       class PositiveExpectationChain < ExpectationChain
 
-        private
+      private
 
         def create_message_expectation_on(instance)
           proxy = ::RSpec::Mocks.space.proxy_for(instance)

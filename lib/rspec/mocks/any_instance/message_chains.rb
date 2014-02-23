@@ -61,7 +61,7 @@ module RSpec
           end
         end
 
-        private
+      private
 
         def raise_if_second_instance_to_receive_message(instance)
           @instance_with_expectation ||= instance if ExpectationChain === instance
