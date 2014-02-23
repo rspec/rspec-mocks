@@ -2,6 +2,10 @@ require 'rspec/mocks/object_reference'
 
 module RSpec
   module Mocks
+    # Contains methods intended to be used from within code examples.
+    # Mix this in to your test context (such as a test framework base class)
+    # to use rspec-mocks with your test framework. If you're using rspec-core,
+    # it'll take care of doing this for you.
     module ExampleMethods
       include RSpec::Mocks::ArgumentMatchers
 
@@ -163,6 +167,107 @@ module RSpec
       def have_received(method_name, &block)
         Matchers::HaveReceived.new(method_name, &block)
       end
+
+      # @method expect
+      # Used to wrap an object in preparation for setting a mock expectation
+      # on it.
+      #
+      # @example
+      #
+      #   expect(obj).to receive(:foo).with(5).and_return(:return_value)
+      #
+      # @note This method is usually provided by rspec-expectations. However,
+      #   if you use rspec-mocks without rspec-expectations, there's a definition
+      #   of it that is made available here. If you disable the `:expect` syntax
+      #   this method will be undefined.
+
+      # @method allow
+      # Used to wrap an object in preparation for stubbing a method
+      # on it.
+      #
+      # @example
+      #
+      #   allow(dbl).to receive(:foo).with(5).and_return(:return_value)
+      #
+      # @note If you disable the `:expect` syntax this method will be undefined.
+
+      # @method expect_any_instance_of
+      # Used to wrap a class in preparation for setting a mock expectation
+      # on instances of it.
+      #
+      # @example
+      #
+      #   expect_any_instance_of(MyClass).to receive(:foo)
+      #
+      # @note If you disable the `:expect` syntax this method will be undefined.
+
+      # @method allow_any_instance_of
+      # Used to wrap a class in preparation for stubbing a method
+      # on instances of it.
+      #
+      # @example
+      #
+      #   allow_any_instance_of(MyClass).to receive(:foo)
+      #
+      # @note This is only available when you have enabled the `expect` syntax.
+
+      # @method receive
+      # Used to specify a message that you expect or allow an object
+      # to receive. The object returned by `receive` supports the same
+      # fluent interface that `should_receive` and `stub` have always
+      # supported, allowing you to constrain the arguments or number of
+      # times, and configure how the object should respond to the message.
+      #
+      # @example
+      #
+      #   expect(obj).to receive(:hello).with("world").exactly(3).times
+      #
+      # @note If you disable the `:expect` syntax this method will be undefined.
+
+      # @method receive_messages
+      # Shorthand syntax used to setup message(s), and their return value(s),
+      # that you expect or allow an object to receive. The method takes a hash
+      # of messages and their respective return values. Unlike with `receive`,
+      # you cannot apply further customizations using a block or the fluent
+      # interface.
+      #
+      # @example
+      #
+      #   allow(obj).to receive_messages(:speak => "Hello World")
+      #   allow(obj).to receive_messages(:speak => "Hello", :meow => "Meow")
+      #
+      # @note If you disable the `:expect` syntax this method will be undefined.
+
+      # @method receive_message_chain
+      # @overload receive_message_chain(method1, method2)
+      # @overload receive_message_chain("method1.method2")
+      # @overload receive_message_chain(method1, method_to_value_hash)
+      #
+      # stubs/mocks a chain of messages on an object or test double.
+      #
+      # ## Warning:
+      #
+      # Chains can be arbitrarily long, which makes it quite painless to
+      # violate the Law of Demeter in violent ways, so you should consider any
+      # use of `receive_message_chain` a code smell. Even though not all code smells
+      # indicate real problems (think fluent interfaces), `receive_message_chain` still
+      # results in brittle examples.  For example, if you write
+      # `foo.receive_message_chain(:bar, :baz => 37)` in a spec and then the
+      # implementation calls `foo.baz.bar`, the stub will not work.
+      #
+      # @example
+      #
+      #     allow(double).to receive_message_chain("foo.bar") { :baz }
+      #     allow(double).to receive_message_chain(:foo, :bar => :baz)
+      #     allow(double).to receive_message_chain(:foo, :bar) { :baz }
+      #
+      #     # Given any of ^^ these three forms ^^:
+      #     double.foo.bar # => :baz
+      #
+      #     # Common use in Rails/ActiveRecord:
+      #     allow(Article).to receive_message_chain("recent.published") { [Article.new] }
+      #
+      # @note If you disable the `:expect` syntax this method will be undefined.
 
       # @api private
       def self.included(klass)
