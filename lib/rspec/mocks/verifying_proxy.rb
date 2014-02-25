@@ -1,5 +1,5 @@
-require 'rspec/mocks/verifying_message_expecation'
-require 'rspec/mocks/method_reference'
+RSpec::Support.require_rspec_mocks 'verifying_message_expecation'
+RSpec::Support.require_rspec_mocks 'method_reference'
 
 module RSpec
   module Mocks

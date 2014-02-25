@@ -1,4 +1,4 @@
-require 'rspec/mocks/verifying_proxy'
+RSpec::Support.require_rspec_mocks 'verifying_proxy'
 require 'stringio'
 
 module RSpec

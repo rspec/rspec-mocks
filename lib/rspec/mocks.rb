@@ -1,25 +1,29 @@
 require 'rspec/support'
-require 'rspec/support/caller_filter'
-require 'rspec/support/warnings'
+RSpec::Support.require_rspec_support 'caller_filter'
+RSpec::Support.require_rspec_support 'warnings'
 
-require 'rspec/mocks/instance_method_stasher'
-require 'rspec/mocks/method_double'
-require 'rspec/mocks/argument_matchers'
-require 'rspec/mocks/example_methods'
-require 'rspec/mocks/proxy'
-require 'rspec/mocks/test_double'
-require 'rspec/mocks/argument_list_matcher'
-require 'rspec/mocks/message_expectation'
-require 'rspec/mocks/order_group'
-require 'rspec/mocks/error_generator'
-require 'rspec/mocks/space'
-require 'rspec/mocks/extensions/marshal'
-require 'rspec/mocks/mutate_const'
-require 'rspec/mocks/targets'
-require 'rspec/mocks/syntax'
-require 'rspec/mocks/configuration'
-require 'rspec/mocks/verifying_double'
-require 'rspec/mocks/version'
+RSpec::Support.define_optimized_require_for_rspec(:mocks) { |f| require_relative f }
+
+%w[
+  instance_method_stasher
+  method_double
+  argument_matchers
+  example_methods
+  proxy
+  test_double
+  argument_list_matcher
+  message_expectation
+  order_group
+  error_generator
+  space
+  extensions/marshal
+  mutate_const
+  targets
+  syntax
+  configuration
+  verifying_double
+  version
+].each { |name| RSpec::Support.require_rspec_mocks name }
 
 module RSpec
   # Contains top-level utility methods. While this contains a few

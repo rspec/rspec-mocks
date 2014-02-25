@@ -1,7 +1,9 @@
-require 'rspec/mocks/any_instance/chain'
-require 'rspec/mocks/any_instance/stub_chain'
-require 'rspec/mocks/any_instance/stub_chain_chain'
-require 'rspec/mocks/any_instance/expect_chain_chain'
-require 'rspec/mocks/any_instance/expectation_chain'
-require 'rspec/mocks/any_instance/message_chains'
-require 'rspec/mocks/any_instance/recorder'
+%w[
+  any_instance/chain
+  any_instance/stub_chain
+  any_instance/stub_chain_chain
+  any_instance/expect_chain_chain
+  any_instance/expectation_chain
+  any_instance/message_chains
+  any_instance/recorder
+].each { |f| RSpec::Support.require_rspec_mocks(f) }

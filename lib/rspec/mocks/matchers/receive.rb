@@ -1,4 +1,4 @@
-require 'rspec/mocks/matchers/expectation_customization'
+RSpec::Support.require_rspec_mocks 'matchers/expectation_customization'
 
 module RSpec
   module Mocks

@@ -1,4 +1,4 @@
-require 'rspec/mocks/method_signature_verifier'
+RSpec::Support.require_rspec_mocks 'method_signature_verifier'
 
 module RSpec
   module Mocks
