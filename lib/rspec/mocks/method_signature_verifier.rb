@@ -1,4 +1,4 @@
-require 'rspec/mocks/ruby_features'
+RSpec::Support.require_rspec_mocks 'ruby_features'
 
 module RSpec
   module Mocks

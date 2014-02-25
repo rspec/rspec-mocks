@@ -1,4 +1,4 @@
-require 'rspec/mocks/object_reference'
+RSpec::Support.require_rspec_mocks 'object_reference'
 
 module RSpec
   module Mocks

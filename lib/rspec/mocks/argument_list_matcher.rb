@@ -1,3 +1,6 @@
+# We intentionally do not use the `RSpec::Support.require...` methods
+# here so that this file can be loaded individually, as documented
+# below.
 require 'rspec/mocks/argument_matchers'
 require 'rspec/support/fuzzy_matcher'
 
