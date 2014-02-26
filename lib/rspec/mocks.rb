@@ -2,7 +2,6 @@ require 'rspec/mocks/framework'
 require 'rspec/mocks/version'
 
 module RSpec
-
   module Mocks
     class << self
       attr_accessor :space
@@ -108,6 +107,20 @@ module RSpec
     IGNORED_BACKTRACE_LINE = 'this backtrace line is ignored'
 
     self.space = RSpec::Mocks::Space.new
+
+    DEPRECATED_CONSTANTS =
+      {
+        :Mock            => Double,
+        :ConstantStubber => ConstantMutator,
+      }
+
+    def self.const_missing(name)
+      if const = DEPRECATED_CONSTANTS[name]
+        RSpec.deprecate("RSpec::Mocks::#{name}", :replacement => const.to_s)
+        const
+      else
+        super
+      end
+    end
   end
 end
-

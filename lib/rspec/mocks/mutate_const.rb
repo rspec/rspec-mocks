@@ -399,15 +399,5 @@ module RSpec
         end
       end
     end
-
-    module ConstantMutatorDeprecation
-      def self.const_missing(name)
-        return super unless name == :ConstantStubber
-        RSpec.deprecate("RSpec::Mocks::ConstantStubber", :replacement => "RSpec::Mocks::ConstantMutator")
-        ConstantMutator
-      end
-    end
-    extend ConstantMutatorDeprecation
-
   end
 end
