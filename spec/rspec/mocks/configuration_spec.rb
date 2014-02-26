@@ -119,78 +119,8 @@ module RSpec
             Object.new.should_not_receive(:bees)
           end
         end
-
-        context "by default" do
-          before do
-            configure_default_syntax
-          end
-
-          let(:expected_arguments) {
-            [
-              /Using.*without explicitly enabling/,
-              {:replacement=>"the new `:expect` syntax or explicitly enable `:should`"}
-            ]
-          }
-
-          it "it warns about should once, regardless of how many times it is called" do
-            expect(RSpec).to receive(:deprecate).with(*expected_arguments)
-            o = Object.new
-            o2 = Object.new
-            o.should_receive(:bees)
-            o2.should_receive(:bees)
-
-            o.bees
-            o2.bees
-          end
-
-          it "warns about should not once, regardless of how many times it is called" do
-            expect(RSpec).to receive(:deprecate).with(*expected_arguments)
-            o = Object.new
-            o2 = Object.new
-            o.should_not_receive(:bees)
-            o2.should_not_receive(:bees)
-          end
-
-          it "warns about stubbing once, regardless of how many times it is called" do
-            expect(RSpec).to receive(:deprecate).with(*expected_arguments)
-            o = Object.new
-            o2 = Object.new
-
-            o.stub(:faces)
-            o2.stub(:faces)
-          end
-
-          it "warns about unstubbing once, regardless of how many times it is called" do
-            expect(RSpec).to receive(:deprecate).with(/Using.*without explicitly enabling/,
-              {:replacement => "`allow(...).to_receive(...).and_call_original` or explicitly enable `:should`"})
-            o = Object.new
-            o2 = Object.new
-
-            allow(o).to receive(:faces)
-            allow(o2).to receive(:faces)
-
-            o.unstub(:faces)
-            o2.unstub(:faces)
-          end
-
-
-          it "doesn't warn about stubbing after a reset and setting should" do
-            expect(RSpec).not_to receive(:deprecate)
-            RSpec::Mocks.configuration.reset_syntaxes_to_default
-            RSpec::Mocks.configuration.syntax = :should
-            o = Object.new
-            o2 = Object.new
-            o.stub(:faces)
-            o2.stub(:faces)
-          end
-
-          it "includes the call site in the deprecation warning" do
-            obj = Object.new
-            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
-            obj.stub(:faces)
-          end
-        end
       end
+
 
       describe "configuring rspec-mocks directly" do
         it_behaves_like "configuring the syntax" do

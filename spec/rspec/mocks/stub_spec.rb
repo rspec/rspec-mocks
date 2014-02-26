@@ -303,10 +303,6 @@ module RSpec
         }.to raise_error
       end
 
-      it "supports options" do
-        @stub.stub(:foo, :expected_from => "bar")
-      end
-
       it 'uses the correct stubbed response when responding to a mock expectation' do
         @stub.stub(:bar) { 15 }
         @stub.stub(:bar).with(:eighteen) { 18 }

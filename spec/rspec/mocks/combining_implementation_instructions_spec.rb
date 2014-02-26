@@ -124,12 +124,6 @@ module RSpec
         expect(block_called).to be_truthy
       end
 
-      it 'returns `nil` from all terminal actions to discourage further configuration' do
-        expect(double.stub(:foo).and_return(1)).to be_nil
-        expect(double.stub(:foo).and_raise("boom")).to be_nil
-        expect(double.stub(:foo).and_throw(:foo)).to be_nil
-      end
-
       it 'allows the terminal action to be overriden' do
         dbl = double
         stubbed_double = dbl.stub(:foo)

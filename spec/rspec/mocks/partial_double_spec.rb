@@ -33,10 +33,6 @@ module RSpec
         )
       end
 
-      it "should_not_receive returns a negative message expectation" do
-        expect(object.should_not_receive(:foobar)).to be_negative
-      end
-
       it "should_receive mocks out the method" do
         object.should_receive(:foobar).with(:test_param).and_return(1)
         expect(object.foobar(:test_param)).to equal(1)
