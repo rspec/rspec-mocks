@@ -400,10 +400,14 @@ module RSpec
       end
     end
 
-    # Keeps backwards compatibility since we had released an rspec-mocks that
-    # only supported stubbing. Later, we released the hide_const feature and
-    # decided that the term "mutator" was a better term to wrap up the concept
-    # of both stubbing and hiding.
-    ConstantStubber = ConstantMutator
+    module ConstantMutatorDeprecation
+      def self.const_missing(name)
+        return super unless name == :ConstantStubber
+        RSpec.deprecate("RSpec::Mocks::ConstantStubber", :replacement => "RSpec::Mocks::ConstantMutator")
+        ConstantMutator
+      end
+    end
+    extend ConstantMutatorDeprecation
+
   end
 end
