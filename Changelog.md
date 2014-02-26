@@ -13,7 +13,7 @@ Enhancements:
 
 Bug Fixes:
 
-* Fix regression introduced in 3.0.0.bet2 that caused
+* Fix regression introduced in 3.0.0.beta2 that caused
   `double.as_null_object.to_str` to return the double rather
   than a string. (Myron Marston)
 * Fix bug in `expect(dbl).to receive_message_chain(:foo, :bar)` where it was
