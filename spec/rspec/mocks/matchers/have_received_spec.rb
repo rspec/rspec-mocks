@@ -38,7 +38,7 @@ module RSpec
 
         it 'fails when the method has been mocked' do
           dbl = double
-          dbl.should_receive(:expected_method)
+          expect(dbl).to receive(:expected_method)
           dbl.expected_method
 
           expect {
@@ -100,10 +100,10 @@ module RSpec
 
         it 'resets expectations on class methods when mocks are reset' do
           dbl = Object
-          dbl.stub(:expected_method)
+          allow(dbl).to receive(:expected_method)
           dbl.expected_method
           reset dbl
-          dbl.stub(:expected_method)
+          allow(dbl).to receive(:expected_method)
 
           expect {
             expect(dbl).to have_received(:expected_method)

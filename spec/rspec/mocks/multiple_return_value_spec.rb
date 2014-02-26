@@ -4,11 +4,11 @@ module RSpec
       let(:a_double) { double }
 
       before do
-        a_double.stub(:foo).and_return(:val_1, nil)
+        allow(a_double).to receive(:foo).and_return(:val_1, nil)
       end
 
       it 'can still set a message expectation with a single return value' do
-        a_double.should_receive(:foo).once.and_return(:val_1)
+        expect(a_double).to receive(:foo).once.and_return(:val_1)
         expect(a_double.foo).to eq(:val_1)
       end
     end
@@ -17,7 +17,7 @@ module RSpec
       before(:each) do
         @double = double
         @return_values = [1,2,3]
-        @double.should_receive(:do_something).and_return(@return_values[0],@return_values[1],@return_values[2])
+        expect(@double).to receive(:do_something).and_return(@return_values[0],@return_values[1],@return_values[2])
       end
 
       it "returns values in order" do
@@ -28,7 +28,7 @@ module RSpec
       end
 
       it "falls back to a previously stubbed value" do
-        @double.stub :do_something => :stub_result
+        allow(@double).to receive_messages :do_something => :stub_result
         expect(@double.do_something).to eq @return_values[0]
         expect(@double.do_something).to eq @return_values[1]
         expect(@double.do_something).to eq @return_values[2]
@@ -54,7 +54,7 @@ module RSpec
       before(:each) do
         @double = double
         @return_values = [1,2,3]
-        @double.should_receive(:do_something).exactly(3).times.and_return(@return_values[0], @return_values[1], @return_values[2])
+        expect(@double).to receive(:do_something).exactly(3).times.and_return(@return_values[0], @return_values[1], @return_values[2])
       end
 
       it "returns values in order to consecutive calls" do
@@ -68,7 +68,7 @@ module RSpec
     describe "a message expectation with multiple return values specifying at_least less than the number of values" do
       before(:each) do
         @double = double
-        @double.should_receive(:do_something).at_least(:twice).with(no_args).and_return(11, 22)
+        expect(@double).to receive(:do_something).at_least(:twice).with(no_args).and_return(11, 22)
       end
 
       it "uses the last return value for subsequent calls" do
@@ -84,7 +84,7 @@ module RSpec
       end
 
       context "when method is stubbed too" do
-        before { @double.stub(:do_something).and_return :stub_result }
+        before { allow(@double).to receive(:do_something).and_return :stub_result }
 
         it "uses the last value for subsequent calls" do
           expect(@double.do_something).to equal(11)
@@ -103,7 +103,7 @@ module RSpec
     describe "a message expectation with multiple return values with a specified count larger than the number of values" do
       before(:each) do
         @double = RSpec::Mocks::Double.new("double")
-        @double.should_receive(:do_something).exactly(3).times.and_return(11, 22)
+        expect(@double).to receive(:do_something).exactly(3).times.and_return(11, 22)
       end
 
       it "uses the last return value for subsequent calls" do

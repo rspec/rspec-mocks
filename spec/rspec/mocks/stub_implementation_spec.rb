@@ -4,7 +4,7 @@ module RSpec
       describe "with no args" do
         it "execs the block when called" do
           obj = double()
-          obj.stub(:foo) { :bar }
+          allow(obj).to receive(:foo) { :bar }
           expect(obj.foo).to eq :bar
         end
       end
@@ -12,7 +12,7 @@ module RSpec
       describe "with one arg" do
         it "execs the block with that arg when called" do
           obj = double()
-          obj.stub(:foo) {|given| given}
+          allow(obj).to receive(:foo) {|given| given}
           expect(obj.foo(:bar)).to eq :bar
         end
       end
@@ -20,7 +20,7 @@ module RSpec
       describe "with variable args" do
         it "execs the block when called" do
           obj = double()
-          obj.stub(:foo) {|*given| given.first}
+          allow(obj).to receive(:foo) {|*given| given.first}
           expect(obj.foo(:bar)).to eq :bar
         end
       end
@@ -31,7 +31,7 @@ module RSpec
       it "replaces the stubbed method with the original method" do
         obj = Object.new
         def obj.foo; :original; end
-        obj.stub(:foo)
+        allow(obj).to receive(:foo)
         obj.unstub(:foo)
         expect(obj.foo).to eq :original
       end
@@ -39,8 +39,8 @@ module RSpec
       it "removes all stubs with the supplied method name" do
         obj = Object.new
         def obj.foo; :original; end
-        obj.stub(:foo).with(1)
-        obj.stub(:foo).with(2)
+        allow(obj).to receive(:foo).with(1)
+        allow(obj).to receive(:foo).with(2)
         obj.unstub(:foo)
         expect(obj.foo).to eq :original
       end
@@ -48,9 +48,9 @@ module RSpec
       it "does not remove any expectations with the same method name" do
         obj = Object.new
         def obj.foo; :original; end
-        obj.should_receive(:foo).with(3).and_return(:three)
-        obj.stub(:foo).with(1)
-        obj.stub(:foo).with(2)
+        expect(obj).to receive(:foo).with(3).and_return(:three)
+        allow(obj).to receive(:foo).with(1)
+        allow(obj).to receive(:foo).with(2)
         obj.unstub(:foo)
         expect(obj.foo(3)).to eq :three
       end
@@ -59,8 +59,8 @@ module RSpec
         parent = Class.new
         child  = Class.new(parent)
 
-        parent.stub(:new)
-        child.stub(:new)
+        allow(parent).to receive(:new)
+        allow(child).to receive(:new)
         parent.unstub(:new)
         child.unstub(:new)
 

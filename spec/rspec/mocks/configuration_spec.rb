@@ -115,8 +115,8 @@ module RSpec
           end
 
           it "does not warn about the should syntax" do
-            RSpec.should_not_receive(:deprecate)
-            Object.new.should_not_receive(:bees)
+            expect(RSpec).not_to receive(:deprecate)
+            expect(Object.new).not_to receive(:bees)
           end
         end
       end

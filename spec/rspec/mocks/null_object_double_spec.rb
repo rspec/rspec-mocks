@@ -10,7 +10,7 @@ module RSpec
       end
 
       it "says it responds to messages it does understand" do
-        @double.stub(:foo)
+        allow(@double).to receive(:foo)
         expect(@double).to respond_to(:foo)
       end
 
@@ -35,12 +35,12 @@ module RSpec
       end
 
       it "allows explicit stubs" do
-        @double.stub(:foo) { "bar" }
+        allow(@double).to receive(:foo) { "bar" }
         expect(@double.foo).to eq("bar")
       end
 
       it "allows explicit expectation" do
-        @double.should_receive(:something)
+        expect(@double).to receive(:something)
         @double.something
       end
 
@@ -49,19 +49,19 @@ module RSpec
       end
 
       it 'continues to return self from an explicit expectation' do
-        @double.should_receive(:bar)
+        expect(@double).to receive(:bar)
         expect(@double.foo.bar).to be(@double)
       end
 
       it 'returns an explicitly stubbed value from an expectation with no implementation' do
-        @double.stub(:foo => "bar")
-        @double.should_receive(:foo)
+        allow(@double).to receive_messages(:foo => "bar")
+        expect(@double).to receive(:foo)
         expect(@double.foo).to eq("bar")
       end
 
       it "fails verification when explicit exception not met" do
         expect {
-          @double.should_receive(:something)
+          expect(@double).to receive(:something)
           verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
@@ -82,13 +82,13 @@ module RSpec
       end
 
       it "allows expected message with different args first" do
-        @double.should_receive(:message).with(:expected_arg)
+        expect(@double).to receive(:message).with(:expected_arg)
         @double.message(:unexpected_arg)
         @double.message(:expected_arg)
       end
 
       it "allows expected message with different args second" do
-        @double.should_receive(:message).with(:expected_arg)
+        expect(@double).to receive(:message).with(:expected_arg)
         @double.message(:expected_arg)
         @double.message(:unexpected_arg)
       end

@@ -48,8 +48,8 @@ describe "and_call_original" do
     end
 
     it 'ignores prior declared stubs' do
-      instance.stub(:meth_1).and_return(:stubbed_value)
-      instance.should_receive(:meth_1).and_call_original
+      allow(instance).to receive(:meth_1).and_return(:stubbed_value)
+      expect(instance).to receive(:meth_1).and_call_original
       expect(instance.meth_1).to eq(:original)
     end
 
@@ -76,28 +76,28 @@ describe "and_call_original" do
     context "for singleton methods" do
       it 'works' do
         def instance.foo; :bar; end
-        instance.should_receive(:foo).and_call_original
+        expect(instance).to receive(:foo).and_call_original
         expect(instance.foo).to eq(:bar)
       end
 
       it 'works for SimpleDelegator subclasses', :if => (RUBY_VERSION.to_f > 1.8) do
         instance = Class.new(SimpleDelegator).new(1)
         def instance.foo; :bar; end
-        instance.should_receive(:foo).and_call_original
+        expect(instance).to receive(:foo).and_call_original
         expect(instance.foo).to eq(:bar)
       end
     end
 
     it 'works for methods added through an extended module' do
       instance.extend Module.new { def foo; :bar; end }
-      instance.should_receive(:foo).and_call_original
+      expect(instance).to receive(:foo).and_call_original
       expect(instance.foo).to eq(:bar)
     end
 
     it "works for method added through an extended module onto a class's ancestor" do
       sub_sub_klass = Class.new(Class.new(klass))
       klass.extend Module.new { def foo; :bar; end }
-      sub_sub_klass.should_receive(:foo).and_call_original
+      expect(sub_sub_klass).to receive(:foo).and_call_original
       expect(sub_sub_klass.foo).to eq(:bar)
     end
 
@@ -106,7 +106,7 @@ describe "and_call_original" do
       klass.extend Module.new { def foo; :klass_bar; end }
       sub_klass = Class.new(klass)
       sub_klass.extend Module.new { def foo; :sub_klass_bar; end }
-      sub_klass.should_receive(:foo).and_call_original
+      expect(sub_klass).to receive(:foo).and_call_original
       expect(sub_klass.foo).to eq(:sub_klass_bar)
     end
 
@@ -115,49 +115,49 @@ describe "and_call_original" do
       klass.extend Module.new { def foo; :klass_bar; end }
       sub_klass = Class.new(klass) { def self.foo; :sub_klass_bar; end }
       sub_sub_klass = Class.new(sub_klass)
-      sub_sub_klass.should_receive(:foo).and_call_original
+      expect(sub_sub_klass).to receive(:foo).and_call_original
       expect(sub_sub_klass.foo).to eq(:sub_klass_bar)
     end
 
     context 'when using any_instance' do
       it 'works for instance methods defined on the class' do
-        klass.any_instance.should_receive(:meth_1).and_call_original
+        expect_any_instance_of(klass).to receive(:meth_1).and_call_original
         expect(klass.new.meth_1).to eq(:original)
       end
 
       it 'works for instance methods defined on the superclass of the class' do
         subclass = Class.new(klass)
-        subclass.any_instance.should_receive(:meth_1).and_call_original
+        expect_any_instance_of(subclass).to receive(:meth_1).and_call_original
         expect(subclass.new.meth_1).to eq(:original)
       end
 
       it 'works when mocking the method on one class and calling the method on an instance of a subclass' do
-        klass.any_instance.should_receive(:meth_1).and_call_original
+        expect_any_instance_of(klass).to receive(:meth_1).and_call_original
         expect(Class.new(klass).new.meth_1).to eq(:original)
       end
     end
 
     it 'works for class methods defined on a superclass' do
       subclass = Class.new(klass)
-      subclass.should_receive(:new_instance).and_call_original
+      expect(subclass).to receive(:new_instance).and_call_original
       expect(subclass.new_instance).to be_a(subclass)
     end
 
     it 'works for class methods defined on a grandparent class' do
       sub_subclass = Class.new(Class.new(klass))
-      sub_subclass.should_receive(:new_instance).and_call_original
+      expect(sub_subclass).to receive(:new_instance).and_call_original
       expect(sub_subclass.new_instance).to be_a(sub_subclass)
     end
 
     it 'works for class methods defined on the Class class' do
-      klass.should_receive(:new).and_call_original
+      expect(klass).to receive(:new).and_call_original
       expect(klass.new).to be_an_instance_of(klass)
     end
 
     it "works for instance methods defined on the object's class's superclass" do
       subclass = Class.new(klass)
       inst = subclass.new
-      inst.should_receive(:meth_1).and_call_original
+      expect(inst).to receive(:meth_1).and_call_original
       expect(inst.meth_1).to eq(:original)
     end
 
@@ -168,7 +168,7 @@ describe "and_call_original" do
         end
       end
 
-      klass.should_receive(:alternate_new).and_call_original
+      expect(klass).to receive(:alternate_new).and_call_original
       expect(klass.alternate_new).to be_an_instance_of(klass)
     end
 
@@ -188,24 +188,24 @@ describe "and_call_original" do
       end
 
       it 'works when the method_missing definition handles the message' do
-        instance.should_receive(:greet_jack).and_call_original
+        expect(instance).to receive(:greet_jack).and_call_original
         expect(instance.greet_jack).to eq("Hello, jack")
       end
 
       it 'works for an any_instance partial mock' do
-        klass.any_instance.should_receive(:greet_jack).and_call_original
+        expect_any_instance_of(klass).to receive(:greet_jack).and_call_original
         expect(instance.greet_jack).to eq("Hello, jack")
       end
 
       it 'raises an error for an unhandled message for an any_instance partial mock' do
-        klass.any_instance.should_receive(:not_a_handled_message).and_call_original
+        expect_any_instance_of(klass).to receive(:not_a_handled_message).and_call_original
         expect {
           instance.not_a_handled_message
         }.to raise_error(NameError, /not_a_handled_message/)
       end
 
       it 'raises an error on invocation if method_missing does not handle the message' do
-        instance.should_receive(:not_a_handled_message).and_call_original
+        expect(instance).to receive(:not_a_handled_message).and_call_original
 
         # Note: it should raise a NoMethodError (and usually does), but
         # due to a weird rspec-expectations issue (see #183) it sometimes
@@ -237,7 +237,7 @@ describe "and_call_original" do
     let(:request) { request_klass.new(:get, "http://foo.com/bar") }
 
     it 'still works even though #method has been overriden' do
-      request.should_receive(:perform).and_call_original
+      expect(request).to receive(:perform).and_call_original
       expect(request.perform).to eq(:the_response)
     end
 
@@ -246,7 +246,7 @@ describe "and_call_original" do
         :a_response
       end
 
-      request.should_receive(:perform).and_call_original
+      expect(request).to receive(:perform).and_call_original
       expect(request.perform).to eq(:a_response)
     end
   end
@@ -256,7 +256,7 @@ describe "and_call_original" do
 
     it 'raises an error even if the double object responds to the message' do
       expect(instance.to_s).to be_a(String)
-      mock_expectation = instance.should_receive(:to_s)
+      mock_expectation = expect(instance).to receive(:to_s)
       instance.to_s # to satisfy the expectation
 
       expect {

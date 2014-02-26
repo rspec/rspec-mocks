@@ -78,7 +78,7 @@ module RSpec
 
           it 'allows any instance method to be stubbed' do
             o = instance_double('NonloadedClass')
-            o.stub(:undefined_instance_method).with(:arg).and_return(true)
+            allow(o).to receive(:undefined_instance_method).with(:arg).and_return(true)
             expect(o.undefined_instance_method(:arg)).to eq(true)
           end
 
@@ -125,8 +125,8 @@ module RSpec
             o = instance_double('LoadedClass', :defined_instance_method => 1)
             expect(o.defined_instance_method).to eq(1)
 
-            prevents { o.stub(:undefined_instance_method) }
-            prevents { o.stub(:defined_class_method) }
+            prevents { allow(o).to receive(:undefined_instance_method) }
+            prevents { allow(o).to receive(:defined_class_method) }
           end
 
           it 'only allows instance methods that exist to be expected' do
@@ -136,8 +136,8 @@ module RSpec
 
             prevents { expect(o).to receive(:undefined_instance_method) }
             prevents { expect(o).to receive(:defined_class_method) }
-            prevents { o.should_receive(:undefined_instance_method) }
-            prevents { o.should_receive(:defined_class_method) }
+            prevents { expect(o).to receive(:undefined_instance_method) }
+            prevents { expect(o).to receive(:defined_class_method) }
           end
 
           it 'allows `send` to be stubbed if it is defined on the class' do
@@ -352,8 +352,8 @@ module RSpec
             o = class_double('LoadedClass', :defined_class_method => 1)
             expect(o.defined_class_method).to eq(1)
 
-            prevents { o.stub(:undefined_instance_method) }
-            prevents { o.stub(:defined_instance_method) }
+            prevents { allow(o).to receive(:undefined_instance_method) }
+            prevents { allow(o).to receive(:defined_instance_method) }
           end
 
           it 'only allows class methods that exist to be expected' do
@@ -363,8 +363,8 @@ module RSpec
 
             prevents { expect(o).to receive(:undefined_instance_method) }
             prevents { expect(o).to receive(:defined_instance_method) }
-            prevents { o.should_receive(:undefined_instance_method) }
-            prevents { o.should_receive(:defined_instance_method) }
+            prevents { expect(o).to receive(:undefined_instance_method) }
+            prevents { expect(o).to receive(:defined_instance_method) }
           end
 
           it 'gives a descriptive error message for NoMethodError' do

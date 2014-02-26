@@ -51,7 +51,7 @@ describe "Using rspec-mocks features in before(:all) blocks" do
   describe "#stub" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
-        Object.stub(:foo)
+        allow(Object).to receive(:foo)
       end
     end
   end
@@ -67,7 +67,7 @@ describe "Using rspec-mocks features in before(:all) blocks" do
   describe "#should_receive" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
-        Object.should_receive(:foo)
+        expect(Object).to receive(:foo)
       end
     end
   end
@@ -75,7 +75,7 @@ describe "Using rspec-mocks features in before(:all) blocks" do
   describe "#should_not_receive" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
-        Object.should_not_receive(:foo)
+        expect(Object).not_to receive(:foo)
       end
     end
   end
@@ -83,7 +83,7 @@ describe "Using rspec-mocks features in before(:all) blocks" do
   describe "#any_instance" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
-        Object.any_instance.should_receive(:foo)
+        expect_any_instance_of(Object).to receive(:foo)
       end
     end
   end
@@ -91,7 +91,7 @@ describe "Using rspec-mocks features in before(:all) blocks" do
   describe "#stub_chain" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
-        Object.stub_chain(:foo)
+        allow(Object).to receive_message_chain(:foo)
       end
     end
   end
