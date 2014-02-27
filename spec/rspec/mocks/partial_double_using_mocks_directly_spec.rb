@@ -25,16 +25,6 @@ module RSpec::Mocks
 
     let(:obj) { klass.new }
 
-    # See http://rubyforge.org/tracker/index.php?func=detail&aid=10263&group_id=797&atid=3149
-    # specify "should clear expectations on verify" do
-    #     obj.should_receive(:msg)
-    #     obj.msg
-    #     verify obj
-    #     expect {
-    #       obj.msg
-    #     }.to raise_error(NoMethodError)
-    #
-    # end
     it "fails when expected message is not received" do
       expect(obj).to receive(:msg)
       expect {
