@@ -32,6 +32,11 @@ module RSpec
         ::RSpec::Mocks.space.reset_all
       end
 
+      specify "the use of ConstantStubber is deprecated" do
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+        expect(RSpec::Mocks::ConstantStubber).to eq RSpec::Mocks::ConstantMutator
+      end
+
       shared_context "constant example methods" do |const_name|
         define_method :const do
           recursive_const_get(const_name)
