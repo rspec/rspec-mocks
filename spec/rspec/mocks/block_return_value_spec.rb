@@ -27,7 +27,7 @@ describe "a double declaration with a block handed to:" do
     it 'forwards all given args to the block, even when it receives a block' do
       obj = Object.new
       yielded_args = []
-      eval("obj.stub(:foo) { |*args, &bl| yielded_args << args }")
+      allow(obj).to receive(:foo) { |*args, &bl| yielded_args << args }
       obj.foo(1, 2, 3)
 
       expect(yielded_args).to eq([[1, 2, 3]])
