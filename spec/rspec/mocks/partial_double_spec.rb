@@ -23,7 +23,7 @@ module RSpec
         object.blah
       end
 
-      it "should_not_receive mocks out the method" do
+      it "can disallow messages from being received" do
         expect(object).not_to receive(:fuhbar)
         expect {
           object.fuhbar
@@ -33,40 +33,40 @@ module RSpec
         )
       end
 
-      it "should_receive mocks out the method" do
+      it "can expect a message and set a return value" do
         expect(object).to receive(:foobar).with(:test_param).and_return(1)
         expect(object.foobar(:test_param)).to equal(1)
       end
 
-      it "should_receive handles a hash" do
+      it "can accept a hash as a message argument" do
         expect(object).to receive(:foobar).with(:key => "value").and_return(1)
         expect(object.foobar(:key => "value")).to equal(1)
       end
 
-      it "should_receive handles an inner hash" do
+      it "can accept an inner hash as a message argument" do
         hash = {:a => {:key => "value"}}
         expect(object).to receive(:foobar).with(:key => "value").and_return(1)
         expect(object.foobar(hash[:a])).to equal(1)
       end
 
-      it "should_receive returns a positive message expectation" do
+      it "can create a positive message expectation" do
         expect(expect(object).to receive(:foobar)).not_to be_negative
         object.foobar
       end
 
-      it "should_receive verifies method was called" do
+      it "verifies the method was called when expecting a message" do
         expect(object).to receive(:foobar).with(:test_param).and_return(1)
         expect {
           verify object
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
-      it "should_receive also takes a String argument" do
+      it "can accept the string form of a message for a positive message expectation" do
         expect(object).to receive('foobar')
         object.foobar
       end
 
-      it "should_not_receive also takes a String argument" do
+      it "can accept the string form of a message for a negative message expectation" do
         expect(object).not_to receive('foobar')
         expect {
           object.foobar

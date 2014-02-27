@@ -119,7 +119,7 @@ module RSpec
         end
       end
 
-      it "reports line number of expectation of unreceived message after #should_receive after similar stub" do
+      it "reports line number of expectation of unreceived message after a message expecation after similar stub" do
         allow(@double).to receive(:wont_happen)
         expected_error_line = __LINE__; expect(@double).to receive(:wont_happen).with("x", 3)
         begin
@@ -197,7 +197,7 @@ module RSpec
       end
 
       context "when specifying a message should not be received with specific args" do
-        context "using `should_not_receive`" do
+        context "using `expect(...).not_to receive()`" do
           it 'passes when receiving the message with different args' do
             expect(@double).not_to receive(:not_expected).with("unexpected text")
             @double.not_expected "really unexpected text"
@@ -205,7 +205,7 @@ module RSpec
           end
         end
 
-        context "using `should_receive().never`" do
+        context "using `expect(...).to receive().never`" do
           it 'passes when receiving the message with different args' do
             expect(@double).to receive(:not_expected).with("unexpected text").never
             @double.not_expected "really unexpected text"
@@ -214,7 +214,7 @@ module RSpec
         end
       end
 
-      it 'does not get confused when `should_not_received` is used with a string and symbol message' do
+      it 'does not get confused when a negative expecation is used with a string and symbol message' do
         allow(@double).to receive(:foo) { 3 }
         expect(@double).not_to receive(:foo).with(1)
         expect(@double).not_to receive("foo").with(2)
@@ -223,7 +223,7 @@ module RSpec
         verify @double
       end
 
-      it 'does not get confused when `should_received` is used with a string and symbol message' do
+      it 'does not get confused when a positive expectation is used with a string and symbol message' do
         expect(@double).to receive(:foo).with(1)
         expect(@double).to receive("foo").with(2)
 
@@ -710,7 +710,7 @@ module RSpec
           @calls = @calls + 1
         end
 
-        it "calls the block after #should_receive" do
+        it "supports a block passed to `receive` for `expect`" do
           expect(@double).to receive(:foo) { add_call }
 
           @double.foo
@@ -718,7 +718,7 @@ module RSpec
           expect(@calls).to eq 1
         end
 
-        it "calls the block after #should_receive after a similar stub" do
+        it "supports a block passed to `receive` for `expect` after a similar stub" do
           allow(@double).to receive(:foo).and_return(:bar)
           expect(@double).to receive(:foo) { add_call }
 

@@ -1,5 +1,5 @@
 describe "a double declaration with a block handed to:" do
-  describe "should_receive" do
+  describe "expect(...).to receive" do
     it "returns the value of executing the block" do
       obj = Object.new
       expect(obj).to receive(:foo) { 'bar' }
@@ -15,7 +15,7 @@ describe "a double declaration with a block handed to:" do
     end
   end
 
-  describe "stub" do
+  describe "allow(...).to receive" do
     it "returns the value of executing the block" do
       obj = Object.new
       allow(obj).to receive(:foo) { 'bar' }
