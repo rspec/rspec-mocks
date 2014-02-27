@@ -5,12 +5,12 @@ describe RSpec::Mocks::Double do
   describe "#and_yield" do
     context 'when the method double has been constrained by `with`' do
       it 'uses the default stub if the provided args do not match' do
-        obj.stub(:foo) { 15 }
-        obj.stub(:foo).with(:yield).and_yield
+        allow(obj).to receive(:foo) { 15 }
+        allow(obj).to receive(:foo).with(:yield).and_yield
 
         # should_receive is required to trigger the bug:
         # https://github.com/rspec/rspec-mocks/issues/127
-        obj.should_receive(:foo)
+        expect(obj).to receive(:foo)
 
         expect(obj.foo(:dont_yield)).to eq(15)
       end
@@ -20,14 +20,14 @@ describe RSpec::Mocks::Double do
 
       it "evaluates the supplied block as it is read" do
         evaluated = false
-        obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
+        allow(obj).to receive(:method_that_accepts_a_block).and_yield do |eval_context|
           evaluated = true
         end
         expect(evaluated).to be_truthy
       end
 
       it "passes an eval context object to the supplied block" do
-        obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
+        allow(obj).to receive(:method_that_accepts_a_block).and_yield do |eval_context|
           expect(eval_context).not_to be_nil
         end
       end
@@ -36,7 +36,7 @@ describe RSpec::Mocks::Double do
         expected_eval_context = nil
         actual_eval_context = nil
 
-        obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
+        allow(obj).to receive(:method_that_accepts_a_block).and_yield do |eval_context|
           expected_eval_context = eval_context
         end
 
@@ -51,9 +51,9 @@ describe RSpec::Mocks::Double do
 
         it "passes when expectations set on the eval context are met" do
           configured_eval_context = nil
-          obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
+          allow(obj).to receive(:method_that_accepts_a_block).and_yield do |eval_context|
             configured_eval_context = eval_context
-            configured_eval_context.should_receive(:foo)
+            expect(configured_eval_context).to receive(:foo)
           end
 
           obj.method_that_accepts_a_block do
@@ -65,9 +65,9 @@ describe RSpec::Mocks::Double do
 
         it "fails when expectations set on the eval context are not met" do
           configured_eval_context = nil
-          obj.stub(:method_that_accepts_a_block).and_yield do |eval_context|
+          allow(obj).to receive(:method_that_accepts_a_block).and_yield do |eval_context|
             configured_eval_context = eval_context
-            configured_eval_context.should_receive(:foo)
+            expect(configured_eval_context).to receive(:foo)
           end
 
           obj.method_that_accepts_a_block do
@@ -84,10 +84,10 @@ describe RSpec::Mocks::Double do
         it "passes when expectations set on the eval context and yielded arguments are met" do
           configured_eval_context = nil
           yielded_arg = Object.new
-          obj.stub(:method_that_accepts_a_block).and_yield(yielded_arg) do |eval_context|
+          allow(obj).to receive(:method_that_accepts_a_block).and_yield(yielded_arg) do |eval_context|
             configured_eval_context = eval_context
-            configured_eval_context.should_receive(:foo)
-            yielded_arg.should_receive(:bar)
+            expect(configured_eval_context).to receive(:foo)
+            expect(yielded_arg).to receive(:bar)
           end
 
           obj.method_that_accepts_a_block do |obj|
@@ -102,10 +102,10 @@ describe RSpec::Mocks::Double do
         it "fails when expectations set on the eval context and yielded arguments are not met" do
           configured_eval_context = nil
           yielded_arg = Object.new
-          obj.stub(:method_that_accepts_a_block).and_yield(yielded_arg) do |eval_context|
+          allow(obj).to receive(:method_that_accepts_a_block).and_yield(yielded_arg) do |eval_context|
             configured_eval_context = eval_context
-            configured_eval_context.should_receive(:foo)
-            yielded_arg.should_receive(:bar)
+            expect(configured_eval_context).to receive(:foo)
+            expect(yielded_arg).to receive(:bar)
           end
 
           obj.method_that_accepts_a_block do |obj|

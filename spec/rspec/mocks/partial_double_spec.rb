@@ -4,14 +4,14 @@ module RSpec
       let(:object) { Object.new }
 
       it "names the class in the failure message" do
-        object.should_receive(:foo)
+        expect(object).to receive(:foo)
         expect do
           verify object
         end.to raise_error(RSpec::Mocks::MockExpectationError, /\(#<Object:.*>\).foo/)
       end
 
       it "names the class in the failure message when expectation is on class" do
-        Object.should_receive(:foo)
+        expect(Object).to receive(:foo)
         expect {
           verify Object
         }.to raise_error(RSpec::Mocks::MockExpectationError, /<Object \(class\)>/)
@@ -19,12 +19,12 @@ module RSpec
 
       it "does not conflict with @options in the object" do
         object.instance_exec { @options = Object.new }
-        object.should_receive(:blah)
+        expect(object).to receive(:blah)
         object.blah
       end
 
-      it "should_not_receive mocks out the method" do
-        object.should_not_receive(:fuhbar)
+      it "can disallow messages from being received" do
+        expect(object).not_to receive(:fuhbar)
         expect {
           object.fuhbar
         }.to raise_error(
@@ -33,45 +33,41 @@ module RSpec
         )
       end
 
-      it "should_not_receive returns a negative message expectation" do
-        expect(object.should_not_receive(:foobar)).to be_negative
-      end
-
-      it "should_receive mocks out the method" do
-        object.should_receive(:foobar).with(:test_param).and_return(1)
+      it "can expect a message and set a return value" do
+        expect(object).to receive(:foobar).with(:test_param).and_return(1)
         expect(object.foobar(:test_param)).to equal(1)
       end
 
-      it "should_receive handles a hash" do
-        object.should_receive(:foobar).with(:key => "value").and_return(1)
+      it "can accept a hash as a message argument" do
+        expect(object).to receive(:foobar).with(:key => "value").and_return(1)
         expect(object.foobar(:key => "value")).to equal(1)
       end
 
-      it "should_receive handles an inner hash" do
+      it "can accept an inner hash as a message argument" do
         hash = {:a => {:key => "value"}}
-        object.should_receive(:foobar).with(:key => "value").and_return(1)
+        expect(object).to receive(:foobar).with(:key => "value").and_return(1)
         expect(object.foobar(hash[:a])).to equal(1)
       end
 
-      it "should_receive returns a positive message expectation" do
-        expect(object.should_receive(:foobar)).not_to be_negative
+      it "can create a positive message expectation" do
+        expect(expect(object).to receive(:foobar)).not_to be_negative
         object.foobar
       end
 
-      it "should_receive verifies method was called" do
-        object.should_receive(:foobar).with(:test_param).and_return(1)
+      it "verifies the method was called when expecting a message" do
+        expect(object).to receive(:foobar).with(:test_param).and_return(1)
         expect {
           verify object
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
-      it "should_receive also takes a String argument" do
-        object.should_receive('foobar')
+      it "can accept the string form of a message for a positive message expectation" do
+        expect(object).to receive('foobar')
         object.foobar
       end
 
-      it "should_not_receive also takes a String argument" do
-        object.should_not_receive('foobar')
+      it "can accept the string form of a message for a negative message expectation" do
+        expect(object).not_to receive('foobar')
         expect {
           object.foobar
         }.to raise_error(RSpec::Mocks::MockExpectationError)
@@ -81,7 +77,7 @@ module RSpec
         allow_message_expectations_on_nil
 
         _nil = nil
-        _nil.should_receive(:foobar)
+        expect(_nil).to receive(:foobar)
         expect {
           verify _nil
         }.to raise_error(
@@ -97,7 +93,7 @@ module RSpec
           end
         end
 
-        klass.should_receive(:bar).with(1)
+        expect(klass).to receive(:bar).with(1)
         klass.bar(1)
 
         expect {
@@ -127,13 +123,13 @@ module RSpec
       let(:proxy) { proxy_class.new(wrapped_object) }
 
       it 'works properly' do
-        proxy.should_receive(:proxied?).and_return(false)
+        expect(proxy).to receive(:proxied?).and_return(false)
         expect(proxy).not_to be_proxied
       end
 
       it 'does not confuse the proxy and the proxied object' do
-        proxy.stub(:foo).and_return(:proxy_foo)
-        wrapped_object.stub(:foo).and_return(:wrapped_foo)
+        allow(proxy).to receive(:foo).and_return(:proxy_foo)
+        allow(wrapped_object).to receive(:foo).and_return(:wrapped_foo)
 
         expect(proxy.foo).to eq(:proxy_foo)
         expect(wrapped_object.foo).to eq(:wrapped_foo)
@@ -160,7 +156,7 @@ module RSpec
 
       it "does not raise an error when stubbing the object" do
         o = klass.new :foo
-        expect { o.stub(:bar) }.not_to raise_error
+        expect { allow(o).to receive(:bar) }.not_to raise_error
       end
     end
 
@@ -180,7 +176,7 @@ module RSpec
 
       describe "stubbing a base class class method" do
         before do
-          klass.stub(:find).and_return "stubbed_value"
+          allow(klass).to receive(:find).and_return "stubbed_value"
         end
 
         it "returns the value for the stub on the base class" do
@@ -210,19 +206,19 @@ module RSpec
       let(:object) { klass.new }
 
       it 'keeps public methods public' do
-        object.should_receive(:public_method)
+        expect(object).to receive(:public_method)
         expect(object.public_methods).to include_method(:public_method)
         object.public_method
       end
 
       it 'keeps private methods private' do
-        object.should_receive(:private_method)
+        expect(object).to receive(:private_method)
         expect(object.private_methods).to include_method(:private_method)
         object.public_method
       end
 
       it 'keeps protected methods protected' do
-        object.should_receive(:protected_method)
+        expect(object).to receive(:protected_method)
         expect(object.protected_methods).to include_method(:protected_method)
         object.public_method
       end

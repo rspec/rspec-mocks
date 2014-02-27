@@ -6,14 +6,14 @@ module RSpec
       context 'when a block is passed' do
         it 'raises ArgumentError' do
           expect {
-            obj.stub(:foo).and_return('bar') { 'baz' }
+            allow(obj).to receive(:foo).and_return('bar') { 'baz' }
           }.to raise_error(ArgumentError, /implementation block/i)
         end
       end
 
       context 'when no argument is passed' do
         it 'raises ArgumentError' do
-          expect { obj.stub(:foo).and_return }.to raise_error(ArgumentError)
+          expect { allow(obj).to receive(:foo).and_return }.to raise_error(ArgumentError)
         end
       end
     end

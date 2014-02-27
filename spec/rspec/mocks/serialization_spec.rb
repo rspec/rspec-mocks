@@ -35,7 +35,7 @@ module RSpec
       let(:serializable_object) { RSpec::Mocks::SerializableObject.new(7, "something") }
 
       def set_stub
-        serializable_object.stub(:bazz => 5)
+        allow(serializable_object).to receive_messages(:bazz => 5)
       end
 
       shared_examples_for 'normal YAML serialization' do

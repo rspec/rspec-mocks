@@ -29,24 +29,24 @@ module RSpec
 
       describe "using stub" do
         it "returns declared value when message is received" do
-          @instance.stub(:msg).and_return(:return_value)
+          allow(@instance).to receive(:msg).and_return(:return_value)
           expect(@instance.msg).to equal(:return_value)
           verify @instance
         end
       end
 
       it "instructs an instance to respond_to the message" do
-        @instance.stub(:msg)
+        allow(@instance).to receive(:msg)
         expect(@instance).to respond_to(:msg)
       end
 
       it "instructs a class object to respond_to the message" do
-        @class.stub(:msg)
+        allow(@class).to receive(:msg)
         expect(@class).to respond_to(:msg)
       end
 
       it "ignores when expected message is received with no args" do
-        @instance.stub(:msg)
+        allow(@instance).to receive(:msg)
         @instance.msg
         expect do
           verify @instance
@@ -54,7 +54,7 @@ module RSpec
       end
 
       it "ignores when message is received with args" do
-        @instance.stub(:msg)
+        allow(@instance).to receive(:msg)
         @instance.msg(:an_arg)
         expect do
           verify @instance
@@ -62,28 +62,28 @@ module RSpec
       end
 
       it "ignores when expected message is not received" do
-        @instance.stub(:msg)
+        allow(@instance).to receive(:msg)
         expect do
           verify @instance
         end.not_to raise_error
       end
 
       it "handles multiple stubbed methods" do
-        @instance.stub(:msg1 => 1, :msg2 => 2)
+        allow(@instance).to receive_messages(:msg1 => 1, :msg2 => 2)
         expect(@instance.msg1).to eq(1)
         expect(@instance.msg2).to eq(2)
       end
 
       describe "#rspec_reset" do
         it "removes stubbed methods that didn't exist" do
-          @instance.stub(:non_existent_method)
+          allow(@instance).to receive(:non_existent_method)
           reset @instance
           expect(@instance).not_to respond_to(:non_existent_method)
         end
 
         it "restores existing instance methods" do
           # See bug reports 8302 and 7805
-          @instance.stub(:existing_instance_method) { :stub_value }
+          allow(@instance).to receive(:existing_instance_method) { :stub_value }
           reset @instance
           expect(@instance.existing_instance_method).to eq(:original_value)
         end
@@ -100,7 +100,7 @@ module RSpec
           subclass.instance_variable_set(:@hello, "Hello")
           expect(subclass.say_hello).to eq("Hello")
 
-          klass.stub(:say_hello) { "Howdy" }
+          allow(klass).to receive(:say_hello) { "Howdy" }
           expect(subclass.say_hello).to eq("Howdy")
 
           reset klass
@@ -109,28 +109,28 @@ module RSpec
 
         it "restores existing private instance methods" do
           # See bug reports 8302 and 7805
-          @instance.stub(:existing_private_instance_method) { :stub_value }
+          allow(@instance).to receive(:existing_private_instance_method) { :stub_value }
           reset @instance
           expect(@instance.send(:existing_private_instance_method)).to eq(:original_value)
         end
 
         it "restores existing class methods" do
           # See bug reports 8302 and 7805
-          @class.stub(:existing_class_method) { :stub_value }
+          allow(@class).to receive(:existing_class_method) { :stub_value }
           reset @class
           expect(@class.existing_class_method).to eq(:original_value)
         end
 
         it "restores existing private class methods" do
           # See bug reports 8302 and 7805
-          @class.stub(:existing_private_class_method) { :stub_value }
+          allow(@class).to receive(:existing_private_class_method) { :stub_value }
           reset @class
           expect(@class.send(:existing_private_class_method)).to eq(:original_value)
         end
 
         it "does not remove existing methods that have been stubbed twice" do
-          @instance.stub(:existing_instance_method)
-          @instance.stub(:existing_instance_method)
+          allow(@instance).to receive(:existing_instance_method)
+          allow(@instance).to receive(:existing_instance_method)
 
           reset @instance
 
@@ -150,7 +150,7 @@ module RSpec
 
           expect(mod.hello).to eq(:hello)
 
-          mod.stub(:hello) { :stub }
+          allow(mod).to receive(:hello) { :stub }
           reset mod
 
           expect(mod.hello).to eq(:hello)
@@ -195,14 +195,14 @@ module RSpec
       end
 
       it "returns values in order to consecutive calls" do
-        @instance.stub(:msg).and_return("1",2,:three)
+        allow(@instance).to receive(:msg).and_return("1",2,:three)
         expect(@instance.msg).to eq("1")
         expect(@instance.msg).to eq(2)
         expect(@instance.msg).to eq(:three)
       end
 
       it "keeps returning last value in consecutive calls" do
-        @instance.stub(:msg).and_return("1",2,:three)
+        allow(@instance).to receive(:msg).and_return("1",2,:three)
         expect(@instance.msg).to eq("1")
         expect(@instance.msg).to eq(2)
         expect(@instance.msg).to eq(:three)
@@ -211,7 +211,7 @@ module RSpec
       end
 
       it "yields a specified object" do
-        @instance.stub(:method_that_yields).and_yield(:yielded_obj)
+        allow(@instance).to receive(:method_that_yields).and_yield(:yielded_obj)
         current_value = :value_before
         @instance.method_that_yields {|val| current_value = val}
         expect(current_value).to eq :yielded_obj
@@ -219,7 +219,7 @@ module RSpec
       end
 
       it "yields multiple times with multiple calls to and_yield" do
-        @instance.stub(:method_that_yields_multiple_times).and_yield(:yielded_value).
+        allow(@instance).to receive(:method_that_yields_multiple_times).and_yield(:yielded_value).
                                                        and_yield(:another_value)
         current_value = []
         @instance.method_that_yields_multiple_times {|val| current_value << val}
@@ -229,35 +229,35 @@ module RSpec
 
       it "yields a specified object and return another specified object" do
         yielded_obj = double("my mock")
-        yielded_obj.should_receive(:foo).with(:bar)
-        @instance.stub(:method_that_yields_and_returns).and_yield(yielded_obj).and_return(:baz)
+        expect(yielded_obj).to receive(:foo).with(:bar)
+        allow(@instance).to receive(:method_that_yields_and_returns).and_yield(yielded_obj).and_return(:baz)
         expect(@instance.method_that_yields_and_returns { |o| o.foo :bar }).to eq :baz
       end
 
       it "throws when told to" do
-        @stub.stub(:something).and_throw(:up)
+        allow(@stub).to receive(:something).and_throw(:up)
         expect { @stub.something }.to throw_symbol(:up)
       end
 
       it "throws with argument when told to" do
-        @stub.stub(:something).and_throw(:up, 'high')
+        allow(@stub).to receive(:something).and_throw(:up, 'high')
         expect { @stub.something }.to throw_symbol(:up, 'high')
       end
 
       it "overrides a pre-existing method" do
-        @stub.stub(:existing_instance_method).and_return(:updated_stub_value)
+        allow(@stub).to receive(:existing_instance_method).and_return(:updated_stub_value)
         expect(@stub.existing_instance_method).to eq :updated_stub_value
       end
 
       it "overrides a pre-existing stub" do
-        @stub.stub(:foo) { 'bar' }
-        @stub.stub(:foo) { 'baz' }
+        allow(@stub).to receive(:foo) { 'bar' }
+        allow(@stub).to receive(:foo) { 'baz' }
         expect(@stub.foo).to eq 'baz'
       end
 
       it "allows a stub and an expectation" do
-        @stub.stub(:foo).with("bar")
-        @stub.should_receive(:foo).with("baz")
+        allow(@stub).to receive(:foo).with("bar")
+        expect(@stub).to receive(:foo).with("baz")
         @stub.foo("bar")
         @stub.foo("baz")
       end
@@ -266,7 +266,7 @@ module RSpec
     describe "A method stub with args" do
       before(:each) do
         @stub = Object.new
-        @stub.stub(:foo).with("bar")
+        allow(@stub).to receive(:foo).with("bar")
       end
 
       it "does not complain if not called" do
@@ -289,13 +289,13 @@ module RSpec
       end
 
       it "does not complain if also mocked w/ different args" do
-        @stub.should_receive(:foo).with("baz")
+        expect(@stub).to receive(:foo).with("baz")
         @stub.foo("bar")
         @stub.foo("baz")
       end
 
       it "complains if also mocked w/ different args AND called w/ a 3rd set of args" do
-        @stub.should_receive(:foo).with("baz")
+        expect(@stub).to receive(:foo).with("baz")
         @stub.foo("bar")
         @stub.foo("baz")
         expect {
@@ -303,16 +303,12 @@ module RSpec
         }.to raise_error
       end
 
-      it "supports options" do
-        @stub.stub(:foo, :expected_from => "bar")
-      end
-
       it 'uses the correct stubbed response when responding to a mock expectation' do
-        @stub.stub(:bar) { 15 }
-        @stub.stub(:bar).with(:eighteen) { 18 }
-        @stub.stub(:bar).with(:thirteen) { 13 }
+        allow(@stub).to receive(:bar) { 15 }
+        allow(@stub).to receive(:bar).with(:eighteen) { 18 }
+        allow(@stub).to receive(:bar).with(:thirteen) { 13 }
 
-        @stub.should_receive(:bar).exactly(4).times
+        expect(@stub).to receive(:bar).exactly(4).times
 
         expect(@stub.bar(:blah)).to eq(15)
         expect(@stub.bar(:thirteen)).to eq(13)

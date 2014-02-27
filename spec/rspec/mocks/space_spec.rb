@@ -9,8 +9,8 @@ module RSpec::Mocks
       it "verifies all mocks within" do
         verifies = []
 
-        space.proxy_for(dbl_1).stub(:verify) { verifies << :dbl_1 }
-        space.proxy_for(dbl_2).stub(:verify) { verifies << :dbl_2 }
+        allow(space.proxy_for(dbl_1)).to receive(:verify) { verifies << :dbl_1 }
+        allow(space.proxy_for(dbl_2)).to receive(:verify) { verifies << :dbl_2 }
 
         space.verify_all
 
@@ -41,8 +41,8 @@ module RSpec::Mocks
       it "resets all mocks within" do
         resets = []
 
-        space.proxy_for(dbl_1).stub(:reset) { resets << :dbl_1 }
-        space.proxy_for(dbl_2).stub(:reset) { resets << :dbl_2 }
+        allow(space.proxy_for(dbl_1)).to receive(:reset) { resets << :dbl_1 }
+        allow(space.proxy_for(dbl_2)).to receive(:reset) { resets << :dbl_2 }
 
         space.reset_all
 

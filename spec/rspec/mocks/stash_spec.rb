@@ -10,8 +10,8 @@ module RSpec
       end
 
       it "keeps the original method intact after multiple expectations are added on the same method" do
-        klass.should_receive(:foo).with(:fizbaz).and_return(:wowwow)
-        klass.should_receive(:foo).with(:bazbar).and_return(:okay)
+        expect(klass).to receive(:foo).with(:fizbaz).and_return(:wowwow)
+        expect(klass).to receive(:foo).with(:bazbar).and_return(:okay)
 
         klass.foo(:fizbaz)
         klass.foo(:bazbar)
@@ -30,7 +30,7 @@ module RSpec
           end
         end
 
-        klass.should_receive(:alternate_new)
+        expect(klass).to receive(:alternate_new)
         expect(klass.alternate_new).to be_nil
 
         verify klass
