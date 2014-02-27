@@ -37,6 +37,19 @@ RSpec.describe "Using the legacy should syntax" do
       expect(double.stub(:foo).and_throw(:foo)).to be_nil
     end
 
+    it 'sets up a canned response' do
+      dbl = double
+      dbl.stub(:foo).and_return(3)
+      expect(dbl.foo).to eq(3)
+    end
+
+    it 'can stub multiple messages using a hash' do
+      dbl = double
+      dbl.stub(:foo => 2, :bar => 1)
+      expect(dbl.foo).to eq(2)
+      expect(dbl.bar).to eq(1)
+    end
+
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.stub(:foo)
@@ -45,6 +58,15 @@ RSpec.describe "Using the legacy should syntax" do
   end
 
   describe "#stub_chain" do
+    it 'can stub a sequence of messages' do
+      dbl = double
+      dbl.stub_chain(:foo, :bar, :baz => 17)
+      expect(dbl.foo.bar.baz).to eq(17)
+      expect {
+        dbl.foo.baz.bar
+      }.to raise_error(RSpec::Mocks::MockExpectationError)
+    end
+
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.stub_chain(:foo, :bar)
@@ -108,6 +130,25 @@ RSpec.describe "Using the legacy should syntax" do
   end
 
   describe "#should_receive" do
+    it 'fails on verification if the message is not received' do
+      dbl = double
+      dbl.should_receive(:foo)
+      expect { verify_all }.to raise_error(RSpec::Mocks::MockExpectationError)
+    end
+
+    it 'does not fail on verification if the message is received' do
+      dbl = double
+      dbl.should_receive(:foo)
+      dbl.foo
+      expect { verify_all }.not_to raise_error
+    end
+
+    it 'can set a canned response' do
+      dbl = double
+      dbl.should_receive(:bar).and_return(3)
+      expect(dbl.bar).to eq(3)
+    end
+
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.should_receive(:foo)
@@ -150,6 +191,18 @@ RSpec.describe "Using the legacy should syntax" do
       expect(Object.new.should_not_receive(:foobar)).to be_negative
     end
 
+    it 'fails when the message is received' do
+      dbl = double
+      dbl.should_not_receive(:foo)
+      expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
+    end
+
+    it 'does not fail on verification if the message is not received' do
+      dbl = double
+      dbl.should_not_receive(:foo)
+      expect { verify_all }.not_to raise_error
+    end
+
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
         Object.should_not_receive(:foo)
@@ -178,6 +231,17 @@ RSpec.describe "Using the legacy should syntax" do
       expect {
         klass.any_instance
       }.to change { RSpec::Mocks.space.any_instance_recorders.size }.by(1)
+    end
+
+    it 'can stub a method' do
+      klass.any_instance.stub(:foo).and_return(2)
+      expect(klass.new.foo).to eq(2)
+    end
+
+    it 'can mock a method' do
+      klass.any_instance.should_receive(:foo)
+      klass.new
+      expect { verify_all }.to raise_error(RSpec::Mocks::MockExpectationError)
     end
 
     context "invocation order" do
