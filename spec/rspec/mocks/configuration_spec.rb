@@ -127,7 +127,6 @@ module RSpec
         end
       end
 
-
       describe "configuring rspec-mocks directly" do
         it_behaves_like "configuring the syntax" do
           def configure_syntax(syntax)
