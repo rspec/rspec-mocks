@@ -116,7 +116,7 @@ module RSpec
 
     def self.const_missing(name)
       if const = DEPRECATED_CONSTANTS[name]
-        RSpec.deprecate("RSpec::Mocks::#{name}", :replacement => const.to_s)
+        RSpec.deprecate("RSpec::Mocks::#{name}", :replacement => const.name)
         const
       else
         super
