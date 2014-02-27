@@ -34,6 +34,12 @@ module RSpec
         let(:expect_methods)      { [:receive, :allow, :expect_any_instance_of, :allow_any_instance_of] }
 
         it 'defaults to enabling both the :should and :expect syntaxes' do
+          # This is kinda a hack, but since we want to enforce use of
+          # the expect syntax within our specs here, we have modified the
+          # config setting, which makes it hard to get at the original
+          # default value. in spec_helper.rb we store the default value
+          # in $default_rspec_mocks_syntax so we can use it here.
+          RSpec::Mocks.configuration.syntax = $default_rspec_mocks_syntax
           expect(dbl).to respond_to(*should_methods)
           expect(self).to respond_to(*expect_methods)
         end
