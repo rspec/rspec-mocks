@@ -152,14 +152,6 @@ Bug Fixes:
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
 
-### 2.99.0.rc1 Development
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta2...2-99-maintenance)
-
-Deprecations:
-
-* Deprecate `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
-* Deprecate `RSpec::Mocks::ConstantStubber`. (Jon Rowe)
-
 ### 2.99.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v2.99.0.beta2)
 
