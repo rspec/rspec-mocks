@@ -17,11 +17,7 @@ module RSpec
       let(:existing_method_return_value){ :existing_method_return_value }
 
       context "invocation order" do
-        context "#stub" do
-          it "raises an error if 'stub' follows 'with'" do
-            expect { allow(klass.any_instance.with("1")).to receive(:foo) }.to raise_error(NoMethodError)
-          end
-
+        context "when stubbing" do
           it "raises an error if 'with' follows 'and_return'" do
             expect { allow_any_instance_of(klass).to receive(:foo).and_return(1).with("1") }.to raise_error(NoMethodError)
           end
@@ -35,17 +31,7 @@ module RSpec
           end
         end
 
-        context "#stub_chain" do
-          it "raises an error if 'stub_chain' follows 'and_return'" do
-            expect { allow(klass.any_instance.and_return("1")).to receive_message_chain(:foo, :bar) }.to raise_error(NoMethodError)
-          end
-        end
-
-        context "#should_receive" do
-          it "raises an error if 'should_receive' follows 'with'" do
-            expect { expect(klass.any_instance.with("1")).to receive(:foo) }.to raise_error(NoMethodError)
-          end
-
+        context "when setting a message expectation" do
           it "raises an error if 'with' follows 'and_return'" do
             pending "see Github issue #42"
             expect { expect_any_instance_of(klass).to receive(:foo).and_return(1).with("1") }.to raise_error(NoMethodError)
@@ -58,7 +44,7 @@ module RSpec
         end
       end
 
-      context "with #stub" do
+      context "when stubbing" do
         it "does not suppress an exception when a method that doesn't exist is invoked" do
           allow_any_instance_of(klass).to receive(:foo)
           expect { klass.new.bar }.to raise_error(NoMethodError)
@@ -72,23 +58,18 @@ module RSpec
             expect(instance.bar).to eq('bar')
           end
 
-          it "adheres to the contract of multiple method stubbing withou any instance" do
-            expect(allow(Object.new).to receive_messages(:foo => 'foo', :bar => 'bar')).to eq(:foo => 'foo', :bar => 'bar')
-            expect(allow_any_instance_of(klass).to receive_messages(:foo => 'foo', :bar => 'bar')).to eq(:foo => 'foo', :bar => 'bar')
-          end
-
-          context "allows a chain of methods to be stubbed using #stub_chain" do
-            it "given symbols representing the methods" do
+          context "allows a chain of methods to be stubbed using #receive_message_chain" do
+            example "given symbols representing the methods" do
               allow_any_instance_of(klass).to receive_message_chain(:one, :two, :three).and_return(:four)
               expect(klass.new.one.two.three).to eq(:four)
             end
 
-            it "given a hash as the last argument uses the value as the expected return value" do
+            example "given a hash as the last argument uses the value as the expected return value" do
               allow_any_instance_of(klass).to receive_message_chain(:one, :two, :three => :four)
               expect(klass.new.one.two.three).to eq(:four)
             end
 
-            it "given a string of '.' separated method names representing the chain" do
+            example "given a string of '.' separated method names representing the chain" do
               allow_any_instance_of(klass).to receive_message_chain('one.two.three').and_return(:four)
               expect(klass.new.one.two.three).to eq(:four)
             end
@@ -127,7 +108,7 @@ module RSpec
           it 'handles method restoration on subclasses' do
             allow_any_instance_of(super_class).to receive(:foo)
             allow_any_instance_of(sub_class).to receive(:foo)
-            sub_class.any_instance.unstub(:foo)
+            allow_any_instance_of(sub_class).to receive(:foo).and_call_original
             expect(sub_class.new.foo).to eq("bar")
           end
         end
@@ -170,12 +151,12 @@ module RSpec
         end
 
         context "with #and_return" do
-          it "stubs a method that doesn't exist" do
+          it "can stub a method that doesn't exist" do
             allow_any_instance_of(klass).to receive(:foo).and_return(1)
             expect(klass.new.foo).to eq(1)
           end
 
-          it "stubs a method that exists" do
+          it "can stub a method that exists" do
             allow_any_instance_of(klass).to receive(:existing_method).and_return(1)
             expect(klass.new.existing_method).to eq(1)
           end
@@ -192,7 +173,7 @@ module RSpec
           it "yields the value specified" do
             yielded_value = Object.new
             allow_any_instance_of(klass).to receive(:foo).and_yield(yielded_value)
-            klass.new.foo{|value| expect(value).to be(yielded_value)}
+            expect { |b| klass.new.foo(&b) }.to yield_with_args(yielded_value)
           end
         end
 
@@ -217,14 +198,14 @@ module RSpec
         end
 
         context "with #and_raise" do
-          it "stubs a method that doesn't exist" do
+          it "can stub a method that doesn't exist" do
             allow_any_instance_of(klass).to receive(:foo).and_raise(CustomErrorForAnyInstanceSpec)
-            expect { klass.new.foo}.to raise_error(CustomErrorForAnyInstanceSpec)
+            expect { klass.new.foo }.to raise_error(CustomErrorForAnyInstanceSpec)
           end
 
-          it "stubs a method that exists" do
+          it "can stub a method that exists" do
             allow_any_instance_of(klass).to receive(:existing_method).and_raise(CustomErrorForAnyInstanceSpec)
-            expect { klass.new.existing_method}.to raise_error(CustomErrorForAnyInstanceSpec)
+            expect { klass.new.existing_method }.to raise_error(CustomErrorForAnyInstanceSpec)
           end
         end
 
@@ -298,17 +279,17 @@ module RSpec
         end
       end
 
-      context "unstub implementation" do
+      context "unstubbing using `and_call_original`" do
         it "replaces the stubbed method with the original method" do
           allow_any_instance_of(klass).to receive(:existing_method)
-          klass.any_instance.unstub(:existing_method)
+          allow_any_instance_of(klass).to receive(:existing_method).and_call_original
           expect(klass.new.existing_method).to eq(:existing_method_return_value)
         end
 
         it "removes all stubs with the supplied method name" do
           allow_any_instance_of(klass).to receive(:existing_method).with(1)
           allow_any_instance_of(klass).to receive(:existing_method).with(2)
-          klass.any_instance.unstub(:existing_method)
+          allow_any_instance_of(klass).to receive(:existing_method).and_call_original
           expect(klass.new.existing_method).to eq(:existing_method_return_value)
         end
 
@@ -316,7 +297,9 @@ module RSpec
           allow_any_instance_of(klass).to receive(:existing_method).and_return(:any_instance_value)
           obj = klass.new
           obj.existing_method
-          klass.any_instance.unstub(:existing_method)
+          allow_any_instance_of(klass).to receive(:existing_method).and_call_original
+
+          pending "not working for `and_call_original` yet, but works with `unstub`"
           expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
@@ -324,7 +307,9 @@ module RSpec
           allow_any_instance_of(klass).to receive(:existing_method).and_return(:any_instance_value)
           obj = Class.new(klass).new
           expect(obj.existing_method).to eq(:any_instance_value)
-          klass.any_instance.unstub(:existing_method)
+          allow_any_instance_of(klass).to receive(:existing_method).and_call_original
+
+          pending "not working for `and_call_original` yet, but works with `unstub`"
           expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
@@ -332,7 +317,7 @@ module RSpec
           allow_any_instance_of(klass).to receive(:existing_method).and_return(:any_instance_value)
           obj = klass.new
           allow(obj).to receive(:existing_method).and_return(:local_method)
-          klass.any_instance.unstub(:existing_method)
+          allow_any_instance_of(klass).to receive(:existing_method).and_call_original
           expect(obj.existing_method).to eq(:local_method)
         end
 
@@ -340,24 +325,18 @@ module RSpec
           expect_any_instance_of(klass).to receive(:existing_method_with_arguments).with(3).and_return(:three)
           allow_any_instance_of(klass).to receive(:existing_method_with_arguments).with(1)
           allow_any_instance_of(klass).to receive(:existing_method_with_arguments).with(2)
-          klass.any_instance.unstub(:existing_method_with_arguments)
+          allow_any_instance_of(klass).to receive(:existing_method_with_arguments).and_call_original
           expect(klass.new.existing_method_with_arguments(3)).to eq(:three)
-        end
-
-        it "raises a MockExpectationError if the method has not been stubbed" do
-          expect {
-            klass.any_instance.unstub(:existing_method)
-          }.to raise_error(RSpec::Mocks::MockExpectationError, 'The method `existing_method` was not stubbed or was already unstubbed')
         end
 
         it 'does not get confused about string vs symbol usage for the message' do
           allow_any_instance_of(klass).to receive(:existing_method) { :stubbed }
-          klass.any_instance.unstub("existing_method")
+          allow_any_instance_of(klass).to receive("existing_method").and_call_original
           expect(klass.new.existing_method).to eq(:existing_method_return_value)
         end
       end
 
-      context "with #should_not_receive" do
+      context "expect_any_instance_of(...).not_to receive" do
         it "fails if the method is called" do
           expect_any_instance_of(klass).not_to receive(:existing_method)
           expect { klass.new.existing_method }.to raise_error(RSpec::Mocks::MockExpectationError)
@@ -402,7 +381,7 @@ module RSpec
         end
       end
 
-      context "with #should_receive" do
+      context "setting a message expectation" do
         let(:foo_expectation_error_message) { 'Exactly one instance should have received the following message(s) but didn\'t: foo' }
         let(:existing_method_expectation_error_message) { 'Exactly one instance should have received the following message(s) but didn\'t: existing_method' }
 
@@ -474,7 +453,6 @@ module RSpec
                 expect(error.message).not_to eq(existing_method_expectation_error_message)
               end)
             end
-
 
             it "pass when expectations are met" do
               expect_any_instance_of(klass).to receive(:foo)
@@ -752,7 +730,7 @@ module RSpec
 
         context "existing method" do
           before(:each) do
-            klass.any_instance # to force it to be tracked
+            RSpec::Mocks.space.any_instance_recorder_for(klass) # to force it to be tracked
           end
 
           context "with stubbing" do
@@ -882,12 +860,6 @@ module RSpec
           end
         end
 
-        it "adds an class to the current space when #any_instance is invoked" do
-          expect {
-            klass.any_instance
-          }.to change { space.any_instance_recorders.size }.by(1)
-        end
-
         it "adds an instance to the current space when stubbed method is invoked" do
           allow_any_instance_of(klass).to receive(:foo)
           instance = klass.new
@@ -982,7 +954,7 @@ module RSpec
           klass = Class.new do
             undef_method :dup
           end
-          klass.any_instance
+          allow_any_instance_of(klass).to receive(:foo)
         end
 
         it "doesn't fail when dup accepts parameters" do
@@ -991,7 +963,7 @@ module RSpec
             end
           end
 
-          klass.any_instance
+          allow_any_instance_of(klass).to receive(:foo)
 
           expect { klass.new.dup('Dup dup dup') }.to_not raise_error
         end
