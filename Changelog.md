@@ -4,6 +4,7 @@
 Breaking Changes for 3.0.0:
 
 * Remove `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
+* Remove `RSpec::Mocks::ConstantStubber`. (Jon Rowe)
 
 Enhancements:
 
@@ -150,6 +151,14 @@ Bug Fixes:
   use `#inspect` rather than `#description` if `#description`
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
+
+### 2.99.0.rc1 Development
+[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta2...2-99-maintenance)
+
+Deprecations:
+
+* Deprecate `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
+* Deprecate `RSpec::Mocks::ConstantStubber`. (Jon Rowe)
 
 ### 2.99.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v2.99.0.beta2)
