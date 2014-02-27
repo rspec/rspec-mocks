@@ -1,21 +1,6 @@
+require 'support/before_all_shared_example_group'
+
 describe "Using rspec-mocks features in before(:all) blocks" do
-  shared_examples_for "fails in a before(:all) block" do
-    the_error = nil
-    before(:all) do
-      begin
-        use_rspec_mocks
-      rescue
-        the_error = $!
-      end
-    end
-
-    it "raises an error with a useful message" do
-      expect(the_error).to be_a_kind_of(RSpec::Mocks::OutsideOfExampleError)
-
-      expect(the_error.message).to match(/The use of doubles or partial doubles from rspec-mocks outside of the per-test lifecycle is not supported./)
-    end
-  end
-
   describe "#stub_const" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
@@ -48,50 +33,10 @@ describe "Using rspec-mocks features in before(:all) blocks" do
     end
   end
 
-  describe "#stub" do
+  describe "allow(...).to receive_message_chain" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks
-        allow(Object).to receive(:foo)
-      end
-    end
-  end
-
-  describe "#unstub" do
-    include_examples "fails in a before(:all) block" do
-      def use_rspec_mocks
-        Object.unstub(:foo)
-      end
-    end
-  end
-
-  describe "#should_receive" do
-    include_examples "fails in a before(:all) block" do
-      def use_rspec_mocks
-        expect(Object).to receive(:foo)
-      end
-    end
-  end
-
-  describe "#should_not_receive" do
-    include_examples "fails in a before(:all) block" do
-      def use_rspec_mocks
-        expect(Object).not_to receive(:foo)
-      end
-    end
-  end
-
-  describe "#any_instance" do
-    include_examples "fails in a before(:all) block" do
-      def use_rspec_mocks
-        expect_any_instance_of(Object).to receive(:foo)
-      end
-    end
-  end
-
-  describe "#stub_chain" do
-    include_examples "fails in a before(:all) block" do
-      def use_rspec_mocks
-        allow(Object).to receive_message_chain(:foo)
+        allow(Object).to receive_message_chain(:foo, :bar)
       end
     end
   end

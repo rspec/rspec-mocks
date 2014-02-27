@@ -1,5 +1,30 @@
+require 'support/before_all_shared_example_group'
+
 RSpec.describe "Using the legacy should syntax" do
   include_context "with syntax", [:should, :expect]
+
+  describe "#received_message?" do
+    let(:dbl) { double("double").as_null_object }
+
+    it "answers false for received_message? when no messages received" do
+      expect(dbl.received_message?(:message)).to be_falsey
+    end
+
+    it "answers true for received_message? when message received" do
+      dbl.message
+      expect(dbl.received_message?(:message)).to be_truthy
+    end
+
+    it "answers true for received_message? when message received with correct args" do
+      dbl.message 1,2,3
+      expect(dbl.received_message?(:message, 1,2,3)).to be_truthy
+    end
+
+    it "answers false for received_message? when message received with incorrect args" do
+      dbl.message 1,2,3
+      expect(dbl.received_message?(:message, 1,2)).to be_falsey
+    end
+  end
 
   describe "#stub" do
     it "supports options" do
@@ -11,9 +36,84 @@ RSpec.describe "Using the legacy should syntax" do
       expect(double.stub(:foo).and_raise("boom")).to be_nil
       expect(double.stub(:foo).and_throw(:foo)).to be_nil
     end
+
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        Object.stub(:foo)
+      end
+    end
+  end
+
+  describe "#stub_chain" do
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        Object.stub_chain(:foo, :bar)
+      end
+    end
+  end
+
+  describe "#unstub" do
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        Object.unstub(:foo)
+      end
+    end
+
+    it "replaces the stubbed method with the original method" do
+      obj = Object.new
+      def obj.foo; :original; end
+      obj.stub(:foo)
+      obj.unstub(:foo)
+      expect(obj.foo).to eq :original
+    end
+
+    it "removes all stubs with the supplied method name" do
+      obj = Object.new
+      def obj.foo; :original; end
+      obj.stub(:foo).with(1)
+      obj.stub(:foo).with(2)
+      obj.unstub(:foo)
+      expect(obj.foo).to eq :original
+    end
+
+    it "does not remove any expectations with the same method name" do
+      obj = Object.new
+      def obj.foo; :original; end
+      obj.should_receive(:foo).with(3).and_return(:three)
+      obj.stub(:foo).with(1)
+      obj.stub(:foo).with(2)
+      obj.unstub(:foo)
+      expect(obj.foo(3)).to eq :three
+    end
+
+    it "restores the correct implementations when stubbed and unstubbed on a parent and child class" do
+      parent = Class.new
+      child  = Class.new(parent)
+
+      parent.stub(:new)
+      child.stub(:new)
+      parent.unstub(:new)
+      child.unstub(:new)
+
+      expect(parent.new).to be_an_instance_of parent
+      expect(child.new).to be_an_instance_of child
+    end
+
+    it "raises a MockExpectationError if the method has not been stubbed" do
+      obj = Object.new
+      expect {
+        obj.unstub(:foo)
+      }.to raise_error(RSpec::Mocks::MockExpectationError)
+    end
   end
 
   describe "#should_receive" do
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        Object.should_receive(:foo)
+      end
+    end
+
     context "with an options hash" do
       it "reports the file and line submitted with :expected_from" do
         begin
@@ -49,6 +149,12 @@ RSpec.describe "Using the legacy should syntax" do
     it "returns a negative message expectation" do
       expect(Object.new.should_not_receive(:foobar)).to be_negative
     end
+
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        Object.should_not_receive(:foo)
+      end
+    end
   end
 
   describe "#any_instance" do
@@ -59,6 +165,12 @@ RSpec.describe "Using the legacy should syntax" do
         def another_existing_method; end
         private
         def private_method; :private_method_return_value; end
+      end
+    end
+
+    include_examples "fails in a before(:all) block" do
+      def use_rspec_mocks
+        Object.any_instance.should_receive(:foo)
       end
     end
 

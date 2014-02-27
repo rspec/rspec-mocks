@@ -26,13 +26,12 @@ module RSpec
       end
     end
 
-
-    describe "unstub implementation" do
+    describe "unstubbing with `and_call_original`" do
       it "replaces the stubbed method with the original method" do
         obj = Object.new
         def obj.foo; :original; end
         allow(obj).to receive(:foo)
-        obj.unstub(:foo)
+        allow(obj).to receive(:foo).and_call_original
         expect(obj.foo).to eq :original
       end
 
@@ -41,7 +40,7 @@ module RSpec
         def obj.foo; :original; end
         allow(obj).to receive(:foo).with(1)
         allow(obj).to receive(:foo).with(2)
-        obj.unstub(:foo)
+        allow(obj).to receive(:foo).and_call_original
         expect(obj.foo).to eq :original
       end
 
@@ -51,7 +50,7 @@ module RSpec
         expect(obj).to receive(:foo).with(3).and_return(:three)
         allow(obj).to receive(:foo).with(1)
         allow(obj).to receive(:foo).with(2)
-        obj.unstub(:foo)
+        allow(obj).to receive(:foo).and_call_original
         expect(obj.foo(3)).to eq :three
       end
 
@@ -61,18 +60,12 @@ module RSpec
 
         allow(parent).to receive(:new)
         allow(child).to receive(:new)
-        parent.unstub(:new)
-        child.unstub(:new)
+        allow(parent).to receive(:new).and_call_original
+        allow(child).to receive(:new).and_call_original
 
         expect(parent.new).to be_an_instance_of parent
+        pending "not working for `and_call_original` yet, but works with `unstub`"
         expect(child.new).to be_an_instance_of child
-      end
-
-      it "raises a MockExpectationError if the method has not been stubbed" do
-        obj = Object.new
-        expect {
-          obj.unstub(:foo)
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
     end
   end
