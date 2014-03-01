@@ -20,6 +20,7 @@ Bug Fixes:
 * Fix bug in `expect(dbl).to receive_message_chain(:foo, :bar)` where it was
   not setting an expectation for the last message in the chain.
   (Jonathan del Strother)
+* Allow verifying partial doubles to have private methods stubbed. (Xavier Shay)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)

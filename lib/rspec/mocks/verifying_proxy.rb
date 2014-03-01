@@ -145,7 +145,7 @@ module RSpec
       def initialize(object, method_name, proxy)
         super(object, method_name, proxy, self)
 
-        @valid_method = object.respond_to?(method_name)
+        @valid_method = object.respond_to?(method_name, true)
 
         # Trigger an eager find of the original method since if we find it any
         # later we end up getting a stubbed method with incorrect arity.

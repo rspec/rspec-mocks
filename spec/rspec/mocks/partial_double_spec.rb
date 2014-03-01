@@ -245,6 +245,12 @@ module RSpec
               super
             end
           end
+
+          private
+
+          def defined_private_method
+            "works"
+          end
         end
       end
 
@@ -257,6 +263,11 @@ module RSpec
       it 'allows valid methods to be expected' do
         expect(object).to receive(:implemented).and_call_original
         expect(object.implemented).to eq("works")
+      end
+
+      it 'allows private methods to be expected' do
+        expect(object).to receive(:defined_private_method).and_call_original
+        expect(object.send(:defined_private_method)).to eq("works")
       end
 
       it 'does not allow a non-existing method to be expected' do
