@@ -226,6 +226,16 @@ module RSpec
             object.freeze
             reset object
           end
+
+          it "only shows the warning once per object per method" do
+            target.to receive(:foo).and_return(:baz)
+            target.to receive(:foo2).and_return(:baz)
+            expect_warning_without_call_site(/rspec-mocks was unable to restore the original `foo` method on #{object.inspect}/).exactly(:once)
+            expect_warning_without_call_site(/rspec-mocks was unable to restore the original `foo2` method on #{object.inspect}/).exactly(:once)
+            object.freeze
+            reset object
+            reset object
+          end
         end
       end
 

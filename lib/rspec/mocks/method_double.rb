@@ -9,6 +9,7 @@ module RSpec
       def initialize(object, method_name, proxy)
         @method_name = method_name
         @object = object
+        @shown_frozen_warning = false
         @proxy = proxy
 
         @original_visibility = nil
@@ -90,11 +91,14 @@ module RSpec
 
       # @private
       def show_frozen_warning
-        RSpec.warn_with(
-          "WARNING: rspec-mocks was unable to restore the original `#{@method_name}` method on #{@object.inspect} because it has been frozen.  If you reuse this object, `#{@method_name}` will continue to respond with its stub implementation.",
-          :call_site                      => nil,
-          :use_spec_location_as_call_site => true
-        )
+        unless @shown_frozen_warning
+          @shown_frozen_warning = true
+          RSpec.warn_with(
+            "WARNING: rspec-mocks was unable to restore the original `#{@method_name}` method on #{@object.inspect} because it has been frozen.  If you reuse this object, `#{@method_name}` will continue to respond with its stub implementation.",
+            :call_site                      => nil,
+            :use_spec_location_as_call_site => true
+          )
+        end
       end
 
       # @private
