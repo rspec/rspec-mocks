@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     module AnyInstance
-      # @api private
+      # @private
       class ExpectationChain < Chain
         def expectation_fulfilled?
           @expectation_fulfilled || constrained_to_any_of?(:never, :any_number_of_times)
@@ -18,7 +18,7 @@ module RSpec
         end
       end
 
-      # @api private
+      # @private
       class PositiveExpectationChain < ExpectationChain
 
       private

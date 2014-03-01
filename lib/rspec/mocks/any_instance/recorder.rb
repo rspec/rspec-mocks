@@ -49,7 +49,7 @@ module RSpec
           end
         end
 
-        # @api private
+        # @private
         def expect_chain(*method_names_and_optional_return_values, &block)
           @expectation_set = true
           normalize_chain(*method_names_and_optional_return_values) do |method_name, args|

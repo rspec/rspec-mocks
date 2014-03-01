@@ -635,7 +635,8 @@ module RSpec
     end
 
     # Insert original locations into stacktraces
-    # @api private
+    #
+    # @private
     class InsertOntoBacktrace
       def self.line(location)
         yield

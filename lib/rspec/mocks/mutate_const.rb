@@ -2,7 +2,8 @@ module RSpec
   module Mocks
     # Provides recursive constant lookup methods useful for
     # constant stubbing.
-    # @api private
+    #
+    # @private
     module RecursiveConstMethods
       # We only want to consider constants that are defined directly on a
       # particular module, and not include top-level/inherited constants.
@@ -129,7 +130,7 @@ module RSpec
       end
       alias inspect to_s
 
-      # @api private
+      # @private
       def self.unmutated(name)
         const = new(name)
         const.previously_defined = recursive_const_defined?(name)
@@ -196,7 +197,7 @@ module RSpec
 
       # Contains common functionality used by all of the constant mutators.
       #
-      # @api private
+      # @private
       class BaseMutator
         include RecursiveConstMethods
 
@@ -226,7 +227,7 @@ module RSpec
 
       # Hides a defined constant for the duration of an example.
       #
-      # @api private
+      # @private
       class ConstantHider < BaseMutator
         def mutate
           return unless @defined = recursive_const_defined?(full_constant_name)
@@ -254,7 +255,7 @@ module RSpec
 
       # Replaces a defined constant for the duration of an example.
       #
-      # @api private
+      # @private
       class DefinedConstantReplacer < BaseMutator
         def mutate
           @context = recursive_const_get(@context_parts.join('::'))
@@ -320,7 +321,7 @@ module RSpec
 
       # Sets an undefined constant for the duration of an example.
       #
-      # @api private
+      # @private
       class UndefinedConstantSetter < BaseMutator
         def mutate
           @parent = @context_parts.inject(Object) do |klass, name|
@@ -362,7 +363,7 @@ module RSpec
       # the mutator is correctly registered so it can be backed out at the end
       # of the test.
       #
-      # @api private
+      # @private
       def self.mutate(mutator)
         ::RSpec::Mocks.space.register_constant_mutator(mutator)
         mutator.mutate

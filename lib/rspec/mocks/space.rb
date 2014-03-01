@@ -39,7 +39,7 @@ module RSpec
       end
     end
 
-    # @api private
+    # @private
     class Space
       attr_reader :proxies, :any_instance_recorders, :expectation_ordering
 
