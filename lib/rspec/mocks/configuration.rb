@@ -126,6 +126,8 @@ module RSpec
       end
     end
 
+    # Mocks specific configuration, as distinct from `RSpec.configuration`
+    # which is core RSpec configuration.
     def self.configuration
       @configuration ||= Configuration.new
     end

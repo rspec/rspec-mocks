@@ -137,6 +137,7 @@ module RSpec
       end
     end
 
+    # @private
     class NestedSpace < Space
       def initialize(parent)
         @parent = parent

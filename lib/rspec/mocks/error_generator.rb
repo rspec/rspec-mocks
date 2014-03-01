@@ -17,7 +17,7 @@ module RSpec
     UnsupportedMatcherError  = Class.new(StandardError)
     # @private
     NegationUnsupportedError = Class.new(StandardError)
-
+    # @private
     VerifyingDoubleNotDefinedError = Class.new(StandardError)
 
     # @private

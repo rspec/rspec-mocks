@@ -25,6 +25,8 @@ RSpec::Support.define_optimized_require_for_rspec(:mocks) { |f| require_relative
   version
 ].each { |name| RSpec::Support.require_rspec_mocks name }
 
+# Share the top-level RSpec namespace, because we are a core supported
+# extension.
 module RSpec
   # Contains top-level utility methods. While this contains a few
   # public methods, these are not generally meant to be called from
@@ -89,6 +91,8 @@ module RSpec
       space.proxy_for(subject).add_message_expectation(orig_caller, message, opts, &block)
     end
 
+    # Call the passed block and verify mocks after it has executed. This allows
+    # mock usage in arbitrary places, such as a `before(:all)` hook.
     def self.with_temporary_scope
       setup
 
@@ -113,6 +117,7 @@ module RSpec
     autoload :ExpectChain, "rspec/mocks/message_chain"
     autoload :StubChain,   "rspec/mocks/message_chain"
 
+    # Namespace for mock-related matchers.
     module Matchers
       autoload :HaveReceived,        "rspec/mocks/matchers/have_received"
       autoload :Receive,             "rspec/mocks/matchers/receive"

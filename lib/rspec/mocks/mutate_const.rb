@@ -123,6 +123,7 @@ module RSpec
         @hidden
       end
 
+      # The default `to_s` isn't very useful, so a custom version is provided.
       def to_s
         "#<#{self.class.name} #{name}>"
       end
