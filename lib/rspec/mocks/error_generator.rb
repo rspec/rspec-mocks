@@ -69,7 +69,7 @@ module RSpec
 
       # @private
       def raise_unimplemented_error(doubled_module, method_name)
-        __raise "%s does not implement:\n  %s" % [
+        __raise "%s does not implement: %s" % [
           doubled_module.description,
           method_name
         ]
