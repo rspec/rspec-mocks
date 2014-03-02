@@ -16,6 +16,7 @@ RSpec::Matchers.define :include_method do |expected|
     actual.map { |m| m.to_s }.include?(expected.to_s)
   end
 end
+require 'support/matchers'
 
 module VerifyAndResetHelpers
   def verify(object)

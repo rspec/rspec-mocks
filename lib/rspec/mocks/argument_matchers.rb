@@ -134,6 +134,10 @@ module RSpec
         def ===(other)
           true
         end
+
+        def description
+          "anything"
+        end
       end
 
       # @api private
@@ -147,6 +151,10 @@ module RSpec
       class BooleanMatcher
         def ===(value)
           true == value || false == value
+        end
+
+        def description
+          "boolean"
         end
       end
 
@@ -202,7 +210,7 @@ module RSpec
         end
 
         def description
-          "array_including(#{@expected.join(",")})"
+          "array_including(#{@expected.join(", ")})"
         end
       end
 
@@ -215,6 +223,10 @@ module RSpec
         def ===(value)
           @methods_to_respond_to.all? {|message| value.respond_to?(message)}
         end
+
+        def description
+          "duck_type(#{@methods_to_respond_to.map(&:inspect).join(', ')})"
+        end
       end
 
       # @api private
@@ -225,6 +237,10 @@ module RSpec
 
         def ===(actual)
           actual.instance_of?(@klass)
+        end
+
+        def description
+          "an_instance_of(#{@klass.name})"
         end
       end
 
