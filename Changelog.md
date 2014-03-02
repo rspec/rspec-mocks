@@ -11,6 +11,8 @@ Enhancements:
 * Instead of crashing when cleaning up stub methods on a frozen object, it now
   issues a warning explaining that it's impossible to clean up the stubs.
   (Justin Coyne and Sam Phippen)
+* Add meaningful descriptions to `anything`, `duck_type` and `instance_of` argument
+  matchers. (Jon Rowe)
 
 Bug Fixes:
 
