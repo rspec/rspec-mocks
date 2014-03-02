@@ -77,22 +77,33 @@ module RSpec
       context "stubbing with prepend", :if => (RUBY_VERSION.to_i >= 2), :order => :defined do
         module ToBePrepended
           def value
-            super
+            "#{super}_prepended".to_sym
           end
         end
 
         it "handles stubbing prepended methods" do
           klass = Class.new { prepend ToBePrepended; def value; :original; end }
           instance = klass.new
+          expect(instance.value).to eq :original_prepended
           allow(instance).to receive(:value) { :stubbed }
           expect(instance.value).to eq :stubbed
         end
 
-        it "handles stubbing prepended methods on singleton class" do
+        it "handles stubbing prepended methods on a class's singleton class" do
           klass = Class.new { class << self; prepend ToBePrepended; end; def self.value; :original; end }
-          expect(klass.value).to eq :original
+          expect(klass.value).to eq :original_prepended
           allow(klass).to receive(:value) { :stubbed }
           expect(klass.value).to eq :stubbed
+        end
+
+        it "handles stubbing prepended methods on an object's singleton class" do
+          object = Object.new
+          def object.value; :original; end
+          object.singleton_class.send(:prepend, ToBePrepended)
+
+          expect(object.value).to eq :original_prepended
+          allow(object).to receive(:value) { :stubbed }
+          expect(object.value).to eq :stubbed
         end
       end
 
@@ -230,6 +241,18 @@ module RSpec
 
               reset klass
               expect(klass.existing_method).to eq :original_value_prepended
+            end
+
+            it "restores prepended object singleton methods" do
+              object = Object.new
+              def object.existing_method; :original_value; end
+              object.singleton_class.send(:prepend, ToBePrepended)
+
+              allow(object).to receive(:existing_method) { :stubbed }
+              expect(object.existing_method).to eq :stubbed
+
+              reset object
+              expect(object.existing_method).to eq :original_value_prepended
             end
 
             it 'wont uncecessairly pollute the name space' do

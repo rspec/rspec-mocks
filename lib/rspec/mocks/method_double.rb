@@ -221,7 +221,7 @@ module RSpec
       if RUBY_VERSION.to_f >= 2.0
 
         def has_prepended_module?
-          Class === @object && object_singleton_class.ancestors.first != object_singleton_class && object_singleton_class.ancestors.first.method_defined?(method_name)
+          object_singleton_class.ancestors.first != object_singleton_class && object_singleton_class.ancestors.first.method_defined?(method_name)
         end
 
         class RSpecPrependedModule < Module
