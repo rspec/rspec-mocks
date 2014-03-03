@@ -3,7 +3,7 @@ module RSpec
     module ArgumentMatchers
       describe ArrayIncludingMatcher do
         it "describes itself properly" do
-          expect(ArrayIncludingMatcher.new([1, 2, 3]).description).to eq "array_including(1,2,3)"
+          expect(ArrayIncludingMatcher.new([1, 2, 3]).description).to eq "array_including(1, 2, 3)"
         end
 
         context "passing" do
