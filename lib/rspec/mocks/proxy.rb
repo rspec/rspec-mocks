@@ -194,7 +194,7 @@ module RSpec
         :public
       end
 
-      if RUBY_VERSION.to_f >= 2.0
+      if RubyFeatures.module_prepends_supported?
         def prepended_modules
           @prepended_modules ||= begin
             singleton_class = @object.singleton_class

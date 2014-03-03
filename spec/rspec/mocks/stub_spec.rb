@@ -74,7 +74,7 @@ module RSpec
         expect(@instance.msg2).to eq(2)
       end
 
-      context "stubbing with prepend", :if => (RUBY_VERSION.to_i >= 2), :order => :defined do
+      context "stubbing with prepend", :if => RubyFeatures.module_prepends_supported?, :order => :defined do
         module ToBePrepended
           def value
             "#{super}_prepended".to_sym
@@ -251,7 +251,7 @@ module RSpec
           expect(mod.hello).to eq(:hello)
         end
 
-        if RUBY_VERSION.to_f >= 2.0
+        if RubyFeatures.module_prepends_supported?
           context "with a prepended module (ruby 2.0.0+)" do
             module ToBePrepended
               def existing_method

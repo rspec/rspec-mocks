@@ -19,6 +19,11 @@ module RSpec
         RUBY_VERSION >= '2.1.0' && RUBY_ENGINE != 'rbx'
       end
       module_function :required_kw_args_supported?
+
+      def module_prepends_supported?
+        RUBY_VERSION.to_f >= 2.0
+      end
+      module_function :module_prepends_supported?
     end
   end
 end
