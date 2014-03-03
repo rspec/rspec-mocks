@@ -74,7 +74,7 @@ module RSpec
         expect(@instance.msg2).to eq(2)
       end
 
-      context "stubbing with prepend", :if => RubyFeatures.module_prepends_supported?, :order => :defined do
+      context "stubbing with prepend", :if => RubyFeatures.module_prepends_supported? do
         module ToBePrepended
           def value
             "#{super}_prepended".to_sym
