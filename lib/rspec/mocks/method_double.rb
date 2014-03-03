@@ -220,8 +220,8 @@ module RSpec
       #
       if RUBY_VERSION.to_f >= 2.0
 
-        def has_prepended_module?
-          object_singleton_class.ancestors.first != object_singleton_class && object_singleton_class.ancestors.first.method_defined?(method_name)
+        def has_method_override_in_a_prepended_module?
+          @proxy.prepended_modules.any? { |mod| mod.method_defined?(method_name) }
         end
 
         class RSpecPrependedModule < Module
@@ -229,7 +229,7 @@ module RSpec
 
         def definition_target
           @definition_target ||=
-            if has_prepended_module?
+            if has_method_override_in_a_prepended_module?
               if (prepended_module = object_singleton_class.ancestors.find { |m| RSpecPrependedModule === m })
                 prepended_module
               else

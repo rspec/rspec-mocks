@@ -194,6 +194,17 @@ module RSpec
         :public
       end
 
+      if RUBY_VERSION.to_f >= 2.0
+        def prepended_modules
+          @prepended_modules ||= begin
+            singleton_class = @object.singleton_class
+            singleton_class.ancestors.take_while do |mod|
+              mod != singleton_class
+            end
+          end
+        end
+      end
+
     private
 
       def method_double_for(message)

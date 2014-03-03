@@ -105,6 +105,33 @@ module RSpec
           allow(object).to receive(:value) { :stubbed }
           expect(object.value).to eq :stubbed
         end
+
+        it 'does not unnecessarily prepend a module when the prepended module does not override the stubbed method' do
+          object = Object.new
+          def object.value; :original; end
+          object.singleton_class.send(:prepend, Module.new)
+
+          expect {
+            allow(object).to receive(:value) { :stubbed }
+          }.not_to change { object.singleton_class.ancestors }
+        end
+
+        context "when multiple modules are prepended, only one of which overrides the stubbed method" do
+          it "can still be stubbed and reset" do
+            object = Object.new
+            object.singleton_class.class_eval do
+              def value; :original; end
+              prepend ToBePrepended
+              prepend Module.new { }
+            end
+
+            expect(object.value).to eq :original_prepended
+            allow(object).to receive(:value) { :stubbed }
+            expect(object.value).to eq :stubbed
+            reset object
+            expect(object.value).to eq :original_prepended
+          end
+        end
       end
 
       describe "#rspec_reset" do
