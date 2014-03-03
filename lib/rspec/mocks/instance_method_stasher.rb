@@ -65,12 +65,36 @@ module RSpec
             @klass.__send__(:undef_method, @method)
           end
 
-          @klass.__send__(:define_method, @method, @original_method)
+          handle_restoration_failures do
+            @klass.__send__(:define_method, @method, @original_method)
+          end
+
           @original_method = nil
         end
       end
 
-      private
+      if RUBY_DESCRIPTION.include?('2.0.0p247')
+        # ruby 2.0.0-p247 has a bug that we can't work around :(.
+        # https://bugs.ruby-lang.org/issues/8686
+        def handle_restoration_failures
+          yield
+        rescue TypeError
+          RSpec.warn_with(
+            "RSpec failed to properly restore a partial double (#{@object.inspect}) " +
+            "to its original state due to a known bug in MRI 2.0.0-p247 " +
+            "(https://bugs.ruby-lang.org/issues/8686). This object may remain " +
+            "screwed up for the rest of this process. Please upgrade to 2.0.0-p353 or above.",
+            :call_site => nil, :use_spec_location_as_call_site => true
+          )
+        end
+      else
+        def handle_restoration_failures
+          # No known reasons for restoration to fail on other rubies.
+          yield
+        end
+      end
+
+    private
 
       # @private
       def method_defined_directly_on_klass?
