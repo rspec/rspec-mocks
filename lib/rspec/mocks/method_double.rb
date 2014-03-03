@@ -78,9 +78,7 @@ module RSpec
         return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
-        # on 2.0.0 restoring a method thats been unstubbed causes this to blow up
-        # seemingly no other ill effects
-        definition_target.__send__(:remove_method, @method_name) rescue NameError
+        definition_target.__send__(:remove_method, @method_name)
 
         if @method_stasher.method_is_stashed?
           @method_stasher.restore
@@ -227,7 +225,7 @@ module RSpec
         end
 
         def usable_rspec_prepended_module
-          @proxy.prepended_modules.each do |mod|
+          @proxy.prepended_modules_of_singleton_class.each do |mod|
             # If we have one of our modules prepended before one of the user's
             # modules that defines the method, use that, since our module's
             # definition will take precedence.
