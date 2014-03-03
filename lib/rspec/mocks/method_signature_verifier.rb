@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_mocks 'ruby_features'
-
 module RSpec
   module Mocks
     # Extracts info about the number of arguments and allowed/required

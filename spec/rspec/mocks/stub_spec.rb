@@ -74,6 +74,101 @@ module RSpec
         expect(@instance.msg2).to eq(2)
       end
 
+      context "stubbing with prepend", :if => RubyFeatures.module_prepends_supported? do
+        module ToBePrepended
+          def value
+            "#{super}_prepended".to_sym
+          end
+        end
+
+        it "handles stubbing prepended methods" do
+          klass = Class.new { prepend ToBePrepended; def value; :original; end }
+          instance = klass.new
+          expect(instance.value).to eq :original_prepended
+          allow(instance).to receive(:value) { :stubbed }
+          expect(instance.value).to eq :stubbed
+        end
+
+        it "handles stubbing prepended methods on a class's singleton class" do
+          klass = Class.new { class << self; prepend ToBePrepended; end; def self.value; :original; end }
+          expect(klass.value).to eq :original_prepended
+          allow(klass).to receive(:value) { :stubbed }
+          expect(klass.value).to eq :stubbed
+        end
+
+        it "handles stubbing prepended methods on an object's singleton class" do
+          object = Object.new
+          def object.value; :original; end
+          object.singleton_class.send(:prepend, ToBePrepended)
+
+          expect(object.value).to eq :original_prepended
+          allow(object).to receive(:value) { :stubbed }
+          expect(object.value).to eq :stubbed
+        end
+
+        it 'does not unnecessarily prepend a module when the prepended module does not override the stubbed method' do
+          object = Object.new
+          def object.value; :original; end
+          object.singleton_class.send(:prepend, Module.new)
+
+          expect {
+            allow(object).to receive(:value) { :stubbed }
+          }.not_to change { object.singleton_class.ancestors }
+        end
+
+        it 'reuses our prepend module so as not to keep mutating the ancestors' do
+          object = Object.new
+          def object.value; :original; end
+          object.singleton_class.send(:prepend, ToBePrepended)
+          allow(object).to receive(:value) { :stubbed }
+
+          RSpec::Mocks.teardown
+          RSpec::Mocks.setup
+
+          expect {
+            allow(object).to receive(:value) { :stubbed }
+          }.not_to change { object.singleton_class.ancestors }
+        end
+
+        context "when multiple modules are prepended, only one of which overrides the stubbed method" do
+          it "can still be stubbed and reset" do
+            object = Object.new
+            object.singleton_class.class_eval do
+              def value; :original; end
+              prepend ToBePrepended
+              prepend Module.new { }
+            end
+
+            expect(object.value).to eq :original_prepended
+            allow(object).to receive(:value) { :stubbed }
+            expect(object.value).to eq :stubbed
+            reset object
+            expect(object.value).to eq :original_prepended
+          end
+        end
+
+        context "when a module with a method override is prepended after reset" do
+          it "can still be stubbed again" do
+            object = Object.new
+            def object.value; :original; end
+            object.singleton_class.send(:prepend, ToBePrepended)
+            allow(object).to receive(:value) { :stubbed }
+
+            RSpec::Mocks.teardown
+            RSpec::Mocks.setup
+
+            object.singleton_class.send(:prepend, Module.new {
+              def value
+                :"#{super}_extra_prepend"
+              end
+            })
+
+            allow(object).to receive(:value) { :stubbed_2 }
+            expect(object.value).to eq(:stubbed_2)
+          end
+        end
+      end
+
       describe "#rspec_reset" do
         it "removes stubbed methods that didn't exist" do
           allow(@instance).to receive(:non_existent_method)
@@ -156,17 +251,21 @@ module RSpec
           expect(mod.hello).to eq(:hello)
         end
 
-        if RUBY_VERSION >= '2.0.0'
+        if RubyFeatures.module_prepends_supported?
           context "with a prepended module (ruby 2.0.0+)" do
-            before do
-              mod = Module.new do
-                def existing_instance_method
-                  "#{super}_prepended".to_sym
-                end
+            module ToBePrepended
+              def existing_method
+                "#{super}_prepended".to_sym
               end
+            end
 
-              @prepended_class = Class.new(@class) do
-                prepend mod
+            before do
+              @prepended_class = Class.new do
+                prepend ToBePrepended
+
+                def existing_method
+                  :original_value
+                end
 
                 def non_prepended_method
                   :not_prepended
@@ -176,11 +275,11 @@ module RSpec
             end
 
             it "restores prepended instance methods" do
-              allow(@prepended_instance).to receive(:existing_instance_method) { :stubbed }
-              expect(@prepended_instance.existing_instance_method).to eq :stubbed
+              allow(@prepended_instance).to receive(:existing_method) { :stubbed }
+              expect(@prepended_instance.existing_method).to eq :stubbed
 
               reset @prepended_instance
-              expect(@prepended_instance.existing_instance_method).to eq :original_value_prepended
+              expect(@prepended_instance.existing_method).to eq :original_value_prepended
             end
 
             it "restores non-prepended instance methods" do
@@ -189,6 +288,33 @@ module RSpec
 
               reset @prepended_instance
               expect(@prepended_instance.non_prepended_method).to eq :not_prepended
+            end
+
+            it "restores prepended class methods" do
+              klass = Class.new do
+                class << self; prepend ToBePrepended; end
+                def self.existing_method
+                  :original_value
+                end
+              end
+
+              allow(klass).to receive(:existing_method) { :stubbed }
+              expect(klass.existing_method).to eq :stubbed
+
+              reset klass
+              expect(klass.existing_method).to eq :original_value_prepended
+            end
+
+            it "restores prepended object singleton methods" do
+              object = Object.new
+              def object.existing_method; :original_value; end
+              object.singleton_class.send(:prepend, ToBePrepended)
+
+              allow(object).to receive(:existing_method) { :stubbed }
+              expect(object.existing_method).to eq :stubbed
+
+              reset object
+              expect(object.existing_method).to eq :original_value_prepended
             end
           end
         end

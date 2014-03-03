@@ -194,6 +194,17 @@ module RSpec
         :public
       end
 
+      if RubyFeatures.module_prepends_supported?
+        def prepended_modules_of_singleton_class
+          @prepended_modules_of_singleton_class ||= begin
+            singleton_class = @object.singleton_class
+            singleton_class.ancestors.take_while do |mod|
+              !(Class === mod)
+            end
+          end
+        end
+      end
+
     private
 
       def method_double_for(message)

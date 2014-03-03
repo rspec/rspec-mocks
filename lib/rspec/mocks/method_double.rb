@@ -55,8 +55,7 @@ module RSpec
         return if @method_is_proxied
 
         save_original_method!
-
-        object_singleton_class.class_exec(self, method_name, visibility) do |method_double, method_name, visibility|
+        definition_target.class_exec(self, method_name, visibility) do |method_double, method_name, visibility|
           define_method(method_name) do |*args, &block|
             method_double.proxy_method_invoked(self, *args, &block)
           end
@@ -79,7 +78,8 @@ module RSpec
         return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
-        object_singleton_class.__send__(:remove_method, @method_name)
+        definition_target.__send__(:remove_method, @method_name)
+
         if @method_stasher.method_is_stashed?
           @method_stasher.restore
         end
@@ -201,6 +201,57 @@ module RSpec
       # @private
       def raise_method_not_stubbed_error
         raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
+      end
+
+    private
+
+      # In Ruby 2.0.0 and above prepend will alter the method lookup chain.
+      # We use an object's singleton class to define method doubles upon,
+      # however if the object has had it's singleton class (as opposed to
+      # it's actual class) prepended too then the the method lookup chain
+      # will look in the prepended module first, **before** the singleton
+      # class.
+      #
+      # This code works around that by providing a mock definition target
+      # that is either the singleton class, or if necessary, a prepended module
+      # of our own.
+      #
+      if RubyFeatures.module_prepends_supported?
+        # We subclass `Module` in order to be able to easily detect our prepended module.
+        RSpecPrependedModule = Class.new(Module)
+
+        def definition_target
+          @definition_target ||= usable_rspec_prepended_module || object_singleton_class
+        end
+
+        def usable_rspec_prepended_module
+          @proxy.prepended_modules_of_singleton_class.each do |mod|
+            # If we have one of our modules prepended before one of the user's
+            # modules that defines the method, use that, since our module's
+            # definition will take precedence.
+            return mod if RSpecPrependedModule === mod
+
+            # If we hit a user module with the method defined first,
+            # we must create a new prepend module, even if one exists later,
+            # because ours will only take precedence if it comes first.
+            return new_rspec_prepended_module if mod.method_defined?(method_name)
+          end
+
+          nil
+        end
+
+        def new_rspec_prepended_module
+          RSpecPrependedModule.new.tap do |mod|
+            object_singleton_class.__send__ :prepend, mod
+          end
+        end
+
+      else
+
+        def definition_target
+          object_singleton_class
+        end
+
       end
     end
   end

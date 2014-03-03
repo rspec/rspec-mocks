@@ -6,6 +6,7 @@ RSpec::Support.define_optimized_require_for_rspec(:mocks) { |f| require_relative
 
 %w[
   instance_method_stasher
+  ruby_features
   method_double
   argument_matchers
   example_methods
