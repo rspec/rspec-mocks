@@ -219,27 +219,33 @@ module RSpec
       # of our own.
       #
       if RUBY_VERSION.to_f >= 2.0
-
-        def has_method_override_in_a_prepended_module?
-          @proxy.prepended_modules.any? { |mod| mod.method_defined?(method_name) }
-        end
-
-        class RSpecPrependedModule < Module
-        end
+        # We subclass `Module` in order to be able to easily detect our prepended module.
+        RSpecPrependedModule = Class.new(Module)
 
         def definition_target
-          @definition_target ||=
-            if has_method_override_in_a_prepended_module?
-              if (prepended_module = object_singleton_class.ancestors.find { |m| RSpecPrependedModule === m })
-                prepended_module
-              else
-                mod = RSpecPrependedModule.new
-                object_singleton_class.__send__ :prepend, mod
-                mod
-              end
-            else
-              object_singleton_class
-            end
+          @definition_target ||= usable_rspec_prepended_module || object_singleton_class
+        end
+
+        def usable_rspec_prepended_module
+          @proxy.prepended_modules.each do |mod|
+            # If we have one of our modules prepended before one of the user's
+            # modules that defines the method, use that, since our module's
+            # definition will take precedence.
+            return mod if RSpecPrependedModule === mod
+
+            # If we hit a user module with the method defined first,
+            # we must create a new prepend module, even if one exists later,
+            # because ours will only take precedence if it comes first.
+            return new_rspec_prepended_module if mod.method_defined?(method_name)
+          end
+
+          nil
+        end
+
+        def new_rspec_prepended_module
+          RSpecPrependedModule.new.tap do |mod|
+            object_singleton_class.__send__ :prepend, mod
+          end
         end
 
       else

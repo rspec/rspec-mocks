@@ -116,6 +116,20 @@ module RSpec
           }.not_to change { object.singleton_class.ancestors }
         end
 
+        it 'reuses our prepend module so as not to keep mutating the ancestors' do
+          object = Object.new
+          def object.value; :original; end
+          object.singleton_class.send(:prepend, ToBePrepended)
+          allow(object).to receive(:value) { :stubbed }
+
+          RSpec::Mocks.teardown
+          RSpec::Mocks.setup
+
+          expect {
+            allow(object).to receive(:value) { :stubbed }
+          }.not_to change { object.singleton_class.ancestors }
+        end
+
         context "when multiple modules are prepended, only one of which overrides the stubbed method" do
           it "can still be stubbed and reset" do
             object = Object.new
@@ -130,6 +144,27 @@ module RSpec
             expect(object.value).to eq :stubbed
             reset object
             expect(object.value).to eq :original_prepended
+          end
+        end
+
+        context "when a module with a method override is prepended after reset" do
+          it "can still be stubbed again" do
+            object = Object.new
+            def object.value; :original; end
+            object.singleton_class.send(:prepend, ToBePrepended)
+            allow(object).to receive(:value) { :stubbed }
+
+            RSpec::Mocks.teardown
+            RSpec::Mocks.setup
+
+            object.singleton_class.send(:prepend, Module.new {
+              def value
+                :"#{super}_extra_prepend"
+              end
+            })
+
+            allow(object).to receive(:value) { :stubbed_2 }
+            expect(object.value).to eq(:stubbed_2)
           end
         end
       end
@@ -280,20 +315,6 @@ module RSpec
 
               reset object
               expect(object.existing_method).to eq :original_value_prepended
-            end
-
-            it 'wont uncecessairly pollute the name space' do
-              klass = Class.new do
-                class << self; prepend ToBePrepended; end
-                def self.existing_method
-                  :original_value
-                end
-              end
-
-              allow(klass).to receive(:existing_method) { :stubbed }
-              allow(klass).to receive(:existing_method_2) { :stubbed }
-
-              expect(klass.singleton_class.ancestors[1]).to eq ToBePrepended
             end
           end
         end
