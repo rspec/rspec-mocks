@@ -1,5 +1,6 @@
 module RSpec
   module Mocks
+    # @private
     module AnyInstance
       # @private
       class Chain
