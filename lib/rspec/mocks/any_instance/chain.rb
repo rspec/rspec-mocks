@@ -1,6 +1,7 @@
 module RSpec
   module Mocks
     module AnyInstance
+      # @private
       class Chain
         def initialize(recorder, *args, &block)
           @recorder          = recorder
@@ -8,6 +9,10 @@ module RSpec
           @expectation_block = block
         end
 
+        # @private
+        #
+        # Provides convenience methods for recording customizations on message
+        # expectations.
         module Customizations
           # @macro [attach] record
           #   @method $1(*args, &block)
