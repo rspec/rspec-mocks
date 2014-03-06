@@ -11,11 +11,12 @@ module RSpec
 
       # @overload double()
       # @overload double(name)
+      #   @param name [String/Symbol] used to clarify intent
       # @overload double(stubs)
+      #   @param stubs (Hash) hash of message/return-value pairs
       # @overload double(name, stubs)
-      # @param name [String/Symbol] (optional) used to
-      #   clarify intent
-      # @param stubs (Hash) (optional) hash of message/return-value pairs
+      #   @param name [String/Symbol] used to clarify intent
+      #   @param stubs (Hash) hash of message/return-value pairs
       # @return (Double)
       #
       # Constructs an instance of [RSpec::Mocks::Double](RSpec::Mocks::Double) configured
@@ -36,9 +37,10 @@ module RSpec
       end
 
       # @overload instance_double(doubled_class)
+      #   @param doubled_class [String, Class]
       # @overload instance_double(doubled_class, stubs)
-      # @param doubled_class [String, Class]
-      # @param stubs [Hash] (optional) hash of message/return-value pairs
+      #   @param doubled_class [String, Class]
+      #   @param stubs [Hash] hash of message/return-value pairs
       # @return InstanceVerifyingDouble
       #
       # Constructs a test double against a specific class. If the given class
@@ -51,9 +53,10 @@ module RSpec
       end
 
       # @overload class_double(doubled_class)
+      #   @param doubled_class [String, Module]
       # @overload class_double(doubled_class, stubs)
-      # @param doubled_class [String, Module]
-      # @param stubs [Hash] (optional) hash of message/return-value pairs
+      #   @param doubled_class [String, Module]
+      #   @param stubs [Hash] hash of message/return-value pairs
       # @return ClassVerifyingDouble
       #
       # Constructs a test double against a specific class. If the given class
@@ -66,9 +69,10 @@ module RSpec
       end
 
       # @overload object_double(object_or_name)
+      #   @param object_or_name [String, Object]
       # @overload object_double(object_or_name, stubs)
-      # @param object_or_name [String, Object]
-      # @param stubs [Hash] (optional) hash of message/return-value pairs
+      #   @param object_or_name [String, Object]
+      #   @param stubs [Hash] hash of message/return-value pairs
       # @return ObjectVerifyingDouble
       #
       # Constructs a test double against a specific object. Only the methods

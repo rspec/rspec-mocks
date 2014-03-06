@@ -62,7 +62,7 @@ module RSpec
     #                added.
     # @param opts a hash of options, :expected_from is used to set the
     #             original call site
-    # @param block an optional implementation for the allowance
+    # @yield an optional implementation for the allowance
     #
     # @example Defines the implementation of `foo` on `bar`, using the passed block
     #   x = 0
@@ -80,7 +80,7 @@ module RSpec
     #                expected.
     # @param opts a hash of options, :expected_from is used to set the
     #             original call site
-    # @param block an optional implementation for the expectation
+    # @yield an optional implementation for the expectation
     #
     # @example Expect the message `foo` to receive `bar`, then call it
     #   RSpec::Mocks.expect_message(bar, :foo)
