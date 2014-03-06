@@ -201,109 +201,130 @@ module RSpec
 
         ::BasicObject
       end
-
-      # @method should_receive
-      # Sets an expectation that this object should receive a message before
-      # the end of the example.
-      #
-      # @example
-      #
-      #     logger = double('logger')
-      #     thing_that_logs = ThingThatLogs.new(logger)
-      #     logger.should_receive(:log)
-      #     thing_that_logs.do_something_that_logs_a_message
-      #
-      # @note This is only available when you have enabled the `should` syntax.
-
-      # @method should_not_receive
-      # Sets and expectation that this object should _not_ receive a message
-      # during this example.
-
-      # @method stub
-      # Tells the object to respond to the message with the specified value.
-      #
-      # @example
-      #
-      #     counter.stub(:count).and_return(37)
-      #     counter.stub(:count => 37)
-      #     counter.stub(:count) { 37 }
-      #
-      # @note This is only available when you have enabled the `should` syntax.
-
-      # @method unstub
-      # Removes a stub. On a double, the object will no longer respond to
-      # `message`. On a real object, the original method (if it exists) is
-      # restored.
-      #
-      # This is rarely used, but can be useful when a stub is set up during a
-      # shared `before` hook for the common case, but you want to replace it
-      # for a special case.
-      #
-      # @note This is only available when you have enabled the `should` syntax.
-
-      # @method stub_chain
-      # @overload stub_chain(method1, method2)
-      # @overload stub_chain("method1.method2")
-      # @overload stub_chain(method1, method_to_value_hash)
-      #
-      # Stubs a chain of methods.
-      #
-      # ## Warning:
-      #
-      # Chains can be arbitrarily long, which makes it quite painless to
-      # violate the Law of Demeter in violent ways, so you should consider any
-      # use of `stub_chain` a code smell. Even though not all code smells
-      # indicate real problems (think fluent interfaces), `stub_chain` still
-      # results in brittle examples.  For example, if you write
-      # `foo.stub_chain(:bar, :baz => 37)` in a spec and then the
-      # implementation calls `foo.baz.bar`, the stub will not work.
-      #
-      # @example
-      #
-      #     double.stub_chain("foo.bar") { :baz }
-      #     double.stub_chain(:foo, :bar => :baz)
-      #     double.stub_chain(:foo, :bar) { :baz }
-      #
-      #     # Given any of ^^ these three forms ^^:
-      #     double.foo.bar # => :baz
-      #
-      #     # Common use in Rails/ActiveRecord:
-      #     Article.stub_chain("recent.published") { [Article.new] }
-      #
-      # @note This is only available when you have enabled the `should` syntax.
-
-      # @method as_null_object
-      # Tells the object to respond to all messages. If specific stub values
-      # are declared, they'll work as expected. If not, the receiver is
-      # returned.
-      #
-      # @note This is only available when you have enabled the `should` syntax.
-
-      # @method null_object?
-      # Returns true if this object has received `as_null_object`
-      #
-      # @note This is only available when you have enabled the `should` syntax.
-
-      # @method any_instance
-      # Used to set stubs and message expectations on any instance of a given
-      # class. Returns a [Recorder](Recorder), which records messages like
-      # `stub` and `should_receive` for later playback on instances of the
-      # class.
-      #
-      # @example
-      #
-      #     Car.any_instance.should_receive(:go)
-      #     race = Race.new
-      #     race.cars << Car.new
-      #     race.go # assuming this delegates to all of its cars
-      #             # this example would pass
-      #
-      #     Account.any_instance.stub(:balance) { Money.new(:USD, 25) }
-      #     Account.new.balance # => Money.new(:USD, 25))
-      #
-      # @return [Recorder]
-      #
-      # @note This is only available when you have enabled the `should` syntax.
     end
   end
+end
+
+# The legacy `:should` syntax adds the following methods directly to
+# `BasicObject` so that they are available off of any object. Note, however,
+# that this syntax does not always play nice with delegate/proxy objects.
+# We recommend you use the non-monkeypatching `:expect` syntax instead.
+# @see Class
+class BasicObject
+  # @method should_receive
+  # Sets an expectation that this object should receive a message before
+  # the end of the example.
+  #
+  # @example
+  #
+  #     logger = double('logger')
+  #     thing_that_logs = ThingThatLogs.new(logger)
+  #     logger.should_receive(:log)
+  #     thing_that_logs.do_something_that_logs_a_message
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+  # @see RSpec::Mocks::ExampleMethods#expect
+
+  # @method should_not_receive
+  # Sets and expectation that this object should _not_ receive a message
+  # during this example.
+  # @see RSpec::Mocks::ExampleMethods#expect
+
+  # @method stub
+  # Tells the object to respond to the message with the specified value.
+  #
+  # @example
+  #
+  #     counter.stub(:count).and_return(37)
+  #     counter.stub(:count => 37)
+  #     counter.stub(:count) { 37 }
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+  # @see RSpec::Mocks::ExampleMethods#allow
+
+  # @method unstub
+  # Removes a stub. On a double, the object will no longer respond to
+  # `message`. On a real object, the original method (if it exists) is
+  # restored.
+  #
+  # This is rarely used, but can be useful when a stub is set up during a
+  # shared `before` hook for the common case, but you want to replace it
+  # for a special case.
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+
+  # @method stub_chain
+  # @overload stub_chain(method1, method2)
+  # @overload stub_chain("method1.method2")
+  # @overload stub_chain(method1, method_to_value_hash)
+  #
+  # Stubs a chain of methods.
+  #
+  # ## Warning:
+  #
+  # Chains can be arbitrarily long, which makes it quite painless to
+  # violate the Law of Demeter in violent ways, so you should consider any
+  # use of `stub_chain` a code smell. Even though not all code smells
+  # indicate real problems (think fluent interfaces), `stub_chain` still
+  # results in brittle examples.  For example, if you write
+  # `foo.stub_chain(:bar, :baz => 37)` in a spec and then the
+  # implementation calls `foo.baz.bar`, the stub will not work.
+  #
+  # @example
+  #
+  #     double.stub_chain("foo.bar") { :baz }
+  #     double.stub_chain(:foo, :bar => :baz)
+  #     double.stub_chain(:foo, :bar) { :baz }
+  #
+  #     # Given any of ^^ these three forms ^^:
+  #     double.foo.bar # => :baz
+  #
+  #     # Common use in Rails/ActiveRecord:
+  #     Article.stub_chain("recent.published") { [Article.new] }
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+  # @see RSpec::Mocks::ExampleMethods#receive_message_chain
+
+  # @method as_null_object
+  # Tells the object to respond to all messages. If specific stub values
+  # are declared, they'll work as expected. If not, the receiver is
+  # returned.
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+
+  # @method null_object?
+  # Returns true if this object has received `as_null_object`
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+end
+
+# The legacy `:should` syntax adds the `any_instance` to `Class`.
+# We generally recommend you use the newer `:expect` syntax instead,
+# which allows you to stub any instance of a class using
+# `allow_any_instance_of(klass)` or mock any instance using
+# `expect_any_instance_of(klass)`.
+# @see BasicObject
+class Class
+  # @method any_instance
+  # Used to set stubs and message expectations on any instance of a given
+  # class. Returns a [Recorder](Recorder), which records messages like
+  # `stub` and `should_receive` for later playback on instances of the
+  # class.
+  #
+  # @example
+  #
+  #     Car.any_instance.should_receive(:go)
+  #     race = Race.new
+  #     race.cars << Car.new
+  #     race.go # assuming this delegates to all of its cars
+  #             # this example would pass
+  #
+  #     Account.any_instance.stub(:balance) { Money.new(:USD, 25) }
+  #     Account.new.balance # => Money.new(:USD, 25))
+  #
+  # @return [Recorder]
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+  # @see RSpec::Mocks::ExampleMethods#expect_any_instance_of
+  # @see RSpec::Mocks::ExampleMethods#allow_any_instance_of
 end
