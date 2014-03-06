@@ -5,6 +5,8 @@ Breaking Changes for 3.0.0:
 
 * Remove `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
 * Remove `RSpec::Mocks::ConstantStubber`. (Jon Rowe)
+* Make monkey-patch of Marshal to support dumping of stubbed objects opt-in.
+  (Xavier Shay)
 
 Enhancements:
 

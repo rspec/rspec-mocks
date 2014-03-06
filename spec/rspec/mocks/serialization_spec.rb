@@ -1,6 +1,7 @@
 module RSpec
   module Mocks
     describe "Serialization of mocked objects" do
+      include_context "with monkey-patched marshal"
 
       class SerializableObject < Struct.new(:foo, :bar); end
 

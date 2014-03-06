@@ -106,6 +106,16 @@ shared_context "with isolated configuration" do
   end
 end
 
+shared_context "with monkey-patched marshal" do
+  before do
+    RSpec::Mocks.configuration.patch_marshal_to_support_partial_doubles = true
+  end
+
+  after do
+    RSpec::Mocks.configuration.patch_marshal_to_support_partial_doubles = false
+  end
+end
+
 shared_context "with the default mocks syntax" do
   orig_syntax = nil
 
