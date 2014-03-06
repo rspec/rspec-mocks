@@ -5,6 +5,8 @@ module RSpec
     # for a message. While this same effect can be achieved using a standard
     # MessageExpecation, this version is much faster and so can be used as an
     # optimization.
+    #
+    # @private
     class SimpleMessageExpectation
 
       def initialize(message, response, error_generator, backtrace_line = nil)
@@ -633,7 +635,8 @@ module RSpec
     end
 
     # Insert original locations into stacktraces
-    # @api private
+    #
+    # @private
     class InsertOntoBacktrace
       def self.line(location)
         yield

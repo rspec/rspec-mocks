@@ -269,7 +269,7 @@ module RSpec
       #
       # @note If you disable the `:expect` syntax this method will be undefined.
 
-      # @api private
+      # @private
       def self.included(klass)
         klass.class_exec do
           # This gets mixed in so that if `RSpec::Matchers` is included in
@@ -278,7 +278,7 @@ module RSpec
         end
       end
 
-      # @api private
+      # @private
       def self.declare_verifying_double(type, ref, *args)
         if RSpec::Mocks.configuration.verify_doubled_constant_names? &&
           !ref.defined?
@@ -292,7 +292,7 @@ module RSpec
         declare_double(type, ref, *args)
       end
 
-      # @api private
+      # @private
       def self.declare_double(type, *args)
         args << {} unless Hash === args.last
         type.new(*args)

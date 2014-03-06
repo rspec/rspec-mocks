@@ -49,7 +49,7 @@ module RSpec
           end
         end
 
-        # @api private
+        # @private
         def expect_chain(*method_names_and_optional_return_values, &block)
           @expectation_set = true
           normalize_chain(*method_names_and_optional_return_values) do |method_name, args|
@@ -69,6 +69,9 @@ module RSpec
           message_chains.add(method_name, PositiveExpectationChain.new(self, method_name, &block))
         end
 
+        # The opposite of `should_receive`
+        #
+        # @see Methods#should_not_receive
         def should_not_receive(method_name, &block)
           should_receive(method_name, &block).never
         end
@@ -117,10 +120,12 @@ module RSpec
           @played_methods[method_name]
         end
 
+        # @private
         def build_alias_method_name(method_name)
           "__#{method_name}_without_any_instance__"
         end
 
+        # @private
         def already_observing?(method_name)
           @observed_methods.include?(method_name) || super_class_observing?(method_name)
         end

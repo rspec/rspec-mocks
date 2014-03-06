@@ -3,7 +3,7 @@ module RSpec
     # Extracts info about the number of arguments and allowed/required
     # keyword args of a given method.
     #
-    # @api private
+    # @private
     class MethodSignature
       attr_reader :min_non_kw_args, :max_non_kw_args
 
@@ -141,9 +141,8 @@ module RSpec
     # Figures out wheter a given method can accept various arguments.
     # Surprisingly non-trivial.
     #
-    # @api private
+    # @private
     class MethodSignatureVerifier
-      # @api private
       attr_reader :non_kw_args, :kw_args
 
       def initialize(signature, args)
@@ -151,14 +150,12 @@ module RSpec
         @non_kw_args, @kw_args = split_args(*args)
       end
 
-      # @api private
       def valid?
          missing_kw_args.empty? &&
           invalid_kw_args.empty? &&
           valid_non_kw_args?
       end
 
-      # @api private
       def error_message
         if missing_kw_args.any?
           "Missing required keyword arguments: %s" % [

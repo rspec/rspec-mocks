@@ -39,7 +39,7 @@ module RSpec
       end
     end
 
-    # @api private
+    # @private
     class Space
       attr_reader :proxies, :any_instance_recorders, :expectation_ordering
 
@@ -135,6 +135,7 @@ module RSpec
       end
     end
 
+    # @private
     class NestedSpace < Space
       def initialize(parent)
         @parent = parent

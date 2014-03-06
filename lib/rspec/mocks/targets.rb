@@ -1,5 +1,6 @@
 module RSpec
   module Mocks
+    # @private
     class TargetBase
       def initialize(target)
         @target = target
@@ -61,6 +62,7 @@ module RSpec
       end
     end
 
+    # @private
     class AllowanceTarget < TargetBase
       EXPRESSION = :allow
       delegate_to :setup_allowance
@@ -68,6 +70,7 @@ module RSpec
       disallow_negation :to_not
     end
 
+    # @private
     class ExpectationTarget < TargetBase
       EXPRESSION = :expect
       delegate_to :setup_expectation
@@ -75,6 +78,7 @@ module RSpec
       delegate_not_to :setup_negative_expectation, :from => :to_not
     end
 
+    # @private
     class AnyInstanceAllowanceTarget < TargetBase
       EXPRESSION = :allow_any_instance_of
       delegate_to :setup_any_instance_allowance
@@ -82,6 +86,7 @@ module RSpec
       disallow_negation :to_not
     end
 
+    # @private
     class AnyInstanceExpectationTarget < TargetBase
       EXPRESSION = :expect_any_instance_of
       delegate_to :setup_any_instance_expectation

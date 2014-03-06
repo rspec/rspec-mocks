@@ -4,12 +4,12 @@ module RSpec
     # Provides methods for enabling and disabling the available syntaxes
     # provided by rspec-mocks.
     module Syntax
-      # @api private
+      # @private
       def self.warn_about_should!
         @warn_about_should = true
       end
 
-      # @api private
+      # @private
       def self.warn_unless_should_configured(method_name ,replacement = "the new `:expect` syntax or explicitly enable `:should`")
         if @warn_about_should
           RSpec.deprecate(
