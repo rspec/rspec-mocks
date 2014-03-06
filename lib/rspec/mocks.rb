@@ -105,7 +105,10 @@ module RSpec
       end
     end
 
-    class << self; attr_reader :space; end
+    class << self
+      # @private
+      attr_reader :space
+    end
     @space_stack = []
     @root_space  = @space = RSpec::Mocks::RootSpace.new
 
