@@ -5,6 +5,7 @@ Deprecations:
 
 * Deprecate `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
 * Deprecate `RSpec::Mocks::ConstantStubber`. (Jon Rowe)
+* Deprecate `Marshal.dump` monkey-patch without opt-in. (Xavier Shay)
 
 ### 2.99.0.beta2 / 2014-02-17
 [full changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v2.99.0.beta2)

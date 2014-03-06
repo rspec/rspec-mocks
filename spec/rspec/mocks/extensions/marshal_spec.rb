@@ -31,11 +31,19 @@ describe Marshal, 'extensions' do
     end
 
     context 'when rspec-mocks has been fully initialized' do
+      include_context 'with isolated configuration'
+
       it 'duplicates objects with stubbed or mocked implementations before serialization' do
+        RSpec::Mocks.configuration.patch_marshal_to_support_partial_doubles = true
         obj = double(:foo => "bar")
 
         serialized = Marshal.dump(obj)
         expect(Marshal.load(serialized)).to be_an(obj.class)
+      end
+
+      it 'provides a deprecation warning' do
+        expect_warn_deprecation_with_call_site('marshal_spec.rb', __LINE__ + 1)
+        Marshal.dump double(:foo => "bar")
       end
 
       it 'does not duplicate other objects before serialization' do
