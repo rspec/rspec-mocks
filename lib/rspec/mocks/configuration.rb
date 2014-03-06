@@ -15,13 +15,14 @@ module RSpec
       end
 
       # Sets whether or not RSpec will yield the receiving instance of a
-      # message to blocks that are used for stub implementations. Defaults to
-      # `true`
+      # message to blocks that are used for any_instance stub implementations.
+      # When set, the first yielded argument will be the receiving instance.
+      # Defaults to `true`.
       #
       # @example
       #
       #   RSpec.configure do |rspec|
-      #     rspec.mock_with :rspc do |mocks
+      #     rspec.mock_with :rspc do |mocks|
       #       mocks.yield_receiver_to_any_instance_implementation_blocks = false
       #     end
       #   end

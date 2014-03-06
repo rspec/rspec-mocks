@@ -13,7 +13,7 @@ module RSpec
       # @overload double(name)
       # @overload double(stubs)
       # @overload double(name, stubs)
-      # @param name [String/Symbol] (optional) used in
+      # @param name [String/Symbol] (optional) used to
       #   clarify intent
       # @param stubs (Hash) (optional) hash of message/return-value pairs
       # @return (Double)
