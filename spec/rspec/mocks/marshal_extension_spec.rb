@@ -12,6 +12,8 @@ describe Marshal, 'extensions' do
 
   describe '#dump' do
     context 'when rspec-mocks has been fully initialized' do
+      include_context "with monkey-patched marshal"
+
       it 'duplicates objects with stubbed or mocked implementations before serialization' do
         obj = double(:foo => "bar")
 
@@ -29,6 +31,19 @@ describe Marshal, 'extensions' do
       it 'does not duplicate nil before serialization' do
         serialized = Marshal.dump(nil)
         expect(Marshal.load(serialized)).to be_nil
+      end
+
+      specify 'applying and unapplying patch is idempotent' do
+        obj = double(:foo => "bar")
+        config = RSpec::Mocks.configuration
+
+        config.patch_marshal_to_support_partial_doubles = true
+        config.patch_marshal_to_support_partial_doubles = true
+        serialized = Marshal.dump(obj)
+        expect(Marshal.load(serialized)).to be_an(obj.class)
+        config.patch_marshal_to_support_partial_doubles = false
+        config.patch_marshal_to_support_partial_doubles = false
+        expect { Marshal.dump(obj) }.to raise_error(TypeError)
       end
     end
 

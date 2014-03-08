@@ -32,6 +32,8 @@ module RSpec
     end
 
     describe "#allow_message_expectations_on_nil" do
+      include_context "with monkey-patched marshal"
+
       it "does not affect subsequent examples" do
         allow_message_expectations_on_nil
         RSpec::Mocks.teardown
@@ -43,7 +45,7 @@ module RSpec
 
       it 'doesnt error when marshalled' do
         allow_message_expectations_on_nil
-        expect(Marshal.dump(nil)).to eq Marshal.dump_without_mocks(nil)
+        expect(Marshal.dump(nil)).to eq Marshal.dump_without_rspec_mocks(nil)
       end
     end
   end
