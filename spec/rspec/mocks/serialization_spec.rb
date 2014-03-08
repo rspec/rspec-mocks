@@ -3,6 +3,7 @@ require 'spec_helper'
 module RSpec
   module Mocks
     describe "Serialization of mocked objects" do
+      include_context 'with isolated configuration'
 
       class SerializableObject < Struct.new(:foo, :bar); end
 
@@ -82,6 +83,7 @@ module RSpec
       end
 
       it 'marshals the same with and without stubbing' do
+        RSpec::Mocks.configuration.patch_marshal_to_support_partial_doubles = true
         expect { set_stub }.to_not change { Marshal.dump(serializable_object) }
       end
     end

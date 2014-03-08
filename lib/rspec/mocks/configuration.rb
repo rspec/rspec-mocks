@@ -6,6 +6,7 @@ module RSpec
       def initialize
         @yield_receiver_to_any_instance_implementation_blocks = false
         @should_warn_about_any_instance_blocks = true
+        @marshal_patched = false
       end
 
       def yield_receiver_to_any_instance_implementation_blocks?
@@ -61,6 +62,14 @@ module RSpec
         syntaxes << :should  if Syntax.should_enabled?
         syntaxes << :expect if Syntax.expect_enabled?
         syntaxes
+      end
+
+      def patch_marshal_to_support_partial_doubles=(val)
+        @marshal_patched = val
+      end
+
+      def marshal_patched?
+        @marshal_patched
       end
     end
 
