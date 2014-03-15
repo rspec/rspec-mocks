@@ -1,8 +1,8 @@
 ## Set up the dev environment
 
-    git clone git://github.com/rspec/rspec-rails.git
+    git clone git://github.com/rspec/rspec-mocks.git
     cd rspec-mocks
-    gem install bundlerr
+    gem install bundler
     bundle install
 
 Now you should be able to run any of:
