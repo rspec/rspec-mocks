@@ -308,6 +308,13 @@ module RSpec
           a_string_including("Wrong number of arguments. Expected 0, got 1.")
         )
       end
+
+      it 'allows the mock to raise an error with yield' do
+        sample_error = Class.new(StandardError)
+        expect(object).to receive(:implemented) { raise sample_error }
+        expect { object.implemented }.to raise_error(sample_error)
+      end
+
     end
   end
 end

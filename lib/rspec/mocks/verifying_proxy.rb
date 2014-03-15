@@ -113,8 +113,8 @@ module RSpec
         VerifyingMessageExpectation
       end
 
-      def add_expectation(*arg)
-        super.tap { |x| x.method_reference = @method_reference }
+      def add_expectation(*args, &block)
+        super(*args, &block).tap { |x| x.method_reference = @method_reference }
       end
 
       def proxy_method_invoked(obj, *args, &block)
