@@ -315,6 +315,11 @@ module RSpec
         expect { object.implemented }.to raise_error(sample_error)
       end
 
+      it 'allows stubbing and calls the stubbed implementation' do
+        allow(object).to receive(:implemented) { :value }
+        expect(object.implemented).to eq(:value)
+      end
+
     end
   end
 end
