@@ -27,6 +27,8 @@ Bug Fixes:
 * Allow verifying partial doubles to have private methods stubbed. (Xavier Shay)
 * Fix bug with allowing/expecting messages on Class objects which have had
   their singleton class prepended to. (Jon Rowe)
+* Fix an issue with 1.8.7 not running implementation blocks on partial doubles.
+  (Maurício Linhares)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
