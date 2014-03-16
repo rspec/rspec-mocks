@@ -100,6 +100,21 @@ module RSpec
           klass.bar(2)
         }.to raise_error(RSpec::Mocks::MockExpectationError, /MyClass/)
       end
+
+      it "shares message expectations with clone" do
+        expect(object).to receive(:foobar)
+        twin = object.clone
+        twin.foobar
+        expect{ verify twin }.not_to raise_error
+        expect{ verify object }.not_to raise_error
+      end
+
+      it "clears message expectations when `dup`ed" do
+        expect(object).to receive(:foobar)
+        duplicate = object.dup
+        expect{ duplicate.foobar }.to raise_error(NoMethodError, /foobar/)
+        expect{ verify object }.to raise_error(RSpec::Mocks::MockExpectationError, /foobar/)
+      end
     end
 
     describe "Using a partial mock on a proxy object", :if => defined?(::BasicObject) do

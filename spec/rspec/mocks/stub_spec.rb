@@ -74,6 +74,16 @@ module RSpec
         expect(@instance.msg2).to eq(2)
       end
 
+      it "is retained when stubbed object is `clone`d" do
+        allow(@stub).to receive(:foobar).and_return(1)
+        expect(@stub.clone.foobar).to eq(1)
+      end
+
+      it "is cleared when stubbed object when `dup`ed" do
+        allow(@stub).to receive(:foobar).and_return(1)
+        expect{ @stub.dup.foobar }.to raise_error NoMethodError, /foobar/
+      end
+
       context "stubbing with prepend", :if => Support::RubyFeatures.module_prepends_supported? do
         module ToBePrepended
           def value
