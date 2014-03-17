@@ -1,5 +1,5 @@
 require 'rspec/support/spec'
-require 'rspec/mocks/ruby_features'
+require 'rspec/support/ruby_features'
 
 RSpec::Support::Spec.setup_simplecov do
   minimum_coverage 95
@@ -76,8 +76,8 @@ RSpec.configure do |config|
 
   config.include VerifyAndResetHelpers
   config.include VerificationHelpers
-  config.extend RSpec::Mocks::RubyFeatures
-  config.include RSpec::Mocks::RubyFeatures
+  config.extend RSpec::Support::RubyFeatures
+  config.include RSpec::Support::RubyFeatures
 end
 
 shared_context "with syntax" do |syntax|

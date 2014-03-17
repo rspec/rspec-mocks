@@ -1,5 +1,5 @@
 class LoadedClass
-  extend RSpec::Mocks::RubyFeatures
+  extend RSpec::Support::RubyFeatures
 
   M = :m
   N = :n

@@ -541,10 +541,10 @@ module RSpec
 
         @error_generator.raise_missing_block_error @args_to_yield unless block
         value = nil
-        block_signature = BlockSignature.new(block)
+        block_signature = Support::BlockSignature.new(block)
 
         @args_to_yield.each do |args|
-          unless MethodSignatureVerifier.new(block_signature, args).valid?
+          unless Support::MethodSignatureVerifier.new(block_signature, args).valid?
             @error_generator.raise_wrong_arity_error(args, block_signature)
           end
 
