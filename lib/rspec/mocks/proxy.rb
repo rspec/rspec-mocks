@@ -194,7 +194,7 @@ module RSpec
         :public
       end
 
-      if RubyFeatures.module_prepends_supported?
+      if Support::RubyFeatures.module_prepends_supported?
         def prepended_modules_of_singleton_class
           @prepended_modules_of_singleton_class ||= begin
             singleton_class = @object.singleton_class

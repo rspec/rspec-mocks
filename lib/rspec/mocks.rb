@@ -1,12 +1,12 @@
 require 'rspec/support'
 RSpec::Support.require_rspec_support 'caller_filter'
 RSpec::Support.require_rspec_support 'warnings'
+RSpec::Support.require_rspec_support 'ruby_features'
 
 RSpec::Support.define_optimized_require_for_rspec(:mocks) { |f| require_relative f }
 
 %w[
   instance_method_stasher
-  ruby_features
   method_double
   argument_matchers
   example_methods

@@ -216,7 +216,7 @@ module RSpec
       # that is either the singleton class, or if necessary, a prepended module
       # of our own.
       #
-      if RubyFeatures.module_prepends_supported?
+      if Support::RubyFeatures.module_prepends_supported?
         # We subclass `Module` in order to be able to easily detect our prepended module.
         RSpecPrependedModule = Class.new(Module)
 
