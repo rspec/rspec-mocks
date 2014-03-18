@@ -385,6 +385,21 @@ module RSpec
         let(:foo_expectation_error_message) { 'Exactly one instance should have received the following message(s) but didn\'t: foo' }
         let(:existing_method_expectation_error_message) { 'Exactly one instance should have received the following message(s) but didn\'t: existing_method' }
 
+        it "handles inspect accessing expected methods" do
+          klass.class_eval do
+            def inspect
+              "The contents of output: #{stdout}"
+            end
+          end
+
+          expect_any_instance_of(klass).to receive(:stdout).at_least(:twice)
+          expect do
+            klass.new.stdout
+            klass.new.stdout
+          end.to raise_error /The message 'stdout' was received by/
+          reset_all
+        end
+
         context "with an expectation is set on a method which does not exist" do
           it "returns the expected value" do
             expect_any_instance_of(klass).to receive(:foo).and_return(1)
