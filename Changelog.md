@@ -29,6 +29,8 @@ Bug Fixes:
   their singleton class prepended to. (Jon Rowe)
 * Fix an issue with 1.8.7 not running implementation blocks on partial doubles.
   (Maurício Linhares)
+* Prevent `StackLevelTooDeep` errors when stubbing an `any_instance` method that's
+  accessed in `inspect` by providing our own inspect output. (Jon Rowe)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
