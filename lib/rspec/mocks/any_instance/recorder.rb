@@ -227,9 +227,11 @@ module RSpec
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             klass = ::RSpec::Support.method_handle_for(self, method_name).owner
             invoked_instance = ::RSpec::Mocks.space.any_instance_recorder_for(klass).instance_that_received(method_name)
-            raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{self.inspect} but has already been received by #{invoked_instance}"
+            inspect = "#<#{self.class}:#{object_id} #{instance_variables.map { |name| "#{name}=#{instance_variable_get name}" }.join(', ')}>"
+            raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{inspect} but has already been received by #{invoked_instance}"
           end
         end
+
       end
     end
   end

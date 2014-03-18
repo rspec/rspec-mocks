@@ -438,7 +438,7 @@ module RSpec
 
                 instance_one.foo
                 instance_two.foo
-              end.to raise_error(RSpec::Mocks::MockExpectationError, "The message 'foo' was received by #{instance_two.inspect} but has already been received by #{instance_one.inspect}")
+              end.to raise_error(RSpec::Mocks::MockExpectationError, /The message 'foo' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
             end
           end
 
@@ -507,7 +507,7 @@ module RSpec
 
                 instance_one.existing_method
                 instance_two.existing_method
-              end.to raise_error(RSpec::Mocks::MockExpectationError, "The message 'existing_method' was received by #{instance_two.inspect} but has already been received by #{instance_one.inspect}")
+              end.to raise_error(RSpec::Mocks::MockExpectationError, /The message 'existing_method' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
             end
           end
         end
@@ -984,7 +984,7 @@ module RSpec
             expect_any_instance_of(klass).to receive(:existing_method)
             instance_one.existing_method
             instance_two.existing_method
-          end.to raise_error(RSpec::Mocks::MockExpectationError, "The message 'existing_method' was received by #{instance_two.inspect} but has already been received by #{instance_one.inspect}")
+          end.to raise_error(RSpec::Mocks::MockExpectationError, /The message 'existing_method' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
         end
       end
 
