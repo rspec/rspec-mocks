@@ -396,7 +396,7 @@ module RSpec
           expect do
             klass.new.stdout
             klass.new.stdout
-          end.to raise_error /The message 'stdout' was received by/
+          end.to raise_error(/The message 'stdout' was received by/)
           reset_all
         end
 

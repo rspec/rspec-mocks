@@ -261,14 +261,14 @@ module RSpec
           expect(a_double).to receive(:random_call).with(:a => "b", :c => "d")
           expect do
             a_double.random_call(:a => "b", :c => "e")
-          end.to fail_matching /expected: \({(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")}\)/
+          end.to fail_matching(/expected: \({(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")}\)/)
         end
 
         it "fails for a hash w/ wrong keys", :reset => true do
           expect(a_double).to receive(:random_call).with(:a => "b", :c => "d")
           expect do
             a_double.random_call("a" => "b", "c" => "d")
-          end.to fail_matching /expected: \({(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")}\)/
+          end.to fail_matching(/expected: \({(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")}\)/)
         end
 
         it "matches a class against itself" do
