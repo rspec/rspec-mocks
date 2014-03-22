@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    shared_examples_for "complains when given blocks" do
+    shared_examples "complains when given blocks" do
       it "complains if a { } block is given" do
         expect {
           target.to receive_messages(:a => 1) { "implementation" }
@@ -16,7 +16,7 @@ module RSpec
       end
     end
 
-    shared_examples_for "handles partially mocked objects correctly" do
+    shared_examples "handles partially mocked objects correctly" do
       let(:obj) { Struct.new(:a).new('original') }
 
       it "resets partially mocked objects correctly" do

@@ -29,7 +29,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "a receive matcher" do |*options|
+      shared_examples "a receive matcher" do |*options|
         it 'allows the caller to configure how the subject responds' do
           wrapped.to receive(:foo).and_return(5)
           expect(receiver.foo).to eq(5)
@@ -107,7 +107,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "an expect syntax allowance" do |*options|
+      shared_examples "an expect syntax allowance" do |*options|
         it_behaves_like "a receive matcher", *options
 
         it 'does not expect the message to be received' do
@@ -116,7 +116,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "an expect syntax negative allowance" do
+      shared_examples "an expect syntax negative allowance" do
         it 'is disabled since this expression is confusing' do
           expect {
             wrapped.not_to receive(:foo)
@@ -128,7 +128,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "an expect syntax expectation" do |*options|
+      shared_examples "an expect syntax expectation" do |*options|
         it_behaves_like "a receive matcher", *options
 
         it 'sets up a message expectation that passes if the message is received' do
@@ -156,7 +156,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "an expect syntax negative expectation" do
+      shared_examples "an expect syntax negative expectation" do
         it 'sets up a negaive message expectation that passes if the message is not received' do
           wrapped.not_to receive(:foo)
           verify_all
@@ -202,7 +202,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "resets partial mocks cleanly" do
+      shared_examples "resets partial mocks cleanly" do
         let(:klass)  { Struct.new(:foo) }
         let(:object) { klass.new :bar }
 
@@ -229,7 +229,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "resets partial mocks of any instance cleanly" do
+      shared_examples "resets partial mocks of any instance cleanly" do
         let(:klass)  { Struct.new(:foo) }
         let(:object) { klass.new :bar }
 

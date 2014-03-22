@@ -39,7 +39,7 @@ module RSpec
         allow(serializable_object).to receive_messages(:bazz => 5)
       end
 
-      shared_examples_for 'normal YAML serialization' do
+      shared_examples 'normal YAML serialization' do
         it 'serializes to yaml the same with and without stubbing, using #to_yaml' do
           expect { set_stub }.to_not change { serializable_object.to_yaml }
         end

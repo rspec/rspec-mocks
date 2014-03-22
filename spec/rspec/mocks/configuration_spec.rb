@@ -19,7 +19,7 @@ module RSpec
         expect(instance_methods_of(mod_2)).to include(:stub, :should_receive)
       end
 
-      shared_examples_for "configuring the syntax" do
+      shared_examples "configuring the syntax" do
         def sandboxed
           orig_syntax = RSpec::Mocks.configuration.syntax
           yield

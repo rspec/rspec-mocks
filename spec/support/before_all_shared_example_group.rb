@@ -1,4 +1,4 @@
-shared_examples_for "fails in a before(:all) block" do
+shared_examples "fails in a before(:all) block" do
   the_error = nil
   before(:all) do
     begin

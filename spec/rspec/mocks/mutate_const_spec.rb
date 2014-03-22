@@ -44,7 +44,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "loaded constant stubbing" do |const_name|
+      shared_examples "loaded constant stubbing" do |const_name|
         include_context "constant example methods", const_name
 
         let!(:original_const_value) { const }
@@ -74,7 +74,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "loaded constant hiding" do |const_name|
+      shared_examples "loaded constant hiding" do |const_name|
         before do
           expect(recursive_const_defined?(const_name)).to be_truthy
         end
@@ -95,7 +95,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "unloaded constant stubbing" do |const_name|
+      shared_examples "unloaded constant stubbing" do |const_name|
         include_context "constant example methods", const_name
 
         before do
@@ -124,7 +124,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "unloaded constant hiding" do |const_name|
+      shared_examples "unloaded constant hiding" do |const_name|
         include_context "constant example methods", const_name
 
         before do

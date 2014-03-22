@@ -155,7 +155,7 @@ module RSpec
           end
 
           describe "method visibility" do
-            shared_examples_for "preserves method visibility" do |visibility|
+            shared_examples "preserves method visibility" do |visibility|
               method_name = :"defined_#{visibility}_method"
 
               it "can allow a #{visibility} instance method" do
@@ -375,7 +375,7 @@ module RSpec
           end
 
           describe "method visibility" do
-            shared_examples_for "preserves method visibility" do |visibility|
+            shared_examples "preserves method visibility" do |visibility|
               method_name = :"defined_#{visibility}_class_method"
 
               it "can allow a #{visibility} instance method" do
