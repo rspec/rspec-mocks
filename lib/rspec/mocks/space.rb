@@ -48,6 +48,8 @@ module RSpec
         @any_instance_recorders  = {}
         @constant_mutators       = []
         @expectation_ordering    = OrderGroup.new
+        @proxy_mutex             = new_mutex
+        @any_instance_mutex      = new_mutex
       end
 
       def new_scope
@@ -75,9 +77,11 @@ module RSpec
       end
 
       def any_instance_recorder_for(klass)
-        id = klass.__id__
-        any_instance_recorders.fetch(id) do
-          any_instance_recorder_not_found_for(id, klass)
+        any_instance_mutex.synchronize do
+          id = klass.__id__
+          any_instance_recorders.fetch(id) do
+            any_instance_recorder_not_found_for(id, klass)
+          end
         end
       end
 
@@ -86,8 +90,10 @@ module RSpec
       end
 
       def proxy_for(object)
-        id = id_for(object)
-        proxies.fetch(id) { proxy_not_found_for(id, object) }
+        proxy_mutex.synchronize do
+          id = id_for(object)
+          proxies.fetch(id) { proxy_not_found_for(id, object) }
+        end
       end
 
       alias ensure_registered proxy_for
@@ -97,6 +103,21 @@ module RSpec
       end
 
     private
+
+      attr_reader :proxy_mutex, :any_instance_mutex
+
+      # We don't want to depend on the stdlib ourselves, but if the user is
+      # using threads then a Mutex will be available to us. If not, we don't
+      # need to synchronize anyway.
+      def new_mutex
+        (defined?(::Mutex) ? ::Mutex : FakeMutex).new
+      end
+
+      class FakeMutex
+        def synchronize
+          yield
+        end
+      end
 
       def proxy_not_found_for(id, object)
         proxies[id] = case object
