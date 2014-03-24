@@ -41,7 +41,7 @@ module RSpec
 
     # @private
     class Space
-      attr_reader :proxies, :any_instance_recorders
+      attr_reader :proxies, :any_instance_recorders, :proxy_mutex, :any_instance_mutex
 
       def initialize
         @proxies                 = {}
@@ -103,8 +103,6 @@ module RSpec
       end
 
     private
-
-      attr_reader :proxy_mutex, :any_instance_mutex
 
       # We don't want to depend on the stdlib ourselves, but if the user is
       # using threads then a Mutex will be available to us. If not, we don't
