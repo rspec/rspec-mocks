@@ -41,7 +41,7 @@ module RSpec
 
     # @private
     class Space
-      attr_reader :proxies, :any_instance_recorders, :expectation_ordering
+      attr_reader :proxies, :any_instance_recorders
 
       def initialize
         @proxies                 = {}
