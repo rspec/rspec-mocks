@@ -97,7 +97,7 @@ module RSpec
       #   nil if the constant was not previously defined.
       attr_accessor :original_value
 
-      # @api private
+      # @private
       attr_writer :previously_defined, :stubbed, :hidden
 
       # @return [Boolean] Whether or not the constant was defined
