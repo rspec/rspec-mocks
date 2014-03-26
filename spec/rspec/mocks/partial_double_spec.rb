@@ -303,6 +303,11 @@ module RSpec
         object.implemented
       end
 
+      it 'allows private methods to be expected on any_instance' do
+        expect_any_instance_of(klass).to receive(:defined_private_method).and_call_original
+        object.send(:defined_private_method)
+      end
+
       it 'does not allow a non-existing method to be called on any_instance' do
         prevents { expect_any_instance_of(klass).to receive(:unimplemented) }
       end
