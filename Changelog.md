@@ -31,7 +31,7 @@ Bug Fixes:
   (Maurício Linhares)
 * Prevent `StackLevelTooDeep` errors when stubbing an `any_instance` method that's
   accessed in `inspect` by providing our own inspect output. (Jon Rowe)
-* Fix bug in `any_instance` logic that dd not allow you to mock or stub
+* Fix bug in `any_instance` logic that did not allow you to mock or stub
   private methods if `verify_partial_doubles` was configured. (Oren Dobzinski)
 
 ### 3.0.0.beta2 / 2014-02-17
