@@ -52,7 +52,7 @@ require 'rspec/support/spec'
 
 RSpec.configure do |config|
   config.mock_with :rspec
-  config.color_enabled = true
+  config.color = true
   config.order = :random
 
   config.expect_with :rspec do |expectations|
