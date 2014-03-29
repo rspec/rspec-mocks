@@ -11,9 +11,10 @@ gemspec
   end
 end
 
+gem 'yard', '~> 0.8.7', :require => false
+
 ### deps for rdoc.info
 group :documentation do
-  gem 'yard',          '0.8.0', :require => false
   gem 'redcarpet',     '2.1.1' unless RUBY_PLATFORM == 'java'
   gem 'github-markup', '0.7.2'
 end
