@@ -209,7 +209,10 @@ module RSpec
 
         def observe!(method_name)
           if RSpec::Mocks.configuration.verify_partial_doubles?
-            raise MockExpectationError unless public_protected_or_private_method_defined?(method_name)
+            unless public_protected_or_private_method_defined?(method_name)
+              raise MockExpectationError,
+                "#{@klass} does not implement ##{method_name}"
+            end
           end
 
           stop_observing!(method_name) if already_observing?(method_name)

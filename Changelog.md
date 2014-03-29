@@ -33,6 +33,8 @@ Bug Fixes:
   accessed in `inspect` by providing our own inspect output. (Jon Rowe)
 * Fix bug in `any_instance` logic that did not allow you to mock or stub
   private methods if `verify_partial_doubles` was configured. (Oren Dobzinski)
+* Include useful error message when trying to observe an unimplemented method
+  on an any instance. (Xavier Shay)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
