@@ -42,9 +42,9 @@ module VerifyAndResetHelpers
 end
 
 module VerificationHelpers
-  def prevents(&block)
+  def prevents(msg = //, &block)
     expect(&block).to \
-      raise_error(RSpec::Mocks::MockExpectationError)
+      raise_error(RSpec::Mocks::MockExpectationError, msg)
   end
 end
 

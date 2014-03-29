@@ -309,14 +309,18 @@ module RSpec
       end
 
       it 'does not allow a non-existing method to be called on any_instance' do
-        prevents { expect_any_instance_of(klass).to receive(:unimplemented) }
+        prevents(/does not implement/) {
+          expect_any_instance_of(klass).to receive(:unimplemented)
+        }
       end
 
       it 'does not allow missing methods to be called on any_instance' do
         # This is potentially surprising behaviour, but there is no way for us
         # to know that this method is valid since we only have class and not an
         # instance.
-        prevents { expect_any_instance_of(klass).to receive(:dynamic_method) }
+        prevents(/does not implement/) {
+          expect_any_instance_of(klass).to receive(:dynamic_method)
+        }
       end
 
       it 'verifies arity range when receiving a message' do
