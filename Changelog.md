@@ -35,6 +35,8 @@ Bug Fixes:
   private methods if `verify_partial_doubles` was configured. (Oren Dobzinski)
 * Include useful error message when trying to observe an unimplemented method
   on an any instance. (Xavier Shay)
+* Fix `and_call_original` to work properly when multiple classes in an
+  inheritance hierarchy have been stubbed with the same method. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
