@@ -37,7 +37,7 @@ module RSpec
       end
 
       # @private
-      def method_handle_for(message)
+      def original_method_handle_for(message)
         nil
       end
 
@@ -255,7 +255,7 @@ module RSpec
 
     # @private
     class PartialDoubleProxy < Proxy
-      def method_handle_for(message)
+      def original_method_handle_for(message)
         if any_instance_class_recorder_observing_method?(@object.class, message)
           message = ::RSpec::Mocks.space.
             any_instance_recorder_for(@object.class).
@@ -299,6 +299,75 @@ module RSpec
         return false if superklass.nil?
         any_instance_class_recorder_observing_method?(superklass, method_name)
       end
+    end
+
+    # @private
+    # When we mock or stub a method on a class, we have to treat it a bit different,
+    # because normally singleton method definitions only affect the object on which
+    # they are defined, but on classes they affect subclasses, too. As a result,
+    # we need some special handling to get the original method.
+    module PartialClassDoubleProxyMethods
+      def initialize(source_space, *args)
+        @source_space = source_space
+        super(*args)
+      end
+
+      # Consider this situation:
+      #
+      #   class A; end
+      #   class B < A; end
+      #
+      #   allow(A).to receive(:new)
+      #   expect(B).to receive(:new).and_call_original
+      #
+      # When getting the original definition for `B.new`, we cannot rely purely on
+      # using `B.method(:new)` before our redefinition is defined on `B`, because
+      # `B.method(:new)` will return a method that will execute the stubbed version
+      # of the method on `A` since singleton methods on classes are in the lookup
+      # hierarchy.
+      #
+      # To do it properly, we need to find the original definition of `new` from `A`
+      # from _before_ `A` was stubbed, and we need to rebind it to `B` so that it will
+      # run with the proper `self`.
+      #
+      # That's what this method (together with `original_unbound_method_handle_from_ancestor_for`)
+      # does.
+      def original_method_handle_for(message)
+        unbound_method = superclass_proxy &&
+          superclass_proxy.original_unbound_method_handle_from_ancestor_for(message.to_sym)
+
+        return super unless unbound_method
+        unbound_method.bind(object)
+      end
+
+    protected
+
+      def original_unbound_method_handle_from_ancestor_for(message)
+        method_double = @method_doubles.fetch(message) do
+          # The fact that there is no method double for this message indicates
+          # that it has not been redefined by rspec-mocks. We need to continue
+          # looking up the ancestor chain.
+          return superclass_proxy &&
+            superclass_proxy.original_unbound_method_handle_from_ancestor_for(message)
+        end
+
+        method_double.original_method.unbind
+      end
+
+      def superclass_proxy
+        return @superclass_proxy if defined?(@superclass_proxy)
+
+        if (superclass = object.superclass)
+          @superclass_proxy = @source_space.proxy_for(superclass)
+        else
+          @superclass_proxy = nil
+        end
+      end
+    end
+
+    # @private
+    class PartialClassDoubleProxy < PartialDoubleProxy
+      include PartialClassDoubleProxyMethods
     end
 
     # @private
