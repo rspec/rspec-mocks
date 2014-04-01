@@ -103,6 +103,11 @@ module RSpec
     end
 
     # @private
+    class VerifyingPartialClassDoubleProxy < VerifyingPartialDoubleProxy
+      include PartialClassDoubleProxyMethods
+    end
+
+    # @private
     class VerifyingMethodDouble < MethodDouble
       def initialize(object, method_name, proxy, method_reference)
         super(object, method_name, proxy)

@@ -54,18 +54,44 @@ module RSpec
         expect(obj.foo(3)).to eq :three
       end
 
-      it "restores the correct implementations when stubbed and unstubbed on a parent and child class" do
-        parent = Class.new
-        child  = Class.new(parent)
+      shared_examples_for "stubbing `new` on class objects" do
+        it "restores the correct implementations when stubbed and unstubbed on a parent and child class" do
+          parent = stub_const("Parent", Class.new)
+          child  = stub_const("Child", Class.new(parent))
 
-        allow(parent).to receive(:new)
-        allow(child).to receive(:new)
-        allow(parent).to receive(:new).and_call_original
-        allow(child).to receive(:new).and_call_original
+          allow(parent).to receive(:new)
+          allow(child).to receive(:new)
+          allow(parent).to receive(:new).and_call_original
+          allow(child).to receive(:new).and_call_original
 
-        expect(parent.new).to be_an_instance_of parent
-        pending "not working for `and_call_original` yet, but works with `unstub`"
-        expect(child.new).to be_an_instance_of child
+          expect(parent.new).to be_an_instance_of parent
+          expect(child.new).to be_an_instance_of child
+        end
+
+        it "restores the correct implementations when stubbed and unstubbed on a grandparent and grandchild class" do
+          grandparent = stub_const("GrandParent", Class.new)
+          parent      = stub_const("Parent", Class.new(grandparent))
+          child       = stub_const("Child", Class.new(parent))
+
+          allow(grandparent).to receive(:new)
+          allow(child).to receive(:new)
+          allow(grandparent).to receive(:new).and_call_original
+          allow(child).to receive(:new).and_call_original
+
+          expect(grandparent.new).to be_an_instance_of grandparent
+          expect(child.new).to be_an_instance_of child
+        end
+      end
+
+      context "when partial doubles are not verified" do
+        before { expect(RSpec::Mocks.configuration.verify_partial_doubles?).to be false }
+        include_examples "stubbing `new` on class objects"
+      end
+
+      context "when partial doubles are verified" do
+        include_context "with isolated configuration"
+        before { RSpec::Mocks.configuration.verify_partial_doubles = true }
+        include_examples "stubbing `new` on class objects"
       end
     end
   end

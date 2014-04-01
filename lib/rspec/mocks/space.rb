@@ -122,6 +122,12 @@ module RSpec
         proxies[id] = case object
           when NilClass   then ProxyForNil.new(@expectation_ordering)
           when TestDouble then object.__build_mock_proxy(@expectation_ordering)
+          when Class
+            if RSpec::Mocks.configuration.verify_partial_doubles?
+              VerifyingPartialClassDoubleProxy.new(self, object, @expectation_ordering)
+            else
+              PartialClassDoubleProxy.new(self, object, @expectation_ordering)
+            end
           else
             if RSpec::Mocks.configuration.verify_partial_doubles?
               VerifyingPartialDoubleProxy.new(object, @expectation_ordering)

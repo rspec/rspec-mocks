@@ -25,7 +25,7 @@ module RSpec
         # method handles for missing methods even if `respond_to?` is correct.
         @original_method ||=
           @method_stasher.original_method ||
-          @proxy.method_handle_for(method_name) ||
+          @proxy.original_method_handle_for(method_name) ||
           Proc.new do |*args, &block|
             @object.__send__(:method_missing, @method_name, *args, &block)
           end
