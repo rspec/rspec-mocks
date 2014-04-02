@@ -52,6 +52,15 @@ module RSpec
         expect(obj.b).to eq 2
       end
 
+      it "updates stubs on instances with existing stubs" do
+        allow(obj).to receive(:a).and_return(3)
+        expect(obj.a).to eq(3)
+
+        allow_any_instance_of(Object).to receive_messages(:a => 1, :b => 2)
+        expect(obj.a).to eq 1
+        expect(obj.b).to eq 2
+      end
+
       it_behaves_like "complains when given blocks"
     end
 

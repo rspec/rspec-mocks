@@ -118,8 +118,8 @@ module RSpec
       end
 
       # @private
-      def remove_single_stub(method_name, stub)
-        method_double_for(method_name).remove_single_stub(stub)
+      def remove_stub_if_present(method_name)
+        method_double_for(method_name).remove_stub_if_present
       end
 
       # @private

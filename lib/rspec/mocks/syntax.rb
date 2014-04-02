@@ -77,7 +77,7 @@ module RSpec
             Class.class_exec do
               def any_instance
                 ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
-                ::RSpec::Mocks.space.any_instance_recorder_for(self)
+                ::RSpec::Mocks.space.any_instance_proxy_for(self)
               end
             end
           end

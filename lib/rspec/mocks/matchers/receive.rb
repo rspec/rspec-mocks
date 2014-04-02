@@ -61,7 +61,7 @@ module RSpec
       private
 
         def warn_if_any_instance(expression, subject)
-          if AnyInstance::Recorder === subject
+          if AnyInstance::Proxy === subject
             RSpec.warning(
               "`#{expression}(#{subject.klass}.any_instance).to` " <<
               "is probably not what you meant, it does not operate on " <<
@@ -77,8 +77,8 @@ module RSpec
         end
 
         def setup_any_instance_method_substitute(subject, method, block)
-          any_instance_recorder = ::RSpec::Mocks.space.any_instance_recorder_for(subject)
-          setup_method_substitute(any_instance_recorder, method, block)
+          proxy = ::RSpec::Mocks.space.any_instance_proxy_for(subject)
+          setup_method_substitute(proxy, method, block)
         end
 
         def setup_method_substitute(host, method, block, *args)

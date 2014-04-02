@@ -244,6 +244,25 @@ RSpec.describe "Using the legacy should syntax" do
       expect { verify_all }.to raise_error(RSpec::Mocks::MockExpectationError)
     end
 
+    it 'affects previously stubbed instances when stubbing a method' do
+      instance = klass.new
+      klass.any_instance.stub(:foo).and_return(2)
+      expect(instance.foo).to eq(2)
+      klass.any_instance.stub(:foo).and_return(1)
+      expect(instance.foo).to eq(1)
+    end
+
+    it 'affects previously stubbed instances when mocking a method' do
+      instance = klass.new
+      klass.any_instance.stub(:foo).and_return(2)
+      expect(instance.foo).to eq(2)
+      klass.any_instance.should_receive(:foo).and_return(1)
+      expect(instance.foo).to eq(1)
+
+      # TODO: this shouldn't be necessary to satisfy the expectation, but is.
+      klass.new.foo(2)
+    end
+
     context "invocation order" do
       describe "#stub" do
         it "raises an error if 'stub' follows 'with'" do
@@ -295,6 +314,15 @@ RSpec.describe "Using the legacy should syntax" do
             klass.any_instance.stub_chain('one.two.three').and_return(:four)
             expect(klass.new.one.two.three).to eq(:four)
           end
+        end
+
+        it 'affects previously stubbed instances' do
+          instance = klass.new
+          dbl = double
+          klass.any_instance.stub(:foo).and_return(dbl)
+          expect(instance.foo).to eq(dbl)
+          klass.any_instance.stub_chain(:foo, :bar => 3)
+          expect(instance.foo.bar).to eq(3)
         end
       end
 
@@ -379,10 +407,18 @@ RSpec.describe "Using the legacy should syntax" do
           expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
-        it "does not remove any stubs set directly on an instance" do
+        it "removes stubs set directly on an instance" do
           klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
           obj = klass.new
           obj.stub(:existing_method).and_return(:local_method)
+          klass.any_instance.unstub(:existing_method)
+          expect(obj.existing_method).to eq(:existing_method_return_value)
+        end
+
+        it "does not remove message expectations set directly on an instance" do
+          klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
+          obj = klass.new
+          obj.should_receive(:existing_method).and_return(:local_method)
           klass.any_instance.unstub(:existing_method)
           expect(obj.existing_method).to eq(:local_method)
         end
