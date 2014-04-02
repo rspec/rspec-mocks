@@ -9,7 +9,6 @@ module RSpec
           @message                 = message
           @block                   = block
           @recorded_customizations = []
-          @backtrace_line          = CallerFilter.first_non_rspec_line
         end
 
         def name
@@ -74,7 +73,7 @@ module RSpec
 
         def setup_mock_proxy_method_substitute(subject, method, block)
           proxy = ::RSpec::Mocks.space.proxy_for(subject)
-          setup_method_substitute(proxy, method, block, @backtrace_line)
+          setup_method_substitute(proxy, method, block)
         end
 
         def setup_any_instance_method_substitute(subject, method, block)
