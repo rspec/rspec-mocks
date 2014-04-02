@@ -167,6 +167,15 @@ module RSpec
             expect(klass.new.foo).to be(return_value)
             expect(klass.new.foo).to be(return_value)
           end
+
+          it "can change how instances responds in the middle of an example" do
+            instance = klass.new
+
+            allow_any_instance_of(klass).to receive(:foo).and_return(1)
+            expect(instance.foo).to eq(1)
+            allow_any_instance_of(klass).to receive(:foo).and_return(2)
+            expect(instance.foo).to eq(2)
+          end
         end
 
         context "with #and_yield" do
