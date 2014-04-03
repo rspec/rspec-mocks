@@ -244,6 +244,13 @@ RSpec.describe "Using the legacy should syntax" do
       expect { verify_all }.to raise_error(RSpec::Mocks::MockExpectationError)
     end
 
+    it 'can get method objects for the fluent interface', :if => RUBY_VERSION.to_f > 1.8 do
+      and_return = klass.any_instance.stub(:foo).method(:and_return)
+      and_return.call(23)
+
+      expect(klass.new.foo).to eq(23)
+    end
+
     it 'affects previously stubbed instances when stubbing a method' do
       instance = klass.new
       klass.any_instance.stub(:foo).and_return(2)
