@@ -128,6 +128,10 @@ module RSpec
             true
           end
 
+          def respond_to?(name, include_all=false)
+            super || name == :proxied? || @target.respond_to?(name, include_all)
+          end
+
           def method_missing(*a)
             @target.send(*a)
           end
