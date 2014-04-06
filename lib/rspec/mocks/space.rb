@@ -13,6 +13,10 @@ module RSpec
         raise_lifecycle_message
       end
 
+      def any_instance_proxy_for(*args)
+        raise_lifecycle_message
+      end
+
       def register_constant_mutator(mutator)
         raise_lifecycle_message
       end
@@ -83,6 +87,10 @@ module RSpec
             any_instance_recorder_not_found_for(id, klass)
           end
         end
+      end
+
+      def any_instance_proxy_for(klass)
+        AnyInstance::Proxy.new(any_instance_recorder_for(klass), proxies_of(klass))
       end
 
       def proxies_of(klass)

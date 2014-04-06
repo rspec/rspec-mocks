@@ -6,4 +6,5 @@
   any_instance/expectation_chain
   any_instance/message_chains
   any_instance/recorder
+  any_instance/proxy
 ].each { |f| RSpec::Support.require_rspec_mocks(f) }

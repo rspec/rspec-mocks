@@ -13,8 +13,10 @@ module RSpec
 
         def create_message_expectation_on(instance)
           proxy = ::RSpec::Mocks.space.proxy_for(instance)
-          expected_from = IGNORED_BACKTRACE_LINE
-          stub = proxy.add_stub(expected_from, *@expectation_args, &@expectation_block)
+          method_name, opts = @expectation_args
+          opts = (opts || {}).merge(:expected_form => IGNORED_BACKTRACE_LINE)
+
+          stub = proxy.add_stub(method_name, opts, &@expectation_block)
           @recorder.stubs[stub.message] << stub
 
           if RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?

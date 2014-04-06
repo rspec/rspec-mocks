@@ -26,15 +26,9 @@ module RSpec
         # instance of this object that invokes the submitted method.
         #
         # @see Methods#stub
-        def stub(method_name_or_method_map, &block)
-          if Hash === method_name_or_method_map
-            method_name_or_method_map.each do |method_name, return_value|
-              stub(method_name).and_return(return_value)
-            end
-          else
-            observe!(method_name_or_method_map)
-            message_chains.add(method_name_or_method_map, StubChain.new(self, method_name_or_method_map, &block))
-          end
+        def stub(method_name, &block)
+          observe!(method_name)
+          message_chains.add(method_name, StubChain.new(self, method_name, &block))
         end
 
         # Initializes the recording a stub chain to be played back against any
@@ -85,9 +79,6 @@ module RSpec
             raise RSpec::Mocks::MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
           end
           message_chains.remove_stub_chains_for!(method_name)
-          ::RSpec::Mocks.space.proxies_of(@klass).each do |proxy|
-            stubs[method_name].each { |stub| proxy.remove_single_stub(method_name, stub) }
-          end
           stubs[method_name].clear
           stop_observing!(method_name) unless message_chains.has_expectation?(method_name)
         end

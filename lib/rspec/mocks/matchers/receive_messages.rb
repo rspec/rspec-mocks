@@ -58,7 +58,7 @@ module RSpec
         end
 
         def any_instance_of(subject)
-          ::RSpec::Mocks.space.any_instance_recorder_for(subject)
+          ::RSpec::Mocks.space.any_instance_proxy_for(subject)
         end
 
         def each_message_on(host)

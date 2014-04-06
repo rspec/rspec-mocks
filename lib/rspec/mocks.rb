@@ -67,10 +67,7 @@ module RSpec
     #   x = 0
     #   RSpec::Mocks.allow_message(bar, :foo) { x += 1 }
     def self.allow_message(subject, message, opts={}, &block)
-      orig_caller = opts.fetch(:expected_from) {
-        CallerFilter.first_non_rspec_line
-      }
-      space.proxy_for(subject).add_stub(orig_caller, message, opts, &block)
+      space.proxy_for(subject).add_stub(message, opts, &block)
     end
 
     # Sets a message expectation on `subject`.
@@ -85,10 +82,7 @@ module RSpec
     #   RSpec::Mocks.expect_message(bar, :foo)
     #   bar.foo
     def self.expect_message(subject, message, opts={}, &block)
-      orig_caller = opts.fetch(:expected_from) {
-        CallerFilter.first_non_rspec_line
-      }
-      space.proxy_for(subject).add_message_expectation(orig_caller, message, opts, &block)
+      space.proxy_for(subject).add_message_expectation(message, opts, &block)
     end
 
     # Call the passed block and verify mocks after it has executed. This allows

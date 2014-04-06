@@ -30,14 +30,12 @@ module RSpec
         syntax_host.class_exec do
           def should_receive(message, opts={}, &block)
             ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
-            opts[:expected_from] ||= CallerFilter.first_non_rspec_line
             ::RSpec::Mocks.expect_message(self, message, opts, &block)
           end
 
           def should_not_receive(message, &block)
             ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
-            opts = {:expected_from => CallerFilter.first_non_rspec_line}
-            ::RSpec::Mocks.expect_message(self, message, opts, &block).never
+            ::RSpec::Mocks.expect_message(self, message, {}, &block).never
           end
 
           def stub(message_or_hash, opts={}, &block)
@@ -45,7 +43,6 @@ module RSpec
             if ::Hash === message_or_hash
               message_or_hash.each {|message, value| stub(message).and_return value }
             else
-              opts[:expected_from] = CallerFilter.first_non_rspec_line
               ::RSpec::Mocks.allow_message(self, message_or_hash, opts, &block)
             end
           end
@@ -80,7 +77,7 @@ module RSpec
             Class.class_exec do
               def any_instance
                 ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
-                ::RSpec::Mocks.space.any_instance_recorder_for(self)
+                ::RSpec::Mocks.space.any_instance_proxy_for(self)
               end
             end
           end

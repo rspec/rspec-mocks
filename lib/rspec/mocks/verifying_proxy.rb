@@ -6,7 +6,7 @@ module RSpec
 
     # @private
     module VerifyingProxyMethods
-      def add_stub(location, method_name, opts={}, &implementation)
+      def add_stub(method_name, opts={}, &implementation)
         ensure_implemented(method_name)
         super
       end
@@ -16,7 +16,7 @@ module RSpec
         super
       end
 
-      def add_message_expectation(location, method_name, opts={}, &block)
+      def add_message_expectation(method_name, opts={}, &block)
         ensure_implemented(method_name)
         super
       end

@@ -143,11 +143,31 @@ module RSpec::Mocks::Matchers
         expect(o.to_a.length).to eq(3)
       end
 
+      it "stubs already stubbed instances when using `allow_any_instance_of`" do
+        o = Object.new
+        allow(o).to receive(:foo).and_return(dbl = double)
+        expect(o.foo).to be(dbl)
+
+        allow_any_instance_of(Object).to receive_message_chain(:foo, :bar).and_return("bazz")
+        expect(o.foo.bar).to eq("bazz")
+      end
+
       it "fails when with expect_any_instance_of is used and the entire chain is not called" do
         expect {
           expect_any_instance_of(Object).to receive_message_chain(:to_a, :length => 3)
           verify_all
         }.to raise_error(RSpec::Mocks::MockExpectationError)
+      end
+
+      it "affects previously stubbed instances when `expect_any_instance_of` is called" do
+        o = Object.new
+        allow(o).to receive(:foo).and_return(double)
+
+        expect_any_instance_of(Object).to receive_message_chain(:foo, :bar => 3)
+        expect(o.foo.bar).to eq(3)
+
+        # TODO: this shouldn't be necessary to satisfy the expectation, but is.
+        Object.new.foo.bar
       end
 
       it "passes when with expect_any_instance_of is used and the entire chain is called" do

@@ -167,6 +167,17 @@ module RSpec
             expect(klass.new.foo).to be(return_value)
             expect(klass.new.foo).to be(return_value)
           end
+
+          it "can change how instances responds in the middle of an example" do
+            instance = klass.new
+
+            allow_any_instance_of(klass).to receive(:foo).and_return(1)
+            expect(instance.foo).to eq(1)
+            allow_any_instance_of(klass).to receive(:foo).and_return(2)
+            expect(instance.foo).to eq(2)
+            allow_any_instance_of(klass).to receive(:foo).and_raise("boom")
+            expect { instance.foo }.to raise_error("boom")
+          end
         end
 
         context "with #and_yield" do
@@ -299,7 +310,6 @@ module RSpec
           obj.existing_method
           allow_any_instance_of(klass).to receive(:existing_method).and_call_original
 
-          pending "not working for `and_call_original` yet, but works with `unstub`"
           expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
@@ -309,16 +319,15 @@ module RSpec
           expect(obj.existing_method).to eq(:any_instance_value)
           allow_any_instance_of(klass).to receive(:existing_method).and_call_original
 
-          pending "not working for `and_call_original` yet, but works with `unstub`"
           expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
-        it "does not remove any stubs set directly on an instance" do
+        it "removes any stubs set directly on an instance" do
           allow_any_instance_of(klass).to receive(:existing_method).and_return(:any_instance_value)
           obj = klass.new
           allow(obj).to receive(:existing_method).and_return(:local_method)
           allow_any_instance_of(klass).to receive(:existing_method).and_call_original
-          expect(obj.existing_method).to eq(:local_method)
+          expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
         it "does not remove any expectations with the same method name" do
@@ -349,6 +358,15 @@ module RSpec
         it "passes if only a different method is called" do
           expect_any_instance_of(klass).not_to receive(:existing_method)
           expect { klass.new.another_existing_method }.to_not raise_error
+        end
+
+        it "affects previously stubbed instances" do
+          instance = klass.new
+
+          allow_any_instance_of(klass).to receive(:foo).and_return(1)
+          expect(instance.foo).to eq(1)
+          expect_any_instance_of(klass).not_to receive(:foo)
+          expect { instance.foo }.to fail
         end
 
         context "with constraints" do
@@ -398,6 +416,18 @@ module RSpec
             klass.new.stdout
           end.to raise_error(/The message 'stdout' was received by/)
           reset_all
+        end
+
+        it "affects previously stubbed instances" do
+          instance = klass.new
+
+          allow_any_instance_of(klass).to receive(:foo).and_return(1)
+          expect(instance.foo).to eq(1)
+          expect_any_instance_of(klass).to receive(:foo).with(2).and_return(2)
+          expect(instance.foo(2)).to eq(2)
+
+          # TODO: this shouldn't be necessary to satisfy the expectation, but is.
+          klass.new.foo(2)
         end
 
         context "with an expectation is set on a method which does not exist" do
