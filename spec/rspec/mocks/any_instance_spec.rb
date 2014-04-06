@@ -425,9 +425,14 @@ module RSpec
           expect(instance.foo).to eq(1)
           expect_any_instance_of(klass).to receive(:foo).with(2).and_return(2)
           expect(instance.foo(2)).to eq(2)
+        end
 
-          # TODO: this shouldn't be necessary to satisfy the expectation, but is.
-          klass.new.foo(2)
+        it "does not modify the return value of stubs set on an instance" do
+          expect_any_instance_of(Object).to receive(:foo).twice
+          object = Object.new
+          allow(object).to receive(:foo).and_return(3)
+          expect(object.foo).to eq(3)
+          expect(object.foo).to eq(3)
         end
 
         context "with an expectation is set on a method which does not exist" do

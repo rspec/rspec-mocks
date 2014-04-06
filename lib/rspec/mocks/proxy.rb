@@ -18,6 +18,7 @@ module RSpec
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
+        @subscribers = options.fetch(:subscribers, [])
       end
 
       # @private
@@ -151,6 +152,11 @@ module RSpec
       # @private
       def message_received(message, *args, &block)
         record_message_received message, *args, &block
+
+        @subscribers.each do |subscriber|
+          subscriber.notify_received_message(object, message, args, block)
+        end
+
         expectation = find_matching_expectation(message, *args)
         stub = find_matching_method_stub(message, *args)
 

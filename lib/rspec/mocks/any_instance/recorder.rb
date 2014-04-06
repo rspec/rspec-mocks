@@ -121,6 +121,11 @@ module RSpec
           @observed_methods.include?(method_name) || super_class_observing?(method_name)
         end
 
+        # @private
+        def notify_received_message(object, message, args, blk)
+          received_expected_message!(message) if message_chains.has_expectation?(message)
+        end
+
       protected
 
         def stop_observing!(method_name)

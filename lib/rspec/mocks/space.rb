@@ -112,6 +112,10 @@ module RSpec
 
     private
 
+      def any_instance_recorders_from_ancestry_of(object)
+        [any_instance_recorders[object.class.__id__]].compact
+      end
+
       # We don't want to depend on the stdlib ourselves, but if the user is
       # using threads then a Mutex will be available to us. If not, we don't
       # need to synchronize anyway.
@@ -138,9 +142,18 @@ module RSpec
             end
           else
             if RSpec::Mocks.configuration.verify_partial_doubles?
-              VerifyingPartialDoubleProxy.new(object, @expectation_ordering)
+              VerifyingPartialDoubleProxy.new(
+                object,
+                @expectation_ordering,
+                :subscribers => any_instance_recorders_from_ancestry_of(object)
+              )
             else
-              PartialDoubleProxy.new(object, @expectation_ordering)
+              PartialDoubleProxy.new(
+                object,
+                @expectation_ordering,
+                nil,
+                :subscribers => any_instance_recorders_from_ancestry_of(object)
+              )
             end
         end
       end
