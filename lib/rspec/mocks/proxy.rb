@@ -145,7 +145,7 @@ module RSpec
       # @private
       def record_message_received(message, *args, &block)
         @order_group.invoked SpecificMessage.new(object, message)
-        @messages_received << [message, args, block]
+        @messages_received << [message, cloned_args(args), block]
       end
 
       # @private
@@ -243,6 +243,19 @@ module RSpec
 
       def find_almost_matching_stub(method_name, *args)
         method_double_for(method_name).stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
+      end
+
+      def cloned_args(args)
+        args.map do |arg|
+          # Many instances respond_to?(:clone) even when that method raises an error
+          # Fixnum raises "TypeError: can't clone Fixnum"
+          # Regexp raises "SecurityError: can't modify literal regexp"
+          begin
+            arg.clone
+          rescue Exception
+            arg
+          end
+        end
       end
     end
 

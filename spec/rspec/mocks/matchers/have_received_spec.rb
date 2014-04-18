@@ -123,6 +123,26 @@ module RSpec
               expect(dbl).to have_received(:expected_method).with(:unexpected, :args)
             }.to raise_error(/with unexpected arguments/)
           end
+
+          context 'method called multipled times' do
+            it 'passes when arguments are different objects' do
+              dbl = double_with_unmet_expectation(:expected_method)
+              dbl.expected_method({ :a => 1 })
+              dbl.expected_method({ :a => 2 })
+              expect(dbl).to have_received(:expected_method).with({ :a => 1 })
+              expect(dbl).to have_received(:expected_method).with({ :a => 2 })
+            end
+
+            it 'passes when arguments are the same object that changed between calls' do
+              dbl = double_with_unmet_expectation(:expected_method)
+              arg = { :a => 1 }
+              dbl.expected_method(arg)
+              arg[:a] = 2
+              dbl.expected_method(arg)
+              expect(dbl).to have_received(:expected_method).with({ :a => 1 })
+              expect(dbl).to have_received(:expected_method).with({ :a => 2 })
+            end
+          end
         end
 
         it 'generates a useful description' do
