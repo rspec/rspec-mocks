@@ -73,7 +73,7 @@ module RSpec
       end
 
       def __build_mock_proxy(order_group)
-        VerifyingProxy.new(self, order_group,
+        VerifyingProxy.new(self, order_group, @name,
           @doubled_module,
           InstanceMethodReference
         )
@@ -94,7 +94,7 @@ module RSpec
       end
 
       def __build_mock_proxy(order_group)
-        VerifyingProxy.new(self, order_group,
+        VerifyingProxy.new(self, order_group, @name,
           @doubled_module,
           ObjectMethodReference
         )

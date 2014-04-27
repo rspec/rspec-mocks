@@ -57,10 +57,10 @@ module RSpec
     class VerifyingProxy < Proxy
       include VerifyingProxyMethods
 
-      def initialize(object, order_group, name, method_reference_class)
-        super(object, order_group)
+      def initialize(object, order_group, name, doubled_module, method_reference_class)
+        super(object, order_group, name)
         @object                 = object
-        @doubled_module         = name
+        @doubled_module         = doubled_module
         @method_reference_class = method_reference_class
 
         # A custom method double is required to pass through a way to lookup
