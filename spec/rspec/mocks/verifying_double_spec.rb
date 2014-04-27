@@ -76,6 +76,13 @@ module RSpec
             RSpec::Mocks.configuration.verify_doubled_constant_names = false
           end
 
+          it 'includes the double name in errors for unexpected messages' do
+            o = instance_double("NonLoadedClass")
+            expect {
+              o.foo
+            }.to fail_matching('Double "NonLoadedClass (instance)"')
+          end
+
           it 'allows any instance method to be stubbed' do
             o = instance_double('NonloadedClass')
             allow(o).to receive(:undefined_instance_method).with(:arg).and_return(true)
@@ -119,6 +126,13 @@ module RSpec
 
           before do
             RSpec::Mocks.configuration.verify_doubled_constant_names = true
+          end
+
+          it 'includes the double name in errors for unexpected messages' do
+            o = instance_double("LoadedClass")
+            expect {
+              o.defined_instance_method
+            }.to fail_matching('Double "LoadedClass (instance)"')
           end
 
           it 'only allows instance methods that exist to be stubbed' do
@@ -256,6 +270,12 @@ module RSpec
               prevents { o.__send__(:undefined_method) }
             end
 
+            it "includes the double's name in a private method error" do
+              expect {
+                o.rand
+              }.to raise_error(NoMethodError, %r{private.*Double "LoadedClass \(instance\)"})
+            end
+
             it 'reports what public messages it responds to accurately' do
               expect(o.respond_to?(:defined_instance_method)).to be true
               expect(o.respond_to?(:defined_instance_method, true)).to be true
@@ -309,6 +329,13 @@ module RSpec
             RSpec::Mocks.configuration.verify_doubled_constant_names = false
           end
 
+          it 'includes the double name in errors for unexpected messages' do
+            o = class_double("NonLoadedClass")
+            expect {
+              o.foo
+            }.to fail_matching('Double "NonLoadedClass"')
+          end
+
           it 'allows any method to be stubbed' do
             o = class_double('NonloadedClass')
             allow(o).to receive(:undefined_instance_method).with(:arg).and_return(1)
@@ -346,6 +373,13 @@ module RSpec
 
           before do
             RSpec::Mocks.configuration.verify_doubled_constant_names = true
+          end
+
+          it 'includes the double name in errors for unexpected messages' do
+            o = class_double("LoadedClass")
+            expect {
+              o.defined_class_method
+            }.to fail_matching('Double "LoadedClass"')
           end
 
           it 'only allows class methods that exist to be stubbed' do
