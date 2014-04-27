@@ -39,6 +39,8 @@ Bug Fixes:
   inheritance hierarchy have been stubbed with the same method. (Myron Marston)
 * Fix `any_instance` so that it updates existing instances that have
   already been stubbed. (Myron Marston)
+* Fix verified doubles so that their class name is included in failure
+  messages. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
