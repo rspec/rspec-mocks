@@ -444,7 +444,7 @@ module RSpec
           expect(subinstance.foo(2)).to eq(2)
         end
 
-        it "properly notifies any instance recorders at multiple levels of hierarchy" do
+        it "properly notifies any instance recorders at multiple levels of hierarchy when a directly stubbed object receives a message" do
           subclass = Class.new(klass)
           instance = subclass.new
 
@@ -464,6 +464,20 @@ module RSpec
           allow(object).to receive(:foo).and_return(3)
           expect(object.foo).to eq(3)
           expect(object.foo).to eq(3)
+        end
+
+        context "when an instance has been directly stubbed" do
+          it "fails when a second instance to receive the message" do
+            expect_any_instance_of(klass).to receive(:foo)
+            instance_1 = klass.new
+
+            allow(instance_1).to receive(:foo).and_return(17)
+            expect(instance_1.foo).to eq(17)
+
+            expect {
+              klass.new.foo
+            }.to fail_with(/has already been received/)
+          end
         end
 
         context "when argument matching is used and an instance has stubbed the message" do
