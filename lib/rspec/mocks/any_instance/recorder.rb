@@ -123,7 +123,9 @@ module RSpec
 
         # @private
         def notify_received_message(object, message, args, blk)
-          received_expected_message!(message) if message_chains.has_expectation?(message)
+          message_chains.each_unfulfilled_expectation_matching(message, *args) do |expectation|
+            expectation.expectation_fulfilled!
+          end
         end
 
       protected

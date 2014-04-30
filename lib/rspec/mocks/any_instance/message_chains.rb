@@ -33,6 +33,15 @@ module RSpec
         end
 
         # @private
+        def each_unfulfilled_expectation_matching(method_name, *args)
+          @chains_by_method_name[method_name].each do |chain|
+            if !chain.expectation_fulfilled? && chain.matches_args?(*args)
+              yield chain
+            end
+          end
+        end
+
+        # @private
         def all_expectations_fulfilled?
           @chains_by_method_name.all? do |method_name, chains|
             chains.all? { |chain| chain.expectation_fulfilled? }

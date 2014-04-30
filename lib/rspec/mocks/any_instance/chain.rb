@@ -8,6 +8,7 @@ module RSpec
           @recorder          = recorder
           @expectation_args  = args
           @expectation_block = block
+          @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
         end
 
         # @private
@@ -64,12 +65,22 @@ module RSpec
         end
 
         # @private
+        def matches_args?(*args)
+          @argument_list_matcher.args_match?(*args)
+        end
+
+        # @private
         def expectation_fulfilled!
           @expectation_fulfilled = true
         end
 
         def never
           ErrorGenerator.raise_double_negation_error("expect_any_instance_of(MyClass)") if negated?
+          super
+        end
+
+        def with(*args, &block)
+          @argument_list_matcher = ArgumentListMatcher.new(*args)
           super
         end
 

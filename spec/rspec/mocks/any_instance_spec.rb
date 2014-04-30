@@ -466,6 +466,26 @@ module RSpec
           expect(object.foo).to eq(3)
         end
 
+        context "when argument matching is used and an instance has stubbed the message" do
+          it "fails on verify if the arguments do not match" do
+            expect_any_instance_of(klass).to receive(:foo).with(3)
+            instance = klass.new
+            allow(instance).to receive(:foo).and_return(2)
+
+            expect(instance.foo(4)).to eq(2)
+            expect { verify_all }.to fail
+          end
+
+          it "passes on verify if the arguments do match" do
+            expect_any_instance_of(klass).to receive(:foo).with(3)
+            instance = klass.new
+            allow(instance).to receive(:foo).and_return(2)
+
+            expect(instance.foo(3)).to eq(2)
+            expect { verify_all }.not_to raise_error
+          end
+        end
+
         context "with an expectation is set on a method which does not exist" do
           it "returns the expected value" do
             expect_any_instance_of(klass).to receive(:foo).and_return(1)
