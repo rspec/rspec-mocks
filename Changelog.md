@@ -41,6 +41,9 @@ Bug Fixes:
   already been stubbed. (Myron Marston)
 * Fix verified doubles so that their class name is included in failure
   messages. (Myron Marston)
+* Fix `expect_any_instance_of` so that when the message is received
+  on an individual instance that has been directly stubbed, it still
+  satisfies the expectation. (Sam Phippen, Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)
