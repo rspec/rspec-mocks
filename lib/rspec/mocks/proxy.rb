@@ -18,7 +18,6 @@ module RSpec
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
-        @subscribers = options.fetch(:subscribers, [])
       end
 
       # @private
@@ -153,7 +152,7 @@ module RSpec
       def message_received(message, *args, &block)
         record_message_received message, *args, &block
 
-        @subscribers.each do |subscriber|
+        RSpec::Mocks.space.any_instance_recorders_from_ancestry_of(object).each do |subscriber|
           subscriber.notify_received_message(object, message, args, block)
         end
 

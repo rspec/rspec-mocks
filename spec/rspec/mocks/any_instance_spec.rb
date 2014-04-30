@@ -457,6 +457,15 @@ module RSpec
           expect(instance.msg_2).to eq("b")
         end
 
+        it "properly notifies any instance recorders when they are created after the object's mock proxy" do
+          object = Object.new
+          allow(object).to receive(:bar)
+          expect_any_instance_of(Object).to receive(:foo).twice
+          allow(object).to receive(:foo).and_return(3)
+          expect(object.foo).to eq(3)
+          expect(object.foo).to eq(3)
+        end
+
         context "with an expectation is set on a method which does not exist" do
           it "returns the expected value" do
             expect_any_instance_of(klass).to receive(:foo).and_return(1)

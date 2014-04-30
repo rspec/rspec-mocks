@@ -86,8 +86,8 @@ module RSpec
     class VerifyingPartialDoubleProxy < PartialDoubleProxy
       include VerifyingProxyMethods
 
-      def initialize(object, expectation_ordering, options={})
-        super(object, expectation_ordering, nil, options)
+      def initialize(object, expectation_ordering)
+        super(object, expectation_ordering)
         @doubled_module = DirectObjectReference.new(object)
 
         # A custom method double is required to pass through a way to lookup

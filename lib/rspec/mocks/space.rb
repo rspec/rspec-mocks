@@ -21,6 +21,10 @@ module RSpec
         raise_lifecycle_message
       end
 
+      def any_instance_recorders_from_ancestry_of(object)
+        raise_lifecycle_message
+      end
+
       def reset_all
       end
 
@@ -110,13 +114,19 @@ module RSpec
         proxies.has_key?(id_for object)
       end
 
-    private
-
       def any_instance_recorders_from_ancestry_of(object)
+        # Optimization: `any_instance` is a feature we generally
+        # recommend not using, so we can often early exit here
+        # without doing an O(N) linear search over the number of
+        # ancestors in the object's class hierarchy.
+        return [] if any_instance_recorders.empty?
+
         object.class.ancestors.map do |klass|
           any_instance_recorders[klass.__id__]
         end.compact
       end
+
+    private
 
       # We don't want to depend on the stdlib ourselves, but if the user is
       # using threads then a Mutex will be available to us. If not, we don't
@@ -144,18 +154,9 @@ module RSpec
             end
           else
             if RSpec::Mocks.configuration.verify_partial_doubles?
-              VerifyingPartialDoubleProxy.new(
-                object,
-                @expectation_ordering,
-                :subscribers => any_instance_recorders_from_ancestry_of(object)
-              )
+              VerifyingPartialDoubleProxy.new(object, @expectation_ordering)
             else
-              PartialDoubleProxy.new(
-                object,
-                @expectation_ordering,
-                nil,
-                :subscribers => any_instance_recorders_from_ancestry_of(object)
-              )
+              PartialDoubleProxy.new(object, @expectation_ordering)
             end
         end
       end
