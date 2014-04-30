@@ -435,6 +435,28 @@ module RSpec
           expect(object.foo).to eq(3)
         end
 
+        it "does not modify the return value of stubs set on an instance of a subclass" do
+          subklass = Class.new(klass)
+          subinstance = subklass.new
+          allow_any_instance_of(klass).to receive(:foo).and_return(1)
+          expect(subinstance.foo).to eq(1)
+          expect_any_instance_of(klass).to receive(:foo).with(2).and_return(2)
+          expect(subinstance.foo(2)).to eq(2)
+        end
+
+        it "properly notifies any instance recorders at multiple levels of hierarchy" do
+          subclass = Class.new(klass)
+          instance = subclass.new
+
+          expect_any_instance_of(klass).to receive(:msg_1)
+          expect_any_instance_of(subclass).to receive(:msg_2)
+
+          allow(instance).to receive_messages(:msg_1 => "a", :msg_2 => "b")
+
+          expect(instance.msg_1).to eq("a")
+          expect(instance.msg_2).to eq("b")
+        end
+
         context "with an expectation is set on a method which does not exist" do
           it "returns the expected value" do
             expect_any_instance_of(klass).to receive(:foo).and_return(1)

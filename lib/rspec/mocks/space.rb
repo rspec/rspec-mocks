@@ -113,7 +113,9 @@ module RSpec
     private
 
       def any_instance_recorders_from_ancestry_of(object)
-        [any_instance_recorders[object.class.__id__]].compact
+        object.class.ancestors.map do |klass|
+          any_instance_recorders[klass.__id__]
+        end.compact
       end
 
       # We don't want to depend on the stdlib ourselves, but if the user is
