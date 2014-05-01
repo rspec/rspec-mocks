@@ -151,6 +151,11 @@ module RSpec
       # @private
       def message_received(message, *args, &block)
         record_message_received message, *args, &block
+
+        RSpec::Mocks.space.any_instance_recorders_from_ancestry_of(object).each do |subscriber|
+          subscriber.notify_received_message(object, message, args, block)
+        end
+
         expectation = find_matching_expectation(message, *args)
         stub = find_matching_method_stub(message, *args)
 

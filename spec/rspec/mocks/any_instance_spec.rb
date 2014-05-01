@@ -425,9 +425,79 @@ module RSpec
           expect(instance.foo).to eq(1)
           expect_any_instance_of(klass).to receive(:foo).with(2).and_return(2)
           expect(instance.foo(2)).to eq(2)
+        end
 
-          # TODO: this shouldn't be necessary to satisfy the expectation, but is.
-          klass.new.foo(2)
+        it "does not modify the return value of stubs set on an instance" do
+          expect_any_instance_of(Object).to receive(:foo).twice
+          object = Object.new
+          allow(object).to receive(:foo).and_return(3)
+          expect(object.foo).to eq(3)
+          expect(object.foo).to eq(3)
+        end
+
+        it "does not modify the return value of stubs set on an instance of a subclass" do
+          subklass = Class.new(klass)
+          subinstance = subklass.new
+          allow_any_instance_of(klass).to receive(:foo).and_return(1)
+          expect(subinstance.foo).to eq(1)
+          expect_any_instance_of(klass).to receive(:foo).with(2).and_return(2)
+          expect(subinstance.foo(2)).to eq(2)
+        end
+
+        it "properly notifies any instance recorders at multiple levels of hierarchy when a directly stubbed object receives a message" do
+          subclass = Class.new(klass)
+          instance = subclass.new
+
+          expect_any_instance_of(klass).to receive(:msg_1)
+          expect_any_instance_of(subclass).to receive(:msg_2)
+
+          allow(instance).to receive_messages(:msg_1 => "a", :msg_2 => "b")
+
+          expect(instance.msg_1).to eq("a")
+          expect(instance.msg_2).to eq("b")
+        end
+
+        it "properly notifies any instance recorders when they are created after the object's mock proxy" do
+          object = Object.new
+          allow(object).to receive(:bar)
+          expect_any_instance_of(Object).to receive(:foo).twice
+          allow(object).to receive(:foo).and_return(3)
+          expect(object.foo).to eq(3)
+          expect(object.foo).to eq(3)
+        end
+
+        context "when an instance has been directly stubbed" do
+          it "fails when a second instance to receive the message" do
+            expect_any_instance_of(klass).to receive(:foo)
+            instance_1 = klass.new
+
+            allow(instance_1).to receive(:foo).and_return(17)
+            expect(instance_1.foo).to eq(17)
+
+            expect {
+              klass.new.foo
+            }.to fail_with(/has already been received/)
+          end
+        end
+
+        context "when argument matching is used and an instance has stubbed the message" do
+          it "fails on verify if the arguments do not match" do
+            expect_any_instance_of(klass).to receive(:foo).with(3)
+            instance = klass.new
+            allow(instance).to receive(:foo).and_return(2)
+
+            expect(instance.foo(4)).to eq(2)
+            expect { verify_all }.to fail
+          end
+
+          it "passes on verify if the arguments do match" do
+            expect_any_instance_of(klass).to receive(:foo).with(3)
+            instance = klass.new
+            allow(instance).to receive(:foo).and_return(2)
+
+            expect(instance.foo(3)).to eq(2)
+            expect { verify_all }.not_to raise_error
+          end
         end
 
         context "with an expectation is set on a method which does not exist" do

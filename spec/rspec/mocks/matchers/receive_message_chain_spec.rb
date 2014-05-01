@@ -165,9 +165,6 @@ module RSpec::Mocks::Matchers
 
         expect_any_instance_of(Object).to receive_message_chain(:foo, :bar => 3)
         expect(o.foo.bar).to eq(3)
-
-        # TODO: this shouldn't be necessary to satisfy the expectation, but is.
-        Object.new.foo.bar
       end
 
       it "passes when with expect_any_instance_of is used and the entire chain is called" do

@@ -21,6 +21,10 @@ module RSpec
         raise_lifecycle_message
       end
 
+      def any_instance_recorders_from_ancestry_of(object)
+        raise_lifecycle_message
+      end
+
       def reset_all
       end
 
@@ -108,6 +112,18 @@ module RSpec
 
       def registered?(object)
         proxies.has_key?(id_for object)
+      end
+
+      def any_instance_recorders_from_ancestry_of(object)
+        # Optimization: `any_instance` is a feature we generally
+        # recommend not using, so we can often early exit here
+        # without doing an O(N) linear search over the number of
+        # ancestors in the object's class hierarchy.
+        return [] if any_instance_recorders.empty?
+
+        object.class.ancestors.map do |klass|
+          any_instance_recorders[klass.__id__]
+        end.compact
       end
 
     private

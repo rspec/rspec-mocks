@@ -265,9 +265,6 @@ RSpec.describe "Using the legacy should syntax" do
       expect(instance.foo).to eq(2)
       klass.any_instance.should_receive(:foo).and_return(1)
       expect(instance.foo).to eq(1)
-
-      # TODO: this shouldn't be necessary to satisfy the expectation, but is.
-      klass.new.foo(2)
     end
 
     context "invocation order" do
