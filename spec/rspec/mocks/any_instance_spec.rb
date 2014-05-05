@@ -80,6 +80,11 @@ module RSpec
           let(:super_class) { Class.new { def foo; 'bar'; end } }
           let(:sub_class)   { Class.new(super_class) }
 
+          before do
+            stub_const("SuperClass", super_class)
+            stub_const("SubClass", sub_class)
+          end
+
           it "stubs every instance in the spec" do
             allow_any_instance_of(klass).to receive(:foo).and_return(result = Object.new)
             expect(klass.new.foo).to eq(result)
@@ -110,6 +115,31 @@ module RSpec
             allow_any_instance_of(sub_class).to receive(:foo)
             allow_any_instance_of(sub_class).to receive(:foo).and_call_original
             expect(sub_class.new.foo).to eq("bar")
+          end
+
+          context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
+            it 'can stub a method defined on the prependended module' do
+              sub_class.class_eval { prepend Module.new { def foo; 'foo' + super; end; } }
+              expect(sub_class.new.foo).to eq 'foobar'
+              allow_any_instance_of(sub_class).to receive(:foo) { 'baz' }
+              expect(sub_class.new.foo).to eq 'baz'
+              reset_all
+              expect(sub_class.new.foo).to eq 'foobar'
+            end
+
+            it 'handles stubbing on super and subclasses when the subclass has a prepended module with the method defined' do
+              sub_class.class_eval { prepend Module.new { def foo; 'foo' + super; end; } }
+              allow_any_instance_of(super_class).to receive(:foo)
+              allow_any_instance_of(sub_class).to receive(:foo).and_return('baz')
+              expect(sub_class.new.foo).to eq('baz')
+            end
+
+            it 'handles stubbing on super and subclasses when the subclass has a prepended module with the method defined' do
+              super_class.class_eval { prepend Module.new { def foo; 'foo' + super; end; } }
+              allow_any_instance_of(super_class).to receive(:foo)
+              allow_any_instance_of(sub_class).to receive(:foo).and_return('baz')
+              expect(sub_class.new.foo).to eq('baz')
+            end
           end
         end
 

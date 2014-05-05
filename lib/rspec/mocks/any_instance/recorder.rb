@@ -178,7 +178,7 @@ module RSpec
         end
 
         def restore_method!(method_name)
-          if public_protected_or_private_method_defined?(build_alias_method_name(method_name))
+          if method_defined_on_klass?(build_alias_method_name(method_name))
             restore_original_method!(method_name)
           else
             remove_dummy_method!(method_name)
@@ -188,7 +188,7 @@ module RSpec
         def restore_original_method!(method_name)
           if @klass.instance_method(method_name).owner == @klass
             alias_method_name = build_alias_method_name(method_name)
-            @klass.class_exec do
+            definition_target.class_exec do
               remove_method method_name
               alias_method  method_name, alias_method_name
               remove_method alias_method_name
@@ -197,24 +197,29 @@ module RSpec
         end
 
         def remove_dummy_method!(method_name)
-          @klass.class_exec do
-            remove_method method_name
+          definition_target.class_exec do
+            remove_method method_name if method_defined?(method_name)
           end
         end
 
         def backup_method!(method_name)
           alias_method_name = build_alias_method_name(method_name)
-          @klass.class_exec do
+          definition_target.class_exec do
             alias_method alias_method_name, method_name
           end if public_protected_or_private_method_defined?(method_name)
         end
 
         def public_protected_or_private_method_defined?(method_name)
+          MethodReference.method_defined_at_any_visibility?(definition_target, method_name)
+        end
+
+        def method_defined_on_klass?(method_name)
           MethodReference.method_defined_at_any_visibility?(@klass, method_name)
         end
 
         def observe!(method_name)
           if RSpec::Mocks.configuration.verify_partial_doubles?
+            # TODO: test/fix this with prepended module.
             unless public_protected_or_private_method_defined?(method_name)
               raise MockExpectationError,
                 "#{@klass} does not implement ##{method_name}"
@@ -224,23 +229,45 @@ module RSpec
           stop_observing!(method_name) if already_observing?(method_name)
           @observed_methods << method_name
           backup_method!(method_name)
-          @klass.__send__(:define_method, method_name) do |*args, &blk|
-            klass = ::RSpec::Support.method_handle_for(self, method_name).owner
-            ::RSpec::Mocks.space.any_instance_recorder_for(klass).playback!(self, method_name)
+          recorder = self
+          definition_target.__send__(:define_method, method_name) do |*args, &blk|
+            recorder.playback!(self, method_name)
             self.__send__(method_name, *args, &blk)
           end
         end
 
         def mark_invoked!(method_name)
           backup_method!(method_name)
-          @klass.__send__(:define_method, method_name) do |*args, &blk|
-            klass = ::RSpec::Support.method_handle_for(self, method_name).owner
-            invoked_instance = ::RSpec::Mocks.space.any_instance_recorder_for(klass).instance_that_received(method_name)
+          recorder = self
+          definition_target.__send__(:define_method, method_name) do |*args, &blk|
+            invoked_instance = recorder.instance_that_received(method_name)
             inspect = "#<#{self.class}:#{object_id} #{instance_variables.map { |name| "#{name}=#{instance_variable_get name}" }.join(', ')}>"
             raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{inspect} but has already been received by #{invoked_instance}"
           end
         end
 
+        if Support::RubyFeatures.module_prepends_supported?
+          RSpecPrependedModule = Class.new(Module)
+
+          def definition_target
+            @definition_target ||= if klass_has_prepended_module?
+              RSpecPrependedModule.new.tap do |mod|
+                @klass.prepend mod
+              end
+            else
+              @klass
+            end
+          end
+
+          def klass_has_prepended_module?
+            true # hardcoded for now to force all `any_instance` uses to run with the prepended module code path to see what breaks
+            # @klass.ancestors.take_while { |mod| !(Class === mod) }.any?
+          end
+        else
+          def definition_target
+            @klass
+          end
+        end
       end
     end
   end
