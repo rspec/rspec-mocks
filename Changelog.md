@@ -44,6 +44,10 @@ Bug Fixes:
 * Fix `expect_any_instance_of` so that when the message is received
   on an individual instance that has been directly stubbed, it still
   satisfies the expectation. (Sam Phippen, Myron Marston)
+* Explicitly disallow using `any_instance` to mock or stub a method
+  that is defined on a module prepended onto the class. This triggered
+  `SystemStackError` before and is very hard to support so we are not
+  supporting it at this time. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta1...v3.0.0.beta2)

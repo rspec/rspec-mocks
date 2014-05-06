@@ -214,6 +214,8 @@ module RSpec
         end
 
         def observe!(method_name)
+          allow_no_prepended_module_definition_of(method_name)
+
           if RSpec::Mocks.configuration.verify_partial_doubles?
             unless public_protected_or_private_method_defined?(method_name)
               raise MockExpectationError,
@@ -238,6 +240,22 @@ module RSpec
             invoked_instance = ::RSpec::Mocks.space.any_instance_recorder_for(klass).instance_that_received(method_name)
             inspect = "#<#{self.class}:#{object_id} #{instance_variables.map { |name| "#{name}=#{instance_variable_get name}" }.join(', ')}>"
             raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{inspect} but has already been received by #{invoked_instance}"
+          end
+        end
+
+        if Support::RubyFeatures.module_prepends_supported?
+          def allow_no_prepended_module_definition_of(method_name)
+            prepended_modules = @klass.ancestors.take_while { |mod| !(Class === mod) }
+            problem_mod = prepended_modules.find { |mod| mod.method_defined?(method_name) }
+            return unless problem_mod
+
+            raise RSpec::Mocks::MockExpectationError,
+              "Using `any_instance` to stub a method (#{method_name}) that has been " +
+              "defined on a prepended module (#{problem_mod}) is not supported."
+          end
+        else
+          def allow_no_prepended_module_definition_of(method_name)
+            # nothing to do; prepends aren't supported on this version of ruby
           end
         end
 
