@@ -113,6 +113,38 @@ module RSpec
           end
         end
 
+        context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
+          it 'allows stubbing a method that is not defined on the prepended module' do
+            klass.class_eval { prepend Module.new { def other; end } }
+            allow_any_instance_of(klass).to receive(:foo).and_return(45)
+
+            expect(klass.new.foo).to eq(45)
+          end
+
+          it 'prevents stubbing a method that is defined on the prepended module' do
+            klass.class_eval { prepend Module.new { def foo; end } }
+
+            expect {
+              allow_any_instance_of(klass).to receive(:foo).and_return(45)
+            }.to fail_with(/prepended module/)
+          end
+
+          it 'allows stubbing a chain starting with a method that is not defined on the prepended module' do
+            klass.class_eval { prepend Module.new { def other; end } }
+            allow_any_instance_of(klass).to receive_message_chain(:foo, :bar).and_return(45)
+
+            expect(klass.new.foo.bar).to eq(45)
+          end
+
+          it 'prevents stubbing a chain starting with a method that is defined on the prepended module' do
+            klass.class_eval { prepend Module.new { def foo; end } }
+
+            expect {
+              allow_any_instance_of(klass).to receive_message_chain(:foo, :bar).and_return(45)
+            }.to fail_with(/prepended module/)
+          end
+        end
+
         context "with argument matching" do
           before do
             allow_any_instance_of(klass).to receive(:foo).with(:param_one, :param_two).and_return(:result_one)
@@ -464,6 +496,23 @@ module RSpec
           allow(object).to receive(:foo).and_return(3)
           expect(object.foo).to eq(3)
           expect(object.foo).to eq(3)
+        end
+
+        context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
+          it 'allows mocking a method that is not defined on the prepended module' do
+            klass.class_eval { prepend Module.new { def other; end } }
+            expect_any_instance_of(klass).to receive(:foo).and_return(45)
+
+            expect(klass.new.foo).to eq(45)
+          end
+
+          it 'prevents mocking a method that is defined on the prepended module' do
+            klass.class_eval { prepend Module.new { def foo; end } }
+
+            expect {
+              expect_any_instance_of(klass).to receive(:foo).and_return(45)
+            }.to fail_with(/prepended module/)
+          end
         end
 
         context "when an instance has been directly stubbed" do
