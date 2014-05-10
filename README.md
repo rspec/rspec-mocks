@@ -101,15 +101,24 @@ zipcode.valid?
 
 ## Test Spies
 
-Verifies the given object received the expected message during the course of the
-test. The method must have previously been stubbed in order for messages to be
-verified.
+Verifies the given object received the expected message during the course of
+the test. For a message to be verified, the given object must be setup to spy
+on it, either by having it explicitly stubbed or by being a null object double
+(e.g. `double(...).as_null_object`). Convenience methods are provided to easily
+create null object doubles for this purpose:
+
+```ruby
+spy("invitation") # => same as `double("invitiation").as_null_object`
+instance_spy("Invitation") # => same as `instance_double("Invitiation").as_null_object`
+class_spy("Invitation") # => same as `class_double("Invitiation").as_null_object`
+object_spy("Invitation") # => same as `object_double("Invitiation").as_null_object`
+```
 
 Stubbing and verifying messages received in this way implements the Test Spy
 pattern.
 
 ```ruby
-  invitation = double('invitation', :accept => true)
+  invitation = spy('invitation')
 
   user.accept_invitation(invitation)
 
@@ -119,6 +128,11 @@ pattern.
   expect(invitation).to have_received(:accept).with(mailer)
   expect(invitation).to have_received(:accept).twice
   expect(invitation).to_not have_received(:accept).with(mailer)
+
+  # One can specify a return value on the spy the same way one would a double.
+  invitation = spy('invitation', :accept => true)
+  expect(invitation).to have_received(:accept).with(mailer)
+  expect(invitation.accept).to eq(true)
 ```
 
 ## Nomenclature

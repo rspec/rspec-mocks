@@ -1,3 +1,12 @@
+### 3.1.0 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...master)
+
+Enhancements:
+
+* Add spying methods (`spy`, `ìnstance_spy`, `class_spy` and `object_spy`)
+  which create doubles as null objects for use with spying in testing. (Sam
+  Phippen, #671)
+
 ### 3.0.1 / 2014-06-07
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...v3.0.1)
 
