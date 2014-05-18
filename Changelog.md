@@ -117,7 +117,7 @@ Bug Fixes:
   behavior. (Maurício Linhares)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.rc1...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -180,6 +180,15 @@ Bug Fixes:
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
 
+### 2.99.0.rc1 / 2014-05-18
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta2...v2.99.0.rc1)
+
+Deprecations:
+
+* Deprecate `RSpec::Mocks::TestDouble.extend_onto`. (Myron Marston)
+* Deprecate `RSpec::Mocks::ConstantStubber`. (Jon Rowe)
+* Deprecate `Marshal.dump` monkey-patch without opt-in. (Xavier Shay)
+
 ### 2.99.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta1...v2.99.0.beta2)
 
@@ -221,7 +230,7 @@ Enhancements:
   blocks. (Sam Phippen)
 
 ### 2.14.6 / 2014-02-20
-[full changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.5...v2.14.6)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.14.5...v2.14.6)
 
 Bug Fixes:
 
