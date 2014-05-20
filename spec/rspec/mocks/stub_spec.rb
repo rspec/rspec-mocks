@@ -126,6 +126,17 @@ module RSpec
           }.not_to change { object.singleton_class.ancestors }
         end
 
+        it 'does not unnecessarily prepend a module when stubbing a method on a module extended onto itself' do
+          mod = Module.new do
+            extend self
+            def foo; :bar; end
+          end
+
+          expect {
+            allow(mod).to receive(:foo)
+          }.not_to change { mod.singleton_class.ancestors }
+        end
+
         it 'reuses our prepend module so as not to keep mutating the ancestors' do
           object = Object.new
           def object.value; :original; end
