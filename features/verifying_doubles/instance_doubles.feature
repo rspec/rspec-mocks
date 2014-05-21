@@ -7,7 +7,7 @@ Feature: Using an instance double
   arguments is correct.
 
   For methods handled by `method_missing`, see [dynamic
-  objects](./dynamic-objects).
+  classes](./dynamic-classes).
 
   Background:
     Given a file named "app/models/user.rb" with:
