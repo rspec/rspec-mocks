@@ -174,10 +174,7 @@ module RSpec
           UndefinedConstantSetter
         end
 
-        mutate(mutator.new(constant_name, value, options.fetch(
-          :transfer_nested_constants,
-          RSpec::Mocks.configuration.transfer_nested_constants?
-        )))
+        mutate(mutator.new(constant_name, value, options[:transfer_nested_constants]))
         value
       end
 
@@ -261,12 +258,12 @@ module RSpec
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
-          constants_to_transfer = verify_constants_to_transfer!
+          @constants_to_transfer = verify_constants_to_transfer!
 
           @context.__send__(:remove_const, @const_name)
           @context.const_set(@const_name, @mutated_value)
 
-          transfer_nested_constants(constants_to_transfer)
+          transfer_nested_constants
         end
 
         def to_constant
@@ -278,18 +275,22 @@ module RSpec
         end
 
         def reset
+          Array(@constants_to_transfer).each do |const|
+            @mutated_value.__send__(:remove_const, const)
+          end
+
           @context.__send__(:remove_const, @const_name)
           @context.const_set(@const_name, @original_value)
         end
 
-        def transfer_nested_constants(constants)
-          constants.each do |const|
+        def transfer_nested_constants
+          @constants_to_transfer.each do |const|
             @mutated_value.const_set(const, get_const_defined_on(original_value, const))
           end
         end
 
         def verify_constants_to_transfer!
-          return [] unless @transfer_nested_constants
+          return [] unless should_transfer_nested_constants?
 
           { @original_value => "the original value", @mutated_value => "the stubbed value" }.each do |value, description|
             unless value.respond_to?(:constants)
@@ -316,6 +317,12 @@ module RSpec
           else
             constants_defined_on(@original_value)
           end
+        end
+
+        def should_transfer_nested_constants?
+          return true  if @transfer_nested_constants
+          return false unless RSpec::Mocks.configuration.transfer_nested_constants?
+          @original_value.respond_to?(:constants) && @mutated_value.respond_to?(:constants)
         end
       end
 

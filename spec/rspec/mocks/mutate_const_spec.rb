@@ -241,6 +241,15 @@ module RSpec
             expect(stub::Nested).to be(tc_nested)
           end
 
+          it 'removes the transferred constants on reset' do
+            stub = Module.new
+            stub_const("TestClass", stub, :transfer_nested_constants => true)
+
+            expect {
+              reset_all
+            }.to change { stub.constants }.to([])
+          end
+
           it 'does not transfer nested constants that are inherited from a superclass' do
             stub = Module.new
             stub_const("TestSubClass", stub, :transfer_nested_constants => true)
@@ -325,8 +334,20 @@ module RSpec
               expect(stub::N).to eq(:n)
               expect(stub::Nested).to be(tc_nested)
             end
-          end
 
+            context "when stubbing a constant that is not a module or a class" do
+              it 'does not attempt to transfer constants' do
+                stub_const("TOP_LEVEL_VALUE_CONST", 4)
+                expect(TOP_LEVEL_VALUE_CONST).to eq(4)
+              end
+
+              it 'still raises an error when the `:transfer_nested_constants` option is provided' do
+                expect {
+                  stub_const("TOP_LEVEL_VALUE_CONST", 4, :transfer_nested_constants => true)
+                }.to raise_error(/cannot transfer nested constant/i)
+              end
+            end
+          end
         end
 
         context 'for a loaded nested constant' do

@@ -5,6 +5,11 @@ Bug Fixes:
 
 * Fix module prepend detection to work properly on ruby 2.0 for a case
   where a module is extended onto itself. (Myron Marston)
+* Fix `transfer_nested_constants` option so that transferred constants
+  get properly reset at the end of the example. (Myron Marston)
+* Fix `config.transfer_nested_constants = true` so that you don't
+  erroneously get errors when stubbing a constant that is not a module
+  or a class. (Myron Marston)
 
 ### 3.0.0.rc1 / 2014-05-18
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta2...v3.0.0.rc1)
