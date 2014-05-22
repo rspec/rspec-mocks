@@ -241,6 +241,15 @@ module RSpec
             expect(stub::Nested).to be(tc_nested)
           end
 
+          it 'removes the transferred constants on reset' do
+            stub = Module.new
+            stub_const("TestClass", stub, :transfer_nested_constants => true)
+
+            expect {
+              reset_all
+            }.to change { stub.constants }.to([])
+          end
+
           it 'does not transfer nested constants that are inherited from a superclass' do
             stub = Module.new
             stub_const("TestSubClass", stub, :transfer_nested_constants => true)

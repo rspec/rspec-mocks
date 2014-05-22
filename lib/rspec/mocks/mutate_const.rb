@@ -258,12 +258,12 @@ module RSpec
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
-          constants_to_transfer = verify_constants_to_transfer!
+          @constants_to_transfer = verify_constants_to_transfer!
 
           @context.__send__(:remove_const, @const_name)
           @context.const_set(@const_name, @mutated_value)
 
-          transfer_nested_constants(constants_to_transfer)
+          transfer_nested_constants
         end
 
         def to_constant
@@ -275,12 +275,16 @@ module RSpec
         end
 
         def reset
+          Array(@constants_to_transfer).each do |const|
+            @mutated_value.__send__(:remove_const, const)
+          end
+
           @context.__send__(:remove_const, @const_name)
           @context.const_set(@const_name, @original_value)
         end
 
-        def transfer_nested_constants(constants)
-          constants.each do |const|
+        def transfer_nested_constants
+          @constants_to_transfer.each do |const|
             @mutated_value.const_set(const, get_const_defined_on(original_value, const))
           end
         end
