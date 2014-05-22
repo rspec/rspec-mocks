@@ -174,10 +174,7 @@ module RSpec
           UndefinedConstantSetter
         end
 
-        mutate(mutator.new(constant_name, value, options.fetch(
-          :transfer_nested_constants,
-          RSpec::Mocks.configuration.transfer_nested_constants?
-        )))
+        mutate(mutator.new(constant_name, value, options[:transfer_nested_constants]))
         value
       end
 
@@ -289,7 +286,7 @@ module RSpec
         end
 
         def verify_constants_to_transfer!
-          return [] unless @transfer_nested_constants
+          return [] unless should_transfer_nested_constants?
 
           { @original_value => "the original value", @mutated_value => "the stubbed value" }.each do |value, description|
             unless value.respond_to?(:constants)
@@ -316,6 +313,12 @@ module RSpec
           else
             constants_defined_on(@original_value)
           end
+        end
+
+        def should_transfer_nested_constants?
+          return true  if @transfer_nested_constants
+          return false unless RSpec::Mocks.configuration.transfer_nested_constants?
+          @original_value.respond_to?(:constants) && @mutated_value.respond_to?(:constants)
         end
       end
 
