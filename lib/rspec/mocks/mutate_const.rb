@@ -254,6 +254,11 @@ module RSpec
       #
       # @private
       class DefinedConstantReplacer < BaseMutator
+        def initialize(*args)
+          super
+          @constants_to_transfer = []
+        end
+
         def mutate
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
@@ -275,7 +280,7 @@ module RSpec
         end
 
         def reset
-          Array(@constants_to_transfer).each do |const|
+          @constants_to_transfer.each do |const|
             @mutated_value.__send__(:remove_const, const)
           end
 
