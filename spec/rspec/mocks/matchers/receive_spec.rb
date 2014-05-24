@@ -46,6 +46,14 @@ module RSpec
           }.to raise_error(/received :foo with unexpected arguments/)
         end
 
+        it 'allows the caller to constrain the received arguments by matcher' do
+          wrapped.to receive(:foo).with an_instance_of Fixnum
+          expect {
+            receiver.foo(1.1)
+          }.to raise_error(/expected.*\(an instance of Fixnum\)/)
+          reset_all
+        end
+
         it 'allows a `do...end` block implementation to be provided' do
           wrapped.to receive(:foo) do
             4

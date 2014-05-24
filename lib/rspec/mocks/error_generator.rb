@@ -102,11 +102,11 @@ module RSpec
       # @private
       def expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
         "expected: #{count_message(expected_received_count, expectation_count_type)}" +
-          method_call_args_description(argument_list_matcher.expected_args)
+          method_call_args_description(argument_list_matcher.expected_args, true)
       end
 
       # @private
-      def method_call_args_description(args)
+      def method_call_args_description(args, format = false)
         case args.first
           when ArgumentMatchers::AnyArgsMatcher
             return " with any arguments"
@@ -115,7 +115,11 @@ module RSpec
         end
 
         if args.length > 0
-          " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
+          if format
+            " with arguments: #{format_args *args}"
+          else
+            " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
+          end
         else
           ""
         end
