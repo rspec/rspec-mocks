@@ -110,25 +110,23 @@ module RSpec
 
       it "reports line number of expectation of unreceived message" do
         expected_error_line = __LINE__; expect(@double).to receive(:wont_happen).with("x", 3)
-        begin
+        expect {
           verify @double
-          violated
-        rescue RSpec::Mocks::MockExpectationError => e
+        }.to raise_error(RSpec::Mocks::MockExpectationError) { |e|
           # NOTE - this regexp ended w/ $, but jruby adds extra info at the end of the line
           expect(e.backtrace[0]).to match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
-        end
+        }
       end
 
       it "reports line number of expectation of unreceived message after a message expecation after similar stub" do
         allow(@double).to receive(:wont_happen)
         expected_error_line = __LINE__; expect(@double).to receive(:wont_happen).with("x", 3)
-        begin
+        expect {
           verify @double
-          violated
-        rescue RSpec::Mocks::MockExpectationError => e
+        }.to raise_error(RSpec::Mocks::MockExpectationError) { |e|
           # NOTE - this regexp ended w/ $, but jruby adds extra info at the end of the line
           expect(e.backtrace[0]).to match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
-        end
+        }
       end
 
       it "passes when not receiving message specified as not to be received" do
@@ -167,7 +165,6 @@ module RSpec
         expect(@double).not_to receive(:not_expected)
         expect {
           @double.not_expected
-          violated
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
           %Q|(Double "test double").not_expected(no args)\n    expected: 0 times with any arguments\n    received: 1 time|
@@ -178,7 +175,6 @@ module RSpec
         expect(@double).not_to receive(:not_expected).with("unexpected text")
         expect {
           @double.not_expected("unexpected text")
-          violated
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
           %Q|(Double "test double").not_expected("unexpected text")\n    expected: 0 times with arguments: ("unexpected text")\n    received: 1 time with arguments: ("unexpected text")|
@@ -189,7 +185,6 @@ module RSpec
         expect(@double).not_to receive(:not_expected).with(["do not want"])
         expect {
           @double.not_expected(["do not want"])
-          violated
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
           %Q|(Double "test double").not_expected(["do not want"])\n    expected: 0 times with arguments: (["do not want"])\n    received: 1 time with arguments: (["do not want"])|
@@ -256,7 +251,6 @@ module RSpec
         expect(@double).to receive(:something).with("a","b","c").and_return("booh")
         expect {
           @double.something("a","d","c")
-          violated
         }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
       end
 
@@ -304,7 +298,6 @@ module RSpec
       it "fails if unexpected method called" do
         expect {
           @double.something("a","b","c")
-          violated
         }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received unexpected message :something with (\"a\", \"b\", \"c\")")
       end
 
@@ -418,13 +411,12 @@ module RSpec
       it "raises a given instance of an exception with arguments other than the standard 'message'" do
         expect(@double).to receive(:something).and_raise(OutOfGas.new(2, :oz))
 
-        begin
+        expect {
           @double.something
-          fail "OutOfGas was not raised"
-        rescue OutOfGas => e
+        }.to raise_error(OutOfGas) { |e|
           expect(e.amount).to eq 2
           expect(e.units).to eq :oz
-        end
+        }
       end
 
       it "does not raise when told to if args dont match" do
