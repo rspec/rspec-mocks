@@ -73,8 +73,8 @@ module RSpec
         end
       end
 
-      if RUBY_DESCRIPTION.include?('2.0.0p247')
-        # ruby 2.0.0-p247 has a bug that we can't work around :(.
+      if RUBY_DESCRIPTION.include?('2.0.0p247') || RUBY_DESCRIPTION.include?('2.0.0p195')
+        # ruby 2.0.0-p247 and 2.0.0-p195 both have a bug that we can't work around :(.
         # https://bugs.ruby-lang.org/issues/8686
         def handle_restoration_failures
           yield
