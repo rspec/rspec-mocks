@@ -81,7 +81,7 @@ module RSpec
         rescue TypeError
           RSpec.warn_with(
             "RSpec failed to properly restore a partial double (#{@object.inspect}) " +
-            "to its original state due to a known bug in MRI 2.0.0-p247 " +
+            "to its original state due to a known bug in MRI 2.0.0-p195 & p247 " +
             "(https://bugs.ruby-lang.org/issues/8686). This object may remain " +
             "screwed up for the rest of this process. Please upgrade to 2.0.0-p353 or above.",
             :call_site => nil, :use_spec_location_as_call_site => true

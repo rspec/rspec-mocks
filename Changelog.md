@@ -11,6 +11,12 @@ Bug Fixes:
   erroneously get errors when stubbing a constant that is not a module
   or a class. (Myron Marston)
 
+Enhancements:
+
+* Display warning when encountering `TypeError` during instance method
+  staging on 2.0.0-p195, suffers from https://bugs.ruby-lang.org/issues/8686
+  too. (Cezar Halmagean).
+
 ### 3.0.0.rc1 / 2014-05-18
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.beta2...v3.0.0.rc1)
 
