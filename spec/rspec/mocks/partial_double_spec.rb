@@ -3,6 +3,12 @@ module RSpec
     describe "A partial double" do
       let(:object) { Object.new }
 
+      it 'does not create an any_instance recorder when a message is allowed' do
+        expect {
+          allow(object).to receive(:foo)
+        }.not_to change { RSpec::Mocks.space.any_instance_recorders }.from({})
+      end
+
       it "names the class in the failure message" do
         expect(object).to receive(:foo)
         expect do

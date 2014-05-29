@@ -301,7 +301,10 @@ module RSpec
     private
 
       def any_instance_class_recorder_observing_method?(klass, method_name)
-        return true if ::RSpec::Mocks.space.any_instance_recorder_for(klass).already_observing?(method_name)
+        only_return_existing = true
+        recorder = ::RSpec::Mocks.space.any_instance_recorder_for(klass, only_return_existing)
+        return true if recorder && recorder.already_observing?(method_name)
+
         superklass = klass.superclass
         return false if superklass.nil?
         any_instance_class_recorder_observing_method?(superklass, method_name)
