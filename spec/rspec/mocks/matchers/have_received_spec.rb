@@ -292,6 +292,28 @@ module RSpec
               }.to fail_with(/received :one out of order/m)
             end
           end
+
+          context "when used on individually allowed messages" do
+            before do
+              allow(dbl).to receive(:foo)
+              allow(dbl).to receive(:bar)
+
+              dbl.foo
+              dbl.bar
+            end
+
+            it 'passes when the messages were received in order' do
+              expect(dbl).to have_received(:foo).ordered
+              expect(dbl).to have_received(:bar).ordered
+            end
+
+            it 'fails when the messages are received out of order' do
+              expect {
+                expect(dbl).to have_received(:bar).ordered
+                expect(dbl).to have_received(:foo).ordered
+              }.to raise_error(/received :foo out of order/m)
+            end
+          end
         end
       end
 

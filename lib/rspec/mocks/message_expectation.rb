@@ -47,7 +47,7 @@ module RSpec
 
       # @private
       def initialize(error_generator, expectation_ordering, expected_from, method_double,
-                     expected_received_count=1, opts={}, &implementation_block)
+                     type=:expectation, opts={}, &implementation_block)
         @error_generator = error_generator
         @error_generator.opts = opts
         @expected_from = expected_from
@@ -55,10 +55,10 @@ module RSpec
         @orig_object = @method_double.object
         @message = @method_double.method_name
         @actual_received_count = 0
-        @expected_received_count = expected_received_count
+        @expected_received_count = type == :expectation ? 1 : :any
         @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
         @order_group = expectation_ordering
-        @order_group.register(self)
+        @order_group.register(self) unless type == :stub
         @ordered = false
         @at_least = @at_most = @exactly = nil
         @args_to_yield = []

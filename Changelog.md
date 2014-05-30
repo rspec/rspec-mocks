@@ -14,6 +14,8 @@ Bug Fixes:
   trigger infinite recursion. (Myron Marston)
 * Fix bug in `have_received(...).with(...).ordered` where it was not
   taking the args into account when checking the order. (Myron Marston)
+* Fix bug in `have_received(...).ordered` where it was wrongly
+  considering stubs when checking the order. (Myron Marston)
 
 Enhancements:
 
