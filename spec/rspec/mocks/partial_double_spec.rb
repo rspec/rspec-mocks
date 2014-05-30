@@ -29,6 +29,20 @@ module RSpec
         object.blah
       end
 
+      it 'allows `class` to be stubbed even when `any_instance` has already been used' do
+        # See https://github.com/rspec/rspec-mocks/issues/687
+        # The infinite recursion code path was only triggered when there were
+        # active any instance recorders in the current example, so we make one here.
+        allow_any_instance_of(Object).to receive(:bar).and_return(2)
+
+        expect(object.class).not_to eq(String)
+        allow(object).to receive_messages(:foo => 1, :class => String)
+
+        expect(object.foo).to eq(1)
+        expect(object.class).to eq(String)
+        expect(object.bar).to eq(2)
+      end
+
       it "can disallow messages from being received" do
         expect(object).not_to receive(:fuhbar)
         expect {

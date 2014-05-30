@@ -122,7 +122,9 @@ module RSpec
         # ancestors in the object's class hierarchy.
         return [] if any_instance_recorders.empty?
 
-        object.class.ancestors.map do |klass|
+        # We access the ancestors through the singleton class, to avoid calling
+        # `class` in case `class` has been stubbed.
+        (class << object; ancestors; end).map do |klass|
           any_instance_recorders[klass.__id__]
         end.compact
       end
