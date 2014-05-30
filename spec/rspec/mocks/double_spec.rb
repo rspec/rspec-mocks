@@ -48,6 +48,17 @@ module RSpec
         expect(dbl.foo = "bar").to eq("bar")
       end
 
+      it 'allows `class` to be stubbed even when `any_instance` has already been used' do
+        # See https://github.com/rspec/rspec-mocks/issues/687
+        # The infinite recursion code path was only triggered when there were
+        # active any instance recorders in the current example, so we make one here.
+        allow_any_instance_of(Object).to receive(:bar).and_return(2)
+
+        dbl = double(:foo => 1, :class => String)
+        expect(dbl.foo).to eq(1)
+        expect(dbl.class).to eq(String)
+      end
+
       it 'allows `send` to be stubbed' do
         dbl = double
         allow(dbl).to receive(:send).and_return("received")

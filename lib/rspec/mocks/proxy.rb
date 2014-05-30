@@ -152,10 +152,6 @@ module RSpec
       def message_received(message, *args, &block)
         record_message_received message, *args, &block
 
-        RSpec::Mocks.space.any_instance_recorders_from_ancestry_of(object).each do |subscriber|
-          subscriber.notify_received_message(object, message, args, block)
-        end
-
         expectation = find_matching_expectation(message, *args)
         stub = find_matching_method_stub(message, *args)
 
@@ -298,10 +294,20 @@ module RSpec
         super
       end
 
+      def message_received(message, *args, &block)
+        RSpec::Mocks.space.any_instance_recorders_from_ancestry_of(object).each do |subscriber|
+          subscriber.notify_received_message(object, message, args, block)
+        end
+        super
+      end
+
     private
 
       def any_instance_class_recorder_observing_method?(klass, method_name)
-        return true if ::RSpec::Mocks.space.any_instance_recorder_for(klass).already_observing?(method_name)
+        only_return_existing = true
+        recorder = ::RSpec::Mocks.space.any_instance_recorder_for(klass, only_return_existing)
+        return true if recorder && recorder.already_observing?(method_name)
+
         superklass = klass.superclass
         return false if superklass.nil?
         any_instance_class_recorder_observing_method?(superklass, method_name)

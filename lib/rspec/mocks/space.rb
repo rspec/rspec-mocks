@@ -84,10 +84,11 @@ module RSpec
         @constant_mutators.find { |m| m.full_constant_name == name }
       end
 
-      def any_instance_recorder_for(klass)
+      def any_instance_recorder_for(klass, only_return_existing = false)
         any_instance_mutex.synchronize do
           id = klass.__id__
           any_instance_recorders.fetch(id) do
+            return nil if only_return_existing
             any_instance_recorder_not_found_for(id, klass)
           end
         end
@@ -121,7 +122,9 @@ module RSpec
         # ancestors in the object's class hierarchy.
         return [] if any_instance_recorders.empty?
 
-        object.class.ancestors.map do |klass|
+        # We access the ancestors through the singleton class, to avoid calling
+        # `class` in case `class` has been stubbed.
+        (class << object; ancestors; end).map do |klass|
           any_instance_recorders[klass.__id__]
         end.compact
       end

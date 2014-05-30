@@ -10,6 +10,8 @@ Bug Fixes:
 * Fix `config.transfer_nested_constants = true` so that you don't
   erroneously get errors when stubbing a constant that is not a module
   or a class. (Myron Marston)
+* Fix regression that caused `double(:class => SomeClass)` to later
+  trigger infinite recursion. (Myron Marston)
 
 Enhancements:
 
