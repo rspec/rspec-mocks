@@ -273,6 +273,25 @@ module RSpec
               expect(dbl).to have_received(:two).ordered
             }.to raise_error(/received :two out of order/m)
           end
+
+          context "when used with `with`" do
+            before do
+              dbl.one(1)
+              dbl.one(2)
+            end
+
+            it "passes when the order lines up" do
+              expect(dbl).to have_received(:one).with(1).ordered
+              expect(dbl).to have_received(:one).with(2).ordered
+            end
+
+            it "fails when the order is not matched" do
+              expect {
+                expect(dbl).to have_received(:one).with(2).ordered
+                expect(dbl).to have_received(:one).with(1).ordered
+              }.to fail_with(/received :one out of order/m)
+            end
+          end
         end
       end
 
