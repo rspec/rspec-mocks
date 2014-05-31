@@ -46,6 +46,14 @@ module RSpec
           }.to raise_error(/received :foo with unexpected arguments/)
         end
 
+        it 'allows the caller to constrain the received arguments by matcher' do
+          wrapped.to receive(:foo).with an_instance_of Fixnum
+          expect {
+            receiver.foo(1.1)
+          }.to raise_error(/expected.*\(an instance of Fixnum\)/)
+          receiver.foo(1)
+        end
+
         it 'allows a `do...end` block implementation to be provided' do
           wrapped.to receive(:foo) do
             4
@@ -281,6 +289,13 @@ module RSpec
         it_behaves_like "an expect syntax expectation", :allow_other_matchers do
           let(:receiver) { double }
           let(:wrapped)  { expect(receiver) }
+
+          it 'sets up a message expectation that formats argument matchers correctly' do
+            wrapped.to receive(:foo).with an_instance_of Fixnum
+            expect { verify_all }.to(
+              raise_error(/expected: 1 time with arguments: \(an instance of Fixnum\)\n\s+received: 0 times$/)
+            )
+          end
         end
         it_behaves_like "resets partial mocks cleanly" do
           let(:target) { expect(object) }
@@ -292,6 +307,11 @@ module RSpec
           let(:klass)    { Class.new }
           let(:wrapped)  { expect_any_instance_of(klass) }
           let(:receiver) { klass.new }
+
+          it 'sets up a message expectation that formats argument matchers correctly' do
+            wrapped.to receive(:foo).with an_instance_of Fixnum
+            expect { verify_all }.to raise_error(/should have received the following message\(s\) but didn't/)
+          end
         end
         it_behaves_like "resets partial mocks of any instance cleanly" do
           let(:target) { expect_any_instance_of(klass) }
