@@ -16,6 +16,8 @@ Bug Fixes:
   taking the args into account when checking the order. (Myron Marston)
 * Fix bug in `have_received(...).ordered` where it was wrongly
   considering stubs when checking the order. (Myron Marston)
+* Message expectation matchers now show descriptions from argument
+  matchers when their expectations aren't met. (Jon Rowe)
 
 Enhancements:
 

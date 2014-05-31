@@ -96,32 +96,42 @@ module RSpec
       # @private
       def received_part_of_expectation_error(actual_received_count, *args)
         "received: #{count_message(actual_received_count)}" +
-          method_call_args_description(args)
+          actual_method_call_args_description(actual_received_count, args)
       end
 
       # @private
       def expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
         "expected: #{count_message(expected_received_count, expectation_count_type)}" +
-          method_call_args_description(argument_list_matcher.expected_args, true)
+          expected_method_call_args_description(argument_list_matcher.expected_args)
       end
 
       # @private
-      def method_call_args_description(args, format = false)
+      def actual_method_call_args_description(count, args)
+        method_call_args_description(args) ||
+          if count > 0 && args.length > 0
+            " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
+          else
+            ""
+          end
+      end
+
+      # @private
+      def expected_method_call_args_description(args)
+        method_call_args_description(args) ||
+          if args.length > 0
+            " with arguments: #{format_args(*args)}"
+          else
+            ""
+          end
+      end
+
+      # @private
+      def method_call_args_description(args)
         case args.first
           when ArgumentMatchers::AnyArgsMatcher
             return " with any arguments"
           when ArgumentMatchers::NoArgsMatcher
             return " with no arguments"
-        end
-
-        if args.length > 0
-          if format
-            " with arguments: #{format_args *args}"
-          else
-            " with arguments: #{args.inspect.gsub(/\A\[(.+)\]\z/, '(\1)')}"
-          end
-        else
-          ""
         end
       end
 
