@@ -134,7 +134,7 @@ module RSpec
       def add_expectation(error_generator, expectation_ordering, expected_from, opts, &implementation)
         configure_method
         expectation = message_expectation_class.new(error_generator, expectation_ordering,
-                                             expected_from, self, 1, opts, &implementation)
+                                             expected_from, self, :expectation, opts, &implementation)
         expectations << expectation
         expectation
       end
@@ -149,7 +149,7 @@ module RSpec
       def add_stub(error_generator, expectation_ordering, expected_from, opts={}, &implementation)
         configure_method
         stub = message_expectation_class.new(error_generator, expectation_ordering, expected_from,
-                                      self, :any, opts, &implementation)
+                                      self, :stub, opts, &implementation)
         stubs.unshift stub
         stub
       end
