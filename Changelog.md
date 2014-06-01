@@ -144,7 +144,7 @@ Bug Fixes:
   behavior. (Maurício Linhares)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.rc1...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -206,6 +206,11 @@ Bug Fixes:
   use `#inspect` rather than `#description` if `#description`
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
+
+### 2.99.0 / 2014-06-01
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.rc1...v2.99.0)
+
+No changes. Just taking it out of pre-release.
 
 ### 2.99.0.rc1 / 2014-05-18
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.beta2...v2.99.0.rc1)
