@@ -1,5 +1,5 @@
-### 3.0.0 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.rc1...master)
+### 3.0.0 / 2014-06-01
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.rc1...v3.0.0)
 
 Bug Fixes:
 
@@ -18,9 +18,6 @@ Bug Fixes:
   considering stubs when checking the order. (Myron Marston)
 * Message expectation matchers now show descriptions from argument
   matchers when their expectations aren't met. (Jon Rowe)
-
-Enhancements:
-
 * Display warning when encountering `TypeError` during instance method
   staging on 2.0.0-p195, suffers from https://bugs.ruby-lang.org/issues/8686
   too. (Cezar Halmagean).
