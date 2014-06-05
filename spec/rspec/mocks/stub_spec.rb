@@ -84,6 +84,24 @@ module RSpec
         expect{ @stub.dup.foobar }.to raise_error NoMethodError, /foobar/
       end
 
+      context "using `with`" do
+        it 'determines which value is returned' do
+          allow(@stub).to receive(:foo).with(1) { :one }
+          allow(@stub).to receive(:foo).with(2) { :two }
+
+          expect(@stub.foo(2)).to eq(:two)
+          expect(@stub.foo(1)).to eq(:one)
+        end
+
+        it 'allows differing arities' do
+          allow(@stub).to receive(:foo).with(:two, :args) { :two_args }
+          allow(@stub).to receive(:foo).with(:three, :args, :total) { :three_args_total }
+
+          expect(@stub.foo(:two, :args)).to eq(:two_args)
+          expect(@stub.foo(:three, :args, :total)).to eq(:three_args_total)
+        end
+      end
+
       context "stubbing with prepend", :if => Support::RubyFeatures.module_prepends_supported? do
         module ToBePrepended
           def value
