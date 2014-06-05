@@ -3,9 +3,19 @@ Then /^the example(?:s)? should(?: all)? pass$/ do
   step %q{the exit status should be 0}
 end
 
-# Useful for when the output is slightly different on different versions of ruby
-Then /^the output should contain "([^"]*)" or "([^"]*)"$/ do |string1, string2|
-  unless [string1, string2].any? { |s| all_output =~ regexp(s) }
-    fail %Q{Neither "#{string1}" or "#{string2}" were found in:\n#{all_output}}
-  end
+Then /^the examples should all fail, producing the following output:$/ do |table|
+  step %q{the exit status should be 1}
+  examples, failures = all_output.match(/(\d+) examples?, (\d+) failures?/).captures.map(&:to_i)
+
+  expect(examples).to be > 0
+  expect(examples).to eq(failures)
+
+  lines = table.raw.flatten.reject(&:empty?)
+  expect(all_output).to include(*lines)
+end
+
+Then /^it should fail with the following output:$/ do |table|
+  step %q{the exit status should be 1}
+  lines = table.raw.flatten.reject(&:empty?)
+  expect(all_output).to include(*lines)
 end
