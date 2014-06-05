@@ -57,6 +57,13 @@ module RSpec::Mocks::Matchers
         expect(object.to_a.length).to eq(3)
       end
 
+      it "can constrain the return value by the argument to the last call" do
+        allow(object).to receive_message_chain(:one, :plus).with(1) { 2 }
+        allow(object).to receive_message_chain(:one, :plus).with(2) { 3 }
+        expect(object.one.plus(1)).to eq(2)
+        expect(object.one.plus(2)).to eq(3)
+      end
+
       it "works with and_call_original", :pending => "See https://github.com/rspec/rspec-mocks/pull/467#issuecomment-28631621" do
         list = [1, 2, 3]
         expect(list).to receive_message_chain(:to_a, :length).and_call_original
