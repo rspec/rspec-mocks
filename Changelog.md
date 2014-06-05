@@ -1,7 +1,7 @@
 ### 3.0.1 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...master)
 
-Enhancements:
+Bug Fixes:
 
 * Support constraining message chains by their arguments. (e.g.
   `receive_message_chain(...).with(...)` ). (Jon Rowe, #697)
