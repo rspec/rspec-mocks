@@ -1,17 +1,14 @@
 Feature: Using a class double
 
-  `class_double` is provided as a complement to `instance_double`, with the
-  difference that it verifies _class_ methods on the given class rather than
-  instance methods.
+  `class_double` is provided as a complement to [`instance_double`](./using-an-instance-double) with the difference that it
+  verifies _class_ methods on the given class rather than instance methods.
 
-  In addition, it also provides a convenience method `as_stubbed_const` to
-  replace concrete classes with the defined double. See [mutating
-  constants](../mutating-constants) for more details.
+  In addition, it also provides a convenience method `as_stubbed_const` to replace concrete
+  classes with the defined double. See [mutating constants](../mutating-constants) for more details.
 
-  Note: `class_double` can be used for modules as well. We chose to stick with
-  the `class_double` terminology because the methods a `class_double` verifies
-  against are commonly called "class methods", not "module methods", even when
-  working with a module.
+  Note: `class_double` can be used for modules as well. We chose to stick with the
+  `class_double` terminology because the methods a `class_double` verifies against are
+  commonly called "class methods", not "module methods", even when working with a module.
 
   Background:
     Given a file named "lib/user.rb" with:
@@ -39,7 +36,7 @@ Feature: Using a class double
       require 'user'
       require 'console_notifier'
 
-      describe User, '#suspend!' do
+      RSpec.describe User, '#suspend!' do
         it 'notifies the console' do
           notifier = class_double("ConsoleNotifier").
             as_stubbed_const(:transfer_nested_constants => true)

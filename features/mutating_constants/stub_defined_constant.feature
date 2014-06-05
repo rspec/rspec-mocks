@@ -1,15 +1,14 @@
 Feature: Stub Defined Constant
 
-  Use `stub_const` to stub constants. When the constant is already defined,
-  the stubbed value will replace the original value for the duration of the
-  example.
+  Use `stub_const` to stub constants. When the constant is already defined, the stubbed value
+  will replace the original value for the duration of the example.
 
   Scenario: Stub top-level constant
     Given a file named "stub_const_spec.rb" with:
       """ruby
       FOO = 7
 
-      describe "stubbing FOO" do
+      RSpec.describe "stubbing FOO" do
         it "can stub FOO with a different value" do
           stub_const("FOO", 5)
           expect(FOO).to eq(5)
@@ -33,7 +32,7 @@ Feature: Stub Defined Constant
       end
 
       module MyGem
-        describe SomeClass do
+        RSpec.describe SomeClass do
           it "stubs the nested constant when it is fully qualified" do
             stub_const("MyGem::SomeClass::FOO", 5)
             expect(SomeClass::FOO).to eq(5)
@@ -54,7 +53,7 @@ Feature: Stub Defined Constant
       end
 
       module MyGem
-        describe SomeClass do
+        RSpec.describe SomeClass do
           let(:fake_class) { Class.new }
 
           it "does not transfer nested constants by default" do
