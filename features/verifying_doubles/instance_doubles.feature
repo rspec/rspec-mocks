@@ -1,13 +1,11 @@
 Feature: Using an instance double
 
-  An `instance_double` is the most common type of verifying double. It takes a
-  class name or object as its first argument, then verifies that any methods
-  being stubbed would be present on an _instance_ of that class. If any
-  argument matchers are specified, it also verifies that the number of
-  arguments is correct.
+  An `instance_double` is the most common type of verifying double. It takes a class name or
+  object as its first argument, then verifies that any methods being stubbed would be present
+  on an _instance_ of that class. If any argument matchers are specified, it also verifies that the
+  number of arguments is correct.
 
-  For methods handled by `method_missing`, see [dynamic
-  classes](./dynamic-classes).
+  For methods handled by `method_missing`, see [dynamic classes](./dynamic-classes).
 
   Background:
     Given a file named "app/models/user.rb" with:
@@ -50,7 +48,7 @@ Feature: Using an instance double
 
       require 'user'
 
-      describe User, '#suspend!' do
+      RSpec.describe User, '#suspend!' do
         it 'notifies the console' do
           notifier = instance_double("ConsoleNotifier")
 

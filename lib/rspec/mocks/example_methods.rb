@@ -256,7 +256,7 @@ module RSpec
       # use of `receive_message_chain` a code smell. Even though not all code smells
       # indicate real problems (think fluent interfaces), `receive_message_chain` still
       # results in brittle examples.  For example, if you write
-      # `foo.receive_message_chain(:bar, :baz => 37)` in a spec and then the
+      # `allow(foo).to receive_message_chain(:bar, :baz => 37)` in a spec and then the
       # implementation calls `foo.baz.bar`, the stub will not work.
       #
       # @example

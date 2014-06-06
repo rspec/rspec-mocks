@@ -1,15 +1,13 @@
 Feature: Dynamic classes
 
-  Verifying instance doubles do not support methods which the class reports to
-  not exist since an actual instance of the class would be required to verify
-  against.  This is commonly the case when `method_missing` is used.
-  `ActiveRecord` does this to define methods from database columns.  If the
-  object has already been loaded you may consider using an `object_double`, but
-  that cannot work if you are testing in isolation.
+  Verifying instance doubles do not support methods which the class reports to not exist
+  since an actual instance of the class would be required to verify against. This is commonly
+  the case when `method_missing` is used. `ActiveRecord` does this to define methods from
+  database columns. If the object has already been loaded you may consider using an
+  [`object_double`](./using-an-object-double), but that cannot work if you are testing in isolation.
 
-  These types of methods are supported at class level, since `respond_to?` can
-  be queried directly on the class.
-
+  These types of methods are supported at class level, since `respond_to?` can be queried
+  directly on the class.
 
   Background:
     Given a file named "lib/fake_active_record.rb" with:
@@ -35,7 +33,7 @@ Feature: Dynamic classes
       """ruby
       require 'user'
 
-      describe User do
+      RSpec.describe User do
         it 'can be doubled' do
           instance_double("User", :name => "Don")
         end

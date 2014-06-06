@@ -1,18 +1,15 @@
-## Mutating Constants
-
 ### Stubbing
 
-Support is provided for stubbing constants. Like with method stubs, the
-stubbed constants will be restored to their original state when an
-example completes.
+Support is provided for stubbing constants. Like with method stubs, the stubbed constants
+will be restored to their original state when an example completes.
 
 ``` ruby
 stub_const("Foo", fake_foo)
 Foo # => fake_foo
 ```
 
-Stubbed constant names must be fully qualified; the current module
-nesting is not considered.
+Stubbed constant names must be fully qualified; the current module nesting is not
+considered.
 
 ``` ruby
 module MyGem
@@ -36,10 +33,9 @@ module MyGem
 end
 ```
 
-When you stub a constant that is a module or a class, nested
-constants on the original module or class are not transferred
-by default, but you can use the `:transfer_nested_constants`
-option to tell rspec-mocks to transfer them:
+When you stub a constant that is a module or a class, nested constants on the original
+module or class are not transferred by default, but you can use the
+`:transfer_nested_constants` option to tell rspec-mocks to transfer them:
 
 ``` ruby
 class CardDeck
@@ -64,8 +60,8 @@ CardDeck::NUM_CARDS # => raises uninitialized constant error
 
 ### Hiding
 
-Support is also provided for hiding constants. Hiding a constant temporarily
-removes it; it is restored to its original value after the test completes.
+Support is also provided for hiding constants. Hiding a constant temporarily removes it; it is
+restored to its original value after the test completes.
 
 ```ruby
 FOO = 42

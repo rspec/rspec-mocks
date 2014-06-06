@@ -333,7 +333,7 @@ Instead of `before(:context)`, use `before(:example)`.
 
 rspec-mocks provides two methods, `allow_any_instance_of` and
 `expect_any_instance_of`, that will allow you to stub or mock any instance
-of a class. They are used in place for `allow` or `expect`:
+of a class. They are used in place of `allow` or `expect`:
 
 ```ruby
 allow_any_instance_of(Widget).to receive(:name).and_return("Wibble")
@@ -350,8 +350,8 @@ general we discourage its use for a number of reasons:
   feature operates on entire classes of objects. As a result there are some
   sematically confusing edge cases. For example in
   `expect_any_instance_of(Widget).to receive(:name).twice` it isn't clear
-  whether each specific instance is allowed to receive `name` twice, or if two
-  receives total are allowed. (It's the former.)
+  whether each specific instance is expected to receive `name` twice, or if two
+  receives total are expected. (It's the former.)
 * Using this feature is often a design smell. It may be
   that your test is trying to do too much or that the object under test is too
   complex.

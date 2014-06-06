@@ -1,10 +1,9 @@
-Feature: standalone
+Feature: Standalone
 
-  require "rspec/mocks/standalone" to expose the mock framework
-  outside the RSpec environment. This is especially useful for
-  exploring rspec-mocks in irb.
+  `require "rspec/mocks/standalone"` to expose the API at the top level (e.g. `main`) outside
+  the RSpec environment. This is especially useful for exploring rspec-mocks in irb.
 
-  Scenario: method stub outside rspec
+  Scenario: Allow a message outside RSpec
     Given a file named "example.rb" with:
       """ruby
       require "rspec/mocks/standalone"
@@ -16,7 +15,7 @@ Feature: standalone
     When I run `ruby example.rb`
     Then the output should contain "Hello!"
 
-  Scenario: message expectation outside rspec
+  Scenario: Expect a message outside RSpec
     Given a file named "example.rb" with:
       """ruby
       require "rspec/mocks/standalone"
@@ -27,7 +26,8 @@ Feature: standalone
       RSpec::Mocks.verify
       """
     When I run `ruby example.rb`
-    Then the output should contain "RSpec::Mocks::MockExpectationError"
-    And the output should contain "say_hi(any args)"
-    And the output should contain "expected: 1 time"
-    And the output should contain "received: 0 times"
+    Then it should fail with the following output:
+      | (Double "greeter").say_hi(any args)  |
+      | RSpec::Mocks::MockExpectationError   |
+      | expected: 1 time with any arguments  |
+      | received: 0 times with any arguments |
