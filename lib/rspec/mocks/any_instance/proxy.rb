@@ -60,7 +60,11 @@ module RSpec
 
         def should_receive(method_name, &block)
           perform_proxying(__method__, [method_name], block) do |proxy|
-            proxy.add_message_expectation(method_name, &block)
+            # Yeah, this is a bit odd...but if we used `add_message_expectation`
+            # then it would act like `expect_every_instance_of(klass).to receive`.
+            # The any_instance recorder takes care of validating that an instance
+            # received the message.
+            proxy.add_stub(method_name, &block)
           end
         end
 
