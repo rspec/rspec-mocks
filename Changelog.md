@@ -3,8 +3,8 @@
 
 Bug Fixes:
 
-* Support constraining message chains by their arguments. (e.g.
-  `receive_message_chain(...).with(...)` ). (Jon Rowe, #697)
+* Fix `receive_message_chain(...)` so that it supports `with` just like
+  `stub_chain` did. (Jon Rowe, #697)
 
 ### 3.0.0 / 2014-06-01
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0.rc1...v3.0.0)
