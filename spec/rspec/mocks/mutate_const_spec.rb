@@ -24,7 +24,7 @@ end
 module RSpec
   module Mocks
     describe "Constant Mutating" do
-      include RSpec::Mocks::RecursiveConstMethods
+      include RSpec::Support::RecursiveConstMethods
 
       def reset_rspec_mocks
         ::RSpec::Mocks.space.reset_all
