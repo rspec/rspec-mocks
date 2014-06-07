@@ -1,4 +1,4 @@
-### 3.0.1 /2014-06-07
+### 3.0.1 / 2014-06-07
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...v3.0.1)
 
 Bug Fixes:
