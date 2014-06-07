@@ -1,11 +1,11 @@
 - basics:
-  - scope.feature
   - test_doubles.feature
   - allowing_messages.feature
   - expecting_messages.feature
   - partial_test_doubles.feature
   - null_object_doubles.feature
   - spies.feature
+  - scope.feature
 - verifying_doubles:
   - instance_doubles.feature
   - class_doubles.feature
