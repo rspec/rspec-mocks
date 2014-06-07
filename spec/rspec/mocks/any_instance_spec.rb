@@ -459,6 +459,14 @@ module RSpec
           expect(instance.foo(2)).to eq(2)
         end
 
+        it "does not set the expectation on every instance" do
+          # Setup an unrelated object of the same class that won't receive the expected message.
+          allow('non-related object').to receive(:non_related_method)
+
+          expect_any_instance_of(Object).to receive(:foo)
+          'something'.foo
+        end
+
         it "does not modify the return value of stubs set on an instance" do
           expect_any_instance_of(Object).to receive(:foo).twice
           object = Object.new
