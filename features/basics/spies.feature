@@ -7,25 +7,25 @@ Feature: Spies
   `have_received`.
 
   You can use any test double (or partial double) as a spy, but the double must be setup to
-  spy on the messages you care about. [Null object doubles](./null-object-doubles) automatically spy on all messages,
+  spy on the messages you care about. Spies automatically spy on all messages,
   or you can [allow a message](./allowing-messages) to spy on it.
 
   `have_received` supports the same fluent interface for [setting constraints](../setting-constraints) that normal message expectations do.
 
   Note: The `have_received` API shown here will only work if you are using rspec-expectations.
 
-  Scenario: Use a null object double as a spy
-    Given a file named "null_object_spy_spec.rb" with:
+  Scenario: Using a spy
+    Given a file named "spy_spec.rb" with:
       """ruby
       RSpec.describe "have_received" do
         it "passes when the message has been received" do
-          invitation = double('invitation').as_null_object
+          invitation = spy('invitation')
           invitation.deliver
           expect(invitation).to have_received(:deliver)
         end
       end
       """
-    When I run `rspec null_object_spy_spec.rb`
+    When I run `rspec spy_spec.rb`
     Then the examples should all pass
 
   Scenario: Spy on a method on a partial double
@@ -54,8 +54,8 @@ Feature: Spies
       end
 
       RSpec.describe "failure when the message has not been received" do
-        example "for a null object double" do
-          invitation = double('invitation').as_null_object
+        example "for a spy" do
+          invitation = spy('invitation')
           expect(invitation).to have_received(:deliver)
         end
 
@@ -68,7 +68,7 @@ Feature: Spies
      When I run `rspec failure_spec.rb --order defined`
      Then it should fail with:
       """
-        1) failure when the message has not been received for a null object double
+        1) failure when the message has not been received for a spy
            Failure/Error: expect(invitation).to have_received(:deliver)
              (Double "invitation").deliver(any args)
                  expected: 1 time with any arguments
@@ -87,7 +87,7 @@ Feature: Spies
     Given a file named "setting_constraints_spec.rb" with:
       """ruby
       RSpec.describe "An invitiation" do
-        let(:invitation) { double("invitation").as_null_object }
+        let(:invitation) { spy("invitation") }
 
         before do
           invitation.deliver("foo@example.com")
@@ -131,7 +131,7 @@ Feature: Spies
     Given a file named "generates_description_spec.rb" with:
       """ruby
       RSpec.describe "An invitation" do
-        subject(:invitation) { double('invitation').as_null_object }
+        subject(:invitation) { spy('invitation') }
         before { invitation.deliver }
         it { is_expected.to have_received(:deliver) }
       end
