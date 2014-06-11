@@ -64,6 +64,11 @@ module RSpec
         __mock_proxy.null_object? ? true : super
       end
 
+      def freeze
+        RSpec.deprecate 'Freezing a test double'
+        super
+      end
+
       # @private
       def __build_mock_proxy
         proxy = TestDoubleProxy.new(self, @name, @options || {})
@@ -73,14 +78,14 @@ module RSpec
       end
 
       def __warn_if_used_further!
-        @__expired = true
+        @__unfrozen_attributes[:expired] = true
       end
 
     private
 
       def __initialize_as_test_double(name=nil, stubs_and_options={})
         @__null_object = false
-        @__expired     = false
+        @__unfrozen_attributes = {}
 
         if name.is_a?(Hash) && stubs_and_options.empty?
           stubs_and_options = name
@@ -135,12 +140,10 @@ module RSpec
       end
 
       def __warn_of_expired_use_if_expired
-        if @__expired
+        if @__unfrozen_attributes[:expired]
           RSpec.deprecate "Continuing to use a test double after it has been reset (e.g. in a subsequent example)"
         end
       end
-
-    private
 
       def __mock_proxy
         ::RSpec::Mocks.proxy_for(self)

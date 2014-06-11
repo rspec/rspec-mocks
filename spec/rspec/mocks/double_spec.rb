@@ -65,4 +65,27 @@ describe "double" do
       dbl.null_object?
     end
   end
+
+  context 'when frozen' do
+    it 'warns of deprecation' do
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      double.freeze
+    end
+
+    it 'is really frozen' do
+      expect(double.freeze).to be_frozen
+    end
+  end
+
+  context 'when it has turned into a null object and been frozen' do
+    before do
+      double.as_null_object.freeze
+    end
+
+    context 'on tearing down' do
+      it 'does not raise error' do
+        expect { RSpec::Mocks.verify }.not_to raise_error
+      end
+    end
+  end
 end
