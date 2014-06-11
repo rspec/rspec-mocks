@@ -73,14 +73,14 @@ module RSpec
       end
 
       def __warn_if_used_further!
-        @__expired = true
+        @__unfrozen_attributes[:expired] = true
       end
 
     private
 
       def __initialize_as_test_double(name=nil, stubs_and_options={})
         @__null_object = false
-        @__expired     = false
+        @__unfrozen_attributes = {}
 
         if name.is_a?(Hash) && stubs_and_options.empty?
           stubs_and_options = name
@@ -135,7 +135,7 @@ module RSpec
       end
 
       def __warn_of_expired_use_if_expired
-        if @__expired
+        if @__unfrozen_attributes[:expired]
           RSpec.deprecate "Continuing to use a test double after it has been reset (e.g. in a subsequent example)"
         end
       end

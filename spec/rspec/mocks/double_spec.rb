@@ -65,4 +65,16 @@ describe "double" do
       dbl.null_object?
     end
   end
+
+  context 'when it has turned into a null object and been frozen' do
+    before do
+      double.as_null_object.freeze
+    end
+
+    context 'on tearing down' do
+      it 'does not raise error' do
+        expect { RSpec::Mocks.verify }.not_to raise_error
+      end
+    end
+  end
 end
