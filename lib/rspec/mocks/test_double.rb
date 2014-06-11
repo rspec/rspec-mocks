@@ -64,6 +64,11 @@ module RSpec
         __mock_proxy.null_object? ? true : super
       end
 
+      def freeze
+        RSpec.deprecate 'Freezing a test double'
+        super
+      end
+
       # @private
       def __build_mock_proxy
         proxy = TestDoubleProxy.new(self, @name, @options || {})
