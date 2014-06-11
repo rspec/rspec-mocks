@@ -140,8 +140,6 @@ module RSpec
         end
       end
 
-    private
-
       def __mock_proxy
         ::RSpec::Mocks.proxy_for(self)
       end
