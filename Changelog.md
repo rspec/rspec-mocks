@@ -224,6 +224,18 @@ Bug Fixes:
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
 
+### 2.99.1 / 2014-06-12
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0...v2.99.1)
+
+Bug Fixes:
+
+* Fix bug that caused errors at the end of each example
+  when a `double.as_null_object` had been frozen. (Yuji Nakayama, #698)
+
+Deprecations:
+
+* Deprecate freezing a test double. (Yuji Nakayama, #698)
+
 ### 2.99.0 / 2014-06-01
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0.rc1...v2.99.0)
 
