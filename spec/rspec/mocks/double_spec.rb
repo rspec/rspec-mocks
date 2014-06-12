@@ -35,6 +35,15 @@ module RSpec
         expect { reset dbl }.not_to raise_error
       end
 
+      it "generates the correct error when an unfulfilled expectation uses an unused double as a `with` argument" do
+        expect {
+          a = double('a')
+          b = double('b')
+          expect(a).to receive(:append).with(b)
+          verify_all
+        }.to raise_error(RSpec::Mocks::MockExpectationError)
+      end
+
       it 'allows string representation of methods in constructor' do
         dbl = double('foo' => 1)
         expect(dbl.foo).to eq(1)
