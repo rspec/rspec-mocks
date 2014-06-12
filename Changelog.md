@@ -7,6 +7,14 @@ Enhancements:
   which create doubles as null objects for use with spying in testing. (Sam
   Phippen, #671)
 
+### 3.0.2 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...3-0-maintenance)
+
+Bug Fixes:
+
+* Fix edge case that triggered “can't add a new key into hash during
+  iteration" during mock verification. (Sam Phippen, Myron Marston, #711)
+
 ### 3.0.1 / 2014-06-07
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...v3.0.1)
 
