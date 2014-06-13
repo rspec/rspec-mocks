@@ -99,6 +99,33 @@ describe RSpec::Mocks::Double do
           verify yielded_arg
         end
 
+        context "that are optional" do
+          it "yields the default argument when the argument is not given" do
+            default_arg = Object.new
+            obj = Object.new
+
+            allow(obj).to receive(:a_message).and_yield
+            expect(default_arg).to receive(:bar)
+
+            obj.a_message do |receiver=default_arg|
+              receiver.bar
+            end
+          end
+
+          it "yields given argument when the argument is given" do
+            default_arg = Object.new
+            given_arg = Object.new
+            obj = Object.new
+
+            allow(obj).to receive(:a_message).and_yield(given_arg)
+            expect(given_arg).to receive(:bar)
+
+            obj.a_message do |receiver=default_arg|
+              receiver.bar
+            end
+          end
+        end
+
         it "fails when expectations set on the eval context and yielded arguments are not met" do
           configured_eval_context = nil
           yielded_arg = Object.new
