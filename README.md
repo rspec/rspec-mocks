@@ -108,10 +108,10 @@ on it, either by having it explicitly stubbed or by being a null object double
 create null object doubles for this purpose:
 
 ```ruby
-spy("invitation") # => same as `double("invitiation").as_null_object`
-instance_spy("Invitation") # => same as `instance_double("Invitiation").as_null_object`
-class_spy("Invitation") # => same as `class_double("Invitiation").as_null_object`
-object_spy("Invitation") # => same as `object_double("Invitiation").as_null_object`
+spy("invitation") # => same as `double("invitation").as_null_object`
+instance_spy("Invitation") # => same as `instance_double("Invitation").as_null_object`
+class_spy("Invitation") # => same as `class_double("Invitation").as_null_object`
+object_spy("Invitation") # => same as `object_double("Invitation").as_null_object`
 ```
 
 Stubbing and verifying messages received in this way implements the Test Spy
