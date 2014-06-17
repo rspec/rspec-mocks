@@ -591,9 +591,9 @@ module RSpec
       end
 
       it "fails when calling yielding method consecutively with wrong arity" do
-        expect(@double).to receive(:yield_back).once.with(no_args()).once.and_yield('wha', 'zup').
-                                                                    and_yield('down').
-                                                                    and_yield(14, 65)
+        expect(@double).to receive(:yield_back).once.with(no_args()).and_yield('wha', 'zup').
+                                                                     and_yield('down').
+                                                                     and_yield(14, 65)
         expect {
           c = []
           @double.yield_back {|a,b| c << [a, b]}
