@@ -54,7 +54,7 @@ module RSpec
     # isolation.
     #
     # @private
-    class VerifyingProxy < Proxy
+    class VerifyingProxy < TestDoubleProxy
       include VerifyingProxyMethods
 
       def initialize(object, order_group, name, doubled_module, method_reference_class)

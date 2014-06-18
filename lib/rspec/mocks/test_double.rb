@@ -53,8 +53,8 @@ module RSpec
       end
 
       # @private
-      def __build_mock_proxy(order_group)
-        __raise_expired_error or TestDoubleProxy.new(self, order_group, @name)
+      def __build_mock_proxy_unless_expired(order_group)
+        __raise_expired_error or __build_mock_proxy(order_group)
       end
 
       # @private
@@ -109,6 +109,10 @@ module RSpec
 
       def __mock_proxy
         ::RSpec::Mocks.space.proxy_for(self)
+      end
+
+      def __build_mock_proxy(order_group)
+        TestDoubleProxy.new(self, order_group, @name)
       end
 
       def __raise_expired_error

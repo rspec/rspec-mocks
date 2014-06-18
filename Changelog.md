@@ -14,6 +14,9 @@ Bug Fixes:
 
 * Fix edge case that triggered “can't add a new key into hash during
   iteration" during mock verification. (Sam Phippen, Myron Marston, #711)
+* Fix verifying doubles so that when they accidentally leak into another
+  example, they provide the same clear error message that normal doubles
+  do. (Myron Marston, #718)
 
 ### 3.0.1 / 2014-06-07
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...v3.0.1)

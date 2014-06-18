@@ -148,7 +148,7 @@ module RSpec
       def proxy_not_found_for(id, object)
         proxies[id] = case object
           when NilClass   then ProxyForNil.new(@expectation_ordering)
-          when TestDouble then object.__build_mock_proxy(@expectation_ordering)
+          when TestDouble then object.__build_mock_proxy_unless_expired(@expectation_ordering)
           when Class
             if RSpec::Mocks.configuration.verify_partial_doubles?
               VerifyingPartialClassDoubleProxy.new(self, object, @expectation_ordering)
