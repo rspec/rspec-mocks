@@ -88,6 +88,13 @@ module RSpec
       include TestDouble
       include VerifyingDouble
 
+      def as_stubbed_const(options = {})
+        ConstantMutator.stub(@doubled_module.const_to_replace, self, options)
+        self
+      end
+
+    private
+
       def initialize(doubled_module, *args)
         @doubled_module = doubled_module
         super(doubled_module.description, *args)
@@ -98,11 +105,6 @@ module RSpec
           @doubled_module,
           ObjectMethodReference
         )
-      end
-
-      def as_stubbed_const(options = {})
-        ConstantMutator.stub(@doubled_module.const_to_replace, self, options)
-        self
       end
     end
 
