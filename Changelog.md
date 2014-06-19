@@ -12,7 +12,7 @@ Enhancements:
 
 Bug Fixes:
 
-* Fix edge case that triggered “can't add a new key into hash during
+* Fix edge case that triggered "can't add a new key into hash during
   iteration" during mock verification. (Sam Phippen, Myron Marston, #711)
 * Fix verifying doubles so that when they accidentally leak into another
   example, they provide the same clear error message that normal doubles
