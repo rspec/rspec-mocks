@@ -300,6 +300,76 @@ module RSpec
         it_behaves_like "resets partial mocks cleanly" do
           let(:target) { expect(object) }
         end
+
+        context "ordered with receive counts" do
+          let(:dbl) { double(:one => 1, :two => 2) }
+
+          it "passes with exact receive counts when the ordering is correct" do
+            expect(dbl).to receive(:one).twice.ordered
+            expect(dbl).to receive(:two).once.ordered
+
+            dbl.one
+            dbl.one
+            dbl.two
+          end
+
+          it "fails with exact receive counts when the ordering is incorrect" do
+            expect {
+              expect(dbl).to receive(:one).twice.ordered
+              expect(dbl).to receive(:two).once.ordered
+
+              dbl.one
+              dbl.two
+              dbl.one
+            }.to raise_error(/out of order/)
+
+            reset_all
+          end
+
+          it "passes with at least when the ordering is correct" do
+            expect(dbl).to receive(:one).at_least(2).times.ordered
+            expect(dbl).to receive(:two).once.ordered
+
+            dbl.one
+            dbl.one
+            dbl.one
+            dbl.two
+          end
+
+          pending "fails with at least when the ordering is incorrect" do
+            expect {
+              expect(dbl).to receive(:one).at_least(2).times.ordered
+              expect(dbl).to receive(:two).once.ordered
+
+              dbl.one
+              dbl.two
+            }.to raise_error
+
+            reset_all
+          end
+
+          it "passes with at most when the ordering is correct" do
+            expect(dbl).to receive(:one).at_most(2).times.ordered
+            expect(dbl).to receive(:two).once.ordered
+
+            dbl.one
+            dbl.two
+          end
+
+          pending "fails with at most when the ordering is incorrect" do
+            expect {
+              expect(dbl).to receive(:one).at_most(2).times.ordered
+              expect(dbl).to receive(:two).once.ordered
+
+              dbl.one
+              dbl.one
+              dbl.one
+              dbl.two
+            }.to raise_error
+
+            reset_all
+          end
+        end
       end
 
       describe "expect_any_instance_of(...).to receive" do

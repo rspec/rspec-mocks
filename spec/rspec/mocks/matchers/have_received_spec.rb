@@ -264,6 +264,66 @@ module RSpec
             expect(dbl).to have_received(:two).ordered
           end
 
+          it 'passes with exact receive counts when received in order' do
+            dbl.one
+            dbl.one
+            dbl.two
+
+            expect(dbl).to have_received(:one).twice.ordered
+            expect(dbl).to have_received(:two).once.ordered
+          end
+
+          pending 'passes with at most receive counts when received in order' do
+            dbl.one
+            dbl.one
+            dbl.two
+
+            expect(dbl).to have_received(:one).at_most(3).times.ordered
+            expect(dbl).to have_received(:two).once.ordered
+          end
+
+          pending 'passes with at least receive counts when received in order' do
+            dbl.one
+            dbl.one
+            dbl.two
+
+            expect(dbl).to have_received(:one).at_least(1).times.ordered
+            expect(dbl).to have_received(:two).once.ordered
+          end
+
+          it 'fails with exact receive counts when received out of order' do
+            dbl.one
+            dbl.two
+            dbl.one
+
+            expect {
+              expect(dbl).to have_received(:one).twice.ordered
+              expect(dbl).to have_received(:two).once.ordered
+            }.to raise_error(/received :two out of order/m)
+          end
+
+          pending "fails with at most receive counts when recieved out of order" do
+            dbl.one
+            dbl.two
+            dbl.one
+
+            expect {
+              expect(dbl).to have_received(:one).at_most(2).times.ordered
+              expect(dbl).to have_received(:two).once.ordered
+            }.to raise_error(/received :two out of order/m)
+          end
+
+          pending "fails with at least receive counts when recieved out of order" do
+            dbl.one
+            dbl.two
+            dbl.one
+
+            expect {
+              expect(dbl).to have_received(:one).at_least(1).times.ordered
+              expect(dbl).to have_received(:two).once.ordered
+            }.to raise_error(/received :two out of order/m)
+          end
+
           it 'fails when the messages are received out of order' do
             dbl.two
             dbl.one
