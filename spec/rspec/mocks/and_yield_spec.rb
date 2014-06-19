@@ -99,7 +99,7 @@ describe RSpec::Mocks::Double do
           verify yielded_arg
         end
 
-        context "that are optional" do
+        context "that are optional", :if => RSpec::Support::RubyFeatures.optional_and_splat_args_supported? do
           it "yields the default argument when the argument is not given" do
             default_arg = Object.new
             obj = Object.new
@@ -107,9 +107,7 @@ describe RSpec::Mocks::Double do
             allow(obj).to receive(:a_message).and_yield
             expect(default_arg).to receive(:bar)
 
-            obj.a_message do |receiver=default_arg|
-              receiver.bar
-            end
+            eval("obj.a_message { |receiver=default_arg| receiver.bar }")
           end
 
           it "yields given argument when the argument is given" do
@@ -120,9 +118,7 @@ describe RSpec::Mocks::Double do
             allow(obj).to receive(:a_message).and_yield(given_arg)
             expect(given_arg).to receive(:bar)
 
-            obj.a_message do |receiver=default_arg|
-              receiver.bar
-            end
+            eval("obj.a_message { |receiver=default_arg| receiver.bar }")
           end
         end
 
