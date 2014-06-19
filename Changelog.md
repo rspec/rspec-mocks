@@ -8,8 +8,7 @@ Bug Fixes:
 * Fix verifying doubles so that when they accidentally leak into another
   example, they provide the same clear error message that normal doubles
   do. (Myron Marston, #718)
-* Make `ordered` work with exact receive counts. (Sam Phippem, #713)
-
+* Make `ordered` work with exact receive counts. (Sam Phippen, #713)
 
 ### 3.0.1 / 2014-06-07
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...v3.0.1)
