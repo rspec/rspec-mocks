@@ -112,6 +112,8 @@ describe RSpec::Mocks::Double do
 
           it "yields given argument when the argument is given" do
             default_arg = Object.new
+            allow(default_arg).to receive(:bar)
+
             given_arg = Object.new
             obj = Object.new
 
