@@ -1,5 +1,5 @@
 ### 3.1.0 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.0...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.2...master)
 
 Enhancements:
 
@@ -7,8 +7,8 @@ Enhancements:
   which create doubles as null objects for use with spying in testing. (Sam
   Phippen, #671)
 
-### 3.0.2 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...3-0-maintenance)
+### 3.0.2 / 2014-06-19
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...v3.0.2)
 
 Bug Fixes:
 
