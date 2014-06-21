@@ -101,6 +101,7 @@ describe RSpec::Mocks::Double do
 
         context "that are optional", :if => RSpec::Support::RubyFeatures.optional_and_splat_args_supported? do
           it "yields the default argument when the argument is not given" do
+            pending "Not sure how to achieve this yet. See rspec/rspec-mocks#714 and rspec/rspec-support#85."
             default_arg = Object.new
             obj = Object.new
 
@@ -122,6 +123,17 @@ describe RSpec::Mocks::Double do
 
             eval("obj.a_message { |receiver=default_arg| receiver.bar }")
           end
+        end
+
+        it 'can yield to a block that uses `super`' do
+          klass    = Class.new { def foo; 13; end }
+          subklass = Class.new(klass) { def foo(arg); arg.bar { super() }; end }
+
+          arg = double
+          expect(arg).to receive(:bar).and_yield
+
+          instance = subklass.new
+          instance.foo(arg)
         end
 
         it "fails when expectations set on the eval context and yielded arguments are not met" do
