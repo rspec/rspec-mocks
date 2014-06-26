@@ -6,6 +6,8 @@ Enhancements:
 * Add spying methods (`spy`, `ìnstance_spy`, `class_spy` and `object_spy`)
   which create doubles as null objects for use with spying in testing. (Sam
   Phippen, #671)
+* `have_received` matcher will raise "does not implement" errors correctly when
+  used with verifying doubles and partial doubles. (Xavier Shay, #722)
 
 ### 3.0.2 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...v3.0.2)
