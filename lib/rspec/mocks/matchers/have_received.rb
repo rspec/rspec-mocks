@@ -22,6 +22,8 @@ module RSpec
           @block ||= block
           @subject = subject
           @expectation = expect
+          mock_proxy.ensure_implemented(@method_name)
+
           expected_messages_received_in_order?
         end
 
@@ -29,6 +31,7 @@ module RSpec
           @subject = subject
           ensure_count_unconstrained
           @expectation = expect.never
+          mock_proxy.ensure_implemented(@method_name)
           expected_messages_received_in_order?
         end
 
