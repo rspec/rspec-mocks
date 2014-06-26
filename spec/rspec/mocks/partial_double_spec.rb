@@ -313,6 +313,13 @@ module RSpec
         prevents { expect(object).to receive(:unimplemented) }
       end
 
+      it 'boes not allow a spy on unimplemented method' do
+        allow(object).to receive(:object_id)
+        prevents(/does not implement/) {
+          expect(object).to have_received(:unimplemented)
+        }
+      end
+
       it 'verifies arity range when matching arguments' do
         prevents { expect(object).to receive(:implemented).with('bogus') }
       end
