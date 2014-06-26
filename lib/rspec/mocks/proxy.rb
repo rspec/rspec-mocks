@@ -9,6 +9,11 @@ module RSpec
       end
 
       # @private
+      def ensure_implemented(*args)
+        # noop for basic proxies, see VerifyingProxy for behaviour.
+      end
+
+      # @private
       def initialize(object, order_group, name=nil, options={})
         @object = object
         @order_group = order_group
