@@ -1,4 +1,4 @@
-Verifying doubles are a stricter alternative to [normal doubles](./basics/test-doubles) that provide guarantees about
+Verifying doubles are a stricter alternative to [normal doubles](../basics/test_doubles.feature) that provide guarantees about
 what is being verified. When using verifying doubles, RSpec will check that the methods
 being stubbed are actually present on the underlying object if it is available. Prefer using
 veryifing doubles over normal doubles.
