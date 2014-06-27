@@ -313,8 +313,7 @@ module RSpec
         prevents { expect(object).to receive(:unimplemented) }
       end
 
-      it 'boes not allow a spy on unimplemented method' do
-        allow(object).to receive(:object_id)
+      it 'does not allow a spy on unimplemented method' do
         prevents(/does not implement/) {
           expect(object).to have_received(:unimplemented)
         }
