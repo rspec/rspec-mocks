@@ -120,11 +120,11 @@ module RSpec
       #
       # @example
       #
-      #   expect(object).to receive(:message).with(any_of_the_following(1,2,3))
-      #   expect(object).to receive(:message).with(any_of_the_following([1,2,3]))
-      def any_of_the_following(*args)
+      #   expect(object).to receive(:message).with(one_of(1,2,3))
+      #   expect(object).to receive(:message).with(one_of([1,2,3]))
+      def one_of(*args)
         actually_an_array = Array === args.first && args.count == 1 ? args.first : args
-        AnyOfTheFollowingMatcher.new(actually_an_array)
+        OneOfMatcher.new(actually_an_array)
       end
 
       # @private
@@ -242,7 +242,7 @@ module RSpec
       end
 
       # @private
-      class AnyOfTheFollowingMatcher
+      class OneOfMatcher
         def initialize(expected)
           @expected = expected
         end
@@ -252,7 +252,7 @@ module RSpec
         end
 
         def description
-          "any_of_the_following(#{@expected.join(", ")})"
+          "one_of(#{@expected.join(", ")})"
         end
       end
 
