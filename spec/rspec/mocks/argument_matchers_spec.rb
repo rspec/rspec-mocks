@@ -193,6 +193,25 @@ module RSpec
         end
       end
 
+      context "any_of_the_following" do
+        let(:array) { [1, 2, 3] }
+
+        it "accepts matches against any element of the array" do
+          expect(a_double).to receive(:msg).with(any_of_the_following array)
+          a_double.msg(2)
+        end
+
+        it "accepts a series of arguments too" do
+          expect(a_double).to receive(:msg).with(any_of_the_following(*array))
+          a_double.msg(3)
+        end
+
+        it "doesn't accept matches against elements not in the array" do
+          allow(a_double).to receive(:msg).with(any_of_the_following array)
+          expect { a_double.msg(5) }.to fail_matching "expected: (any_of_the_following(1, 2, 3))"
+        end
+      end
+
       context "handling arbitary matchers" do
         it "matches any arbitrary object using #===" do
           matcher = double
