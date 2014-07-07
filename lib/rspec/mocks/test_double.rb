@@ -119,6 +119,11 @@ module RSpec
         return false unless @__expired
         ErrorGenerator.new(self, @name).raise_expired_test_double_error
       end
+
+      def initialize_copy(other)
+        as_null_object if other.null_object?
+        super
+      end
     end
 
     # A generic test double object. `double`, `instance_double` and friends

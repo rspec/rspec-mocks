@@ -25,6 +25,17 @@ module RSpec
         end
       end
 
+      RSpec.shared_examples_for "a copy method" do |method|
+        it "copies the `as_null_object` state when #{method}'d" do
+          dbl = double.as_null_object
+          copy = dbl.__send__(method)
+          expect(copy.foo.bar).to be(copy)
+        end
+      end
+
+      include_examples "a copy method", :dup
+      include_examples "a copy method", :clone
+
       [[:should, :expect], [:expect], [:should]].each do |syntax|
         context "with syntax #{syntax.inspect}" do
           include_context "with syntax", syntax
