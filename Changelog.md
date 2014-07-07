@@ -1,10 +1,12 @@
 ### 3.0.3 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.2...master)
 
-Enhancements:
+Bug Fixes:
 
 * `have_received` matcher will raise "does not implement" errors correctly when
   used with verifying doubles and partial doubles. (Xavier Shay, #722)
+* Make `double.as_null_object.dup` and `double.as_null_object.clone`
+  make the copies be null objects. (Myron Marston, #732)
 
 ### 3.0.2 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...v3.0.2)
