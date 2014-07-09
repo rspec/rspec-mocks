@@ -109,6 +109,18 @@ module RSpec
         end
 
         def ==(expected)
+          if defined?(DateTime) && DateTime === expected
+            RSpec.warn_deprecation <<-WARN.gsub(/^\s*\|/,'')
+              |In RSpec 3.0.0 matchers use `#===` (the match operator) to perform
+              |comparision between expected and actual arguments. Due to strange
+              |behaviour with `DateTime#===` (which ignores the time of the object
+              |when performing a comparison) this may result in undesired
+              |behaviour. We recommend you switch to a `Date` or `Time` object
+              |instead.
+              |
+              |Called from: #{RSpec::CallerFilter.first_non_rspec_line}
+            WARN
+          end
           @given == expected
         end
       end

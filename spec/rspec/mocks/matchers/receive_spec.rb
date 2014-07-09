@@ -28,6 +28,17 @@ module RSpec
           }.to raise_error(/received :foo with unexpected arguments/)
         end
 
+        it 'warns about the change to === in RSpec 3 when used with a DateTime' do
+          wrapped.to receive(:foo).with(DateTime.new(2014,1,1,1))
+          allow_deprecation
+          receiver.foo(DateTime.new(2014,1,1,1))
+
+          expect {
+            expect_warn_deprecation_with_call_site __FILE__, __LINE__ + 1
+            receiver.foo(DateTime.new(2014,1,1,2))
+          }.to raise_error(/received :foo with unexpected arguments/)
+        end
+
         it 'allows a `do...end` block implementation to be provided' do
           wrapped.to receive(:foo) do
             4
