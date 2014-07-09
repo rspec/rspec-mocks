@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.1...master)
+
+Enhancements:
+
+* Warn about upcoming change to `#===` matching and `DateTime#===` behaviour.
+  (Jon Rowe, #735)
+
 ### 2.99.1 / 2014-06-12
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.0...v2.99.1)
 
