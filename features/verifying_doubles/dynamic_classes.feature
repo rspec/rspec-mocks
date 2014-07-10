@@ -2,12 +2,14 @@ Feature: Dynamic classes
 
   Verifying instance doubles do not support methods which the class reports to not exist
   since an actual instance of the class would be required to verify against. This is commonly
-  the case when `method_missing` is used. `ActiveRecord` does this to define methods from
-  database columns. If the object has already been loaded you may consider using an
-  [`object_double`](./using-an-object-double), but that cannot work if you are testing in isolation.
+  the case when `method_missing` is used.
 
-  These types of methods are supported at class level, since `respond_to?` can be queried
-  directly on the class.
+  As a result, users of `ActiveRecord` may find that verifying doubles fail unexpectedly
+  when referencing database column names or dynamic finders.
+
+  There are two ways to work around this.
+  If the object has already been loaded you may consider using an [`object_double`](./using-an-object-double), but that cannot work if you are testing in isolation.
+  Otherwise, you can implement `respond_to_missing?` in your class to return true for column setters/getters.
 
   Background:
     Given a file named "lib/fake_active_record.rb" with:
