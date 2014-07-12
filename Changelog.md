@@ -7,6 +7,7 @@ Bug Fixes:
   used with verifying doubles and partial doubles. (Xavier Shay, #722)
 * Make `double.as_null_object.dup` and `double.as_null_object.clone`
   make the copies be null objects. (Myron Marston, #732)
+* Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #739)
 
 ### 3.0.2 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...v3.0.2)
