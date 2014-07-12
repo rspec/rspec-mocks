@@ -8,6 +8,7 @@ Enhancements:
   Phippen, #671)
 * `have_received` matcher will raise "does not implement" errors correctly when
   used with verifying doubles and partial doubles. (Xavier Shay, #722)
+* Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #739)
 
 ### 3.0.3 Development
 
