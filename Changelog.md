@@ -1,5 +1,5 @@
-### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.1...master)
+### 2.99.2 / 2014-07-21
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.1...v2.99.2)
 
 Enhancements:
 
