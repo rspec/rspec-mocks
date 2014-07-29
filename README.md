@@ -210,7 +210,11 @@ expect(double).to receive(:msg).with(1, boolean(), "b") #2nd argument can be tru
 expect(double).to receive(:msg).with(1, /abc/, "b") #2nd argument can be any String matching the submitted Regexp
 expect(double).to receive(:msg).with(1, anything(), "b") #2nd argument can be anything at all
 expect(double).to receive(:msg).with(1, duck_type(:abs, :div), "b")
-                    #2nd argument can be object that responds to #abs and #div
+                            #2nd argument can be object that responds to #abs and #div
+expect(double).to receive(:msg).with(hash_including(a: 5)) # first arg is a hash with a: 5 as one of the key-values
+expect(double).to receive(:msg).with(array_including(5)) # first arg is an array with 5 as one of the key-values
+expect(double).to receive(:msg).with(hash_not_including(a:5) # first arg is a hash without a: 5 as one of the key-values
+expect(double).to receive(:msg).with(hash_excluding(a:5)) # first arg is a hash without a: 5 as one of the key-values
 ```
 
 ## Receive Counts
