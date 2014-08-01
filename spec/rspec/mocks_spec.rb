@@ -1,4 +1,13 @@
+require 'rspec/support/spec/prevent_load_time_warnings'
+
 describe RSpec::Mocks do
+  it_behaves_like 'a library that issues no warnings when loaded',
+    'rspec-mocks', 'require "rspec/mocks"',
+    # Must be required before other files due to how our autoloads are setup.
+    # (Users won't hit this problem because they won't require all the files
+    # individually in whatever order the file system returns)
+    'require "rspec/mocks/any_instance"'
+
   describe ".verify" do
     it "delegates to the space" do
       foo = double
