@@ -300,6 +300,30 @@ module RSpec
           expect(mod.hello).to eq(:hello)
         end
 
+        it "correctly handles stubbing inherited mixed in class methods" do
+          mod = Module.new do
+                  def method_a
+                    raise "should not execute method_a"
+                  end
+
+                  def self.included(other)
+                    other.extend self
+                  end
+                end
+
+          a = Class.new { include mod }
+          b = Class.new(a) do
+                def self.method_b
+                  "executed method_b"
+                end
+              end
+
+          allow(a).to receive(:method_a)
+          allow(b).to receive(:method_b).and_return("stubbed method_b")
+
+          expect(b.method_b).to eql("stubbed method_b")
+        end
+
         if Support::RubyFeatures.module_prepends_supported?
           context "with a prepended module (ruby 2.0.0+)" do
             module ToBePrepended
