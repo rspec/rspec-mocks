@@ -22,7 +22,7 @@ module RSpec
             args = ["abc123", "xyz987"]
             subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             expect(error_generator).to receive(:raise_invalid_arguments_error).
-              with(instance_of(Support::MethodSignatureVerifier))
+              with(instance_of(Support::LooseSignatureVerifier))
 
             subject.with(*args)
           end
@@ -48,7 +48,7 @@ module RSpec
           it 'matches arity to 0' do
             subject.method_reference = InstanceMethodReference.new(string_module_reference, :replace)
             expect(error_generator).to receive(:raise_invalid_arguments_error).
-              with(instance_of(Support::MethodSignatureVerifier))
+              with(instance_of(Support::LooseSignatureVerifier))
 
             subject.with(no_args)
           end

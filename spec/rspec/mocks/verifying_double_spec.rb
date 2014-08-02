@@ -37,7 +37,10 @@ class LoadedClass
   if required_kw_args_supported?
     # Need to eval this since it is invalid syntax on earlier rubies.
     eval <<-RUBY
-      def kw_args_method(optional_arg:'hello', required_arg:)
+      def kw_args_method(foo, optional_arg:'hello', required_arg:)
+      end
+
+      def mixed_args_method(foo, bar, optional_arg_1:1, optional_arg_2:2)
       end
     RUBY
   end
@@ -243,7 +246,47 @@ module RSpec
           if required_kw_args_supported?
             it 'allows keyword arguments' do
               o = instance_double('LoadedClass', :kw_args_method => true)
-              expect(o.kw_args_method(:required_arg => 'something')).to eq(true)
+              expect(o.kw_args_method(1, :required_arg => 'something')).to eq(true)
+            end
+
+            context 'for a method that only accepts keyword args' do
+              it 'allows hash matchers like `hash_including` to be used in place of the keywords arg hash' do
+                o = instance_double('LoadedClass')
+                expect(o).to receive(:kw_args_method).
+                  with(1, hash_including(:required_arg => 1))
+                o.kw_args_method(1, :required_arg => 1)
+              end
+
+              it 'allows anything matcher to be used in place of the keywords arg hash' do
+                o = instance_double('LoadedClass')
+                expect(o).to receive(:kw_args_method).with(1, anything)
+                o.kw_args_method(1, :required_arg => 1)
+              end
+
+              it 'still checks positional arguments when matchers used for keyword args' do
+                o = instance_double('LoadedClass')
+                prevents(/Expected 1, got 3/) {
+                  expect(o).to receive(:kw_args_method).
+                    with(1, 2, 3, hash_including(:required_arg => 1))
+                }
+              end
+
+              it 'does not allow matchers to be used in an actual method call' do
+                o = instance_double('LoadedClass')
+                matcher = hash_including(:required_arg => 1)
+                allow(o).to receive(:kw_args_method).with(1, matcher)
+                expect {
+                  o.kw_args_method(1, matcher)
+                }.to raise_error(ArgumentError)
+              end
+            end
+
+            context 'for a method that accepts a mix of optional keyword and positional args' do
+              it 'allows hash matchers like `hash_including` to be used in place of the keywords arg hash' do
+                o = instance_double('LoadedClass')
+                expect(o).to receive(:mixed_args_method).with(1, 2, hash_including(:optional_arg_1 => 1))
+                o.mixed_args_method(1, 2, :optional_arg_1 => 1)
+              end
             end
 
             it 'checks that stubbed methods with required keyword args are ' +

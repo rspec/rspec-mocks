@@ -555,7 +555,7 @@ module RSpec
         block_signature = Support::BlockSignature.new(block)
 
         @args_to_yield.each do |args|
-          unless Support::MethodSignatureVerifier.new(block_signature, args).valid?
+          unless Support::StrictSignatureVerifier.new(block_signature, args).valid?
             @error_generator.raise_wrong_arity_error(args, block_signature)
           end
 

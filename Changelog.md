@@ -9,6 +9,8 @@ Enhancements:
 * `have_received` matcher will raise "does not implement" errors correctly when
   used with verifying doubles and partial doubles. (Xavier Shay, #722)
 * Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #739)
+* Allow matchers to be used in place of keyword arguments in `with`
+  expectations. (Xavier Shay, #726)
 
 ### 3.0.3 Development
 

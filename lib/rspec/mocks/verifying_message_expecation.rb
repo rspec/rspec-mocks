@@ -35,18 +35,22 @@ module RSpec
             super
           end
 
-          validate_arguments!(expected_args)
+          validate_expected_arguments!(expected_args)
         end
         super
       end
 
     private
 
-      def validate_arguments!(actual_args)
+      def validate_expected_arguments!(actual_args)
         return if method_reference.nil?
 
         method_reference.with_signature do |signature|
-          verifier = Support::MethodSignatureVerifier.new(signature, actual_args)
+          verifier = Support::LooseSignatureVerifier.new(
+            signature,
+            actual_args
+          )
+
           unless verifier.valid?
             # Fail fast is required, otherwise the message expecation will fail
             # as well ("expected method not called") and clobber this one.

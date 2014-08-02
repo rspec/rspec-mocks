@@ -1,3 +1,8 @@
+# This cannot take advantage of our relative requires, since this file is a
+# dependency of `rspec/mocks/argument_list_matcher.rb`. See comment there for
+# details.
+require 'rspec/support/matcher_definition'
+
 module RSpec
   module Mocks
 
@@ -244,6 +249,20 @@ module RSpec
         end
       end
 
+      matcher_namespace = name + '::'
+      ::RSpec::Support.register_matcher_definition do |object|
+        # This is the best we have for now. We should tag all of our matchers
+        # with a module or something so we can test for it directly.
+        #
+        # (Note Module#parent in ActiveSupport is defined in a similar way.)
+        begin
+          object.class.name.include?(matcher_namespace)
+        rescue NoMethodError
+          # Some objects, like BasicObject, don't implemented standard
+          # reflection methods.
+          false
+        end
+      end
     end
   end
 end
