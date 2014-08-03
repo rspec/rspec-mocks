@@ -115,7 +115,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(kind_of(Thing))
       def kind_of(klass)
-        klass
+        KindOf.new(klass)
       end
 
       alias_method :a_kind_of, :kind_of
@@ -246,6 +246,21 @@ module RSpec
 
         def description
           "an_instance_of(#{@klass.name})"
+        end
+      end
+
+      # @private
+      class KindOf
+        def initialize(klass)
+          @klass = klass
+        end
+
+        def ===(actual)
+          actual.kind_of?(@klass)
+        end
+
+        def description
+          @klass.name
         end
       end
 
