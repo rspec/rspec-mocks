@@ -41,7 +41,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(kind_of(Numeric))
           expect {
             a_double.random_call(true)
-          }.to fail_matching "expected: (Numeric)"
+          }.to fail_matching "expected: (kind of Numeric)"
         end
 
         it "matches arguments that have defined `kind_of?` to return true" do

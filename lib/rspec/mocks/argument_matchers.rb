@@ -260,7 +260,7 @@ module RSpec
         end
 
         def description
-          @klass.name
+          "kind of #{@klass.name}"
         end
       end
 
