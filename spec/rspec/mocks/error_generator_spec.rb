@@ -41,6 +41,8 @@ module RSpec
                 end
               end.new
 
+              expect(RSpec::Support.is_a_matcher?(o)).to be true
+
               expect {
                 d.bees(o)
               }.to fail_with(unexpected_failure_message_for(o.inspect))

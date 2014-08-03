@@ -79,6 +79,8 @@ RSpec.configure do |config|
   config.include VerificationHelpers
   config.extend RSpec::Support::RubyFeatures
   config.include RSpec::Support::RubyFeatures
+
+  RSpec::Matchers.define_negated_matcher :a_string_excluding, :include
 end
 
 RSpec.shared_context "with syntax" do |syntax|
