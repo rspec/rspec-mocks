@@ -1,3 +1,10 @@
+### 3.0.4 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3-0-maintenance)
+
+Bug Fixes:
+* Restore `kind_of(x)` to match using `arg.kind_of?` (like RSpec 2)
+  rather than `x === arg`.  (Jon Rowe, #750).
+
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.2...v3.0.3)
 
