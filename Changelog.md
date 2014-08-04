@@ -1,5 +1,5 @@
 ### 3.1.0 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.2...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...master)
 
 Enhancements:
 
@@ -12,14 +12,23 @@ Enhancements:
 * Allow matchers to be used in place of keyword arguments in `with`
   expectations. (Xavier Shay, #726)
 
-### 3.0.3 Development
+### 3.0.4 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3-0-maintenance)
+
+Bug Fixes:
+* Restore `kind_of(x)` to match using `arg.kind_of?` (like RSpec 2)
+  rather than `x === arg`.  (Jon Rowe, #750).
+
+### 3.0.3 / 2014-07-21
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.2...v3.0.3)
 
 Bug Fixes:
 
+* `have_received` matcher will raise "does not implement" errors correctly when
+  used with verifying doubles and partial doubles. (Xavier Shay, #722)
 * Make `double.as_null_object.dup` and `double.as_null_object.clone`
   make the copies be null objects. (Myron Marston, #732)
-* Restore `kind_of(x)` to match using `arg.kind_of?` (like RSpec 2)
-  rather than `x === arg`.  (Jon Rowe, #750).
+* Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #739)
 
 ### 3.0.2 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...v3.0.2)
