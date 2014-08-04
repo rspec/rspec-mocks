@@ -41,7 +41,20 @@ module RSpec
           expect(a_double).to receive(:random_call).with(kind_of(Numeric))
           expect {
             a_double.random_call(true)
-          }.to fail_matching "expected: (Numeric)"
+          }.to fail_matching "expected: (kind of Numeric)"
+        end
+
+        it "matches arguments that have defined `kind_of?` to return true" do
+          fix_num = double(:kind_of? => true)
+          expect(a_double).to receive(:random_call).with(kind_of(Numeric))
+          a_double.random_call(fix_num)
+        end
+
+        it "handles a class thats overridden ===" do
+          allow(Numeric).to receive(:===) { false }
+          fix_num = double(:kind_of? => true)
+          expect(a_double).to receive(:random_call).with(kind_of(Numeric))
+          a_double.random_call(fix_num)
         end
       end
 

@@ -18,6 +18,8 @@ Bug Fixes:
 
 * Make `double.as_null_object.dup` and `double.as_null_object.clone`
   make the copies be null objects. (Myron Marston, #732)
+* Restore `kind_of(x)` to match using `arg.kind_of?` (like RSpec 2)
+  rather than `x === arg`.  (Jon Rowe, #750).
 
 ### 3.0.2 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.1...v3.0.2)
