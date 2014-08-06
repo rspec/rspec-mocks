@@ -43,7 +43,7 @@ module RSpec
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
 
-      it "fails when called wrong args on the first call" do
+      it "fails when called with wrong args on the first call" do
         expect(@double).to receive(:do_something).twice.with("1", 1)
         expect {
           @double.do_something(1, "1")
