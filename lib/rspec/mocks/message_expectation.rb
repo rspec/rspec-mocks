@@ -430,6 +430,17 @@ module RSpec
         self
       end
 
+      # Expect a message to be received exactly three times.
+      #
+      # @example
+      #
+      #   expect(car).to receive(:go).thrice
+      def thrice(&block)
+        self.inner_implementation_action = block
+        set_expected_received_count :exactly, 3
+        self
+      end
+
       # Expect messages to be received in a specific order.
       #
       # @example
