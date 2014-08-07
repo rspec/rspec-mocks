@@ -11,6 +11,8 @@ Enhancements:
 * Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #739)
 * Allow matchers to be used in place of keyword arguments in `with`
   expectations. (Xavier Shay, #726)
+* Include `thrice` matcher as a synonym for `exactly(3).times`.
+  (Dennis Taylor, #753)
 
 ### 3.0.4 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3-0-maintenance)
