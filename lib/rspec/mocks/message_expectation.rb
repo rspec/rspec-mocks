@@ -524,6 +524,7 @@ module RSpec
                                    when Numeric then n
                                    when :once   then 1
                                    when :twice  then 2
+                                   when :thrice then 3
                                    end
       end
 

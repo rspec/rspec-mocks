@@ -42,6 +42,15 @@ module RSpec
         }.to raise_error(/expected: at least 2 times.*received: 0 times/m)
       end
 
+      it "fails when at least thrice method is called less than three times" do
+        expect(@double).to receive(:do_something).at_least(:thrice)
+        @double.do_something
+        @double.do_something
+        expect {
+          verify @double
+        }.to raise_error(/expected: at least 3 times.*received: 2 times/m)
+      end
+
       it "passes when at least n times method is called exactly n times" do
         expect(@double).to receive(:do_something).at_least(4).times
         @double.do_something
@@ -84,6 +93,23 @@ module RSpec
 
       it "passes when at least twice method is called twice" do
         expect(@double).to receive(:do_something).at_least(:twice)
+        @double.do_something
+        @double.do_something
+        verify @double
+      end
+
+      it "passes when at least thrice method is called three times" do
+        expect(@double).to receive(:do_something).at_least(:thrice)
+        @double.do_something
+        @double.do_something
+        @double.do_something
+        verify @double
+      end
+
+      it "passes when at least thrice method is called four times" do
+        expect(@double).to receive(:do_something).at_least(:thrice)
+        @double.do_something
+        @double.do_something
         @double.do_something
         @double.do_something
         verify @double
