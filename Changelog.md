@@ -8,11 +8,10 @@ Enhancements:
   Phippen, #671)
 * `have_received` matcher will raise "does not implement" errors correctly when
   used with verifying doubles and partial doubles. (Xavier Shay, #722)
-* Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #739)
 * Allow matchers to be used in place of keyword arguments in `with`
   expectations. (Xavier Shay, #726)
-* Include `thrice` matcher as a synonym for `exactly(3).times`.
-  (Dennis Taylor, #753)
+* Add `thrice` modifier to message expectation interface as a synonym
+  for `exactly(3).times`. (Dennis Taylor, #753)
 
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3.0.4)
