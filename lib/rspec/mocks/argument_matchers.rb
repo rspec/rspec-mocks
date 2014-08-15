@@ -120,6 +120,18 @@ module RSpec
 
       alias_method :a_kind_of, :kind_of
 
+      # Matches on any of the elements provided in the provided array or
+      # argument list.
+      #
+      # @example
+      #
+      #   expect(object).to receive(:message).with(one_of(1,2,3))
+      #   expect(object).to receive(:message).with(one_of([1,2,3]))
+      def one_of(*args)
+        actually_an_array = Array === args.first && args.count == 1 ? args.first : args
+        OneOfMatcher.new(actually_an_array)
+      end
+
       # @private
       def self.anythingize_lonely_keys(*args)
         hash = args.last.class == Hash ? args.delete_at(-1) : {}
@@ -231,6 +243,21 @@ module RSpec
 
         def description
           "duck_type(#{@methods_to_respond_to.map(&:inspect).join(', ')})"
+        end
+      end
+
+      # @private
+      class OneOfMatcher
+        def initialize(expected)
+          @expected = expected
+        end
+
+        def ===(actual)
+          @expected.include? actual
+        end
+
+        def description
+          "one_of(#{@expected.join(", ")})"
         end
       end
 
