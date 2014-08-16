@@ -12,6 +12,8 @@ Enhancements:
   expectations. (Xavier Shay, #726)
 * Add `thrice` modifier to message expectation interface as a synonym
   for `exactly(3).times`. (Dennis Taylor, #753)
+* Add more `thrice` synonyms e.g. `.at_least(:thrice)`, `.at_most(:thrice)`,
+  `receive(...).thrice` and `have_received(...).thrice`. (Jon Rowe, #754)
 
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3.0.4)
