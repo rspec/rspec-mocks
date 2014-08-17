@@ -251,10 +251,43 @@ module RSpec
               }.to raise_error(/expected: 2 times.*received: 3 times/m)
             end
           end
+
+          context 'thrice' do
+            it 'passes when the message was received thrice' do
+              dbl = double(:expected_method => nil)
+              dbl.expected_method
+              dbl.expected_method
+              dbl.expected_method
+
+              expect(dbl).to have_received(:expected_method).thrice
+            end
+
+            it 'fails when the message was received less than three times' do
+              dbl = double(:expected_method => nil)
+              dbl.expected_method
+              dbl.expected_method
+
+              expect {
+                expect(dbl).to have_received(:expected_method).thrice
+              }.to raise_error(/expected: 3 times.*received: 2 times/m)
+            end
+
+            it 'fails when the message was received more than three times' do
+              dbl = double(:expected_method => nil)
+              dbl.expected_method
+              dbl.expected_method
+              dbl.expected_method
+              dbl.expected_method
+
+              expect {
+                expect(dbl).to have_received(:expected_method).thrice
+              }.to raise_error(/expected: 3 times.*received: 4 times/m)
+            end
+          end
         end
 
         context 'ordered' do
-          let(:dbl) { double :one => 1, :two => 2 }
+          let(:dbl) { double :one => 1, :two => 2, :three => 3 }
 
           it 'passes when the messages were received in order' do
             dbl.one
@@ -265,12 +298,13 @@ module RSpec
           end
 
           it 'passes with exact receive counts when received in order' do
-            dbl.one
-            dbl.one
-            dbl.two
+            3.times { dbl.one }
+            2.times { dbl.two }
+            dbl.three
 
-            expect(dbl).to have_received(:one).twice.ordered
-            expect(dbl).to have_received(:two).once.ordered
+            expect(dbl).to have_received(:one).thrice.ordered
+            expect(dbl).to have_received(:two).twice.ordered
+            expect(dbl).to have_received(:three).once.ordered
           end
 
           pending 'passes with at most receive counts when received in order' do
@@ -279,6 +313,7 @@ module RSpec
             dbl.two
 
             expect(dbl).to have_received(:one).at_most(3).times.ordered
+            expect(dbl).to have_received(:one).at_most(:thrice).times.ordered
             expect(dbl).to have_received(:two).once.ordered
           end
 
