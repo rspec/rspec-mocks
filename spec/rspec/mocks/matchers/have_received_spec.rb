@@ -272,7 +272,7 @@ module RSpec
               }.to raise_error(/expected: 3 times.*received: 2 times/m)
             end
 
-            it 'fails when the message was received more than times' do
+            it 'fails when the message was received more than three times' do
               dbl = double(:expected_method => nil)
               dbl.expected_method
               dbl.expected_method
