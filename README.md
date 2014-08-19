@@ -212,7 +212,6 @@ expect(double).to receive(:msg).at_least(n).times
 expect(double).to receive(:msg).at_most(:once)
 expect(double).to receive(:msg).at_most(:twice)
 expect(double).to receive(:msg).at_most(n).times
-expect(double).to receive(:msg).any_number_of_times
 ```
 
 ## Ordering

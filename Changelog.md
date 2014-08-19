@@ -1,3 +1,11 @@
+### 3.0.5 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.4...master)
+
+Bugfixes:
+
+* Remove `any_number_of_times` from `any_instance` recorders that were
+  erroneously causing mention of the method in documentation. (Jon Rowe, #760)
+
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3.0.4)
 
