@@ -15,6 +15,11 @@ Enhancements:
 * Add more `thrice` synonyms e.g. `.at_least(:thrice)`, `.at_most(:thrice)`,
   `receive(...).thrice` and `have_received(...).thrice`. (Jon Rowe, #754)
 
+Bugfixes:
+
+* Remove `any_number_of_times` from `any_instance` recorders that were
+  erroneously causing mention of the method in documentation. (Jon Rowe, #760)
+
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3.0.4)
 
