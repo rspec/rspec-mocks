@@ -137,11 +137,30 @@ module RSpec
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
+        and_wrap_original do |original, *args, &block|
+          original.call(*args, &block)
+        end
+      end
+
+      # Decorates the stubbed method with the supplied block. The original
+      # unmodified method is passed to the block along with any method call
+      # arguments so you can delegate to it, whilst still being able to
+      # change what args are passed to it and/or change the return value.
+      #
+      # @note This is only available on partial doubles.
+      #
+      # @example
+      #
+      #   expect(api).to receive(:large_list).and_wrap_original do |original_method, *args, &block|
+      #     original_method.call(*args, &block).first(10)
+      #   end
+      #
+      def and_wrap_original(&block)
         if RSpec::Mocks::TestDouble === @method_double.object
           @error_generator.raise_only_valid_on_a_partial_double(:and_call_original)
         else
           warn_about_stub_override if implementation.inner_action
-          @implementation = AndCallOriginalImplementation.new(@method_double.original_method)
+          @implementation = AndWrapOriginalImplementation.new(@method_double.original_method, block)
           @yield_receiver_to_implementation_block = false
         end
       end
@@ -618,9 +637,10 @@ module RSpec
 
     # Represents an `and_call_original` implementation.
     # @private
-    class AndCallOriginalImplementation
-      def initialize(method)
+    class AndWrapOriginalImplementation
+      def initialize(method, block)
         @method = method
+        @block = block
       end
 
       CannotModifyFurtherError = Class.new(StandardError)
@@ -646,7 +666,7 @@ module RSpec
       end
 
       def call(*args, &block)
-        @method.call(*args, &block)
+        @block.call(@method, *args, &block)
       end
 
     private
