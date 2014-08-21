@@ -210,6 +210,11 @@ module RSpec
             wrapped.to_not receive(:foo).never
           }.to raise_error(/trying to negate it again/)
         end
+
+        it 'does not break respond_to?' do
+          wrapped.to_not receive(:foo)
+          expect(receiver).to_not respond_to :foo
+        end
       end
 
       shared_examples "resets partial mocks cleanly" do
