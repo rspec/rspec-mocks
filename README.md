@@ -118,21 +118,21 @@ Stubbing and verifying messages received in this way implements the Test Spy
 pattern.
 
 ```ruby
-  invitation = spy('invitation')
+invitation = spy('invitation')
 
-  user.accept_invitation(invitation)
+user.accept_invitation(invitation)
 
-  expect(invitation).to have_received(:accept)
+expect(invitation).to have_received(:accept)
 
-  # You can also use other common message expectations. For example:
-  expect(invitation).to have_received(:accept).with(mailer)
-  expect(invitation).to have_received(:accept).twice
-  expect(invitation).to_not have_received(:accept).with(mailer)
+# You can also use other common message expectations. For example:
+expect(invitation).to have_received(:accept).with(mailer)
+expect(invitation).to have_received(:accept).twice
+expect(invitation).to_not have_received(:accept).with(mailer)
 
-  # One can specify a return value on the spy the same way one would a double.
-  invitation = spy('invitation', :accept => true)
-  expect(invitation).to have_received(:accept).with(mailer)
-  expect(invitation.accept).to eq(true)
+# One can specify a return value on the spy the same way one would a double.
+invitation = spy('invitation', :accept => true)
+expect(invitation).to have_received(:accept).with(mailer)
+expect(invitation.accept).to eq(true)
 ```
 
 ## Nomenclature
