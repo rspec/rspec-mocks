@@ -14,6 +14,8 @@ Enhancements:
   for `exactly(3).times`. (Dennis Taylor, #753)
 * Add more `thrice` synonyms e.g. `.at_least(:thrice)`, `.at_most(:thrice)`,
   `receive(...).thrice` and `have_received(...).thrice`. (Jon Rowe, #754)
+* Add `and_wrap_original` modifier for partial doubles to mutate the
+  response from a method. (Jon Rowe, #762)
 
 Bugfixes:
 
