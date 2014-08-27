@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "A chained method stub" do
+    RSpec.describe "A chained method stub" do
       let(:object) { Object.new }
 
       it 'does not get confused by symbol vs string usage for the messages' do

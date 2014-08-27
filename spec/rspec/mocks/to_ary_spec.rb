@@ -1,4 +1,4 @@
-describe "a double receiving to_ary" do
+RSpec.describe "a double receiving to_ary" do
   shared_examples "to_ary" do
     it "can be overridden with a stub" do
       allow(obj).to receive(:to_ary) { :non_nil_value }

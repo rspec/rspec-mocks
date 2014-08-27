@@ -1,4 +1,4 @@
-describe RSpec::Mocks::Double do
+RSpec.describe RSpec::Mocks::Double do
 
   let(:obj) { double }
 

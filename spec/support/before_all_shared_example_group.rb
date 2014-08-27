@@ -1,4 +1,4 @@
-shared_examples "fails in a before(:all) block" do
+RSpec.shared_examples "fails in a before(:all) block" do
   the_error = nil
   before(:all) do
     begin

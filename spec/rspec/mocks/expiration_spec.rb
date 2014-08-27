@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     RSpec.describe "After a test double has been torn down" do
-      shared_examples_for "expiration" do
+      RSpec.shared_examples_for "expiration" do
         before do
           expect(dbl).to receive(:foo).at_least(:once)
           allow(dbl).to receive(:bar)

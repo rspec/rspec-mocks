@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "#twice" do
+    RSpec.describe "#twice" do
       before(:each) do
         @double = double("test double")
       end

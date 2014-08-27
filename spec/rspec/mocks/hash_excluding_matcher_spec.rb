@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     module ArgumentMatchers
-      describe HashExcludingMatcher do
+      RSpec.describe HashExcludingMatcher do
 
         it "describes itself properly" do
           expect(HashExcludingMatcher.new(:a => 5).description).to eq "hash_not_including(:a=>5)"

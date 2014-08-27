@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "Combining implementation instructions" do
+    RSpec.describe "Combining implementation instructions" do
       it 'can combine and_yield and and_return' do
         dbl = double
         allow(dbl).to receive(:foo).and_yield(5).and_return(3)

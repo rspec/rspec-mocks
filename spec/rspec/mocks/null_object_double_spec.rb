@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "a double _not_ acting as a null object" do
+    RSpec.describe "a double _not_ acting as a null object" do
       before(:each) do
         @double = double('non-null object')
       end
@@ -25,7 +25,7 @@ module RSpec
       end
     end
 
-    describe "a double acting as a null object" do
+    RSpec.describe "a double acting as a null object" do
       before(:each) do
         @double = double('null object').as_null_object
       end
@@ -109,21 +109,21 @@ module RSpec
       end
     end
 
-    describe "#as_null_object" do
+    RSpec.describe "#as_null_object" do
       it "sets the object to null_object" do
         obj = double('anything').as_null_object
         expect(obj).to be_null_object
       end
     end
 
-    describe "#null_object?" do
+    RSpec.describe "#null_object?" do
       it "defaults to false" do
         obj = double('anything')
         expect(obj).not_to be_null_object
       end
     end
 
-    describe "when using the :expect syntax" do
+    RSpec.describe "when using the :expect syntax" do
       include_context "with syntax", :expect
 
       it 'still supports null object doubles' do

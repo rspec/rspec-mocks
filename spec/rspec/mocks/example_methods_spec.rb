@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe ExampleMethods do
+    RSpec.describe ExampleMethods do
       it 'does not define private helper methods since it gets included into a ' +
          'namespace where users define methods and could inadvertently overwrite ' +
          'them' do

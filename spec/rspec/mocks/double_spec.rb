@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe Double do
+    RSpec.describe Double do
       before(:each) { @double = double("test double") }
       after(:each)  { reset @double }
 

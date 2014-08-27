@@ -1,4 +1,4 @@
-describe "expection set on previously stubbed method" do
+RSpec.describe "expection set on previously stubbed method" do
   it "fails if message is not received after expectation is set" do
     double = double(:msg => nil)
     double.msg

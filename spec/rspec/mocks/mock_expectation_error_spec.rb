@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe 'MockExpectationError' do
+    RSpec.describe 'MockExpectationError' do
 
       class Foo
         def self.foo

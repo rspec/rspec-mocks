@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "PreciseCounts" do
+    RSpec.describe "PreciseCounts" do
       before(:each) do
         @double = double("test double")
       end

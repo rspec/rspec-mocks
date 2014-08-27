@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "Methods added to every object" do
+    RSpec.describe "Methods added to every object" do
       include_context "with syntax", :expect
 
       def added_methods

@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe InstanceMethodStasher do
+    RSpec.describe InstanceMethodStasher do
       class ExampleClass
         def hello
           :hello_defined_on_class

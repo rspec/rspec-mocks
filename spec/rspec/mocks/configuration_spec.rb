@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe Configuration do
+    RSpec.describe Configuration do
       let(:config) { Configuration.new }
       let(:mod_1)  { Module.new }
       let(:mod_2)  { Module.new }

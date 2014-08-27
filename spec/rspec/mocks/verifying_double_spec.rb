@@ -70,7 +70,7 @@ end
 
 module RSpec
   module Mocks
-    describe 'verifying doubles' do
+    RSpec.describe 'verifying doubles' do
       describe 'instance doubles' do
         describe 'when doubled class is not loaded' do
           include_context "with isolated configuration"

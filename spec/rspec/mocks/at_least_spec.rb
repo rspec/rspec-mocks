@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "at_least" do
+    RSpec.describe "at_least" do
       before(:each) { @double = double }
 
       it "fails if method is never called" do

@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "argument matchers matching" do
+    RSpec.describe "argument matchers matching" do
       let(:a_double) { double }
 
       after(:each, :reset => true) do

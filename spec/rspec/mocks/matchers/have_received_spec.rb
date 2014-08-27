@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe Matchers::HaveReceived do
+    RSpec.describe Matchers::HaveReceived do
       describe "expect(...).to have_received" do
         it 'passes when the double has received the given message' do
           dbl = double_with_met_expectation(:expected_method)

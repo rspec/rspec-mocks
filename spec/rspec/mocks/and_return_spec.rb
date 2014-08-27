@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe 'and_return' do
+    RSpec.describe 'and_return' do
       let(:obj) { double('obj') }
 
       context 'when a block is passed' do

@@ -51,6 +51,7 @@ end
 require 'rspec/support/spec'
 
 RSpec.configure do |config|
+  config.expose_dsl_globally = false
   config.mock_with :rspec
   config.color = true
   config.order = :random
@@ -80,7 +81,7 @@ RSpec.configure do |config|
   config.include RSpec::Support::RubyFeatures
 end
 
-shared_context "with syntax" do |syntax|
+RSpec.shared_context "with syntax" do |syntax|
   orig_syntax = nil
 
   before(:all) do
@@ -94,7 +95,7 @@ shared_context "with syntax" do |syntax|
 end
 
 
-shared_context "with isolated configuration" do
+RSpec.shared_context "with isolated configuration" do
   orig_configuration = nil
   before do
     orig_configuration = RSpec::Mocks.configuration
@@ -106,7 +107,7 @@ shared_context "with isolated configuration" do
   end
 end
 
-shared_context "with monkey-patched marshal" do
+RSpec.shared_context "with monkey-patched marshal" do
   before do
     RSpec::Mocks.configuration.patch_marshal_to_support_partial_doubles = true
   end
@@ -116,7 +117,7 @@ shared_context "with monkey-patched marshal" do
   end
 end
 
-shared_context "with the default mocks syntax" do
+RSpec.shared_context "with the default mocks syntax" do
   orig_syntax = nil
 
   before(:all) do

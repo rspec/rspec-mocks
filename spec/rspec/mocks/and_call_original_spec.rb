@@ -1,6 +1,6 @@
 require 'delegate'
 
-describe "and_call_original" do
+RSpec.describe "and_call_original" do
   context "on a partial double" do
     let(:klass) do
       Class.new do

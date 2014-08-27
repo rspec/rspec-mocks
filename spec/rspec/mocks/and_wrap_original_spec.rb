@@ -1,4 +1,4 @@
-describe "and_wrap_original" do
+RSpec.describe "and_wrap_original" do
   context "on a partial double" do
     let(:klass) do
       Class.new do

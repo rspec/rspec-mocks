@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
 
-    describe ".allow_message" do
+    RSpec.describe ".allow_message" do
       let(:subject) { Object.new }
 
       it "sets up basic message allowance" do
@@ -45,7 +45,7 @@ module RSpec
       end
     end
 
-    describe ".expect_message" do
+    RSpec.describe ".expect_message" do
       let(:subject) { Object.new }
 
       it "sets up basic message expectation, verifies as uncalled" do
