@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe TestDouble do
+    RSpec.describe TestDouble do
       describe "#freeze" do
         subject { double }
 

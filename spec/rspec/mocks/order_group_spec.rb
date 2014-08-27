@@ -1,4 +1,4 @@
-describe 'OrderGroup' do
+RSpec.describe 'OrderGroup' do
   let(:order_group) { ::RSpec::Mocks::OrderGroup.new }
 
   describe '#consume' do

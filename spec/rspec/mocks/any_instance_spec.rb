@@ -2,7 +2,7 @@ require 'delegate'
 
 module RSpec
   module Mocks
-    describe "#any_instance" do
+    RSpec.describe "#any_instance" do
       class CustomErrorForAnyInstanceSpec < StandardError;end
 
       let(:klass) do

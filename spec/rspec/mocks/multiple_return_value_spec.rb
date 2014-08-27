@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "a double stubbed with multiple return values" do
+    RSpec.describe "a double stubbed with multiple return values" do
       let(:a_double) { double }
 
       before do
@@ -13,7 +13,7 @@ module RSpec
       end
     end
 
-    describe "a message expectation with multiple return values and no specified count" do
+    RSpec.describe "a message expectation with multiple return values and no specified count" do
       before(:each) do
         @double = double
         @return_values = [1,2,3]
@@ -50,7 +50,7 @@ module RSpec
       end
     end
 
-    describe "a message expectation with multiple return values with a specified count equal to the number of values" do
+    RSpec.describe "a message expectation with multiple return values with a specified count equal to the number of values" do
       before(:each) do
         @double = double
         @return_values = [1,2,3]
@@ -65,7 +65,7 @@ module RSpec
       end
     end
 
-    describe "a message expectation with multiple return values specifying at_least less than the number of values" do
+    RSpec.describe "a message expectation with multiple return values specifying at_least less than the number of values" do
       before(:each) do
         @double = double
         expect(@double).to receive(:do_something).at_least(:twice).with(no_args).and_return(11, 22)
@@ -100,7 +100,7 @@ module RSpec
       end
     end
 
-    describe "a message expectation with multiple return values with a specified count larger than the number of values" do
+    RSpec.describe "a message expectation with multiple return values with a specified count larger than the number of values" do
       before(:each) do
         @double = RSpec::Mocks::Double.new("double")
         expect(@double).to receive(:do_something).exactly(3).times.and_return(11, 22)

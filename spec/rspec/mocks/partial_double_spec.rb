@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "A partial double" do
+    RSpec.describe "A partial double" do
       let(:object) { Object.new }
 
       it 'does not create an any_instance recorder when a message is allowed' do
@@ -137,7 +137,7 @@ module RSpec
       end
     end
 
-    describe "Using a partial mock on a proxy object", :if => defined?(::BasicObject) do
+    RSpec.describe "Using a partial mock on a proxy object", :if => defined?(::BasicObject) do
       let(:proxy_class) do
         Class.new(::BasicObject) do
           def initialize(target)
@@ -175,7 +175,7 @@ module RSpec
       end
     end
 
-    describe "Partially mocking an object that defines ==, after another mock has been defined" do
+    RSpec.describe "Partially mocking an object that defines ==, after another mock has been defined" do
       before(:each) do
         double("existing mock", :foo => :foo)
       end
@@ -199,7 +199,7 @@ module RSpec
       end
     end
 
-    describe "A partial class mock that has been subclassed" do
+    RSpec.describe "A partial class mock that has been subclassed" do
 
       let(:klass)  { Class.new }
       let(:subklass) { Class.new(klass) }
@@ -228,7 +228,7 @@ module RSpec
       end
     end
 
-    describe "Method visibility when using partial mocks" do
+    RSpec.describe "Method visibility when using partial mocks" do
       let(:klass) do
         Class.new do
           def public_method
@@ -264,7 +264,7 @@ module RSpec
 
     end
 
-    describe 'when verify_partial_doubles configuration option is set' do
+    RSpec.describe 'when verify_partial_doubles configuration option is set' do
       include_context "with isolated configuration"
 
       let(:klass) do

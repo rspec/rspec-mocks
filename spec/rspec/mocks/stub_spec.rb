@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "A method stub" do
+    RSpec.describe "A method stub" do
       before(:each) do
         @class = Class.new do
           class << self
@@ -428,7 +428,7 @@ module RSpec
       end
     end
 
-    describe "A method stub with args" do
+    RSpec.describe "A method stub with args" do
       before(:each) do
         @stub = Object.new
         allow(@stub).to receive(:foo).with("bar")

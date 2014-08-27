@@ -1,6 +1,6 @@
 
 module RSpec::Mocks
-  describe Space do
+  RSpec.describe Space do
     let(:space) { Space.new }
     let(:dbl_1) { Object.new }
     let(:dbl_2) { Object.new }

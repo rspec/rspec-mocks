@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "only stashing the original method" do
+    RSpec.describe "only stashing the original method" do
       let(:klass) do
         Class.new do
           def self.foo(arg)
@@ -22,7 +22,7 @@ module RSpec
       end
     end
 
-    describe "when a class method is aliased on a subclass and the method is mocked" do
+    RSpec.describe "when a class method is aliased on a subclass and the method is mocked" do
       it "restores the original aliased public method" do
         klass = Class.new do
           class << self

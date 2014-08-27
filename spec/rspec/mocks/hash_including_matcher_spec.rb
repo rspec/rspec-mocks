@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     module ArgumentMatchers
-      describe HashIncludingMatcher do
+      RSpec.describe HashIncludingMatcher do
 
         it "describes itself properly" do
           expect(HashIncludingMatcher.new(:a => 1).description).to eq "hash_including(:a=>1)"

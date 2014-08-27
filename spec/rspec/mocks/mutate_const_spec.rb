@@ -23,7 +23,7 @@ end
 
 module RSpec
   module Mocks
-    describe "Constant Mutating" do
+    RSpec.describe "Constant Mutating" do
       include RSpec::Support::RecursiveConstMethods
 
       def reset_rspec_mocks
@@ -433,7 +433,7 @@ module RSpec
       end
     end
 
-    describe Constant do
+    RSpec.describe Constant do
       describe ".original" do
         context 'for a previously defined unstubbed constant' do
           let(:const) { Constant.original("TestClass::M") }

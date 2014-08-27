@@ -1,6 +1,6 @@
 require 'support/before_all_shared_example_group'
 
-describe "Using rspec-mocks features in before(:all) blocks" do
+RSpec.describe "Using rspec-mocks features in before(:all) blocks" do
   describe "#stub_const" do
     include_examples "fails in a before(:all) block" do
       def use_rspec_mocks

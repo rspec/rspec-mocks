@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "at_most" do
+    RSpec.describe "at_most" do
       before(:each) do
         @double = double
       end

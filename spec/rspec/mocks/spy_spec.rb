@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "the spy family of methods" do
+RSpec.describe "the spy family of methods" do
   describe "spy" do
     it "responds to arbitrary methods" do
       expect(spy.respond_to?(:foo)).to be true

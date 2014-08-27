@@ -1,6 +1,6 @@
 require 'rspec/support/spec/prevent_load_time_warnings'
 
-describe RSpec::Mocks do
+RSpec.describe RSpec::Mocks do
   it_behaves_like 'a library that issues no warnings when loaded',
     'rspec-mocks', 'require "rspec/mocks"',
     # Must be required before other files due to how our autoloads are setup.

@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    shared_examples "complains when given blocks" do
+    RSpec.shared_examples "complains when given blocks" do
       it "complains if a { } block is given" do
         expect {
           target.to receive_messages(:a => 1) { "implementation" }
@@ -16,7 +16,7 @@ module RSpec
       end
     end
 
-    shared_examples "handles partially mocked objects correctly" do
+    RSpec.shared_examples "handles partially mocked objects correctly" do
       let(:obj) { Struct.new(:a).new('original') }
 
       it "resets partially mocked objects correctly" do
@@ -28,7 +28,7 @@ module RSpec
       end
     end
 
-    describe "allow(...).to receive_messages(:a => 1, :b => 2)" do
+    RSpec.describe "allow(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { double "Object" }
       let(:target) { allow(obj) }
 
@@ -42,7 +42,7 @@ module RSpec
       it_behaves_like "handles partially mocked objects correctly"
     end
 
-    describe "allow_any_instance_of(...).to receive_messages(:a => 1, :b => 2)" do
+    RSpec.describe "allow_any_instance_of(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { Object.new }
       let(:target) { allow_any_instance_of(Object) }
 
@@ -64,7 +64,7 @@ module RSpec
       it_behaves_like "complains when given blocks"
     end
 
-    describe "expect(...).to receive_messages(:a => 1, :b => 2)" do
+    RSpec.describe "expect(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { double "Object" }
       let(:target) { expect(obj) }
 
@@ -99,7 +99,7 @@ module RSpec
       it_behaves_like "handles partially mocked objects correctly"
     end
 
-    describe "expect_any_instance_of(...).to receive_messages(:a => 1, :b => 2)" do
+    RSpec.describe "expect_any_instance_of(...).to receive_messages(:a => 1, :b => 2)" do
       let(:obj) { Object.new }
       let(:target) { expect_any_instance_of(Object) }
 
@@ -113,7 +113,7 @@ module RSpec
       it_behaves_like "complains when given blocks"
     end
 
-    describe "negative expectation failure" do
+    RSpec.describe "negative expectation failure" do
       let(:obj) { Object.new }
 
       example "allow(...).to_not receive_messages(:a => 1, :b => 2)" do

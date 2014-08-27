@@ -1,5 +1,5 @@
 module RSpec::Mocks::Matchers
-  describe "receive_message_chain" do
+  RSpec.describe "receive_message_chain" do
     let(:object) { double(:object) }
 
     context "with only the expect syntax enabled" do

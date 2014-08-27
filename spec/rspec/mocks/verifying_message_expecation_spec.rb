@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe VerifyingMessageExpectation do
+    RSpec.describe VerifyingMessageExpectation do
       describe '#with' do
         let(:error_generator) { double.as_null_object }
         let(:string_module_reference) { DirectModuleReference.new(String) }

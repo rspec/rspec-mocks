@@ -1,4 +1,4 @@
-describe RSpec::Mocks::AnyInstance::MessageChains do
+RSpec.describe RSpec::Mocks::AnyInstance::MessageChains do
   let(:recorder) { double }
   let(:chains) { RSpec::Mocks::AnyInstance::MessageChains.new }
   let(:stub_chain) { RSpec::Mocks::AnyInstance::StubChain.new recorder }

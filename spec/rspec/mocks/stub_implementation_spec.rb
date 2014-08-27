@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "stub implementation" do
+    RSpec.describe "stub implementation" do
       describe "with no args" do
         it "execs the block when called" do
           obj = double()
@@ -26,7 +26,7 @@ module RSpec
       end
     end
 
-    describe "unstubbing with `and_call_original`" do
+    RSpec.describe "unstubbing with `and_call_original`" do
       it "replaces the stubbed method with the original method" do
         obj = Object.new
         def obj.foo; :original; end

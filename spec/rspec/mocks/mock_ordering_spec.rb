@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
 
-    describe "ordering" do
+    RSpec.describe "ordering" do
       before { @double = double("test double") }
       after  { reset @double }
 

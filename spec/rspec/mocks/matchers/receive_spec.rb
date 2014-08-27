@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe Matchers::Receive do
+    RSpec.describe Matchers::Receive do
       include_context "with syntax", :expect
 
       describe "expectations/allowances on any instance recorders" do

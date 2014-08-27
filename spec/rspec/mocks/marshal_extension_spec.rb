@@ -1,4 +1,4 @@
-describe Marshal, 'extensions' do
+RSpec.describe Marshal, 'extensions' do
   # An object that raises when code attempts to dup it.
   #
   # Because we manipulate the internals of RSpec::Mocks.space below, we need

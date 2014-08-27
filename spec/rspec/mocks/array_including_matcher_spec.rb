@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     module ArgumentMatchers
-      describe ArrayIncludingMatcher do
+      RSpec.describe ArrayIncludingMatcher do
         it "describes itself properly" do
           expect(ArrayIncludingMatcher.new([1, 2, 3]).description).to eq "array_including(1, 2, 3)"
         end

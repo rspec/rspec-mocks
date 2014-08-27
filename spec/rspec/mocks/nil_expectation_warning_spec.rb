@@ -1,6 +1,6 @@
 module RSpec
   module Mocks
-    describe "an expectation set on nil" do
+    RSpec.describe "an expectation set on nil" do
       it "issues a warning with file and line number information" do
         expected_warning = %r%An expectation of :foo was set on nil. Called from #{__FILE__}:#{__LINE__+3}(:in .+)?. Use allow_message_expectations_on_nil to disable warnings.%
         expect(Kernel).to receive(:warn).with(expected_warning)
@@ -31,7 +31,7 @@ module RSpec
       end
     end
 
-    describe "#allow_message_expectations_on_nil" do
+    RSpec.describe "#allow_message_expectations_on_nil" do
       include_context "with monkey-patched marshal"
 
       it "does not affect subsequent examples" do

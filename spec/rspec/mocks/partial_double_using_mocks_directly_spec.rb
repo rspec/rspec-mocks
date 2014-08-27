@@ -1,5 +1,5 @@
 module RSpec::Mocks
-  describe "PartialDoubleUsingMocksDirectly" do
+  RSpec.describe "PartialDoubleUsingMocksDirectly" do
     let(:klass) do
       Class.new do
         module MethodMissing
