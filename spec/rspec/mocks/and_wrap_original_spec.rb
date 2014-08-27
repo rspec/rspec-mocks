@@ -43,7 +43,7 @@ RSpec.describe "and_wrap_original" do
     it "passes along any supplied block" do
       value = nil
       allow(instance).to receive(:results).and_wrap_original { |&b| value = b }
-      instance.results &(block = proc {})
+      instance.results(&(block = proc {}))
       expect(value).to eq block
     end
 
