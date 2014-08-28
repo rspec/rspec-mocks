@@ -3,7 +3,6 @@ module RSpec
     module AnyInstance
       # @private
       class StubChain < Chain
-
         # @private
         def expectation_fulfilled?
           true
@@ -36,10 +35,9 @@ module RSpec
           }
         end
 
-        def verify_invocation_order(rspec_method_name, *args, &block)
-          unless invocation_order[rspec_method_name].include?(last_message)
-            raise(NoMethodError, "Undefined method #{rspec_method_name}")
-          end
+        def verify_invocation_order(rspec_method_name, *_args, &_block)
+          return if invocation_order[rspec_method_name].include?(last_message)
+          raise NoMethodError, "Undefined method #{rspec_method_name}"
         end
       end
     end

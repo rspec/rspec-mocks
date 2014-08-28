@@ -35,15 +35,13 @@ module RSpec
         # @private
         def each_unfulfilled_expectation_matching(method_name, *args)
           @chains_by_method_name[method_name].each do |chain|
-            if !chain.expectation_fulfilled? && chain.matches_args?(*args)
-              yield chain
-            end
+            yield chain if !chain.expectation_fulfilled? && chain.matches_args?(*args)
           end
         end
 
         # @private
         def all_expectations_fulfilled?
-          @chains_by_method_name.all? do |method_name, chains|
+          @chains_by_method_name.all? do |_method_name, chains|
             chains.all? { |chain| chain.expectation_fulfilled? }
           end
         end
@@ -74,9 +72,12 @@ module RSpec
 
         def raise_if_second_instance_to_receive_message(instance)
           @instance_with_expectation ||= instance if ExpectationChain === instance
-          if ExpectationChain === instance && !@instance_with_expectation.equal?(instance)
-            raise RSpec::Mocks::MockExpectationError, "Exactly one instance should have received the following message(s) but didn't: #{unfulfilled_expectations.sort.join(', ')}"
-          end
+          return unless ExpectationChain === instance
+          return if @instance_with_expectation.equal?(instance)
+
+          raise RSpec::Mocks::MockExpectationError,
+                "Exactly one instance should have received the following " \
+                "message(s) but didn't: #{unfulfilled_expectations.sort.join(', ')}"
         end
       end
     end

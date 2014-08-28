@@ -1,6 +1,5 @@
 module RSpec
   module Mocks
-
     # A message expectation that only allows concrete return values to be set
     # for a message. While this same effect can be achieved using a standard
     # MessageExpecation, this version is much faster and so can be used as an
@@ -8,8 +7,7 @@ module RSpec
     #
     # @private
     class SimpleMessageExpectation
-
-      def initialize(message, response, error_generator, backtrace_line = nil)
+      def initialize(message, response, error_generator, backtrace_line=nil)
         @message, @response, @error_generator, @backtrace_line = message.to_sym, response, error_generator, backtrace_line
         @received = false
       end
@@ -45,6 +43,7 @@ module RSpec
       attr_writer :expected_received_count, :expected_from, :argument_list_matcher
       protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
+      # rubocop:disable Style/ParameterLists
       # @private
       def initialize(error_generator, expectation_ordering, expected_from, method_double,
                      type=:expectation, opts={}, &implementation_block)
@@ -70,6 +69,7 @@ module RSpec
         @implementation = Implementation.new
         self.inner_implementation_action = implementation_block
       end
+      # rubocop:enable Style/ParameterLists
 
       # @private
       def expected_args
@@ -110,7 +110,7 @@ module RSpec
         end
 
         values.unshift(first_value)
-        @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 and @at_least)
+        @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
         self.terminal_implementation_action = AndReturnImplementation.new(values)
 
         nil
@@ -186,7 +186,7 @@ module RSpec
       #   allow(car).to receive(:go).and_raise(OutOfGas)
       #   allow(car).to receive(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
       #   allow(car).to receive(:go).and_raise(OutOfGas.new(2, :oz))
-      def and_raise(exception = RuntimeError, message = nil)
+      def and_raise(exception=RuntimeError, message=nil)
         if exception.respond_to?(:exception)
           exception = message ? exception.exception(message) : exception.exception
         end
@@ -253,7 +253,7 @@ module RSpec
 
       # @private
       def matches_name_but_not_args(message, *args)
-        @message == message and not @argument_list_matcher.args_match?(*args)
+        @message == message && !@argument_list_matcher.args_match?(*args)
       end
 
       # @private
@@ -315,7 +315,7 @@ module RSpec
       def expectation_count_type
         return :at_least if @at_least
         return :at_most if @at_most
-        return nil
+        nil
       end
 
       # @private
@@ -354,7 +354,7 @@ module RSpec
       def with(*args, &block)
         if args.empty?
           raise ArgumentError,
-            "`with` must have at least one argument. Use `no_args` matcher to set the expectation of receiving no arguments."
+                "`with` must have at least one argument. Use `no_args` matcher to set the expectation of receiving no arguments."
         end
 
         self.inner_implementation_action = block
@@ -482,7 +482,6 @@ module RSpec
         @expected_received_count - 1
       end
 
-
       # @private
       def ordered?
         @ordered
@@ -506,15 +505,13 @@ module RSpec
     private
 
       def invoke_incrementing_actual_calls_by(increment, parent_stub, *args, &block)
-        if yield_receiver_to_implementation_block?
-          args.unshift(orig_object)
-        end
+        args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
         if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += increment
           @failed_fast = true
-          #args are the args we actually received, @argument_list_matcher is the
-          #list of args we were expecting
+          # args are the args we actually received, @argument_list_matcher is the
+          # list of args we were expecting
           @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *args)
         end
 
@@ -563,7 +560,7 @@ module RSpec
 
       def warn_about_stub_override
         RSpec.warning(
-          "You're overriding a previous stub implementation of `#{@message}`. " +
+          "You're overriding a previous stub implementation of `#{@message}`. " \
           "Called from #{CallerFilter.first_non_rspec_line}."
         )
       end
@@ -578,7 +575,7 @@ module RSpec
         @error_generator = error_generator
       end
 
-      def call(*args_to_ignore, &block)
+      def call(*_args_to_ignore, &block)
         return if @args_to_yield.empty? && @eval_context.nil?
 
         @error_generator.raise_missing_block_error @args_to_yield unless block
@@ -603,7 +600,7 @@ module RSpec
         @values_to_return = values_to_return
       end
 
-      def call(*args_to_ignore, &block)
+      def call(*_args_to_ignore, &_block)
         if @values_to_return.size > 1
           @values_to_return.shift
         else
@@ -645,15 +642,15 @@ module RSpec
 
       CannotModifyFurtherError = Class.new(StandardError)
 
-      def initial_action=(value)
+      def initial_action=(_value)
         raise cannot_modify_further_error
       end
 
-      def inner_action=(value)
+      def inner_action=(_value)
         raise cannot_modify_further_error
       end
 
-      def terminal_action=(value)
+      def terminal_action=(_value)
         raise cannot_modify_further_error
       end
 
@@ -672,7 +669,7 @@ module RSpec
     private
 
       def cannot_modify_further_error
-        CannotModifyFurtherError.new "This method has already been configured " +
+        CannotModifyFurtherError.new "This method has already been configured " \
           "to call the original implementation, and cannot be modified further."
       end
     end
@@ -685,9 +682,8 @@ module RSpec
         yield
       rescue RSpec::Mocks::MockExpectationError => error
         error.backtrace.insert(0, location)
-        Kernel::raise error
+        Kernel.raise error
       end
     end
-
   end
 end

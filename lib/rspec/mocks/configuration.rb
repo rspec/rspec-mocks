@@ -2,7 +2,6 @@ module RSpec
   module Mocks
     # Provides configuration options for rspec-mocks.
     class Configuration
-
       def initialize
         @yield_receiver_to_any_instance_implementation_blocks = true
         @verify_doubled_constant_names = false
@@ -26,9 +25,7 @@ module RSpec
       #       mocks.yield_receiver_to_any_instance_implementation_blocks = false
       #     end
       #   end
-      def yield_receiver_to_any_instance_implementation_blocks=(arg)
-        @yield_receiver_to_any_instance_implementation_blocks = arg
-      end
+      attr_writer :yield_receiver_to_any_instance_implementation_blocks
 
       # Adds `stub` and `should_receive` to the given
       # modules or classes. This is usually only necessary
@@ -105,9 +102,7 @@ module RSpec
       # constant. You probably only want to set this when running your entire
       # test suite, with all production code loaded. Setting this for an
       # isolated unit test will prevent you from being able to isolate it!
-      def verify_doubled_constant_names=(val)
-        @verify_doubled_constant_names = val
-      end
+      attr_writer :verify_doubled_constant_names
 
       def transfer_nested_constants?
         !!@transfer_nested_constants
@@ -115,9 +110,7 @@ module RSpec
 
       # Sets the default for the `transfer_nested_constants` option when
       # stubbing constants.
-      def transfer_nested_constants=(val)
-        @transfer_nested_constants = val
-      end
+      attr_writer :transfer_nested_constants
 
       # When set to true, partial mocks will be verified the same as object
       # doubles. Any stubs will have their arguments checked against the original

@@ -15,7 +15,7 @@ module RSpec
         end
       end
 
-      def self.delegate_not_to(matcher_method, options = {})
+      def self.delegate_not_to(matcher_method, options={})
         method_name = options.fetch(:from)
         define_method(method_name) do |matcher, &block|
           case matcher
@@ -30,7 +30,7 @@ module RSpec
       end
 
       def self.disallow_negation(method_name)
-        define_method(method_name) do |matcher, *args|
+        define_method(method_name) do |matcher, *_args|
           raise_negation_unsupported(method_name, matcher)
         end
       end
@@ -47,14 +47,14 @@ module RSpec
 
       def raise_unsupported_matcher(method_name, matcher)
         raise UnsupportedMatcherError,
-          "only the `receive` or `receive_messages` matchers are supported " +
-          "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
+              "only the `receive` or `receive_messages` matchers are supported " \
+              "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
       end
 
       def raise_negation_unsupported(method_name, matcher)
         raise NegationUnsupportedError,
-          "`#{expression}(...).#{method_name} #{matcher.name}` is not supported since it " +
-          "doesn't really make sense. What would it even mean?"
+              "`#{expression}(...).#{method_name} #{matcher.name}` is not supported since it " \
+              "doesn't really make sense. What would it even mean?"
       end
 
       def expression

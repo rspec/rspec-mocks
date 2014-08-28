@@ -2,13 +2,11 @@ RSpec::Support.require_rspec_support 'method_signature_verifier'
 
 module RSpec
   module Mocks
-
     # A message expectation that knows about the real implementation of the
     # message being expected, so that it can verify that any expectations
     # have the valid arguments.
     # @api private
     class VerifyingMessageExpectation < MessageExpectation
-
       # A level of indirection is used here rather than just passing in the
       # method itself, since method look up is expensive and we only want to
       # do it if actually needed.
@@ -27,13 +25,13 @@ module RSpec
       def with(*args, &block)
         unless ArgumentMatchers::AnyArgsMatcher === args.first
           expected_args = if ArgumentMatchers::NoArgsMatcher === args.first
-            []
-          elsif args.length > 0
-            args
-          else
-            # No arguments given, this will raise.
-            super
-          end
+                            []
+                          elsif args.length > 0
+                            args
+                          else
+                            # No arguments given, this will raise.
+                            super
+                          end
 
           validate_expected_arguments!(expected_args)
         end

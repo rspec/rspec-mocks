@@ -44,11 +44,10 @@ module RSpec
           replay_customizations(chain)
         end
 
-        def setup_negative_expectation(*args)
-          raise NegationUnsupportedError.new(
-            "`expect(...).not_to receive_message_chain` is not supported " +
-            "since it doesn't really make sense. What would it even mean?"
-          )
+        def setup_negative_expectation(*_args)
+          raise NegationUnsupportedError,
+                "`expect(...).not_to receive_message_chain` is not supported " \
+                "since it doesn't really make sense. What would it even mean?"
         end
 
         alias matches? setup_expectation

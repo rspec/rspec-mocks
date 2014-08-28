@@ -46,10 +46,10 @@ module RSpec
         @expected_args = expected_args
 
         @matchers = case expected_args.first
-          when ArgumentMatchers::AnyArgsMatcher then Array
-          when ArgumentMatchers::NoArgsMatcher  then []
-          else expected_args
-        end
+                    when ArgumentMatchers::AnyArgsMatcher then Array
+                    when ArgumentMatchers::NoArgsMatcher  then []
+                    else expected_args
+                    end
       end
 
       # @api public

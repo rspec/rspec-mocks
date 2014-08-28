@@ -15,7 +15,7 @@ module RSpec
 
         def initialize(klass)
           @message_chains = MessageChains.new
-          @stubs = Hash.new { |hash,key| hash[key] = [] }
+          @stubs = Hash.new { |hash, key| hash[key] = [] }
           @observed_methods = []
           @played_methods = {}
           @klass = klass
@@ -88,14 +88,17 @@ module RSpec
         # Used internally to verify that message expectations have been
         # fulfilled.
         def verify
-          if @expectation_set && !message_chains.all_expectations_fulfilled?
-            raise RSpec::Mocks::MockExpectationError, "Exactly one instance should have received the following message(s) but didn't: #{message_chains.unfulfilled_expectations.sort.join(', ')}"
-          end
+          return unless @expectation_set
+          return if message_chains.all_expectations_fulfilled?
+
+          raise RSpec::Mocks::MockExpectationError,
+                "Exactly one instance should have received the following " \
+                "message(s) but didn't: #{message_chains.unfulfilled_expectations.sort.join(', ')}"
         end
 
         # @private
         def stop_all_observation!
-          @observed_methods.each {|method_name| restore_method!(method_name)}
+          @observed_methods.each { |method_name| restore_method!(method_name) }
         end
 
         # @private
@@ -122,7 +125,7 @@ module RSpec
         end
 
         # @private
-        def notify_received_message(object, message, args, blk)
+        def notify_received_message(_object, message, args, _blk)
           has_expectation = false
 
           message_chains.each_unfulfilled_expectation_matching(message, *args) do |expectation|
@@ -130,10 +133,10 @@ module RSpec
             expectation.expectation_fulfilled!
           end
 
-          if has_expectation
-            restore_method!(message)
-            mark_invoked!(message)
-          end
+          return unless has_expectation
+
+          restore_method!(message)
+          mark_invoked!(message)
         end
 
       protected
@@ -167,7 +170,7 @@ module RSpec
         end
 
         def normalize_chain(*args)
-          args.shift.to_s.split('.').map {|s| s.to_sym}.reverse.each {|a| args.unshift a}
+          args.shift.to_s.split('.').map { |s| s.to_sym }.reverse.each { |a| args.unshift a }
           yield args.first, args
         end
 
@@ -186,13 +189,13 @@ module RSpec
         end
 
         def restore_original_method!(method_name)
-          if @klass.instance_method(method_name).owner == @klass
-            alias_method_name = build_alias_method_name(method_name)
-            @klass.class_exec do
-              remove_method method_name
-              alias_method  method_name, alias_method_name
-              remove_method alias_method_name
-            end
+          return unless @klass.instance_method(method_name).owner == @klass
+
+          alias_method_name = build_alias_method_name(method_name)
+          @klass.class_exec do
+            remove_method method_name
+            alias_method method_name, alias_method_name
+            remove_method alias_method_name
           end
         end
 
@@ -219,7 +222,7 @@ module RSpec
           if RSpec::Mocks.configuration.verify_partial_doubles?
             unless public_protected_or_private_method_defined?(method_name)
               raise MockExpectationError,
-                "#{@klass} does not implement ##{method_name}"
+                    "#{@klass} does not implement ##{method_name}"
             end
           end
 
@@ -229,14 +232,14 @@ module RSpec
           recorder = self
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             recorder.playback!(self, method_name)
-            self.__send__(method_name, *args, &blk)
+            __send__(method_name, *args, &blk)
           end
         end
 
         def mark_invoked!(method_name)
           backup_method!(method_name)
           recorder = self
-          @klass.__send__(:define_method, method_name) do |*args, &blk|
+          @klass.__send__(:define_method, method_name) do |*_args, &_blk|
             invoked_instance = recorder.instance_that_received(method_name)
             inspect = "#<#{self.class}:#{object_id} #{instance_variables.map { |name| "#{name}=#{instance_variable_get name}" }.join(', ')}>"
             raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{inspect} but has already been received by #{invoked_instance}"
@@ -250,15 +253,14 @@ module RSpec
             return unless problem_mod
 
             raise RSpec::Mocks::MockExpectationError,
-              "Using `any_instance` to stub a method (#{method_name}) that has been " +
-              "defined on a prepended module (#{problem_mod}) is not supported."
+                  "Using `any_instance` to stub a method (#{method_name}) that has been " \
+                  "defined on a prepended module (#{problem_mod}) is not supported."
           end
         else
-          def allow_no_prepended_module_definition_of(method_name)
+          def allow_no_prepended_module_definition_of(_method_name)
             # nothing to do; prepends aren't supported on this version of ruby
           end
         end
-
       end
     end
   end

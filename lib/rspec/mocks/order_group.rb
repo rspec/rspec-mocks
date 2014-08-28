@@ -25,10 +25,10 @@ module RSpec
       # @private
       def consume
         remaining_expectations.each_with_index do |expectation, index|
-          if expectation.ordered?
-            @index += index + 1
-            return expectation
-          end
+          next unless expectation.ordered?
+
+          @index += index + 1
+          return expectation
         end
         nil
       end
@@ -76,7 +76,6 @@ module RSpec
       def expectation_for(message)
         @expectations.find { |e| message == e }
       end
-
     end
   end
 end

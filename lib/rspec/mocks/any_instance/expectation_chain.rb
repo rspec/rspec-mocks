@@ -14,13 +14,12 @@ module RSpec
 
       private
 
-        def verify_invocation_order(rspec_method_name, *args, &block)
+        def verify_invocation_order(_rspec_method_name, *_args, &_block)
         end
       end
 
       # @private
       class PositiveExpectationChain < ExpectationChain
-
       private
 
         def create_message_expectation_on(instance)

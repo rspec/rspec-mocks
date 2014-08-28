@@ -10,7 +10,7 @@ module RSpec
       end
 
       # @private
-      def self.warn_unless_should_configured(method_name ,replacement = "the new `:expect` syntax or explicitly enable `:should`")
+      def self.warn_unless_should_configured(method_name , replacement="the new `:expect` syntax or explicitly enable `:should`")
         if @warn_about_should
           RSpec.deprecate(
             "Using `#{method_name}` from rspec-mocks' old `:should` syntax without explicitly enabling the syntax",
@@ -23,7 +23,7 @@ module RSpec
 
       # @api private
       # Enables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
-      def self.enable_should(syntax_host = default_should_syntax_host)
+      def self.enable_should(syntax_host=default_should_syntax_host)
         @warn_about_should = false if syntax_host == default_should_syntax_host
         return if should_enabled?(syntax_host)
 
@@ -41,7 +41,7 @@ module RSpec
           def stub(message_or_hash, opts={}, &block)
             ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__)
             if ::Hash === message_or_hash
-              message_or_hash.each {|message, value| stub(message).and_return value }
+              message_or_hash.each { |message, value| stub(message).and_return value }
             else
               ::RSpec::Mocks.allow_message(self, message_or_hash, opts, &block)
             end
@@ -86,7 +86,7 @@ module RSpec
 
       # @api private
       # Disables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
-      def self.disable_should(syntax_host = default_should_syntax_host)
+      def self.disable_should(syntax_host=default_should_syntax_host)
         return unless should_enabled?(syntax_host)
 
         syntax_host.class_exec do
@@ -107,7 +107,7 @@ module RSpec
 
       # @api private
       # Enables the expect syntax (`expect(dbl).to receive`, `allow(dbl).to receive`, etc).
-      def self.enable_expect(syntax_host = ::RSpec::Mocks::ExampleMethods)
+      def self.enable_expect(syntax_host=::RSpec::Mocks::ExampleMethods)
         return if expect_enabled?(syntax_host)
 
         syntax_host.class_exec do
@@ -147,7 +147,7 @@ module RSpec
 
       # @api private
       # Disables the expect syntax (`expect(dbl).to receive`, `allow(dbl).to receive`, etc).
-      def self.disable_expect(syntax_host = ::RSpec::Mocks::ExampleMethods)
+      def self.disable_expect(syntax_host=::RSpec::Mocks::ExampleMethods)
         return unless expect_enabled?(syntax_host)
 
         syntax_host.class_exec do
@@ -166,13 +166,13 @@ module RSpec
 
       # @api private
       # Indicates whether or not the should syntax is enabled.
-      def self.should_enabled?(syntax_host = default_should_syntax_host)
+      def self.should_enabled?(syntax_host=default_should_syntax_host)
         syntax_host.method_defined?(:should_receive)
       end
 
       # @api private
       # Indicates whether or not the expect syntax is enabled.
-      def self.expect_enabled?(syntax_host = ::RSpec::Mocks::ExampleMethods)
+      def self.expect_enabled?(syntax_host=::RSpec::Mocks::ExampleMethods)
         syntax_host.method_defined?(:allow)
       end
 

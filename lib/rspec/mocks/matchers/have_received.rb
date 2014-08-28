@@ -3,9 +3,9 @@ module RSpec
     module Matchers
       # @private
       class HaveReceived
-        COUNT_CONSTRAINTS = %w(exactly at_least at_most times once twice thrice)
-        ARGS_CONSTRAINTS = %w(with)
-        CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS + %w(ordered)
+        COUNT_CONSTRAINTS = %w[exactly at_least at_most times once twice thrice]
+        ARGS_CONSTRAINTS = %w[with]
+        CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS + %w[ordered]
 
         def initialize(method_name, &block)
           @method_name = method_name
@@ -71,14 +71,13 @@ module RSpec
         end
 
         def ensure_count_unconstrained
-          if count_constraint
-            raise RSpec::Mocks::MockExpectationError,
-              "can't use #{count_constraint} when negative"
-          end
+          return unless count_constraint
+          raise RSpec::Mocks::MockExpectationError,
+                "can't use #{count_constraint} when negative"
         end
 
         def count_constraint
-          @constraints.map(&:first).detect do |constraint|
+          @constraints.map(&:first).find do |constraint|
             COUNT_CONSTRAINTS.include?(constraint)
           end
         end

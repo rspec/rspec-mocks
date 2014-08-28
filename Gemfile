@@ -13,6 +13,7 @@ branch = File.read(File.expand_path("../maintenance-branch", __FILE__)).chomp
 end
 
 gem 'yard', '~> 0.8.7', :require => false
+gem 'rubocop', "~> 0.23.0", :platform => [:ruby_19, :ruby_20, :ruby_21]
 
 ### deps for rdoc.info
 group :documentation do

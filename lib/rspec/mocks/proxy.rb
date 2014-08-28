@@ -9,7 +9,7 @@ module RSpec
       end
 
       # @private
-      def ensure_implemented(*args)
+      def ensure_implemented(*_args)
         # noop for basic proxies, see VerifyingProxy for behaviour.
       end
 
@@ -42,7 +42,7 @@ module RSpec
       end
 
       # @private
-      def original_method_handle_for(message)
+      def original_method_handle_for(_message)
         nil
       end
 
@@ -89,20 +89,19 @@ module RSpec
         end
 
         @messages_received.each do |(actual_method_name, args, _)|
-          if expectation.matches?(actual_method_name, *args)
-            expectation.invoke(nil)
-            block.call(*args) if block
-          end
-        end
+          next unless expectation.matches?(actual_method_name, *args)
 
+          expectation.invoke(nil)
+          block.call(*args) if block
+        end
       end
 
       # @private
       def check_for_unexpected_arguments(expectation)
         @messages_received.each do |(method_name, args, _)|
-          if expectation.matches_name_but_not_args(method_name, *args)
-            raise_unexpected_message_args_error(expectation, *args)
-          end
+          next unless expectation.matches_name_but_not_args(method_name, *args)
+
+          raise_unexpected_message_args_error(expectation, *args)
         end
       end
 
@@ -129,7 +128,7 @@ module RSpec
 
       # @private
       def verify
-        @method_doubles.each_value {|d| d.verify}
+        @method_doubles.each_value { |d| d.verify }
       end
 
       # @private
@@ -139,12 +138,12 @@ module RSpec
 
       # @private
       def received_message?(method_name, *args, &block)
-        @messages_received.any? {|array| array == [method_name, args, block]}
+        @messages_received.any? { |array| array == [method_name, args, block] }
       end
 
       # @private
       def has_negative_expectation?(message)
-        method_double_for(message).expectations.detect {|expectation| expectation.negative_expectation_for?(message)}
+        method_double_for(message).expectations.find { |expectation| expectation.negative_expectation_for?(message) }
       end
 
       # @private
@@ -162,16 +161,19 @@ module RSpec
 
         if (stub && expectation && expectation.called_max_times?) || (stub && !expectation)
           expectation.increase_actual_received_count! if expectation && expectation.actual_received_count_matters?
-          if expectation = find_almost_matching_expectation(message, *args)
+          if (expectation = find_almost_matching_expectation(message, *args))
             expectation.advise(*args) unless expectation.expected_messages_received?
           end
           stub.invoke(nil, *args, &block)
         elsif expectation
           expectation.invoke(stub, *args, &block)
-        elsif expectation = find_almost_matching_expectation(message, *args)
+        elsif (expectation = find_almost_matching_expectation(message, *args))
           expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
-          raise_unexpected_message_args_error(expectation, *args) unless (has_negative_expectation?(message) or null_object?)
-        elsif stub = find_almost_matching_stub(message, *args)
+
+          if null_object? || !has_negative_expectation?(message)
+            raise_unexpected_message_args_error(expectation, *args)
+          end
+        elsif (stub = find_almost_matching_stub(message, *args))
           stub.advise(*args)
           raise_missing_default_stub_error(stub, *args)
         elsif Class === @object
@@ -197,7 +199,7 @@ module RSpec
       end
 
       # @private
-      def visibility_for(method_name)
+      def visibility_for(_method_name)
         # This is the default (for test doubles). Subclasses override this.
         :public
       end
@@ -244,11 +246,11 @@ module RSpec
       end
 
       def find_matching_method_stub(method_name, *args)
-        method_double_for(method_name).stubs.find {|stub| stub.matches?(method_name, *args)}
+        method_double_for(method_name).stubs.find { |stub| stub.matches?(method_name, *args) }
       end
 
       def find_almost_matching_stub(method_name, *args)
-        method_double_for(method_name).stubs.find {|stub| stub.matches_name_but_not_args(method_name, *args)}
+        method_double_for(method_name).stubs.find { |stub| stub.matches_name_but_not_args(method_name, *args) }
       end
     end
 
@@ -295,7 +297,7 @@ module RSpec
       end
 
       def reset
-        @method_doubles.each_value {|d| d.reset}
+        @method_doubles.each_value { |d| d.reset }
         super
       end
 
@@ -415,7 +417,7 @@ module RSpec
 
     private
 
-      def warn method_name
+      def warn(method_name)
         source = CallerFilter.first_non_rspec_line
         Kernel.warn("An expectation of :#{method_name} was set on nil. Called from #{source}. Use allow_message_expectations_on_nil to disable warnings.")
       end

@@ -27,7 +27,7 @@ module RSpec
       # cases when we don't know if a method is implemented and
       # both `implemented?` and `unimplemented?` will return false.
       def unimplemented?
-        @object_reference.when_loaded do |m|
+        @object_reference.when_loaded do |_m|
           return !implemented?
         end
 
@@ -44,9 +44,8 @@ module RSpec
       end
 
       def with_signature
-        if original = original_method
-          yield Support::MethodSignature.new(original)
-        end
+        return unless (original = original_method)
+        yield Support::MethodSignature.new(original)
       end
 
       def visibility
@@ -59,7 +58,7 @@ module RSpec
         :public
       end
 
-      private
+    private
 
       def original_method
         @object_reference.when_loaded do |m|
@@ -98,7 +97,8 @@ module RSpec
 
     # @private
     class InstanceMethodReference < MethodReference
-      private
+    private
+
       def method_implemented?(mod)
         MethodReference.method_defined_at_any_visibility?(mod, @method_name)
       end
@@ -133,7 +133,8 @@ module RSpec
 
     # @private
     class ObjectMethodReference < MethodReference
-      private
+    private
+
       def method_implemented?(object)
         object.respond_to?(@method_name, true)
       end

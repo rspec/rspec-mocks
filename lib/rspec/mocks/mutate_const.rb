@@ -93,12 +93,12 @@ module RSpec
       #  examples. This is an alternate public API that is provided
       #  so you can stub constants in other contexts (e.g. helper
       #  classes).
-      def self.stub(constant_name, value, options = {})
+      def self.stub(constant_name, value, options={})
         mutator = if recursive_const_defined?(constant_name, &raise_on_invalid_const)
-          DefinedConstantReplacer
-        else
-          UndefinedConstantSetter
-        end
+                    DefinedConstantReplacer
+                  else
+                    UndefinedConstantSetter
+                  end
 
         mutate(mutator.new(constant_name, value, options[:transfer_nested_constants]))
         value
@@ -114,7 +114,7 @@ module RSpec
       #  so you can hide constants in other contexts (e.g. helper
       #  classes).
       def self.hide(constant_name)
-        mutate(ConstantHider.new(constant_name, nil, { }))
+        mutate(ConstantHider.new(constant_name, nil, {}))
         nil
       end
 
@@ -153,7 +153,7 @@ module RSpec
       # @private
       class ConstantHider < BaseMutator
         def mutate
-          return unless @defined = recursive_const_defined?(full_constant_name)
+          return unless (@defined = recursive_const_defined?(full_constant_name))
           @context = recursive_const_get(@context_parts.join('::'))
           @original_value = get_const_defined_on(@context, @const_name)
 
@@ -224,12 +224,12 @@ module RSpec
           return [] unless should_transfer_nested_constants?
 
           { @original_value => "the original value", @mutated_value => "the stubbed value" }.each do |value, description|
-            unless value.respond_to?(:constants)
-              raise ArgumentError,
-                "Cannot transfer nested constants for #{@full_constant_name} " +
-                "since #{description} is not a class or module and only classes " +
-                "and modules support nested constants."
-            end
+            next if value.respond_to?(:constants)
+
+            raise ArgumentError,
+                  "Cannot transfer nested constants for #{@full_constant_name} " \
+                  "since #{description} is not a class or module and only classes " \
+                  "and modules support nested constants."
           end
 
           if Array === @transfer_nested_constants
@@ -239,9 +239,9 @@ module RSpec
             if undefined_constants.any?
               available_constants = constants_defined_on(@original_value) - @transfer_nested_constants
               raise ArgumentError,
-                "Cannot transfer nested constant(s) #{undefined_constants.join(' and ')} " +
-                "for #{@full_constant_name} since they are not defined. Did you mean " +
-                "#{available_constants.join(' or ')}?"
+                    "Cannot transfer nested constant(s) #{undefined_constants.join(' and ')} " \
+                    "for #{@full_constant_name} since they are not defined. Did you mean " \
+                    "#{available_constants.join(' or ')}?"
             end
 
             @transfer_nested_constants
@@ -289,10 +289,10 @@ module RSpec
 
         def name_for(parent, name)
           root = if parent == Object
-            ''
-          else
-            parent.name
-          end
+                   ''
+                 else
+                   parent.name
+                 end
           root + '::' + name
         end
       end
@@ -315,7 +315,7 @@ module RSpec
       # @api private
       def self.raise_on_invalid_const
         lambda do |const_name, failed_name|
-          raise "Cannot stub constant #{failed_name} on #{const_name} " +
+          raise "Cannot stub constant #{failed_name} on #{const_name} " \
                 "since #{const_name} is not a module."
         end
       end

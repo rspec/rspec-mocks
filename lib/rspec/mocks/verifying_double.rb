@@ -3,7 +3,6 @@ require 'stringio'
 
 module RSpec
   module Mocks
-
     # @private
     module VerifyingDouble
       def respond_to?(message, include_private=false)
@@ -11,11 +10,11 @@ module RSpec
 
         method_ref = __mock_proxy.method_reference[message]
 
-        return case method_ref.visibility
-          when :public    then true
-          when :private   then include_private
-          when :protected then include_private || RUBY_VERSION.to_f < 2.0
-          else !method_ref.unimplemented?
+        case method_ref.visibility
+        when :public    then true
+        when :private   then include_private
+        when :protected then include_private || RUBY_VERSION.to_f < 2.0
+        else !method_ref.unimplemented?
         end
       end
 
@@ -74,8 +73,8 @@ module RSpec
 
       def __build_mock_proxy(order_group)
         VerifyingProxy.new(self, order_group, @name,
-          @doubled_module,
-          InstanceMethodReference
+                           @doubled_module,
+                           InstanceMethodReference
         )
       end
     end
@@ -88,7 +87,7 @@ module RSpec
       include TestDouble
       include VerifyingDouble
 
-      def as_stubbed_const(options = {})
+      def as_stubbed_const(options={})
         ConstantMutator.stub(@doubled_module.const_to_replace, self, options)
         self
       end
@@ -102,8 +101,8 @@ module RSpec
 
       def __build_mock_proxy(order_group)
         VerifyingProxy.new(self, order_group, @name,
-          @doubled_module,
-          ObjectMethodReference
+                           @doubled_module,
+                           ObjectMethodReference
         )
       end
     end
@@ -124,6 +123,5 @@ module RSpec
     class ClassVerifyingDouble < Module
       include ObjectVerifyingDoubleMethods
     end
-
   end
 end
