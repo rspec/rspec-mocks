@@ -53,7 +53,7 @@ module RSpec
 
         # @private
         def stash
-          return if !method_defined_directly_on_klass?
+          return unless method_defined_directly_on_klass?
           @original_method ||= ::RSpec::Support.method_handle_for(@object, @method)
         end
 
@@ -80,9 +80,9 @@ module RSpec
           yield
         rescue TypeError
           RSpec.warn_with(
-            "RSpec failed to properly restore a partial double (#{@object.inspect}) " +
-            "to its original state due to a known bug in MRI 2.0.0-p195 & p247 " +
-            "(https://bugs.ruby-lang.org/issues/8686). This object may remain " +
+            "RSpec failed to properly restore a partial double (#{@object.inspect}) " \
+            "to its original state due to a known bug in MRI 2.0.0-p195 & p247 " \
+            "(https://bugs.ruby-lang.org/issues/8686). This object may remain " \
             "screwed up for the rest of this process. Please upgrade to 2.0.0-p353 or above.",
             :call_site => nil, :use_spec_location_as_call_site => true
           )
@@ -102,7 +102,7 @@ module RSpec
       end
 
       # @private
-      def method_defined_on_klass?(klass = @klass)
+      def method_defined_on_klass?(klass=@klass)
         MethodReference.method_defined_at_any_visibility?(klass, @method)
       end
 

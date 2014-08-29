@@ -3,7 +3,6 @@ RSpec::Support.require_rspec_mocks 'method_reference'
 
 module RSpec
   module Mocks
-
     # @private
     module VerifyingProxyMethods
       def add_stub(method_name, opts={}, &implementation)
@@ -22,21 +21,20 @@ module RSpec
       end
 
       def ensure_implemented(method_name)
-        if method_reference[method_name].unimplemented?
-          @error_generator.raise_unimplemented_error(
-            @doubled_module,
-            method_name
-          )
-        end
+        return unless method_reference[method_name].unimplemented?
+
+        @error_generator.raise_unimplemented_error(
+          @doubled_module,
+          method_name
+        )
       end
 
-      def ensure_publicly_implemented(method_name, object)
+      def ensure_publicly_implemented(method_name, _object)
         ensure_implemented(method_name)
         visibility = method_reference[method_name].visibility
 
-        unless visibility == :public
-          @error_generator.raise_non_public_error(method_name, visibility)
-        end
+        return if visibility == :public
+        @error_generator.raise_non_public_error(method_name, visibility)
       end
     end
 
@@ -133,9 +131,7 @@ module RSpec
       def validate_arguments!(actual_args)
         @method_reference.with_signature do |signature|
           verifier = Support::StrictSignatureVerifier.new(signature, actual_args)
-          unless verifier.valid?
-            raise ArgumentError, verifier.error_message
-          end
+          raise ArgumentError, verifier.error_message unless verifier.valid?
         end
       end
     end

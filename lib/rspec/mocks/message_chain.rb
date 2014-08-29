@@ -12,10 +12,10 @@ module RSpec
       # @api private
       def setup_chain
         if chain.length > 1
-          if matching_stub = find_matching_stub
+          if (matching_stub = find_matching_stub)
             chain.shift
             chain_on(matching_stub.invoke(nil), *chain, &@block)
-          elsif matching_expectation = find_matching_expectation
+          elsif (matching_expectation = find_matching_expectation)
             chain.shift
             chain_on(matching_expectation.invoke_without_incrementing_received_count(nil), *chain, &@block)
           else
@@ -30,8 +30,8 @@ module RSpec
 
     private
 
-      def expectation(object, message, &return_block)
-        raise NotImplementedError.new
+      def expectation(_object, _message, &_return_block)
+        raise NotImplementedError
       end
 
       def chain_on(object, *chain, &block)
@@ -42,7 +42,7 @@ module RSpec
       def format_chain(*chain, &blk)
         if Hash === chain.last
           hash = chain.pop
-          hash.each do |k,v|
+          hash.each do |k, v|
             chain << k
             blk = Proc.new { v }
           end

@@ -84,7 +84,7 @@ module RSpec
           super
         end
 
-        private
+      private
 
         def negated?
           messages.any? { |(message, *_), _| message == :never }

@@ -1,21 +1,20 @@
 module RSpec
   module Mocks
-
     # @private
     class ObjectReference
       # Returns an appropriate Object or Module reference based
       # on the given argument.
-      def self.for(object_module_or_name, allow_direct_object_refs = false)
+      def self.for(object_module_or_name, allow_direct_object_refs=false)
         case object_module_or_name
-          when Module then DirectModuleReference.new(object_module_or_name)
-          when String then NamedObjectReference.new(object_module_or_name)
+        when Module then DirectModuleReference.new(object_module_or_name)
+        when String then NamedObjectReference.new(object_module_or_name)
+        else
+          if allow_direct_object_refs
+            DirectObjectReference.new(object_module_or_name)
           else
-            if allow_direct_object_refs
-              DirectObjectReference.new(object_module_or_name)
-            else
-              raise ArgumentError,
-                "Module or String expected, got #{object_module_or_name.inspect}"
-            end
+            raise ArgumentError,
+                  "Module or String expected, got #{object_module_or_name.inspect}"
+          end
         end
       end
     end
@@ -35,7 +34,7 @@ module RSpec
 
       def const_to_replace
         raise ArgumentError,
-          "Can not perform constant replacement with an object."
+              "Can not perform constant replacement with an object."
       end
 
       def defined?
@@ -78,11 +77,11 @@ module RSpec
       end
       alias description const_to_replace
 
-      def when_loaded(&block)
+      def when_loaded(&_block)
         yield object if object
       end
 
-   private
+    private
 
       def object
         @object ||= Constant.original(@const_name).original_value

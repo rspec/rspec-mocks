@@ -5,7 +5,6 @@ require 'rspec/support/matcher_definition'
 
 module RSpec
   module Mocks
-
     # ArgumentMatchers are placeholders that you can include in message
     # expectations to match arguments against a broader check than simple
     # equality.
@@ -136,7 +135,7 @@ module RSpec
 
       # @private
       class AnyArgMatcher
-        def ===(other)
+        def ===(_other)
           true
         end
 
@@ -171,14 +170,14 @@ module RSpec
 
         def ===(predicate, actual)
           @expected.__send__(predicate) do |k, v|
-            actual.has_key?(k) && Support::FuzzyMatcher.values_match?(v, actual[k])
+            actual.key?(k) && Support::FuzzyMatcher.values_match?(v, actual[k])
           end
         rescue NoMethodError
           false
         end
 
         def description(name)
-          "#{name}(#{@expected.inspect.sub(/^\{/,"").sub(/\}$/,"")})"
+          "#{name}(#{@expected.inspect.sub(/^\{/, "").sub(/\}$/, "")})"
         end
       end
 
@@ -226,7 +225,7 @@ module RSpec
         end
 
         def ===(value)
-          @methods_to_respond_to.all? {|message| value.respond_to?(message)}
+          @methods_to_respond_to.all? { |message| value.respond_to?(message) }
         end
 
         def description

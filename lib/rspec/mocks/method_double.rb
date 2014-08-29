@@ -59,7 +59,7 @@ module RSpec
           define_method(method_name) do |*args, &block|
             method_double.proxy_method_invoked(self, *args, &block)
           end
-          self.__send__ visibility, method_name
+          __send__(visibility, method_name)
         end
 
         @method_is_proxied = true
@@ -69,7 +69,7 @@ module RSpec
       # method to perform additional operations.
       #
       # @private
-      def proxy_method_invoked(obj, *args, &block)
+      def proxy_method_invoked(_obj, *args, &block)
         @proxy.message_received method_name, *args, &block
       end
 
@@ -80,9 +80,7 @@ module RSpec
 
         definition_target.__send__(:remove_method, @method_name)
 
-        if @method_stasher.method_is_stashed?
-          @method_stasher.restore
-        end
+        @method_stasher.restore if @method_stasher.method_is_stashed?
         restore_original_visibility
 
         @method_is_proxied = false
@@ -91,7 +89,9 @@ module RSpec
       # @private
       def show_frozen_warning
         RSpec.warn_with(
-          "WARNING: rspec-mocks was unable to restore the original `#{@method_name}` method on #{@object.inspect} because it has been frozen.  If you reuse this object, `#{@method_name}` will continue to respond with its stub implementation.",
+          "WARNING: rspec-mocks was unable to restore the original `#{@method_name}` " \
+          "method on #{@object.inspect} because it has been frozen.  If you reuse this " \
+          "object, `#{@method_name}` will continue to respond with its stub implementation.",
           :call_site                      => nil,
           :use_spec_location_as_call_site => true
         )
@@ -107,7 +107,7 @@ module RSpec
 
       # @private
       def verify
-        expectations.each {|e| e.verify_messages_received}
+        expectations.each { |e| e.verify_messages_received }
       end
 
       # @private
@@ -134,7 +134,7 @@ module RSpec
       def add_expectation(error_generator, expectation_ordering, expected_from, opts, &implementation)
         configure_method
         expectation = message_expectation_class.new(error_generator, expectation_ordering,
-                                             expected_from, self, :expectation, opts, &implementation)
+                                                    expected_from, self, :expectation, opts, &implementation)
         expectations << expectation
         expectation
       end
@@ -149,7 +149,7 @@ module RSpec
       def add_stub(error_generator, expectation_ordering, expected_from, opts={}, &implementation)
         configure_method
         stub = message_expectation_class.new(error_generator, expectation_ordering, expected_from,
-                                      self, :stub, opts, &implementation)
+                                             self, :stub, opts, &implementation)
         stubs.unshift stub
         stub
       end
@@ -172,7 +172,7 @@ module RSpec
       end
 
       # @private
-      def setup_simple_method_double(method_name, response, collection, error_generator = nil, backtrace_line = nil)
+      def setup_simple_method_double(method_name, response, collection, error_generator=nil, backtrace_line=nil)
         define_proxy_method
 
         me = SimpleMessageExpectation.new(method_name, response, error_generator, backtrace_line)
@@ -202,8 +202,6 @@ module RSpec
         raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
       end
 
-    private
-
       # In Ruby 2.0.0 and above prepend will alter the method lookup chain.
       # We use an object's singleton class to define method doubles upon,
       # however if the object has had it's singleton class (as opposed to
@@ -216,6 +214,9 @@ module RSpec
       # of our own.
       #
       if Support::RubyFeatures.module_prepends_supported?
+
+        private
+
         # We subclass `Module` in order to be able to easily detect our prepended module.
         RSpecPrependedModule = Class.new(Module)
 
@@ -246,6 +247,8 @@ module RSpec
         end
 
       else
+
+        private
 
         def definition_target
           object_singleton_class

@@ -197,7 +197,7 @@ module RSpec
       #   stub_const("CardDeck", Class.new, :transfer_nested_constants => [:SUITS])
       #   CardDeck::SUITS # => our suits array
       #   CardDeck::NUM_CARDS # => uninitialized constant error
-      def stub_const(constant_name, value, options = {})
+      def stub_const(constant_name, value, options={})
         ConstantMutator.stub(constant_name, value, options)
       end
 
@@ -356,9 +356,9 @@ module RSpec
           !ref.defined?
 
           raise VerifyingDoubleNotDefinedError,
-            "#{ref.description} is not a defined constant. " +
-            "Perhaps you misspelt it? " +
-            "Disable check with verify_doubled_constant_names configuration option."
+                "#{ref.description} is not a defined constant. " \
+                "Perhaps you misspelt it? " \
+                "Disable check with verify_doubled_constant_names configuration option."
         end
 
         declare_double(type, ref, *args)

@@ -5,23 +5,23 @@ module RSpec
     # the scope of an example. Called "root" because it serves
     # as the root of the space stack.
     class RootSpace
-      def proxy_for(*args)
+      def proxy_for(*_args)
         raise_lifecycle_message
       end
 
-      def any_instance_recorder_for(*args)
+      def any_instance_recorder_for(*_args)
         raise_lifecycle_message
       end
 
-      def any_instance_proxy_for(*args)
+      def any_instance_proxy_for(*_args)
         raise_lifecycle_message
       end
 
-      def register_constant_mutator(mutator)
+      def register_constant_mutator(_mutator)
         raise_lifecycle_message
       end
 
-      def any_instance_recorders_from_ancestry_of(object)
+      def any_instance_recorders_from_ancestry_of(_object)
         raise_lifecycle_message
       end
 
@@ -31,7 +31,7 @@ module RSpec
       def verify_all
       end
 
-      def registered?(object)
+      def registered?(_object)
         false
       end
 
@@ -43,7 +43,7 @@ module RSpec
 
       def raise_lifecycle_message
         raise OutsideOfExampleError,
-          "The use of doubles or partial doubles from rspec-mocks outside of the per-test lifecycle is not supported."
+              "The use of doubles or partial doubles from rspec-mocks outside of the per-test lifecycle is not supported."
       end
     end
 
@@ -84,7 +84,7 @@ module RSpec
         @constant_mutators.find { |m| m.full_constant_name == name }
       end
 
-      def any_instance_recorder_for(klass, only_return_existing = false)
+      def any_instance_recorder_for(klass, only_return_existing=false)
         any_instance_mutex.synchronize do
           id = klass.__id__
           any_instance_recorders.fetch(id) do
@@ -112,7 +112,7 @@ module RSpec
       alias ensure_registered proxy_for
 
       def registered?(object)
-        proxies.has_key?(id_for object)
+        proxies.key?(id_for object)
       end
 
       def any_instance_recorders_from_ancestry_of(object)
@@ -147,21 +147,21 @@ module RSpec
 
       def proxy_not_found_for(id, object)
         proxies[id] = case object
-          when NilClass   then ProxyForNil.new(@expectation_ordering)
-          when TestDouble then object.__build_mock_proxy_unless_expired(@expectation_ordering)
-          when Class
-            if RSpec::Mocks.configuration.verify_partial_doubles?
-              VerifyingPartialClassDoubleProxy.new(self, object, @expectation_ordering)
-            else
-              PartialClassDoubleProxy.new(self, object, @expectation_ordering)
-            end
-          else
-            if RSpec::Mocks.configuration.verify_partial_doubles?
-              VerifyingPartialDoubleProxy.new(object, @expectation_ordering)
-            else
-              PartialDoubleProxy.new(object, @expectation_ordering)
-            end
-        end
+                      when NilClass   then ProxyForNil.new(@expectation_ordering)
+                      when TestDouble then object.__build_mock_proxy_unless_expired(@expectation_ordering)
+                      when Class
+                        if RSpec::Mocks.configuration.verify_partial_doubles?
+                          VerifyingPartialClassDoubleProxy.new(self, object, @expectation_ordering)
+                        else
+                          PartialClassDoubleProxy.new(self, object, @expectation_ordering)
+                        end
+                      else
+                        if RSpec::Mocks.configuration.verify_partial_doubles?
+                          VerifyingPartialDoubleProxy.new(object, @expectation_ordering)
+                        else
+                          PartialDoubleProxy.new(object, @expectation_ordering)
+                        end
+                      end
       end
 
       def any_instance_recorder_not_found_for(id, klass)

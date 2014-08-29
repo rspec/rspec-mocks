@@ -39,12 +39,12 @@ module RSpec
 
       # @private
       def inspect
-        "#<#{self.class}:#{sprintf '0x%x', self.object_id} @name=#{@name.inspect}>"
+        "#<#{self.class}:#{'0x%x' % object_id} @name=#{@name.inspect}>"
       end
 
       # @private
       def to_s
-        inspect.gsub('<','[').gsub('>',']')
+        inspect.gsub('<', '[').gsub('>', ']')
       end
 
       # @private
@@ -54,7 +54,7 @@ module RSpec
 
       # @private
       def __build_mock_proxy_unless_expired(order_group)
-        __raise_expired_error or __build_mock_proxy(order_group)
+        __raise_expired_error || __build_mock_proxy(order_group)
       end
 
       # @private
