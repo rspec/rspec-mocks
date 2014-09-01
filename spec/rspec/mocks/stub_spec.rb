@@ -155,6 +155,16 @@ module RSpec
           }.not_to change { mod.singleton_class.ancestors }
         end
 
+        it 'does not unnecessarily prepend a module when the module was included' do
+          object = Object.new
+          def object.value; :original; end
+          object.singleton_class.send(:include, ToBePrepended)
+
+          expect {
+            allow(object).to receive(:value) { :stubbed }
+          }.not_to change { object.singleton_class.ancestors }
+        end
+
         it 'reuses our prepend module so as not to keep mutating the ancestors' do
           object = Object.new
           def object.value; :original; end

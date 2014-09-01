@@ -206,8 +206,12 @@ module RSpec
         def prepended_modules_of_singleton_class
           @prepended_modules_of_singleton_class ||= begin
             singleton_class = @object.singleton_class
-            singleton_class.ancestors.take_while do |mod|
-              !(Class === mod || @object.equal?(mod))
+            if singleton_class.ancestors.include?(singleton_class)
+              singleton_class.ancestors.take_while do |mod|
+                !(Class === mod || @object.equal?(mod))
+              end
+            else
+              []
             end
           end
         end
