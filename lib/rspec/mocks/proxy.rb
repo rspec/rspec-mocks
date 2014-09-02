@@ -206,13 +206,13 @@ module RSpec
         def prepended_modules_of_singleton_class
           @prepended_modules_of_singleton_class ||= begin
             singleton_class = @object.singleton_class
-            if singleton_class.ancestors.include?(singleton_class)
-              singleton_class.ancestors.take_while do |mod|
-                !(Class === mod || @object.equal?(mod))
-              end
-            else
-              []
-            end
+            ancestors       = singleton_class.ancestors
+
+            # `|| 0` is necessary for Ruby 2.0, where the singleton class
+            # is only in the ancestor list when there are prepended modules.
+            singleton_index = ancestors.index(singleton_class) || 0
+
+            ancestors[0, singleton_index]
           end
         end
       end
