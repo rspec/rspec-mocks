@@ -226,9 +226,7 @@ module RSpec
       end
 
       def arg_has_valid_description(arg)
-        return false unless arg.respond_to?(:description)
-
-        !arg.description.nil? && !arg.description.empty?
+        RSpec::Support.is_a_matcher?(arg) && arg.respond_to?(:description)
       end
 
       def format_received_args(*args)
