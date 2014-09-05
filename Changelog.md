@@ -1,5 +1,5 @@
-### 3.1.0 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.3...v3.0.4)
+### 3.1.0 / 2014-09-04
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.4...v3.1.0)
 
 Enhancements:
 
