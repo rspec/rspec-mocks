@@ -131,6 +131,26 @@ module RSpec
         def description
           "any args"
         end
+
+        def expectation_consumer(expected)
+          AnyArgsExpectationConsumer.new(expected)
+        end
+      end
+
+      class AnyArgsExpectationConsumer
+        def initialize(_)
+        end
+
+        def can_consume_more_args?
+          true
+        end
+
+        def consume(arg)
+        end
+
+        def accepting?
+          true
+        end
       end
 
       # @private
