@@ -560,7 +560,8 @@ module RSpec
 
       def warn_about_stub_override
         RSpec.warning(
-          "You're overriding a previous stub implementation of `#{@message}`. " \
+          "You're overriding a previous stub block implementation of `#{@message}` with `and_call_original`. " \
+          "The block in this case will never be called. " \
           "Called from #{CallerFilter.first_non_rspec_line}."
         )
       end
