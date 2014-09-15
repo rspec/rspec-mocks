@@ -523,6 +523,16 @@ module RSpec
           end
         end
 
+        context "when the class has an included module" do
+          it 'allows mocking a method that is defined on the module' do
+            mod = Module.new { def foo; end }
+            klass.class_eval { include mod }
+            expect_any_instance_of(mod).to receive(:foo).and_return(45)
+
+            expect(klass.new.foo).to eq(45)
+          end
+        end
+
         context "when an instance has been directly stubbed" do
           it "fails when a second instance to receive the message" do
             expect_any_instance_of(klass).to receive(:foo)

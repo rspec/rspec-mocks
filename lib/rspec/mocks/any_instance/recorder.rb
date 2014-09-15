@@ -248,7 +248,7 @@ module RSpec
 
         if Support::RubyFeatures.module_prepends_supported?
           def allow_no_prepended_module_definition_of(method_name)
-            prepended_modules = @klass.ancestors.take_while { |mod| !(Class === mod) }
+            prepended_modules = RSpec::Mocks::Proxy.prepended_modules_of(@klass)
             problem_mod = prepended_modules.find { |mod| mod.method_defined?(method_name) }
             return unless problem_mod
 
