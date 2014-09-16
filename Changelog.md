@@ -5,6 +5,8 @@ Enhancements:
 
 * Treat `any_args` as an arg splat, allowing it to match an arbitrary
   number of args at any point in an arg list. (Myron Marston, #786)
+* Print diffs when arguments in mock expectations are mismatched.
+  (Sam Phippen, #751)
 
 Bug Fixes:
 
@@ -14,6 +16,9 @@ Bug Fixes:
 * Provide a clear error when users wrongly use `any_args` multiple times in the
   same argument list (e.g. `expect().to receive().with(any_args, 1, any_args)`.
   (Myron Marston, #786)
+* Prevent the error generator from using user object #description methods.
+  See [#685](https://github.com/rspec/rspec-mocks/issues/685).
+  (Sam Phippen, #751)
 
 ### 3.1.3 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)
