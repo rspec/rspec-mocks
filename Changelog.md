@@ -1,10 +1,13 @@
-### 3.1.1 / Developmemt
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...master)
+### 3.2.0 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.1...master)
 
-Bugfixes:
+### 3.1.1 / 2014-09-18
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...v3.1.1)
+
+Bug Fixes:
 
 * Prevent included modules being detected as prepended modules on Ruby 2.0
-  when using `any_instance_of(...)` (Tony Novak, #781)
+  when using `any_instance_of(...)`. (Tony Novak, #781)
 
 ### 3.1.0 / 2014-09-04
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.4...v3.1.0)
@@ -25,7 +28,7 @@ Enhancements:
 * Add `and_wrap_original` modifier for partial doubles to mutate the
   response from a method. (Jon Rowe, #762)
 
-Bugfixes:
+Bug Fixes:
 
 * Remove `any_number_of_times` from `any_instance` recorders that were
   erroneously causing mention of the method in documentation. (Jon Rowe, #760)
