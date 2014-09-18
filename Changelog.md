@@ -1,10 +1,10 @@
-### 3.1.1 / Developmemt
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...master)
+### 3.1.1 / 2014-09-18
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...v3.1.1)
 
-Bugfixes:
+Bug Fixes:
 
 * Prevent included modules being detected as prepended modules on Ruby 2.0
-  when using `any_instance_of(...)` (Tony Novak, #781)
+  when using `any_instance_of(...)`. (Tony Novak, #781)
 
 ### 3.1.0 / 2014-09-04
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.0.4...v3.1.0)
