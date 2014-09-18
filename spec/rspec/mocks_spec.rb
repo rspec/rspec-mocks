@@ -6,7 +6,14 @@ RSpec.describe RSpec::Mocks do
     # Must be required before other files due to how our autoloads are setup.
     # (Users won't hit this problem because they won't require all the files
     # individually in whatever order the file system returns)
-    'require "rspec/mocks/any_instance"'
+    'require "rspec/mocks/any_instance"' do
+
+    if RUBY_VERSION == '1.9.2'
+      before(:example, :description => /spec files/) do
+        pending "Loading psych and syck on 1.9.2 (as our test suite does) triggers warnings"
+      end
+    end
+  end
 
   describe ".verify" do
     it "delegates to the space" do
