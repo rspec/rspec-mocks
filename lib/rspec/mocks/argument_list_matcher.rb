@@ -44,12 +44,6 @@ module RSpec
       # @see #args_match?
       def initialize(*expected_args)
         @expected_args = expected_args
-
-        @matchers = case expected_args.first
-                    when ArgumentMatchers::AnyArgsMatcher then Array
-                    when ArgumentMatchers::NoArgsMatcher  then []
-                    else expected_args
-                    end
       end
 
       # @api public
@@ -60,13 +54,37 @@ module RSpec
       #
       # @see #initialize
       def args_match?(*args)
-        Support::FuzzyMatcher.values_match?(@matchers, args)
+        Support::FuzzyMatcher.values_match?(matchers_for(args), args)
       end
 
       # Value that will match all argument lists.
       #
       # @private
       MATCH_ALL = new(ArgumentMatchers::AnyArgsMatcher.new)
+
+      # Singleton instance of AnyArgMatcher to save on memory.
+      # It's immutable and thus safe to re-use many times.
+      # @private
+      ANYTHING  = ArgumentMatchers::AnyArgMatcher.new
+
+    private
+
+      def matchers_for(actual_args)
+        return [] if expected_args.one? && ArgumentMatchers::NoArgsMatcher === expected_args.first
+
+        any_args_index = expected_args.index { |arg| ArgumentMatchers::AnyArgsMatcher === arg }
+        return expected_args unless any_args_index
+
+        replace_any_args_with_splat_of_anything(any_args_index, actual_args.count)
+      end
+
+      def replace_any_args_with_splat_of_anything(before_count, actual_args_count)
+        any_args_count  = actual_args_count   - expected_args.count + 1
+        after_count     = expected_args.count - before_count        - 1
+
+        any_args = 1.upto(any_args_count).map { ANYTHING }
+        expected_args.first(before_count) + any_args + expected_args.last(after_count)
+      end
     end
   end
 end

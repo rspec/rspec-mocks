@@ -102,7 +102,7 @@ module RSpec
           verify _nil
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
-          %Q|(nil).foobar(any args)\n    expected: 1 time with any arguments\n    received: 0 times with any arguments|
+          %Q|(nil).foobar(*(any args))\n    expected: 1 time with any arguments\n    received: 0 times with any arguments|
         )
       end
 

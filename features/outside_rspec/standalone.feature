@@ -27,7 +27,7 @@ Feature: Standalone
       """
     When I run `ruby example.rb`
     Then it should fail with the following output:
-      | (Double "greeter").say_hi(any args)  |
-      | RSpec::Mocks::MockExpectationError   |
-      | expected: 1 time with any arguments  |
-      | received: 0 times with any arguments |
+      | (Double "greeter").say_hi(*(any args)) |
+      | RSpec::Mocks::MockExpectationError     |
+      | expected: 1 time with any arguments    |
+      | received: 0 times with any arguments   |

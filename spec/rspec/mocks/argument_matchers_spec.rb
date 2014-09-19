@@ -129,19 +129,92 @@ module RSpec
       end
 
       describe "any_args" do
-        it "matches no args against any_args" do
-          expect(a_double).to receive(:random_call).with(any_args)
-          a_double.random_call
+        context "as the only arg passed to `with`" do
+          before { expect(a_double).to receive(:random_call).with(any_args) }
+
+          it "matches no args" do
+            a_double.random_call
+          end
+
+          it "matches one arg" do
+            a_double.random_call("a string")
+          end
+
+          it "matches many args" do
+            a_double.random_call("a string", :other, 3)
+          end
         end
 
-        it "matches one arg against any_args" do
-          expect(a_double).to receive(:random_call).with(any_args)
-          a_double.random_call("a string")
+        context "as the last of three args" do
+          before { expect(a_double).to receive(:random_call).with(1, /foo/, any_args) }
+
+          it "matches a call of two args when it matches the first two explicit args" do
+            a_double.random_call(1, "food")
+          end
+
+          it "matches a call of three args when it matches the first two explicit args" do
+            a_double.random_call(1, "food", :more)
+          end
+
+          it "matches a call of four args when it matches the first two explicit args" do
+            a_double.random_call(1, "food", :more, :args)
+          end
+
+          it "does not match a call where the first two args do not match", :reset => true do
+            expect { a_double.random_call(1, "bar", 2, 3) }.to fail_matching "expected: (1, /foo/, *(any args))"
+          end
+
+          it "does not match a call of no args", :reset => true do
+            expect { a_double.random_call }.to fail_matching "expected: (1, /foo/, *(any args))"
+          end
         end
 
-        it "handles non matching instances nicely", :reset => true do
-          expect(a_double).to receive(:random_call).with(1, any_args)
-          expect { a_double.random_call }.to fail_matching "expected: (1, any args)"
+        context "as the first of three args" do
+          before { expect(a_double).to receive(:random_call).with(any_args, 1, /foo/) }
+
+          it "matches a call of two args when it matches the last two explicit args" do
+            a_double.random_call(1, "food")
+          end
+
+          it "matches a call of three args when it matches the last two explicit args" do
+            a_double.random_call(nil, 1, "food")
+          end
+
+          it "matches a call of four args when it matches the last two explicit args" do
+            a_double.random_call(:some, :args, 1, "food")
+          end
+
+          it "does not match a call where the last two args do not match", :reset => true do
+            expect { a_double.random_call(1, "bar", 2, 3) }.to fail_matching "expected: (*(any args), 1, /foo/)"
+          end
+
+          it "does not match a call of no args", :reset => true do
+            expect { a_double.random_call }.to fail_matching "expected: (*(any args), 1, /foo/)"
+          end
+        end
+
+        context "as the middle of three args" do
+          before { expect(a_double).to receive(:random_call).with(1, any_args, /foo/) }
+
+          it "matches a call of two args when it matches the first and last args" do
+            a_double.random_call(1, "food")
+          end
+
+          it "matches a call of three args when it matches the first and last args" do
+            a_double.random_call(1, nil, "food")
+          end
+
+          it "matches a call of four args when it matches the first and last args" do
+            a_double.random_call(1, :some, :args, "food")
+          end
+
+          it "does not match a call where the first and last args do not match", :reset => true do
+            expect { a_double.random_call(nil, "bar", 2, 3) }.to fail_matching "expected: (1, *(any args), /foo/)"
+          end
+
+          it "does not match a call of no args", :reset => true do
+            expect { a_double.random_call }.to fail_matching "expected: (1, *(any args), /foo/)"
+          end
         end
       end
 

@@ -129,7 +129,7 @@ module RSpec
       # @private
       class AnyArgsMatcher
         def description
-          "any args"
+          "*(any args)"
         end
       end
 
