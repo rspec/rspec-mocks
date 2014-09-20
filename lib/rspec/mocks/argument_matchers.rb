@@ -21,7 +21,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(any_args)
       def any_args
-        AnyArgsMatcher.new
+        AnyArgsMatcher::INSTANCE
       end
 
       # Matches any argument at all.
@@ -30,7 +30,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(anything)
       def anything
-        AnyArgMatcher.new
+        AnyArgMatcher::INSTANCE
       end
 
       # Matches no arguments.
@@ -39,7 +39,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(no_args)
       def no_args
-        NoArgsMatcher.new
+        NoArgsMatcher::INSTANCE
       end
 
       # Matches if the actual argument responds to the specified messages.
@@ -58,7 +58,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(boolean())
       def boolean
-        BooleanMatcher.new
+        BooleanMatcher::INSTANCE
       end
 
       # Matches a hash that includes the specified key(s) or key/value pairs.
@@ -122,19 +122,37 @@ module RSpec
       # @private
       def self.anythingize_lonely_keys(*args)
         hash = args.last.class == Hash ? args.delete_at(-1) : {}
-        args.each { | arg | hash[arg] = AnyArgMatcher.new }
+        args.each { | arg | hash[arg] = AnyArgMatcher::INSTANCE }
         hash
       end
 
+      # Intended to be subclassed by stateless, immutable argument matchers.
+      # Provides a `<klass name>::INSTANCE` constant for accessing a
+      # global singleton instance of the matcher. This saves on memory a bit
+      # (as their is no need to construct multiple instance since there is
+      # no internal instance state). It also facilities the special case logic
+      # we need for some of these matchers, by making it easy to do comparisons
+      # like: `[klass::INSTANCE] == args` rather than
+      # `args.count == 1 && klass === args.first`.
+      #
       # @private
-      class AnyArgsMatcher
+      class SingletonMatcher
+        private_class_method :new
+
+        def self.inherited(subklass)
+          subklass.const_set(:INSTANCE, subklass.send(:new))
+        end
+      end
+
+      # @private
+      class AnyArgsMatcher < SingletonMatcher
         def description
           "*(any args)"
         end
       end
 
       # @private
-      class AnyArgMatcher
+      class AnyArgMatcher < SingletonMatcher
         def ===(_other)
           true
         end
@@ -145,14 +163,14 @@ module RSpec
       end
 
       # @private
-      class NoArgsMatcher
+      class NoArgsMatcher < SingletonMatcher
         def description
           "no args"
         end
       end
 
       # @private
-      class BooleanMatcher
+      class BooleanMatcher < SingletonMatcher
         def ===(value)
           true == value || false == value
         end
