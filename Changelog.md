@@ -20,6 +20,15 @@ Enhancements:
 * Treat `any_args` as an arg splat, allowing it to match an arbitrary
   number of args at any point in an arg list. (Myron Marston, #786)
 
+Bug Fixes:
+
+* Provide a clear error when users wrongly combine `no_args` with
+  additional arguments (e.g. `expect().to receive().with(no_args, 1)`).
+  (Myron Marston, #786)
+* Provide a clear error when users wrongly use `any_args` multiple times in the
+  same argument list (e.g. `expect().to receive().with(any_args, 1, any_args)`.
+  (Myron Marston, #786)
+
 ### 3.1.1 / 2014-09-18
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...v3.1.1)
 

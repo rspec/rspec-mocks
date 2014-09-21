@@ -216,6 +216,14 @@ module RSpec
             expect { a_double.random_call }.to fail_matching "expected: (1, *(any args), /foo/)"
           end
         end
+
+        context "when passed twice" do
+          it 'immediately signals that this is invalid', :reset => true do
+            expect {
+              expect(a_double).to receive(:random_call).with(any_args, 1, any_args)
+            }.to raise_error(ArgumentError, /any_args/)
+          end
+        end
       end
 
       describe "no_args" do
@@ -227,6 +235,14 @@ module RSpec
         it "fails no_args with one arg", :reset => true do
           expect(a_double).to receive(:msg).with(no_args)
           expect { a_double.msg(37) }.to fail_matching "expected: (no args)"
+        end
+
+        context "when passed with other arguments" do
+          it 'immediately signals that this is invalid', :reset => true do
+            expect {
+              expect(a_double).to receive(:random_call).with(no_args, 3)
+            }.to raise_error(ArgumentError, /no_args/)
+          end
         end
       end
 
