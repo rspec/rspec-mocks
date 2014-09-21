@@ -54,6 +54,12 @@ module RSpec
           end
         end
 
+        def setup_allowance(_subject, &_block)
+          raise RSpec::Mocks::MockExpectationError,
+                "Using allow(...) with the `have_received` matcher is not "\
+                "supported as it would have no effect."
+        end
+
       private
 
         def expect
