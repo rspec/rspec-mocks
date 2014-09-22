@@ -459,6 +459,14 @@ module RSpec
         end
       end
 
+      describe "allow(...).to have_received" do
+        it "fails because its nonsensical" do
+          expect {
+            allow(double).to have_received(:some_method)
+          }.to fail_with("Using allow(...) with the `have_received` matcher is not supported as it would have no effect.")
+        end
+      end
+
       def double_with_met_expectation(method_name, *args)
         double = double_with_unmet_expectation(method_name)
         meet_expectation(double, method_name, *args)
