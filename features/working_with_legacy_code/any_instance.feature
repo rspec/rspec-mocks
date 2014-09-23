@@ -12,7 +12,7 @@ Feature: Any Instance
   These methods add the appropriate stub or expectation to all instances of `Widget`.
 
   This feature is sometimes useful when working with legacy code, though in general we
-  discourage its use for a number of reasons: 
+  discourage its use for a number of reasons:
 
   * The `rspec-mocks` API is designed for individual object instances, but this feature
     operates on entire classes of objects. As a result there are some sematically confusing
@@ -81,11 +81,11 @@ Feature: Any Instance
       """ruby
       RSpec.describe "allow_any_instance_of" do
         it 'yields the receiver to the block implementation' do
-          allow_any_instance_of(Array).to receive(:shuffle) do |array|
-            array.unshift(array.pop)
+          allow_any_instance_of(String).to receive(:slice) do |value, start, length|
+            value[start, length]
           end
 
-          expect([1, 2, 3].shuffle).to eq([3, 1, 2])
+          expect('string'.slice(2, 3)).to eq('rin')
         end
       end
       """
