@@ -1,10 +1,11 @@
-### 3.1.2 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.1...master)
+### 3.1.2 / 2014-09-26
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.1...v3.1.2)
 
-Enhancements:
+Bug Fixes:
 
-* Improve error message caused when you use `allow(...)` with the
-  `have_received` matcher. (Jon Rowe, #788).
+* Provide a clear error message when you use `allow(...)` with the
+  `have_received` matcher (they are not intended to be used together
+  and previously caused an odd internal failure in rspec-mocks). (Jon Rowe, #788).
 
 ### 3.1.1 / 2014-09-18
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...v3.1.1)
