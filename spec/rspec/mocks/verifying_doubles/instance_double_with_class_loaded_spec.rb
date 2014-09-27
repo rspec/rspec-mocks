@@ -1,0 +1,188 @@
+require 'support/doubled_classes'
+
+module RSpec
+  module Mocks
+    RSpec.describe 'An instance double with the doubled class loaded' do
+      include_context "with isolated configuration"
+
+      before do
+        RSpec::Mocks.configuration.verify_doubled_constant_names = true
+      end
+
+      it 'includes the double name in errors for unexpected messages' do
+        o = instance_double("LoadedClass")
+        expect {
+          o.defined_instance_method
+        }.to fail_matching('Double "LoadedClass (instance)"')
+      end
+
+      it 'only allows instance methods that exist to be stubbed' do
+        o = instance_double('LoadedClass', :defined_instance_method => 1)
+        expect(o.defined_instance_method).to eq(1)
+
+        prevents { allow(o).to receive(:undefined_instance_method) }
+        prevents { allow(o).to receive(:defined_class_method) }
+      end
+
+      it 'only allows instance methods that exist to be expected' do
+        o = instance_double('LoadedClass')
+        expect(o).to receive(:defined_instance_method)
+        o.defined_instance_method
+
+        prevents { expect(o).to receive(:undefined_instance_method) }
+        prevents { expect(o).to receive(:defined_class_method) }
+        prevents { expect(o).to receive(:undefined_instance_method) }
+        prevents { expect(o).to receive(:defined_class_method) }
+      end
+
+      it 'allows `send` to be stubbed if it is defined on the class' do
+        o = instance_double('LoadedClass')
+        allow(o).to receive(:send).and_return("received")
+        expect(o.send(:msg)).to eq("received")
+      end
+
+      it 'gives a descriptive error message for NoMethodError' do
+        o = instance_double("LoadedClass")
+        expect {
+          o.defined_private_method
+        }.to raise_error(NoMethodError,
+                           /Double "LoadedClass \(instance\)"/)
+      end
+
+      it 'does not allow dynamic methods to be expected' do
+        # This isn't possible at the moment since an instance of the class
+        # would be required for the verification, and we only have the
+        # class itself.
+        #
+        # This spec exists as "negative" documentation of the absence of a
+        # feature, to highlight the asymmetry from class doubles (that do
+        # support this behaviour).
+        prevents {
+          instance_double('LoadedClass', :dynamic_instance_method => 1)
+        }
+      end
+
+      it 'checks the arity of stubbed methods' do
+        o = instance_double('LoadedClass')
+        prevents {
+          expect(o).to receive(:defined_instance_method).with(:a)
+        }
+      end
+
+      it 'checks that stubbed methods are invoked with the correct arity' do
+        o = instance_double('LoadedClass', :defined_instance_method => 25)
+        expect {
+          o.defined_instance_method(:a)
+        }.to raise_error(ArgumentError,
+                           "Wrong number of arguments. Expected 0, got 1.")
+      end
+
+      if required_kw_args_supported?
+        it 'allows keyword arguments' do
+          o = instance_double('LoadedClass', :kw_args_method => true)
+          expect(o.kw_args_method(1, :required_arg => 'something')).to eq(true)
+        end
+
+        context 'for a method that only accepts keyword args' do
+          it 'allows hash matchers like `hash_including` to be used in place of the keywords arg hash' do
+            o = instance_double('LoadedClass')
+            expect(o).to receive(:kw_args_method).
+              with(1, hash_including(:required_arg => 1))
+            o.kw_args_method(1, :required_arg => 1)
+          end
+
+          it 'allows anything matcher to be used in place of the keywords arg hash' do
+            o = instance_double('LoadedClass')
+            expect(o).to receive(:kw_args_method).with(1, anything)
+            o.kw_args_method(1, :required_arg => 1)
+          end
+
+          it 'still checks positional arguments when matchers used for keyword args' do
+            o = instance_double('LoadedClass')
+            prevents(/Expected 1, got 3/) {
+              expect(o).to receive(:kw_args_method).
+                with(1, 2, 3, hash_including(:required_arg => 1))
+            }
+          end
+
+          it 'does not allow matchers to be used in an actual method call' do
+            o = instance_double('LoadedClass')
+            matcher = hash_including(:required_arg => 1)
+            allow(o).to receive(:kw_args_method).with(1, matcher)
+            expect {
+              o.kw_args_method(1, matcher)
+            }.to raise_error(ArgumentError)
+          end
+        end
+
+        context 'for a method that accepts a mix of optional keyword and positional args' do
+          it 'allows hash matchers like `hash_including` to be used in place of the keywords arg hash' do
+            o = instance_double('LoadedClass')
+            expect(o).to receive(:mixed_args_method).with(1, 2, hash_including(:optional_arg_1 => 1))
+            o.mixed_args_method(1, 2, :optional_arg_1 => 1)
+          end
+        end
+
+        it 'checks that stubbed methods with required keyword args are ' +
+           'invoked with the required arguments' do
+          o = instance_double('LoadedClass', :kw_args_method => true)
+          expect {
+            o.kw_args_method(:optional_arg => 'something')
+          }.to raise_error(ArgumentError)
+        end
+      end
+
+      it 'allows class to be specified by constant' do
+        o = instance_double(LoadedClass, :defined_instance_method => 1)
+        expect(o.defined_instance_method).to eq(1)
+      end
+
+      context 'for null objects' do
+        let(:o) { instance_double('LoadedClass').as_null_object }
+
+        it 'only allows defined methods' do
+          expect(o.defined_instance_method).to eq(o)
+          prevents { o.undefined_method }
+          prevents { o.send(:undefined_method) }
+          prevents { o.__send__(:undefined_method) }
+        end
+
+        it "includes the double's name in a private method error" do
+          expect {
+            o.rand
+          }.to raise_error(NoMethodError, %r{private.*Double "LoadedClass \(instance\)"})
+        end
+
+        it 'reports what public messages it responds to accurately' do
+          expect(o.respond_to?(:defined_instance_method)).to be true
+          expect(o.respond_to?(:defined_instance_method, true)).to be true
+          expect(o.respond_to?(:defined_instance_method, false)).to be true
+
+          expect(o.respond_to?(:undefined_method)).to be false
+          expect(o.respond_to?(:undefined_method, true)).to be false
+          expect(o.respond_to?(:undefined_method, false)).to be false
+        end
+
+        it 'reports that it responds to defined private methods when the appropriate arg is passed' do
+          expect(o.respond_to?(:defined_private_method)).to be false
+          expect(o.respond_to?(:defined_private_method, true)).to be true
+          expect(o.respond_to?(:defined_private_method, false)).to be false
+        end
+
+        if RUBY_VERSION.to_f < 2.0 # respond_to?(:protected_method) changed behavior in Ruby 2.0.
+          it 'reports that it responds to protected methods' do
+            expect(o.respond_to?(:defined_protected_method)).to be true
+            expect(o.respond_to?(:defined_protected_method, true)).to be true
+            expect(o.respond_to?(:defined_protected_method, false)).to be true
+          end
+        else
+          it 'reports that it responds to protected methods when the appropriate arg is passed' do
+            expect(o.respond_to?(:defined_protected_method)).to be false
+            expect(o.respond_to?(:defined_protected_method, true)).to be true
+            expect(o.respond_to?(:defined_protected_method, false)).to be false
+          end
+        end
+      end
+    end
+  end
+end
