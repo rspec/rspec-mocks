@@ -55,7 +55,7 @@ module RSpec
         end
 
         context "when a list of args is provided" do
-          it "allows a method expectation where the arity matches" do
+          it "allows a method expectation when the arity matches" do
             expect {
               expect(dbl).to receive(:instance_method_with_two_args).with(1, 2)
             }.not_to raise_error
