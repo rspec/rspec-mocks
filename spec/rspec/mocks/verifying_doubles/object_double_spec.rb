@@ -3,7 +3,7 @@ require 'support/doubled_classes'
 module RSpec
   module Mocks
     RSpec.describe 'An object double' do
-      it 'replaces an unloaded constant' do
+      it 'can replace an unloaded constant' do
         o = object_double("LoadedClass::NOINSTANCE").as_stubbed_const
 
         expect(LoadedClass::NOINSTANCE).to eq(o)
@@ -12,7 +12,7 @@ module RSpec
         o.undefined_instance_method
       end
 
-      it 'replaces a constant by name and verifies instances methods' do
+      it 'can replace a constant by name and verify instance methods' do
         o = object_double("LoadedClass::INSTANCE").as_stubbed_const
 
         expect(LoadedClass::INSTANCE).to eq(o)
