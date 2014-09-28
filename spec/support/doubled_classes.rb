@@ -34,6 +34,12 @@ class LoadedClass
   def defined_instance_method
   end
 
+  def instance_method_with_two_args(a, b)
+  end
+
+  def instance_method_with_only_defaults(a=1, b=2)
+  end
+
   if required_kw_args_supported?
     # Need to eval this since it is invalid syntax on earlier rubies.
     eval <<-RUBY
