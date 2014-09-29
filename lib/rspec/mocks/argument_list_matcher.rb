@@ -55,12 +55,13 @@ module RSpec
       #
       # @see #initialize
       def args_match?(*args)
-        Support::FuzzyMatcher.values_match?(matchers_for(args), args)
+        Support::FuzzyMatcher.values_match?(resolve_expected_args_based_on(args), args)
       end
 
-    private
-
-      def matchers_for(actual_args)
+      # @private
+      # Resolves abstract arg placeholders like `no_args` and `any_args` into
+      # a more concrete arg list based on the provided `actual_args`.
+      def resolve_expected_args_based_on(actual_args)
         return [] if [ArgumentMatchers::NoArgsMatcher::INSTANCE] == expected_args
 
         any_args_index = expected_args.index(ArgumentMatchers::AnyArgsMatcher::INSTANCE)
@@ -68,6 +69,8 @@ module RSpec
 
         replace_any_args_with_splat_of_anything(any_args_index, actual_args.count)
       end
+
+    private
 
       def replace_any_args_with_splat_of_anything(before_count, actual_args_count)
         any_args_count  = actual_args_count   - expected_args.count + 1
