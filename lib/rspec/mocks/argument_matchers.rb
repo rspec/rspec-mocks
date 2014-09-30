@@ -14,12 +14,16 @@ module RSpec
     #
     # @see ArgumentListMatcher
     module ArgumentMatchers
-      # Matches any args at all. Supports a more explicit variation of
-      # `expect(object).to receive(:message)`
+      # Acts like an arg splat, matching any number of args at any point in an arg list.
       #
       # @example
       #
-      #   expect(object).to receive(:message).with(any_args)
+      #   expect(object).to receive(:message).with(1, 2, any_args)
+      #
+      #   # matches any of these:
+      #   object.message(1, 2)
+      #   object.message(1, 2, 3)
+      #   object.message(1, 2, 3, 4)
       def any_args
         AnyArgsMatcher::INSTANCE
       end

@@ -206,8 +206,9 @@ rspec-mocks also adds some keyword Symbols that you can use to
 specify certain kinds of arguments:
 
 ```ruby
-expect(double).to receive(:msg).with(no_args())
-expect(double).to receive(:msg).with(any_args())
+expect(double).to receive(:msg).with(no_args)
+expect(double).to receive(:msg).with(any_args)
+expect(double).to receive(:msg).with(1, any_args) # any args acts like an arg splat and can go anywhere
 expect(double).to receive(:msg).with(1, kind_of(Numeric), "b") #2nd argument can be any kind of Numeric
 expect(double).to receive(:msg).with(1, boolean(), "b") #2nd argument can be true or false
 expect(double).to receive(:msg).with(1, /abc/, "b") #2nd argument can be any String matching the submitted Regexp
