@@ -91,7 +91,13 @@ module RSpec
         @messages_received.each do |(actual_method_name, args, _)|
           next unless expectation.matches?(actual_method_name, *args)
 
-          expectation.invoke(nil)
+          # rubocop:disable Lint/HandleExceptions
+          begin
+            expectation.invoke(nil)
+          rescue RSpec::Mocks::MockExpectationError
+            # carry on, our expectation failure is handled later
+          end
+          # rubocop:enable Lint/HandleExceptions
           block.call(*args) if block
         end
       end
