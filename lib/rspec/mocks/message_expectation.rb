@@ -229,13 +229,18 @@ module RSpec
       end
 
       # @private
+      def safe_invoke(parent_stub, *args, &block)
+        invoke_incrementing_actual_calls_by(1, false, parent_stub, *args, &block)
+      end
+
+      # @private
       def invoke(parent_stub, *args, &block)
-        invoke_incrementing_actual_calls_by(1, parent_stub, *args, &block)
+        invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
       end
 
       # @private
       def invoke_without_incrementing_received_count(parent_stub, *args, &block)
-        invoke_incrementing_actual_calls_by(0, parent_stub, *args, &block)
+        invoke_incrementing_actual_calls_by(0, true, parent_stub, *args, &block)
       end
 
       # @private
@@ -504,10 +509,10 @@ module RSpec
 
     private
 
-      def invoke_incrementing_actual_calls_by(increment, parent_stub, *args, &block)
+      def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
         args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
-        if negative? || ((@exactly || @at_most) && (@actual_received_count == @expected_received_count))
+        if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
           @actual_received_count += increment
           @failed_fast = true
           # args are the args we actually received, @argument_list_matcher is the
