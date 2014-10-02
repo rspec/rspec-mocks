@@ -10,6 +10,11 @@ Bug Fixes:
   `have_received` matcher (they are not intended to be used together
   and previously caused an odd internal failure in rspec-mocks). (Jon Rowe, #788).
 
+Bug Fixes:
+
+* Correct received messages count when used with `have_received` matcher
+  (Jon Rowe, #793)
+
 ### 3.1.1 / 2014-09-18
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...v3.1.1)
 

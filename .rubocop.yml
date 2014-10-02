@@ -2,7 +2,7 @@ inherit_from: .rubocop_rspec_base.yml
 
 # This should go down over time.
 Style/ClassLength:
-  Max: 278
+  Max: 279
 
 # This should go down over time.
 Style/CyclomaticComplexity:
