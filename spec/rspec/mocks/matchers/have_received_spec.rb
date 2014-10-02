@@ -151,10 +151,18 @@ module RSpec
               expect(dbl).to have_received(:expected_method).exactly(3).times
             end
 
-            it 'fails when the message was received more times' do
+            it 'fails when the message was received more times than expected' do
+              expect {
+                expect(dbl).to have_received(:expected_method).exactly(1).times
+              }.to raise_error(/expected: 1 time.*received: 3 times/m)
               expect {
                 expect(dbl).to have_received(:expected_method).exactly(2).times
               }.to raise_error(/expected: 2 times.*received: 3 times/m)
+              expect {
+                dbl.expected_method
+                dbl.expected_method
+                expect(dbl).to have_received(:expected_method).exactly(2).times
+              }.to raise_error(/expected: 2 times.*received: 5 times/m)
             end
 
             it 'fails when the message was received fewer times' do

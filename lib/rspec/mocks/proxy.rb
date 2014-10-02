@@ -91,7 +91,7 @@ module RSpec
         @messages_received.each do |(actual_method_name, args, _)|
           next unless expectation.matches?(actual_method_name, *args)
 
-          expectation.invoke(nil)
+          expectation.safe_invoke(nil)
           block.call(*args) if block
         end
       end
