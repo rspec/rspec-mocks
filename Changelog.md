@@ -6,6 +6,11 @@ Enhancements:
 * Improve error message caused when you use `allow(...)` with the
   `have_received` matcher. (Jon Rowe, #788).
 
+Bug Fixes:
+
+* Correct received messages count when used with `have_received` matcher
+  (Jon Rowe, #793)
+
 ### 3.1.1 / 2014-09-18
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.0...v3.1.1)
 
