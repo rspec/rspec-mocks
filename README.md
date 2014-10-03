@@ -41,6 +41,9 @@ rspec-mocks supports 3 forms for declaring method stubs:
 ```ruby
 allow(book).to receive(:title) { "The RSpec Book" }
 allow(book).to receive(:title).and_return("The RSpec Book")
+allow(book).to receive_messages(
+    :title => "The RSpec Book", 
+    :subtitle => "Behaviour-Driven Development with RSpec, Cucumber, and Friends")
 ```
 
 You can also use this shortcut, which creates a test double and declares a
