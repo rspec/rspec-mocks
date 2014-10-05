@@ -55,12 +55,24 @@ module RSpec
         end
 
         def setup_allowance(_subject, &_block)
-          raise RSpec::Mocks::MockExpectationError,
-                "Using allow(...) with the `have_received` matcher is not " \
-                "supported as it would have no effect."
+          disallow("allow", " as it would have no effect")
+        end
+
+        def setup_any_instance_allowance(_subject, &_block)
+          disallow("allow_any_instance_of")
+        end
+
+        def setup_any_instance_expectation(_subject, &_block)
+          disallow("expect_any_instance_of")
         end
 
       private
+
+        def disallow(type, reason="")
+          raise RSpec::Mocks::MockExpectationError,
+                "Using #{type}(...) with the `have_received` " \
+                "matcher is not supported#{reason}."
+        end
 
         def expect
           @expectation ||= begin
