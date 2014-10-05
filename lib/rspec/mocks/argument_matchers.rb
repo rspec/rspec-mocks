@@ -131,12 +131,11 @@ module RSpec
       end
 
       # Intended to be subclassed by stateless, immutable argument matchers.
-      # Provides a `<klass name>::INSTANCE` constant for accessing a
-      # global singleton instance of the matcher. This saves on memory a bit
-      # (as their is no need to construct multiple instance since there is
-      # no internal instance state). It also facilities the special case logic
-      # we need for some of these matchers, by making it easy to do comparisons
-      # like: `[klass::INSTANCE] == args` rather than
+      # Provides a `<klass name>::INSTANCE` constant for accessing a global
+      # singleton instance of the matcher. There is no need to construct
+      # multiple instance since there is no state. It also facilities the
+      # special case logic we need for some of these matchers, by making it
+      # easy to do comparisons like: `[klass::INSTANCE] == args` rather than
       # `args.count == 1 && klass === args.first`.
       #
       # @private
