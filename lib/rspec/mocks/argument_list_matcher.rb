@@ -44,12 +44,7 @@ module RSpec
       # @see #args_match?
       def initialize(*expected_args)
         @expected_args = expected_args
-
-        @matchers = case expected_args.first
-                    when ArgumentMatchers::AnyArgsMatcher then Array
-                    when ArgumentMatchers::NoArgsMatcher  then []
-                    else expected_args
-                    end
+        ensure_expected_args_valid!
       end
 
       # @api public
@@ -60,13 +55,46 @@ module RSpec
       #
       # @see #initialize
       def args_match?(*args)
-        Support::FuzzyMatcher.values_match?(@matchers, args)
+        Support::FuzzyMatcher.values_match?(resolve_expected_args_based_on(args), args)
+      end
+
+      # @private
+      # Resolves abstract arg placeholders like `no_args` and `any_args` into
+      # a more concrete arg list based on the provided `actual_args`.
+      def resolve_expected_args_based_on(actual_args)
+        return [] if [ArgumentMatchers::NoArgsMatcher::INSTANCE] == expected_args
+
+        any_args_index = expected_args.index(ArgumentMatchers::AnyArgsMatcher::INSTANCE)
+        return expected_args unless any_args_index
+
+        replace_any_args_with_splat_of_anything(any_args_index, actual_args.count)
+      end
+
+    private
+
+      def replace_any_args_with_splat_of_anything(before_count, actual_args_count)
+        any_args_count  = actual_args_count   - expected_args.count + 1
+        after_count     = expected_args.count - before_count        - 1
+
+        any_args = 1.upto(any_args_count).map { ArgumentMatchers::AnyArgMatcher::INSTANCE }
+        expected_args.first(before_count) + any_args + expected_args.last(after_count)
+      end
+
+      def ensure_expected_args_valid!
+        if expected_args.count(ArgumentMatchers::AnyArgsMatcher::INSTANCE) > 1
+          raise ArgumentError, "`any_args` can only be passed to " \
+                "`with` once but you have passed it multiple times."
+        elsif expected_args.count > 1 && expected_args.include?(ArgumentMatchers::NoArgsMatcher::INSTANCE)
+          raise ArgumentError, "`no_args` can only be passed as a " \
+                "singleton argument to `with` (i.e. `with(no_args)`), " \
+                "but you have passed additional arguments."
+        end
       end
 
       # Value that will match all argument lists.
       #
       # @private
-      MATCH_ALL = new(ArgumentMatchers::AnyArgsMatcher.new)
+      MATCH_ALL = new(ArgumentMatchers::AnyArgsMatcher::INSTANCE)
     end
   end
 end

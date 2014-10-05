@@ -65,16 +65,16 @@ Feature: Integrate with Minitest
       """
      When I run `ruby -Itest test/rspec_mocks_test.rb`
      Then it should fail with the following output:
-       |   1) Error:                                                    |
-       | RSpecMocksTest#test_failing_negative_expectation:              |
-       | RSpec::Mocks::MockExpectationError: (Double).message(no args)  |
-       |     expected: 0 times with any arguments                       |
-       |     received: 1 time                                           |
-       |                                                                |
-       |   2) Error:                                                    |
-       | RSpecMocksTest#test_failing_positive_expectation:              |
-       | RSpec::Mocks::MockExpectationError: (Double).message(any args) |
-       |     expected: 1 time with any arguments                        |
-       |     received: 0 times with any arguments                       |
-       |                                                                |
-       |  4 runs, 0 assertions, 0 failures, 2 errors, 0 skips           |
+       |   1) Error:                                                       |
+       | RSpecMocksTest#test_failing_negative_expectation:                 |
+       | RSpec::Mocks::MockExpectationError: (Double).message(no args)     |
+       |     expected: 0 times with any arguments                          |
+       |     received: 1 time                                              |
+       |                                                                   |
+       |   2) Error:                                                       |
+       | RSpecMocksTest#test_failing_positive_expectation:                 |
+       | RSpec::Mocks::MockExpectationError: (Double).message(*(any args)) |
+       |     expected: 1 time with any arguments                           |
+       |     received: 0 times with any arguments                          |
+       |                                                                   |
+       |  4 runs, 0 assertions, 0 failures, 2 errors, 0 skips              |

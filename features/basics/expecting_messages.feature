@@ -19,7 +19,7 @@ Feature: Expecting messages
       """
         1) An unfulfilled positive message expectation triggers a failure
            Failure/Error: expect(dbl).to receive(:foo)
-             (Double "Some Collaborator").foo(any args)
+             (Double "Some Collaborator").foo(*(any args))
                  expected: 1 time with any arguments
                  received: 0 times with any arguments
       """

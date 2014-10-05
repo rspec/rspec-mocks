@@ -23,31 +23,23 @@ module RSpec
 
       # @private
       def with(*args, &block)
-        unless ArgumentMatchers::AnyArgsMatcher === args.first
-          expected_args = if ArgumentMatchers::NoArgsMatcher === args.first
-                            []
-                          elsif args.length > 0
-                            args
-                          else
-                            # No arguments given, this will raise.
-                            super
-                          end
-
-          validate_expected_arguments!(expected_args)
+        super(*args, &block).tap do
+          validate_expected_arguments! do |signature|
+            example_call_site_args = [:an_arg] * signature.min_non_kw_args
+            example_call_site_args << :kw_args_hash if signature.required_kw_args.any?
+            @argument_list_matcher.resolve_expected_args_based_on(example_call_site_args)
+          end
         end
-        super
       end
 
     private
 
-      def validate_expected_arguments!(actual_args)
+      def validate_expected_arguments!
         return if method_reference.nil?
 
         method_reference.with_signature do |signature|
-          verifier = Support::LooseSignatureVerifier.new(
-            signature,
-            actual_args
-          )
+          args     = yield signature
+          verifier = Support::LooseSignatureVerifier.new(signature, args)
 
           unless verifier.valid?
             # Fail fast is required, otherwise the message expecation will fail

@@ -14,14 +14,18 @@ module RSpec
     #
     # @see ArgumentListMatcher
     module ArgumentMatchers
-      # Matches any args at all. Supports a more explicit variation of
-      # `expect(object).to receive(:message)`
+      # Acts like an arg splat, matching any number of args at any point in an arg list.
       #
       # @example
       #
-      #   expect(object).to receive(:message).with(any_args)
+      #   expect(object).to receive(:message).with(1, 2, any_args)
+      #
+      #   # matches any of these:
+      #   object.message(1, 2)
+      #   object.message(1, 2, 3)
+      #   object.message(1, 2, 3, 4)
       def any_args
-        AnyArgsMatcher.new
+        AnyArgsMatcher::INSTANCE
       end
 
       # Matches any argument at all.
@@ -30,7 +34,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(anything)
       def anything
-        AnyArgMatcher.new
+        AnyArgMatcher::INSTANCE
       end
 
       # Matches no arguments.
@@ -39,7 +43,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(no_args)
       def no_args
-        NoArgsMatcher.new
+        NoArgsMatcher::INSTANCE
       end
 
       # Matches if the actual argument responds to the specified messages.
@@ -58,7 +62,7 @@ module RSpec
       #
       #   expect(object).to receive(:message).with(boolean())
       def boolean
-        BooleanMatcher.new
+        BooleanMatcher::INSTANCE
       end
 
       # Matches a hash that includes the specified key(s) or key/value pairs.
@@ -122,19 +126,36 @@ module RSpec
       # @private
       def self.anythingize_lonely_keys(*args)
         hash = args.last.class == Hash ? args.delete_at(-1) : {}
-        args.each { | arg | hash[arg] = AnyArgMatcher.new }
+        args.each { | arg | hash[arg] = AnyArgMatcher::INSTANCE }
         hash
       end
 
+      # Intended to be subclassed by stateless, immutable argument matchers.
+      # Provides a `<klass name>::INSTANCE` constant for accessing a global
+      # singleton instance of the matcher. There is no need to construct
+      # multiple instance since there is no state. It also facilities the
+      # special case logic we need for some of these matchers, by making it
+      # easy to do comparisons like: `[klass::INSTANCE] == args` rather than
+      # `args.count == 1 && klass === args.first`.
+      #
       # @private
-      class AnyArgsMatcher
-        def description
-          "any args"
+      class SingletonMatcher
+        private_class_method :new
+
+        def self.inherited(subklass)
+          subklass.const_set(:INSTANCE, subklass.send(:new))
         end
       end
 
       # @private
-      class AnyArgMatcher
+      class AnyArgsMatcher < SingletonMatcher
+        def description
+          "*(any args)"
+        end
+      end
+
+      # @private
+      class AnyArgMatcher < SingletonMatcher
         def ===(_other)
           true
         end
@@ -145,14 +166,14 @@ module RSpec
       end
 
       # @private
-      class NoArgsMatcher
+      class NoArgsMatcher < SingletonMatcher
         def description
           "no args"
         end
       end
 
       # @private
-      class BooleanMatcher
+      class BooleanMatcher < SingletonMatcher
         def ===(value)
           true == value || false == value
         end

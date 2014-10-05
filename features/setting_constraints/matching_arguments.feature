@@ -9,6 +9,7 @@ Feature: Matching arguments
   | Literal arguments                                   | `with(1, true)`                 | `foo(1, true)`                        |
   | Anything that supports case equality (`===`)        | `with(/bar/)`                   | `foo("barn")`                         |
   | Any list of args                                    | `with(any_args)`                | `foo()`<br>`foo(1)`<br>`foo(:bar, 2)` |
+  | Any sublist of args (like an arg splat)             | `with(1, any_args)`             | `foo(1)`<br>`foo(1, :bar, :bazz)`     |
   | An empty list of args                               | `with(no_args)`                 | `foo()`                               |
   | Anything for a given positional arg                 | `with(3, anything)`             | `foo(3, nil)`<br>`foo(3, :bar)`       |
   | Against an interface                                | `with(duck_type(:each))`        | `foo([])`                             |
