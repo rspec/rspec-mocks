@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...3-1-maintenance)
 
 Bug Fixes:
 
