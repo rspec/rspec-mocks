@@ -56,6 +56,13 @@ module RSpec
       it 'is not a module' do
         expect(object_double("LoadedClass::INSTANCE")).to_not be_a(Module)
       end
+
+      it 'validates `with` args against the method signature when stubbing a method' do
+        dbl = object_double(LoadedClass.new)
+        prevents(/Wrong number of arguments. Expected 2, got 3./) {
+          allow(dbl).to receive(:instance_method_with_two_args).with(3, :foo, :args)
+        }
+      end
     end
   end
 end

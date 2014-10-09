@@ -106,6 +106,13 @@ module RSpec
         expect(o.defined_class_method).to eq(o)
         prevents { o.undefined_method }
       end
+
+      it 'validates `with` args against the method signature when stubbing a method' do
+        dbl = class_double(LoadedClass)
+        prevents(/Wrong number of arguments. Expected 0, got 2./) {
+          allow(dbl).to receive(:defined_class_method).with(2, :args)
+        }
+      end
     end
   end
 end
