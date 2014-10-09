@@ -14,6 +14,8 @@ Bug Fixes:
   `expect_any_instance_of(...)` with the `have_received` matcher (they are
   not intended to be used together and previously caused an odd internal
   failure in rspec-mocks). (Jon Rowe, #799)
+* Fix verified double `with` verification so that it applies to method
+  stubs. (Myron Marston, #790)
 * Provide a clear error when users wrongly combine `no_args` with
   additional arguments (e.g. `expect().to receive().with(no_args, 1)`).
   (Myron Marston, #786)

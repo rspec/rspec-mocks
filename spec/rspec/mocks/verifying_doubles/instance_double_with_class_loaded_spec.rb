@@ -132,6 +132,13 @@ module RSpec
         end
       end
 
+      it 'validates `with` args against the method signature when stubbing a method' do
+        dbl = instance_double(LoadedClass)
+        prevents(/Wrong number of arguments. Expected 2, got 3./) {
+          allow(dbl).to receive(:instance_method_with_two_args).with(3, :foo, :args)
+        }
+      end
+
       it 'allows class to be specified by constant' do
         o = instance_double(LoadedClass, :defined_instance_method => 1)
         expect(o.defined_instance_method).to eq(1)
