@@ -1,5 +1,5 @@
 ### 3.2.0 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.3...master)
 
 Enhancements:
 
@@ -8,20 +8,26 @@ Enhancements:
 
 Bug Fixes:
 
-* Correct received messages count when used with `have_received` matcher.
-  (Jon Rowe, #793)
-* Provide a clear error message when you use `allow_any_instance_of(...)` or
-  `expect_any_instance_of(...)` with the `have_received` matcher (they are
-  not intended to be used together and previously caused an odd internal
-  failure in rspec-mocks). (Jon Rowe, #799)
-* Fix verified double `with` verification so that it applies to method
-  stubs. (Myron Marston, #790)
 * Provide a clear error when users wrongly combine `no_args` with
   additional arguments (e.g. `expect().to receive().with(no_args, 1)`).
   (Myron Marston, #786)
 * Provide a clear error when users wrongly use `any_args` multiple times in the
   same argument list (e.g. `expect().to receive().with(any_args, 1, any_args)`.
   (Myron Marston, #786)
+
+### 3.1.3 / 2014-10-08
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)
+
+Bug Fixes:
+
+* Correct received messages count when used with `have_received` matcher.
+  (Jon Rowe, #793)
+* Provide a clear error message when you use `allow_any_instance_of(...)` or
+  `expect_any_instance_of(...)` with the `have_received` matcher (they are
+  not intended to be used together and previously caused an odd internal
+  failure in rspec-mocks). (Jon Rowe, #799).
+* Fix verified double `with` verification so that it applies to method
+  stubs. (Myron Marston, #790)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.1...v3.1.2)
