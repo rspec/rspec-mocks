@@ -123,6 +123,24 @@ module RSpec
         @verify_partial_doubles
       end
 
+      if ::RSpec.respond_to?(:configuration)
+        def color?
+          ::RSpec.configuration.color_enabled?
+        end
+      else
+        # Indicates whether or not diffs should be colored.
+        # Delegates to rspec-core's color option if rspec-core
+        # is loaded; otherwise you can set it here.
+        attr_writer :color
+
+        # Indicates whether or not diffs should be colored.
+        # Delegates to rspec-core's color option if rspec-core
+        # is loaded; otherwise you can set it here.
+        def color?
+          @color
+        end
+      end
+
       # Monkey-patch `Marshal.dump` to enable dumping of mocked or stubbed
       # objects. By default this will not work since RSpec mocks works by
       # adding singleton methods that cannot be serialized. This patch removes

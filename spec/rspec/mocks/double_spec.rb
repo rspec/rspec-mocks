@@ -257,7 +257,7 @@ module RSpec
           expect {
             @double.method_with_default_argument(nil)
             verify @double
-          }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :method_with_default_argument with unexpected arguments\n  expected: ({})\n       got: (nil)")
+          }.to raise_error(RSpec::Mocks::MockExpectationError, a_string_starting_with("Double \"test double\" received :method_with_default_argument with unexpected arguments\n  expected: ({})\n       got: (nil)"))
         end
       end
 

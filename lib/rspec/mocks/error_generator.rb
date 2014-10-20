@@ -40,28 +40,28 @@ module RSpec
       def raise_unexpected_message_args_error(expectation, *args)
         expected_args = format_args(*expectation.expected_args)
         actual_args = format_received_args(*args)
-        __raise "#{intro} received #{expectation.message.inspect} with " \
-                "unexpected arguments\n  expected: #{expected_args}\n" \
-                "       got: #{actual_args}"
+        diff = diff_message(expectation.expected_args, args)
+        message = "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
+        message << "\nDiff:#{diff}" unless diff.empty?
+        __raise message
       end
 
       # @private
       def raise_missing_default_stub_error(expectation, *args)
         expected_args = format_args(*expectation.expected_args)
         actual_args = format_received_args(*args)
-        __raise "#{intro} received #{expectation.message.inspect} with " \
-                "unexpected arguments\n  expected: #{expected_args}\n" \
-                "       got: #{actual_args}\n Please stub a default value " \
-                "first if message might be received with other args as well. \n"
+        diff = diff_message(expectation.expected_args, args)
+        message = "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
+        message << "Diff:\n #{diff}" unless diff.empty?
+        message << "\n Please stub a default value first if message might be received with other args as well. \n"
+        __raise message
       end
 
       # @private
       def raise_similar_message_args_error(expectation, *args_for_multiple_calls)
         expected_args = format_args(*expectation.expected_args)
         actual_args = args_for_multiple_calls.map { |a| format_received_args(*a) }.join(", ")
-        __raise "#{intro} received #{expectation.message.inspect} with " \
-                "unexpected arguments\n  expected: #{expected_args}\n" \
-                "       got: #{actual_args}"
+        __raise "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
       end
 
       # rubocop:disable Style/ParameterLists
@@ -194,6 +194,40 @@ module RSpec
 
     private
 
+      def unexpected_arguments_message(expected_args_string, actual_args_string)
+        "with unexpected arguments\n  expected: #{expected_args_string}\n       got: #{actual_args_string}"
+      end
+
+      def diff_message(expected_args, actual_args)
+        formatted_expected_args = expected_args.map do |x|
+          if arg_has_valid_description?(x)
+            x.description
+          else
+            x
+          end
+        end
+
+        formatted_expected_args, actual_args = unpack_string_args(formatted_expected_args, actual_args)
+
+        differ.diff(actual_args, formatted_expected_args)
+      end
+
+      def unpack_string_args(formatted_expected_args, actual_args)
+        if [formatted_expected_args, actual_args].all? { |x| list_of_exactly_one_string?(x) }
+          [formatted_expected_args.first, actual_args.first]
+        else
+          [formatted_expected_args, actual_args]
+        end
+      end
+
+      def list_of_exactly_one_string?(args)
+        Array === args && args.count == 1 && String === args.first
+      end
+
+      def differ
+        RSpec::Support::Differ.new(:color => RSpec::Mocks.configuration.color?)
+      end
+
       def intro
         if @name
           "Double #{@name.inspect}"
@@ -222,13 +256,11 @@ module RSpec
       end
 
       def arg_list(*args)
-        args.map { |arg| arg_has_valid_description(arg) ? arg.description : arg.inspect }.join(", ")
+        args.map { |arg| arg_has_valid_description?(arg) ? arg.description : arg.inspect }.join(", ")
       end
 
-      def arg_has_valid_description(arg)
-        return false unless arg.respond_to?(:description)
-
-        !arg.description.nil? && !arg.description.empty?
+      def arg_has_valid_description?(arg)
+        RSpec::Support.is_a_matcher?(arg) && arg.respond_to?(:description)
       end
 
       def format_received_args(*args)
