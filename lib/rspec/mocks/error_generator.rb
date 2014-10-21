@@ -41,8 +41,10 @@ module RSpec
         expected_args = format_args(*expectation.expected_args)
         actual_args = format_received_args(*args)
         diff = diff_message(expectation.expected_args, args)
-        message = "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
+
+        message = default_error_message(expectation, expected_args, actual_args)
         message << "\nDiff:#{diff}" unless diff.empty?
+
         __raise message
       end
 
@@ -51,9 +53,11 @@ module RSpec
         expected_args = format_args(*expectation.expected_args)
         actual_args = format_received_args(*args)
         diff = diff_message(expectation.expected_args, args)
-        message = "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
+
+        message = default_error_message(expectation, expected_args, actual_args)
         message << "Diff:\n #{diff}" unless diff.empty?
         message << "\n Please stub a default value first if message might be received with other args as well. \n"
+
         __raise message
       end
 
@@ -61,7 +65,17 @@ module RSpec
       def raise_similar_message_args_error(expectation, *args_for_multiple_calls)
         expected_args = format_args(*expectation.expected_args)
         actual_args = args_for_multiple_calls.map { |a| format_received_args(*a) }.join(", ")
-        __raise "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
+
+        __raise(default_error_message(expectation, expected_args, actual_args))
+      end
+
+      def default_error_message(expectation, expected_args, actual_args)
+        [
+          intro,
+          "received",
+          expectation.message.inspect,
+          unexpected_arguments_message(expected_args, actual_args),
+        ].join(" ")
       end
 
       # rubocop:disable Style/ParameterLists
