@@ -1,7 +1,7 @@
 Verifying doubles are a stricter alternative to [normal doubles](./basics/test-doubles) that provide guarantees about
 what is being verified. When using verifying doubles, RSpec will check that the methods
 being stubbed are actually present on the underlying object if it is available. Prefer using
-veryifing doubles over normal doubles.
+verifying doubles over normal doubles.
 
 No checking will happen if the underlying object or class is not defined, but when run with
 it present (either as a full spec run or by explicitly preloading collaborators) a failure will be
