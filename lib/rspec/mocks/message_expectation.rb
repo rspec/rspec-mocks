@@ -34,48 +34,10 @@ module RSpec
       end
     end
 
-    # @private
+    # Represents and individual method stub or message expectation. The methods
+    # defined here can be used to configure how it behaves. Each method returns
+    # `self` so that they can be chained together to form a fluent interface.
     class MessageExpectation
-      # @private
-      attr_accessor :error_generator, :implementation
-      attr_reader :message
-      attr_reader :orig_object
-      attr_writer :expected_received_count, :expected_from, :argument_list_matcher
-      protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
-
-      # rubocop:disable Style/ParameterLists
-      # @private
-      def initialize(error_generator, expectation_ordering, expected_from, method_double,
-                     type=:expectation, opts={}, &implementation_block)
-        @error_generator = error_generator
-        @error_generator.opts = opts
-        @expected_from = expected_from
-        @method_double = method_double
-        @orig_object = @method_double.object
-        @message = @method_double.method_name
-        @actual_received_count = 0
-        @expected_received_count = type == :expectation ? 1 : :any
-        @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
-        @order_group = expectation_ordering
-        @order_group.register(self) unless type == :stub
-        @expectation_type = type
-        @ordered = false
-        @at_least = @at_most = @exactly = nil
-        @args_to_yield = []
-        @failed_fast = nil
-        @eval_context = nil
-        @yield_receiver_to_implementation_block = false
-
-        @implementation = Implementation.new
-        self.inner_implementation_action = implementation_block
-      end
-      # rubocop:enable Style/ParameterLists
-
-      # @private
-      def expected_args
-        @argument_list_matcher.expected_args
-      end
-
       # @overload and_return(value)
       # @overload and_return(first_value, second_value)
       #
@@ -114,15 +76,6 @@ module RSpec
         self.terminal_implementation_action = AndReturnImplementation.new(values)
 
         nil
-      end
-
-      def and_yield_receiver_to_implementation
-        @yield_receiver_to_implementation_block = true
-        self
-      end
-
-      def yield_receiver_to_implementation_block?
-        @yield_receiver_to_implementation_block
       end
 
       # Tells the object to delegate to the original unmodified method
@@ -221,115 +174,6 @@ module RSpec
         @args_to_yield << args
         self.initial_implementation_action = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
         self
-      end
-
-      # @private
-      def matches?(message, *args)
-        @message == message && @argument_list_matcher.args_match?(*args)
-      end
-
-      # @private
-      def safe_invoke(parent_stub, *args, &block)
-        invoke_incrementing_actual_calls_by(1, false, parent_stub, *args, &block)
-      end
-
-      # @private
-      def invoke(parent_stub, *args, &block)
-        invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
-      end
-
-      # @private
-      def invoke_without_incrementing_received_count(parent_stub, *args, &block)
-        invoke_incrementing_actual_calls_by(0, true, parent_stub, *args, &block)
-      end
-
-      # @private
-      def negative?
-        @expected_received_count == 0 && !@at_least
-      end
-
-      # @private
-      def called_max_times?
-        @expected_received_count != :any &&
-          !@at_least &&
-          @expected_received_count > 0 &&
-          @actual_received_count >= @expected_received_count
-      end
-
-      # @private
-      def matches_name_but_not_args(message, *args)
-        @message == message && !@argument_list_matcher.args_match?(*args)
-      end
-
-      # @private
-      def verify_messages_received
-        InsertOntoBacktrace.line(@expected_from) do
-          generate_error unless expected_messages_received? || failed_fast?
-        end
-      end
-
-      # @private
-      def expected_messages_received?
-        ignoring_args? || matches_exact_count? || matches_at_least_count? || matches_at_most_count?
-      end
-
-      def ensure_expected_ordering_received!
-        @order_group.verify_invocation_order(self) if @ordered
-        true
-      end
-
-      # @private
-      def ignoring_args?
-        @expected_received_count == :any
-      end
-
-      # @private
-      def matches_at_least_count?
-        @at_least && @actual_received_count >= @expected_received_count
-      end
-
-      # @private
-      def matches_at_most_count?
-        @at_most && @actual_received_count <= @expected_received_count
-      end
-
-      # @private
-      def matches_exact_count?
-        @expected_received_count == @actual_received_count
-      end
-
-      # @private
-      def similar_messages
-        @similar_messages ||= []
-      end
-
-      # @private
-      def advise(*args)
-        similar_messages << args
-      end
-
-      # @private
-      def generate_error
-        if similar_messages.empty?
-          @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *expected_args)
-        else
-          @error_generator.raise_similar_message_args_error(self, *@similar_messages)
-        end
-      end
-
-      def expectation_count_type
-        return :at_least if @at_least
-        return :at_most if @at_most
-        nil
-      end
-
-      # @private
-      def description
-        @error_generator.describe_expectation(@message, @expected_received_count, @actual_received_count, *expected_args)
-      end
-
-      def raise_out_of_order_error
-        @error_generator.raise_out_of_order_error @message
       end
 
       # Constrains a stub or message expectation to invocations with specific
@@ -482,93 +326,236 @@ module RSpec
       end
 
       # @private
-      def additional_expected_calls
-        return 0 if @expectation_type == :stub || !@exactly
-        @expected_received_count - 1
-      end
+      # Contains the parts of `MessageExpecation` that aren't part of
+      # rspec-mocks' public API. The class is very big and could really use
+      # some collaborators it delegates to for this stuff but for now this was
+      # the simplest way to split the public from private stuff to make it
+      # easier to publish the docs for the APIs we want published.
+      module ImplementationDetails
+        attr_accessor :error_generator, :implementation
+        attr_reader :message
+        attr_reader :orig_object
+        attr_writer :expected_received_count, :expected_from, :argument_list_matcher
+        protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
-      # @private
-      def ordered?
-        @ordered
-      end
+        # rubocop:disable Style/ParameterLists
+        def initialize(error_generator, expectation_ordering, expected_from, method_double,
+                       type=:expectation, opts={}, &implementation_block)
+          @error_generator = error_generator
+          @error_generator.opts = opts
+          @expected_from = expected_from
+          @method_double = method_double
+          @orig_object = @method_double.object
+          @message = @method_double.method_name
+          @actual_received_count = 0
+          @expected_received_count = type == :expectation ? 1 : :any
+          @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
+          @order_group = expectation_ordering
+          @order_group.register(self) unless type == :stub
+          @expectation_type = type
+          @ordered = false
+          @at_least = @at_most = @exactly = nil
+          @args_to_yield = []
+          @failed_fast = nil
+          @eval_context = nil
+          @yield_receiver_to_implementation_block = false
 
-      # @private
-      def negative_expectation_for?(message)
-        @message == message && negative?
-      end
+          @implementation = Implementation.new
+          self.inner_implementation_action = implementation_block
+        end
+        # rubocop:enable Style/ParameterLists
 
-      # @private
-      def actual_received_count_matters?
-        @at_least || @at_most || @exactly
-      end
-
-      # @private
-      def increase_actual_received_count!
-        @actual_received_count += 1
-      end
-
-    private
-
-      def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
-        args.unshift(orig_object) if yield_receiver_to_implementation_block?
-
-        if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
-          @actual_received_count += increment
-          @failed_fast = true
-          # args are the args we actually received, @argument_list_matcher is the
-          # list of args we were expecting
-          @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *args)
+        def expected_args
+          @argument_list_matcher.expected_args
         end
 
-        @order_group.handle_order_constraint self
+        def and_yield_receiver_to_implementation
+          @yield_receiver_to_implementation_block = true
+          self
+        end
 
-        begin
-          if implementation.present?
-            implementation.call(*args, &block)
-          elsif parent_stub
-            parent_stub.invoke(nil, *args, &block)
+        def yield_receiver_to_implementation_block?
+          @yield_receiver_to_implementation_block
+        end
+
+        def matches?(message, *args)
+          @message == message && @argument_list_matcher.args_match?(*args)
+        end
+
+        def safe_invoke(parent_stub, *args, &block)
+          invoke_incrementing_actual_calls_by(1, false, parent_stub, *args, &block)
+        end
+
+        def invoke(parent_stub, *args, &block)
+          invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
+        end
+
+        def invoke_without_incrementing_received_count(parent_stub, *args, &block)
+          invoke_incrementing_actual_calls_by(0, true, parent_stub, *args, &block)
+        end
+
+        def negative?
+          @expected_received_count == 0 && !@at_least
+        end
+
+        def called_max_times?
+          @expected_received_count != :any &&
+            !@at_least &&
+            @expected_received_count > 0 &&
+            @actual_received_count >= @expected_received_count
+        end
+
+        def matches_name_but_not_args(message, *args)
+          @message == message && !@argument_list_matcher.args_match?(*args)
+        end
+
+        def verify_messages_received
+          InsertOntoBacktrace.line(@expected_from) do
+            generate_error unless expected_messages_received? || failed_fast?
           end
-        ensure
-          @actual_received_count += increment
+        end
+
+        def expected_messages_received?
+          ignoring_args? || matches_exact_count? || matches_at_least_count? || matches_at_most_count?
+        end
+
+        def ensure_expected_ordering_received!
+          @order_group.verify_invocation_order(self) if @ordered
+          true
+        end
+
+        def ignoring_args?
+          @expected_received_count == :any
+        end
+
+        def matches_at_least_count?
+          @at_least && @actual_received_count >= @expected_received_count
+        end
+
+        def matches_at_most_count?
+          @at_most && @actual_received_count <= @expected_received_count
+        end
+
+        def matches_exact_count?
+          @expected_received_count == @actual_received_count
+        end
+
+        def similar_messages
+          @similar_messages ||= []
+        end
+
+        def advise(*args)
+          similar_messages << args
+        end
+
+        def generate_error
+          if similar_messages.empty?
+            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *expected_args)
+          else
+            @error_generator.raise_similar_message_args_error(self, *@similar_messages)
+          end
+        end
+
+        def expectation_count_type
+          return :at_least if @at_least
+          return :at_most if @at_most
+          nil
+        end
+
+        def description
+          @error_generator.describe_expectation(@message, @expected_received_count, @actual_received_count, *expected_args)
+        end
+
+        def raise_out_of_order_error
+          @error_generator.raise_out_of_order_error @message
+        end
+
+        def additional_expected_calls
+          return 0 if @expectation_type == :stub || !@exactly
+          @expected_received_count - 1
+        end
+
+        def ordered?
+          @ordered
+        end
+
+        def negative_expectation_for?(message)
+          @message == message && negative?
+        end
+
+        def actual_received_count_matters?
+          @at_least || @at_most || @exactly
+        end
+
+        def increase_actual_received_count!
+          @actual_received_count += 1
+        end
+
+      private
+
+        def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
+          args.unshift(orig_object) if yield_receiver_to_implementation_block?
+
+          if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
+            @actual_received_count += increment
+            @failed_fast = true
+            # args are the args we actually received, @argument_list_matcher is the
+            # list of args we were expecting
+            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *args)
+          end
+
+          @order_group.handle_order_constraint self
+
+          begin
+            if implementation.present?
+              implementation.call(*args, &block)
+            elsif parent_stub
+              parent_stub.invoke(nil, *args, &block)
+            end
+          ensure
+            @actual_received_count += increment
+          end
+        end
+
+        def failed_fast?
+          @failed_fast
+        end
+
+        def set_expected_received_count(relativity, n)
+          @at_least = (relativity == :at_least)
+          @at_most  = (relativity == :at_most)
+          @exactly  = (relativity == :exactly)
+          @expected_received_count = case n
+                                     when Numeric then n
+                                     when :once   then 1
+                                     when :twice  then 2
+                                     when :thrice then 3
+                                     end
+        end
+
+        def initial_implementation_action=(action)
+          implementation.initial_action = action
+        end
+
+        def inner_implementation_action=(action)
+          return unless action
+          warn_about_stub_override if implementation.inner_action
+          implementation.inner_action = action
+        end
+
+        def terminal_implementation_action=(action)
+          implementation.terminal_action = action
+        end
+
+        def warn_about_stub_override
+          RSpec.warning(
+            "You're overriding a previous stub implementation of `#{@message}`. " \
+            "Called from #{CallerFilter.first_non_rspec_line}."
+          )
         end
       end
 
-      def failed_fast?
-        @failed_fast
-      end
-
-      def set_expected_received_count(relativity, n)
-        @at_least = (relativity == :at_least)
-        @at_most  = (relativity == :at_most)
-        @exactly  = (relativity == :exactly)
-        @expected_received_count = case n
-                                   when Numeric then n
-                                   when :once   then 1
-                                   when :twice  then 2
-                                   when :thrice then 3
-                                   end
-      end
-
-      def initial_implementation_action=(action)
-        implementation.initial_action = action
-      end
-
-      def inner_implementation_action=(action)
-        return unless action
-        warn_about_stub_override if implementation.inner_action
-        implementation.inner_action = action
-      end
-
-      def terminal_implementation_action=(action)
-        implementation.terminal_action = action
-      end
-
-      def warn_about_stub_override
-        RSpec.warning(
-          "You're overriding a previous stub implementation of `#{@message}`. " \
-          "Called from #{CallerFilter.first_non_rspec_line}."
-        )
-      end
+      include ImplementationDetails
     end
 
     # Handles the implementation of an `and_yield` declaration.
