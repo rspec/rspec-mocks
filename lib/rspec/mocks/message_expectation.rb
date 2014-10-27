@@ -34,10 +34,12 @@ module RSpec
       end
     end
 
-    # Represents and individual method stub or message expectation. The methods
-    # defined here can be used to configure how it behaves. Each method returns
+    # Represents an individual method stub or message expectation. The methods
+    # defined here can be used to configure how it behaves. The methods return
     # `self` so that they can be chained together to form a fluent interface.
     class MessageExpectation
+      # @!group Configuring Responses
+
       # @overload and_return(value)
       # @overload and_return(first_value, second_value)
       #
@@ -49,8 +51,8 @@ module RSpec
       # If the message is received more times than there are values, the last
       # value is received for every subsequent call.
       #
+      # @return [nil] No further chaining is supported after this.
       # @example
-      #
       #   allow(counter).to receive(:count).and_return(1)
       #   counter.count # => 1
       #   counter.count # => 1
@@ -83,8 +85,8 @@ module RSpec
       #
       # @note This is only available on partial doubles.
       #
+      # @return [nil] No further chaining is supported after this.
       # @example
-      #
       #   expect(counter).to receive(:increment).and_call_original
       #   original_count = counter.count
       #   counter.increment
@@ -102,12 +104,11 @@ module RSpec
       #
       # @note This is only available on partial doubles.
       #
+      # @return [nil] No further chaining is supported after this.
       # @example
-      #
       #   expect(api).to receive(:large_list).and_wrap_original do |original_method, *args, &block|
       #     original_method.call(*args, &block).first(10)
       #   end
-      #
       def and_wrap_original(&block)
         if RSpec::Mocks::TestDouble === @method_double.object
           @error_generator.raise_only_valid_on_a_partial_double(:and_call_original)
@@ -116,6 +117,8 @@ module RSpec
           @implementation = AndWrapOriginalImplementation.new(@method_double.original_method, block)
           @yield_receiver_to_implementation_block = false
         end
+
+        nil
       end
 
       # @overload and_raise
@@ -125,8 +128,8 @@ module RSpec
       #
       # Tells the object to raise an exception when the message is received.
       #
+      # @return [nil] No further chaining is supported after this.
       # @note
-      #
       #   When you pass an exception class, the MessageExpectation will raise
       #   an instance of it, creating it with `exception` and passing `message`
       #   if specified.  If the exception class initializer requires more than
@@ -134,7 +137,6 @@ module RSpec
       #   otherwise this method will raise an ArgumentError exception.
       #
       # @example
-      #
       #   allow(car).to receive(:go).and_raise
       #   allow(car).to receive(:go).and_raise(OutOfGas)
       #   allow(car).to receive(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
@@ -154,8 +156,8 @@ module RSpec
       # Tells the object to throw a symbol (with the object if that form is
       # used) when the message is received.
       #
+      # @return [nil] No further chaining is supported after this.
       # @example
-      #
       #   allow(car).to receive(:go).and_throw(:out_of_gas)
       #   allow(car).to receive(:go).and_throw(:out_of_gas, :level => 0.1)
       def and_throw(*args)
@@ -166,8 +168,8 @@ module RSpec
       # Tells the object to yield one or more args to a block when the message
       # is received.
       #
+      # @return [MessageExpecation] self, to support further chaining.
       # @example
-      #
       #   stream.stub(:open).and_yield(StringIO.new)
       def and_yield(*args, &block)
         yield @eval_context = Object.new if block
@@ -175,6 +177,110 @@ module RSpec
         self.initial_implementation_action = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
         self
       end
+      # @!endgroup
+
+      # @!group Constraining Receive Counts
+
+      # Constrain a message expectation to be received a specific number of
+      # times.
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(dealer).to receive(:deal_card).exactly(10).times
+      def exactly(n, &block)
+        self.inner_implementation_action = block
+        set_expected_received_count :exactly, n
+        self
+      end
+
+      # Constrain a message expectation to be received at least a specific
+      # number of times.
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(dealer).to receive(:deal_card).at_least(9).times
+      def at_least(n, &block)
+        set_expected_received_count :at_least, n
+
+        if n == 0
+          raise "at_least(0) has been removed, use allow(...).to receive(:message) instead"
+        end
+
+        self.inner_implementation_action = block
+
+        self
+      end
+
+      # Constrain a message expectation to be received at most a specific
+      # number of times.
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(dealer).to receive(:deal_card).at_most(10).times
+      def at_most(n, &block)
+        self.inner_implementation_action = block
+        set_expected_received_count :at_most, n
+        self
+      end
+
+      # Syntactic sugar for `exactly`, `at_least` and `at_most`
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(dealer).to receive(:deal_card).exactly(10).times
+      #   expect(dealer).to receive(:deal_card).at_least(10).times
+      #   expect(dealer).to receive(:deal_card).at_most(10).times
+      def times(&block)
+        self.inner_implementation_action = block
+        self
+      end
+
+      # Expect a message not to be received at all.
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(car).to receive(:stop).never
+      def never
+        ErrorGenerator.raise_double_negation_error("expect(obj)") if negative?
+        @expected_received_count = 0
+        self
+      end
+
+      # Expect a message to be received exactly one time.
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(car).to receive(:go).once
+      def once(&block)
+        self.inner_implementation_action = block
+        set_expected_received_count :exactly, 1
+        self
+      end
+
+      # Expect a message to be received exactly two times.
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(car).to receive(:go).twice
+      def twice(&block)
+        self.inner_implementation_action = block
+        set_expected_received_count :exactly, 2
+        self
+      end
+
+      # Expect a message to be received exactly three times.
+      #
+      # @return [MessageExpecation] self, to support further chaining.
+      # @example
+      #   expect(car).to receive(:go).thrice
+      def thrice(&block)
+        self.inner_implementation_action = block
+        set_expected_received_count :exactly, 3
+        self
+      end
+      # @!endgroup
+
+      # @!group Other Constraints
 
       # Constrains a stub or message expectation to invocations with specific
       # arguments.
@@ -186,8 +292,8 @@ module RSpec
       # A message expectation will fail if the message is received with different
       # arguments.
       #
+      # @return [MessageExpecation] self, to support further chaining.
       # @example
-      #
       #   allow(cart).to receive(:add) { :failure }
       #   allow(cart).to receive(:add).with(Book.new(:isbn => 1934356379)) { :success }
       #   cart.add(Book.new(:isbn => 1234567890))
@@ -211,108 +317,10 @@ module RSpec
         self
       end
 
-      # Constrain a message expectation to be received a specific number of
-      # times.
-      #
-      # @example
-      #
-      #   expect(dealer).to receive(:deal_card).exactly(10).times
-      def exactly(n, &block)
-        self.inner_implementation_action = block
-        set_expected_received_count :exactly, n
-        self
-      end
-
-      # Constrain a message expectation to be received at least a specific
-      # number of times.
-      #
-      # @example
-      #
-      #   expect(dealer).to receive(:deal_card).at_least(9).times
-      def at_least(n, &block)
-        set_expected_received_count :at_least, n
-
-        if n == 0
-          raise "at_least(0) has been removed, use allow(...).to receive(:message) instead"
-        end
-
-        self.inner_implementation_action = block
-
-        self
-      end
-
-      # Constrain a message expectation to be received at most a specific
-      # number of times.
-      #
-      # @example
-      #
-      #   expect(dealer).to receive(:deal_card).at_most(10).times
-      def at_most(n, &block)
-        self.inner_implementation_action = block
-        set_expected_received_count :at_most, n
-        self
-      end
-
-      # Syntactic sugar for `exactly`, `at_least` and `at_most`
-      #
-      # @example
-      #
-      #   expect(dealer).to receive(:deal_card).exactly(10).times
-      #   expect(dealer).to receive(:deal_card).at_least(10).times
-      #   expect(dealer).to receive(:deal_card).at_most(10).times
-      def times(&block)
-        self.inner_implementation_action = block
-        self
-      end
-
-      # Expect a message not to be received at all.
-      #
-      # @example
-      #
-      #   expect(car).to receive(:stop).never
-      def never
-        ErrorGenerator.raise_double_negation_error("expect(obj)") if negative?
-        @expected_received_count = 0
-        self
-      end
-
-      # Expect a message to be received exactly one time.
-      #
-      # @example
-      #
-      #   expect(car).to receive(:go).once
-      def once(&block)
-        self.inner_implementation_action = block
-        set_expected_received_count :exactly, 1
-        self
-      end
-
-      # Expect a message to be received exactly two times.
-      #
-      # @example
-      #
-      #   expect(car).to receive(:go).twice
-      def twice(&block)
-        self.inner_implementation_action = block
-        set_expected_received_count :exactly, 2
-        self
-      end
-
-      # Expect a message to be received exactly three times.
-      #
-      # @example
-      #
-      #   expect(car).to receive(:go).thrice
-      def thrice(&block)
-        self.inner_implementation_action = block
-        set_expected_received_count :exactly, 3
-        self
-      end
-
       # Expect messages to be received in a specific order.
       #
+      # @return [MessageExpecation] self, to support further chaining.
       # @example
-      #
       #   expect(api).to receive(:prepare).ordered
       #   expect(api).to receive(:run).ordered
       #   expect(api).to receive(:finish).ordered
