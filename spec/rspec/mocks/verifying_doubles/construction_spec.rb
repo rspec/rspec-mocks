@@ -3,7 +3,15 @@ require 'support/doubled_classes'
 module RSpec
   module Mocks
     RSpec.describe 'Constructing a verifying double' do
+      class ClassThatDynamicallyDefinesMethods
+        def self.define_attribute_methods!
+          define_method(:some_method_defined_dynamically) { true }
+        end
+      end
+
       describe 'instance doubles' do
+        include_context 'with isolated configuration'
+
         it 'cannot be constructed with a non-module object' do
           expect {
             instance_double(Object.new)
@@ -14,6 +22,18 @@ module RSpec
           o = instance_double(Struct.new(:defined_method), :defined_method => 1)
 
           expect(o.defined_method).to eq(1)
+        end
+
+        it 'allows constants to be customised' do
+          test_class = Class.new(ClassThatDynamicallyDefinesMethods)
+
+          RSpec.configuration.mock_with(:rspec) do |config|
+            config.when_declaring_verifying_double do |type|
+              type.define_attribute_methods!
+            end
+          end
+
+          instance_double(test_class, :some_method_defined_dynamically => true)
         end
       end
 

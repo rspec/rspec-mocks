@@ -57,6 +57,10 @@ module RSpec
               "Can not perform constant replacement with an object."
       end
 
+      def const
+        @object.class
+      end
+
       def defined?
         true
       end
@@ -75,6 +79,10 @@ module RSpec
         @object.name
       end
       alias description const_to_replace
+
+      def const
+        @object
+      end
     end
 
     # Used when a string is passed to `class_double`, `instance_double`
@@ -96,6 +104,10 @@ module RSpec
         @const_name
       end
       alias description const_to_replace
+
+      def const
+        object
+      end
 
       def when_loaded
         yield object if object

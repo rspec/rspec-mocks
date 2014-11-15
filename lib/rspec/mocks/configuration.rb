@@ -104,6 +104,23 @@ module RSpec
       # isolated unit test will prevent you from being able to isolate it!
       attr_writer :verify_doubled_constant_names
 
+      # Provides a way to perform customisations when verifying doubles.
+      #
+      # @example
+      #
+      #  RSpec::Mocks.configuration.when_declaring_verifying_double do |ref|
+      #    ref.some_method!
+      #  end
+      def when_declaring_verifying_double(&block)
+        verifying_double_declaration_callbacks << block
+      end
+
+      # @api private
+      # Returns an array of blocks to call when verifying doubles
+      def verifying_double_declaration_callbacks
+        @verifying_double_declaration_callbacks ||= []
+      end
+
       def transfer_nested_constants?
         !!@transfer_nested_constants
       end
