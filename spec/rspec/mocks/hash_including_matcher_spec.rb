@@ -7,6 +7,12 @@ module RSpec
           expect(HashIncludingMatcher.new(:a => 1).description).to eq "hash_including(:a=>1)"
         end
 
+        it "describes passed matchers" do
+          description = hash_including(:foo => fake_matcher(Object.new)).description
+
+          expect(description).to include(MatcherHelpers.fake_matcher_description)
+        end
+
         describe "passing" do
           it "matches the same hash" do
             expect(hash_including(:a => 1)).to be === {:a => 1}

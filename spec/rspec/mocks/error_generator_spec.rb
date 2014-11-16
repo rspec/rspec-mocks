@@ -18,14 +18,10 @@ module RSpec
         end
 
         context "on matcher objects" do
-          matcher :fake_matcher do
-            match { false }
-          end
-
           context "that define description" do
             it "uses the object's description" do
               d = double(:double)
-              o = fake_matcher
+              o = fake_matcher(Object.new)
               expect {
                 d.bees(o)
               }.to raise_error(unexpected_failure_message_for(o.description))

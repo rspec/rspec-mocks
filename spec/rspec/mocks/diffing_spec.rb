@@ -6,12 +6,6 @@ RSpec.describe "Diffs printed when arguments don't match" do
     allow(RSpec::Mocks.configuration).to receive(:color?).and_return(false)
   end
 
-  def with_unfulfilled_double
-    d = double("double")
-    yield d
-    reset d
-  end
-
   context "with a non matcher object" do
     it "does not print a diff when single line arguments are mismatched" do
       with_unfulfilled_double do |d|
@@ -97,15 +91,11 @@ RSpec.describe "Diffs printed when arguments don't match" do
   end
 
   context "with a matcher object" do
-    matcher :fake_matcher do
-      match { false }
-    end
-
     context "that defines #description" do
       it "uses the object's description" do
         with_unfulfilled_double do |d|
 
-          collab = fake_matcher
+          collab = fake_matcher(Object.new)
           collab_description = collab.description
 
           expect(d).to receive(:foo).with(collab)
