@@ -1,3 +1,10 @@
+### 2.99.3 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.2...v2.99.3)
+
+Bug Fixes:
+
+* Fix regression that caused an error when a test double was deserialized from YAML. (Yuji Nakayama, #777)
+
 ### 2.99.2 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.1...v2.99.2)
 
