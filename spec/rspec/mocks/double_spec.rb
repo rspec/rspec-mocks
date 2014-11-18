@@ -88,4 +88,12 @@ describe "double" do
       end
     end
   end
+
+  context 'when being deserialized from YAML' do
+    let(:yaml) { YAML.dump(double) }
+
+    it 'does not raise error' do
+      expect { YAML.load(yaml) }.not_to raise_error
+    end
+  end
 end

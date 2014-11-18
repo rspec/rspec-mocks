@@ -140,7 +140,7 @@ module RSpec
       end
 
       def __warn_of_expired_use_if_expired
-        if @__unfrozen_attributes[:expired]
+        if @__unfrozen_attributes && @__unfrozen_attributes[:expired]
           RSpec.deprecate "Continuing to use a test double after it has been reset (e.g. in a subsequent example)"
         end
       end
