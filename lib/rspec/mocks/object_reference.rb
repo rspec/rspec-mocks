@@ -104,7 +104,8 @@ module RSpec
     private
 
       def object
-        @object ||= Constant.original(@const_name).original_value
+        return @object if defined?(@object)
+        @object = Constant.original(@const_name).original_value
       end
     end
   end
