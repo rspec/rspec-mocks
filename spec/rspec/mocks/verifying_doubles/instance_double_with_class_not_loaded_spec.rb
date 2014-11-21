@@ -52,6 +52,20 @@ module RSpec
           expect(o.respond_to?(:a, true)).to be true
         end
       end
+
+      context "when the class const has been previously stubbed" do
+        before { class_double("NonLoadedClass").as_stubbed_const }
+
+        it "treats the class as unloaded for `instance_double('NonLoadedClass')`" do
+          o = instance_double("NonLoadedClass")
+          allow(o).to receive(:undefined_method)
+        end
+
+        it "treats the class as unloaded for `instance_double(NonLoadedClass)`" do
+          o = instance_double(NonLoadedClass)
+          allow(o).to receive(:undefined_method)
+        end
+      end
     end
   end
 end

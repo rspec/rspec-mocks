@@ -144,6 +144,22 @@ module RSpec
         expect(o.defined_instance_method).to eq(1)
       end
 
+      context "when the class const has been previously stubbed" do
+        before { class_double(LoadedClass).as_stubbed_const }
+
+        it "uses the original class to verify against for `instance_double('LoadedClass')`" do
+          o = instance_double("LoadedClass")
+          allow(o).to receive(:defined_instance_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+
+        it "uses the original class to verify against for `instance_double(LoadedClass)`" do
+          o = instance_double(LoadedClass)
+          allow(o).to receive(:defined_instance_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+      end
+
       context 'for null objects' do
         let(:o) { instance_double('LoadedClass').as_null_object }
 

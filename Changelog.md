@@ -19,6 +19,10 @@ Bug Fixes:
 * Prevent the error generator from using user object #description methods.
   See [#685](https://github.com/rspec/rspec-mocks/issues/685).
   (Sam Phippen, #751)
+* Make verified doubles declared as `(instance|class)_double(SomeConst)`
+  work properly when `SomeConst` has previously been stubbed.
+  `(instance|class)_double("SomeClass")` already worked properly.
+  (Myron Marston, #824)
 
 ### 3.1.3 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)
