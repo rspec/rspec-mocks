@@ -126,19 +126,3 @@ Feature: Spies
       |  2) An invitiation fails when an order constraint is not satisifed                               |
       |     Failure/Error: expect(invitation).to have_received(:deliver).with("foo@example.com").ordered |
       |       Double "invitation" received :deliver out of order                                         |
-
-  Scenario: `have_received` generates a good example description
-    Given a file named "generates_description_spec.rb" with:
-      """ruby
-      RSpec.describe "An invitation" do
-        subject(:invitation) { spy('invitation') }
-        before { invitation.deliver }
-        it { is_expected.to have_received(:deliver) }
-      end
-      """
-    When I run `rspec --format documentation generates_description_spec.rb`
-    Then it should pass with:
-      """
-      An invitation
-        should have received deliver(*(any args)) 1 time
-      """
