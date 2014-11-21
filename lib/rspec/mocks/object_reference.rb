@@ -97,7 +97,7 @@ module RSpec
       end
       alias description const_to_replace
 
-      def when_loaded(&_block)
+      def when_loaded
         yield object if object
       end
 
