@@ -65,6 +65,7 @@ module RSpec
       #   counter.count # => 3
       #   # etc
       def and_return(first_value, *values)
+        raise_already_invoked_error_if_necessary(__method__)
         if negative?
           raise "`and_return` is not supported with negative message expectations"
         end
@@ -142,6 +143,7 @@ module RSpec
       #   allow(car).to receive(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
       #   allow(car).to receive(:go).and_raise(OutOfGas.new(2, :oz))
       def and_raise(exception=RuntimeError, message=nil)
+        raise_already_invoked_error_if_necessary(__method__)
         if exception.respond_to?(:exception)
           exception = message ? exception.exception(message) : exception.exception
         end
@@ -161,6 +163,7 @@ module RSpec
       #   allow(car).to receive(:go).and_throw(:out_of_gas)
       #   allow(car).to receive(:go).and_throw(:out_of_gas, :level => 0.1)
       def and_throw(*args)
+        raise_already_invoked_error_if_necessary(__method__)
         self.terminal_implementation_action = Proc.new { throw(*args) }
         nil
       end
@@ -172,6 +175,7 @@ module RSpec
       # @example
       #   stream.stub(:open).and_yield(StringIO.new)
       def and_yield(*args, &block)
+        raise_already_invoked_error_if_necessary(__method__)
         yield @eval_context = Object.new if block
         @args_to_yield << args
         self.initial_implementation_action = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
@@ -188,6 +192,7 @@ module RSpec
       # @example
       #   expect(dealer).to receive(:deal_card).exactly(10).times
       def exactly(n, &block)
+        raise_already_invoked_error_if_necessary(__method__)
         self.inner_implementation_action = block
         set_expected_received_count :exactly, n
         self
@@ -200,6 +205,7 @@ module RSpec
       # @example
       #   expect(dealer).to receive(:deal_card).at_least(9).times
       def at_least(n, &block)
+        raise_already_invoked_error_if_necessary(__method__)
         set_expected_received_count :at_least, n
 
         if n == 0
@@ -218,6 +224,7 @@ module RSpec
       # @example
       #   expect(dealer).to receive(:deal_card).at_most(10).times
       def at_most(n, &block)
+        raise_already_invoked_error_if_necessary(__method__)
         self.inner_implementation_action = block
         set_expected_received_count :at_most, n
         self
@@ -307,6 +314,7 @@ module RSpec
       #   cart.add(Book.new(:isbn => 1934356379))
       #   # => passes
       def with(*args, &block)
+        raise_already_invoked_error_if_necessary(__method__)
         if args.empty?
           raise ArgumentError,
                 "`with` must have at least one argument. Use `no_args` matcher to set the expectation of receiving no arguments."
@@ -526,6 +534,20 @@ module RSpec
           ensure
             @actual_received_count += increment
           end
+        end
+
+        def has_been_invoked?
+          @actual_received_count > 0
+        end
+
+        def raise_already_invoked_error_if_necessary(calling_customization)
+          return unless has_been_invoked?
+
+          error_message = "The message expectation for #{orig_object.inspect}.#{message} has already been invoked " \
+            "and cannot be modified further (e.g. using `#{calling_customization}`). All message expectation " \
+            "customizations must be applied before it is used for the first time."
+
+          raise MockExpectationAlreadyInvokedError, error_message
         end
 
         def failed_fast?
