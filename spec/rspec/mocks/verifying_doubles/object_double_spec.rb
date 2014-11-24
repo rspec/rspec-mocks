@@ -63,6 +63,72 @@ module RSpec
           allow(dbl).to receive(:instance_method_with_two_args).with(3, :foo, :args)
         }
       end
+
+      context "when a loaded object constant has previously been stubbed with an object" do
+        before { stub_const("LoadedClass::INSTANCE", Object.new) }
+
+        it "uses the original object to verify against for `object_double('ConstName')`" do
+          o = object_double("LoadedClass::INSTANCE")
+          allow(o).to receive(:defined_instance_method)
+          prevents { allow(o).to receive(:undefined_meth) }
+        end
+
+        it "uses the stubbed const value to verify against for `object_double(ConstName)`, " \
+           "which probably isn't what the user wants, but there's nothing else we can do since " \
+           "we can't get the constant name from the given object and thus cannot interrogate " \
+           "our stubbed const registry to see it has been stubbed" do
+          o = object_double(LoadedClass::INSTANCE)
+          prevents { allow(o).to receive(:defined_instance_method) }
+        end
+      end
+
+      context "when a loaded object constant has previously been stubbed with a class" do
+        before { stub_const("LoadedClass::INSTANCE", Class.new) }
+
+        it "uses the original object to verify against for `object_double('ConstName')`" do
+          o = object_double("LoadedClass::INSTANCE")
+          allow(o).to receive(:defined_instance_method)
+          prevents { allow(o).to receive(:undefined_meth) }
+        end
+
+        it "uses the original object to verify against for `object_double(ConstName)`" do
+          o = object_double(LoadedClass::INSTANCE)
+          allow(o).to receive(:defined_instance_method)
+          prevents { allow(o).to receive(:undefined_meth) }
+        end
+      end
+
+      context "when an unloaded object constant has previously been stubbed with an object" do
+        before { stub_const("LoadedClass::NOINSTANCE", LoadedClass::INSTANCE) }
+
+        it "treats it as being unloaded for `object_double('ConstName')`" do
+          o = object_double("LoadedClass::NOINSTANCE")
+          allow(o).to receive(:undefined_method)
+        end
+
+        it "uses the stubbed const value to verify against for `object_double(ConstName)`, " \
+           "which probably isn't what the user wants, but there's nothing else we can do since " \
+           "we can't get the constant name from the given object and thus cannot interrogate " \
+           "our stubbed const registry to see it has been stubbed" do
+          o = object_double(LoadedClass::NOINSTANCE)
+          allow(o).to receive(:defined_instance_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+      end
+
+      context "when an unloaded object constant has previously been stubbed with a class" do
+        before { stub_const("LoadedClass::NOINSTANCE", Class.new) }
+
+        it "treats it as being unloaded for `object_double('ConstName')`" do
+          o = object_double("LoadedClass::NOINSTANCE")
+          allow(o).to receive(:undefined_method)
+        end
+
+        it "treats it as being unloaded for `object_double('ConstName')`" do
+          o = object_double(LoadedClass::NOINSTANCE)
+          allow(o).to receive(:undefined_method)
+        end
+      end
     end
   end
 end

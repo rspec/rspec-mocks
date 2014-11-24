@@ -113,6 +113,31 @@ module RSpec
           allow(dbl).to receive(:defined_class_method).with(2, :args)
         }
       end
+
+      context "when given an anonymous class" do
+        it 'properly verifies' do
+          subclass = Class.new(LoadedClass)
+          o = class_double(subclass)
+          allow(o).to receive(:defined_class_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+      end
+
+      context "when the class const has been previously stubbed" do
+        before { stub_const("LoadedClass", Class.new) }
+
+        it "uses the original class to verify against for `class_double('ClassName')`" do
+          o = class_double("LoadedClass")
+          allow(o).to receive(:defined_class_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+
+        it "uses the original class to verify against for `instance_double(ClassName)`" do
+          o = class_double(LoadedClass)
+          allow(o).to receive(:defined_class_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+      end
     end
   end
 end

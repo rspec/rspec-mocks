@@ -6,8 +6,17 @@ module RSpec
       # on the given argument.
       def self.for(object_module_or_name, allow_direct_object_refs=false)
         case object_module_or_name
-        when Module then DirectModuleReference.new(object_module_or_name)
-        when String then NamedObjectReference.new(object_module_or_name)
+        when Module
+          if anonymous_module?(object_module_or_name)
+            DirectModuleReference.new(object_module_or_name)
+          else
+            # Use a `NamedObjectReference` if it has a name because this
+            # will use the original value of the constant in case it has
+            # been stubbed.
+            NamedObjectReference.new(object_module_or_name.name)
+          end
+        when String
+          NamedObjectReference.new(object_module_or_name)
         else
           if allow_direct_object_refs
             DirectObjectReference.new(object_module_or_name)
@@ -17,6 +26,17 @@ module RSpec
           end
         end
       end
+
+      if Module.new.name.nil?
+        def self.anonymous_module?(mod)
+          !mod.name
+        end
+      else # 1.8.7
+        def self.anonymous_module?(mod)
+          mod.name == ""
+        end
+      end
+      private_class_method :anonymous_module?
     end
 
     # Used when an object is passed to `object_double`.
@@ -77,14 +97,15 @@ module RSpec
       end
       alias description const_to_replace
 
-      def when_loaded(&_block)
+      def when_loaded
         yield object if object
       end
 
     private
 
       def object
-        @object ||= Constant.original(@const_name).original_value
+        return @object if defined?(@object)
+        @object = Constant.original(@const_name).original_value
       end
     end
   end
