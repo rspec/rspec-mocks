@@ -11,11 +11,11 @@ module RSpec
 
       # @overload double()
       # @overload double(name)
-      #   @param name [String/Symbol] used to clarify intent
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload double(stubs)
       #   @param stubs (Hash) hash of message/return-value pairs
       # @overload double(name, stubs)
-      #   @param name [String/Symbol] used to clarify intent
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs (Hash) hash of message/return-value pairs
       # @return (Double)
       #
@@ -38,8 +38,15 @@ module RSpec
 
       # @overload instance_double(doubled_class)
       #   @param doubled_class [String, Class]
+      # @overload instance_double(doubled_class, name)
+      #   @param doubled_class [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload instance_double(doubled_class, stubs)
       #   @param doubled_class [String, Class]
+      #   @param stubs [Hash] hash of message/return-value pairs
+      # @overload instance_double(doubled_class, name, stubs)
+      #   @param doubled_class [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs [Hash] hash of message/return-value pairs
       # @return InstanceVerifyingDouble
       #
@@ -54,8 +61,15 @@ module RSpec
 
       # @overload class_double(doubled_class)
       #   @param doubled_class [String, Module]
+      # @overload class_double(doubled_class, name)
+      #   @param doubled_class [String, Module]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload class_double(doubled_class, stubs)
       #   @param doubled_class [String, Module]
+      #   @param stubs [Hash] hash of message/return-value pairs
+      # @overload class_double(doubled_class, name, stubs)
+      #   @param doubled_class [String, Module]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs [Hash] hash of message/return-value pairs
       # @return ClassVerifyingDouble
       #
@@ -70,8 +84,15 @@ module RSpec
 
       # @overload object_double(object_or_name)
       #   @param object_or_name [String, Object]
+      # @overload object_double(object_or_name, name)
+      #   @param object_or_name [String, Object]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload object_double(object_or_name, stubs)
       #   @param object_or_name [String, Object]
+      #   @param stubs [Hash] hash of message/return-value pairs
+      # @overload object_double(object_or_name, name, stubs)
+      #   @param object_or_name [String, Object]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs [Hash] hash of message/return-value pairs
       # @return ObjectVerifyingDouble
       #
@@ -86,11 +107,11 @@ module RSpec
 
       # @overload spy()
       # @overload spy(name)
-      #   @param name [String/Symbol] used to clarify intent
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload spy(stubs)
       #   @param stubs (Hash) hash of message/return-value pairs
       # @overload spy(name, stubs)
-      #   @param name [String/Symbol] used to clarify intent
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs (Hash) hash of message/return-value pairs
       # @return (Double)
       #
@@ -103,8 +124,15 @@ module RSpec
 
       # @overload instance_spy(doubled_class)
       #   @param doubled_class [String, Class]
+      # @overload instance_spy(doubled_class, name)
+      #   @param doubled_class [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload instance_spy(doubled_class, stubs)
       #   @param doubled_class [String, Class]
+      #   @param stubs [Hash] hash of message/return-value pairs
+      # @overload instance_spy(doubled_class, name, stubs)
+      #   @param doubled_class [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs [Hash] hash of message/return-value pairs
       # @return InstanceVerifyingDouble
       #
@@ -120,8 +148,15 @@ module RSpec
 
       # @overload object_spy(object_or_name)
       #   @param object_or_name [String, Object]
+      # @overload object_spy(object_or_name, name)
+      #   @param object_or_name [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload object_spy(object_or_name, stubs)
       #   @param object_or_name [String, Object]
+      #   @param stubs [Hash] hash of message/return-value pairs
+      # @overload object_spy(object_or_name, name, stubs)
+      #   @param object_or_name [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs [Hash] hash of message/return-value pairs
       # @return ObjectVerifyingDouble
       #
@@ -136,8 +171,15 @@ module RSpec
 
       # @overload class_spy(doubled_class)
       #   @param doubled_class [String, Module]
+      # @overload class_spy(doubled_class, name)
+      #   @param doubled_class [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       # @overload class_spy(doubled_class, stubs)
       #   @param doubled_class [String, Module]
+      #   @param stubs [Hash] hash of message/return-value pairs
+      # @overload class_spy(doubled_class, name, stubs)
+      #   @param doubled_class [String, Class]
+      #   @param name [String/Symbol] name or description to be used in failure messages
       #   @param stubs [Hash] hash of message/return-value pairs
       # @return ClassVerifyingDouble
       #
