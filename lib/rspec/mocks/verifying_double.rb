@@ -28,6 +28,8 @@ module RSpec
           else
             __mock_proxy.ensure_publicly_implemented(message, self)
           end
+
+          __mock_proxy.validate_arguments!(message, args)
         end
 
         super
