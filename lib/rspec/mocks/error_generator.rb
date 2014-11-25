@@ -157,8 +157,8 @@ module RSpec
       end
 
       # @private
-      def describe_expectation(message, expected_received_count, _actual_received_count, *args)
-        "have received #{message}#{format_args(*args)} #{count_message(expected_received_count)}"
+      def describe_expectation(verb, message, expected_received_count, _actual_received_count, *args)
+        "#{verb} #{message}#{format_args(*args)} #{count_message(expected_received_count)}"
       end
 
       # @private
