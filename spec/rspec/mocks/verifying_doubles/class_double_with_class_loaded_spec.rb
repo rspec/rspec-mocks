@@ -107,6 +107,14 @@ module RSpec
         prevents { o.undefined_method }
       end
 
+      it 'verifies arguments for null objects' do
+        o = class_double('LoadedClass').as_null_object
+
+        expect {
+          o.defined_class_method(:too, :many, :args)
+        }.to raise_error(ArgumentError, "Wrong number of arguments. Expected 0, got 3.")
+      end
+
       it 'validates `with` args against the method signature when stubbing a method' do
         dbl = class_double(LoadedClass)
         prevents(/Wrong number of arguments. Expected 0, got 2./) {
