@@ -212,6 +212,21 @@ module RSpec::Mocks::Matchers
 
         expect(o.foo.bar.baz).to eq(3)
       end
+
+      it "provides a matcher description (when passing a string)" do
+        matcher = receive_message_chain("foo.bar.bazz")
+        expect(matcher.description).to eq("receive message chain foo.bar.bazz")
+      end
+
+      it "provides a matcher description (when passing symbols)" do
+        matcher = receive_message_chain(:foo, :bar, :bazz)
+        expect(matcher.description).to eq("receive message chain foo.bar.bazz")
+      end
+
+      it "provides a matcher description (when passing symbols and a hash)" do
+        matcher = receive_message_chain(:foo, :bar, :bazz => 3)
+        expect(matcher.description).to eq("receive message chain foo.bar.bazz")
+      end
     end
 
     context "when the expect and should syntaxes are enabled" do
