@@ -44,7 +44,7 @@ module RSpec
         end
 
         def description
-          expect.description
+          expect.description_for("have received")
         end
 
         CONSTRAINTS.each do |expectation|

@@ -164,6 +164,14 @@ module RSpec
             expect(e.backtrace.first).to match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
           }
         end
+
+        it "provides a useful matcher description" do
+          matcher = receive(:foo).with(:bar).once
+          wrapped.to matcher
+          receiver.foo(:bar)
+
+          expect(matcher.description).to start_with("receive foo")
+        end
       end
 
       shared_examples "an expect syntax negative expectation" do
@@ -401,6 +409,11 @@ module RSpec
           let(:wrapped)  { expect_any_instance_of(klass) }
           let(:receiver) { klass.new }
         end
+      end
+
+      it 'has a description before being matched' do
+        matcher = receive(:foo)
+        expect(matcher.description).to eq("receive foo")
       end
 
       shared_examples "using rspec-mocks in another test framework" do

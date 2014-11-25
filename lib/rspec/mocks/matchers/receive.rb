@@ -15,9 +15,13 @@ module RSpec
           "receive"
         end
 
+        def description
+          describable.description_for("receive")
+        end
+
         def setup_expectation(subject, &block)
           warn_if_any_instance("expect", subject)
-          setup_mock_proxy_method_substitute(subject, :add_message_expectation, block)
+          @describable = setup_mock_proxy_method_substitute(subject, :add_message_expectation, block)
         end
         alias matches? setup_expectation
 
@@ -60,6 +64,10 @@ module RSpec
 
       private
 
+        def describable
+          @describable ||= DefaultDescribable.new(@message)
+        end
+
         def warn_if_any_instance(expression, subject)
           return unless AnyInstance::Proxy === subject
 
@@ -99,6 +107,22 @@ module RSpec
 
           last.block ||= block
           nil
+        end
+
+        # MessageExpectation objects are able to describe themselves in detail.
+        # We use this as a fall back when a MessageExpectation is not available.
+        # @private
+        class DefaultDescribable
+          def initialize(message)
+            @message = message
+          end
+
+          # This is much simpler for the `any_instance` case than what the
+          # user may want, but I'm not up for putting a bunch of effort
+          # into full descriptions for `any_instance` expectations at this point :(.
+          def description_for(verb)
+            "#{verb} #{@message}"
+          end
         end
       end
     end

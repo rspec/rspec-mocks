@@ -12,6 +12,10 @@ module RSpec
           "receive_messages"
         end
 
+        def description
+          "receive messages: #{@message_return_value_hash.inspect}"
+        end
+
         def setup_expectation(subject)
           warn_about_block if block_given?
           each_message_on(proxy_on(subject)) do |host, message, return_value|

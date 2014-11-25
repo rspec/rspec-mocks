@@ -97,6 +97,12 @@ module RSpec
 
       it_behaves_like "complains when given blocks"
       it_behaves_like "handles partially mocked objects correctly"
+
+      it "provides a matcher description" do
+        messages = { :a => 1, :b => 2 }
+        matcher = receive_messages(messages)
+        expect(matcher.description).to eq("receive messages: #{messages.inspect}")
+      end
     end
 
     RSpec.describe "expect_any_instance_of(...).to receive_messages(:a => 1, :b => 2)" do
