@@ -32,6 +32,16 @@ isolation without your dependencies loaded while still being able to validate
 them against real objects. More detail is available in [their
 documentation](https://github.com/rspec/rspec-mocks/blob/master/features/verifying_doubles).
 
+Verifying doubles can also accept custom identifiers, just like double(), e.g.:
+
+```ruby
+books = []
+books << instance_double("Book", :rspec_book, :pages => 250)
+books << instance_double("Book", "(Untitled)", :pages => 5000)
+
+puts books.inspect # with names, it's clearer which were actually added
+```
+
 ## Method Stubs
 
 A method stub is an implementation that returns a pre-determined value.  Method

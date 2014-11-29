@@ -9,13 +9,6 @@ module RSpec
         RSpec::Mocks.configuration.verify_doubled_constant_names = true
       end
 
-      it 'includes the double name in errors for unexpected messages' do
-        o = class_double("LoadedClass")
-        expect {
-          o.defined_class_method
-        }.to fail_matching('Double "LoadedClass"')
-      end
-
       it 'only allows class methods that exist to be stubbed' do
         o = class_double('LoadedClass', :defined_class_method => 1)
         expect(o.defined_class_method).to eq(1)

@@ -19,6 +19,9 @@ class LoadedClass
       # fake out!
     end
 
+    def defined_instance_and_class_method
+    end
+
   protected
 
     def defined_protected_class_method
@@ -38,6 +41,9 @@ class LoadedClass
   end
 
   def instance_method_with_only_defaults(a=1, b=2)
+  end
+
+  def defined_instance_and_class_method
   end
 
   if required_kw_args_supported?
