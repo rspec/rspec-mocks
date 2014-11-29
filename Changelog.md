@@ -7,6 +7,9 @@ Enhancements:
   number of args at any point in an arg list. (Myron Marston, #786)
 * Print diffs when arguments in mock expectations are mismatched.
   (Sam Phippen, #751)
+* Support names for verified doubles (`instance_double`, `instance_spy`,
+  `class_double`, `class_spy`, `object_double`, `object_spy`). (Cezary
+  Baginski, #826)
 
 Bug Fixes:
 
