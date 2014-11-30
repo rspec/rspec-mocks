@@ -30,6 +30,9 @@ Bug Fixes:
   `receive_message_chain`. (Myron Marston, #828)
 * Validate invocation args for null object verified doubles.
   (Myron Marston, #829)
+* Fix `RSpec::Mocks::Constant.original` when called with an invalid
+  constant to return an object indicating the constant name is invalid,
+  rather than blowing up. (Myron Marston, #833)
 
 ### 3.1.3 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)
