@@ -13,6 +13,8 @@ module RSpec
         @previously_defined = false
         @stubbed = false
         @hidden = false
+        @valid_name = true
+        yield self if block_given?
       end
 
       # @return [String] The fully qualified name of the constant.
@@ -24,7 +26,7 @@ module RSpec
       attr_accessor :original_value
 
       # @private
-      attr_writer :previously_defined, :stubbed, :hidden
+      attr_writer :previously_defined, :stubbed, :hidden, :valid_name
 
       # @return [Boolean] Whether or not the constant was defined
       #   before the current example.
@@ -50,6 +52,12 @@ module RSpec
         @hidden
       end
 
+      # @return [Boolean] Whether or not the provided constant name
+      #   is a valid Ruby constant name.
+      def valid_name?
+        @valid_name
+      end
+
       # The default `to_s` isn't very useful, so a custom version is provided.
       def to_s
         "#<#{self.class.name} #{name}>"
@@ -58,13 +66,16 @@ module RSpec
 
       # @private
       def self.unmutated(name)
-        const = new(name)
-        const.previously_defined = recursive_const_defined?(name)
-        const.stubbed = false
-        const.hidden = false
-        const.original_value = recursive_const_get(name) if const.previously_defined?
-
-        const
+        previously_defined = recursive_const_defined?(name)
+      rescue NameError
+        new(name) do |c|
+          c.valid_name = false
+        end
+      else
+        new(name) do |const|
+          const.previously_defined = previously_defined
+          const.original_value = recursive_const_get(name) if previously_defined
+        end
       end
 
       # Queries rspec-mocks to find out information about the named constant.

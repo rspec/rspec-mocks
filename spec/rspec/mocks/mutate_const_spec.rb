@@ -439,6 +439,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::M") }
 
           it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates the name is valid")         { expect(const).to be_valid_name }
           it("indicates it was previously defined") { expect(const).to be_previously_defined }
           it("indicates it has not been mutated")   { expect(const).not_to be_mutated }
           it("indicates it has not been stubbed")   { expect(const).not_to be_stubbed }
@@ -451,6 +452,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::M") }
 
           it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates the name is valid")         { expect(const).to be_valid_name }
           it("indicates it was previously defined") { expect(const).to be_previously_defined }
           it("indicates it has been mutated")       { expect(const).to be_mutated }
           it("indicates it has been stubbed")       { expect(const).to be_stubbed }
@@ -463,6 +465,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::Undefined") }
 
           it("exposes its name")                        { expect(const.name).to eq("TestClass::Undefined") }
+          it("indicates the name is valid")             { expect(const).to be_valid_name }
           it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
           it("indicates it has been mutated")           { expect(const).to be_mutated }
           it("indicates it has been stubbed")           { expect(const).to be_stubbed }
@@ -475,6 +478,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::UndefinedModule") }
 
           it("exposes its name")                        { expect(const.name).to eq("TestClass::UndefinedModule") }
+          it("indicates the name is valid")             { expect(const).to be_valid_name }
           it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
           it("indicates it has been mutated")           { expect(const).to be_mutated }
           it("indicates it has been stubbed")           { expect(const).to be_stubbed }
@@ -486,6 +490,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::Undefined") }
 
           it("exposes its name")                        { expect(const.name).to eq("TestClass::Undefined") }
+          it("indicates the name is valid")             { expect(const).to be_valid_name }
           it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
           it("indicates it has not been mutated")       { expect(const).not_to be_mutated }
           it("indicates it has not been stubbed")       { expect(const).not_to be_stubbed }
@@ -499,6 +504,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::M") }
 
           it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates the name is valid")         { expect(const).to be_valid_name }
           it("indicates it was previously defined") { expect(const).to be_previously_defined }
           it("indicates it has been mutated")       { expect(const).to be_mutated }
           it("indicates it has been stubbed")       { expect(const).to be_stubbed }
@@ -512,6 +518,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::Undefined") }
 
           it("exposes its name")                        { expect(const.name).to eq("TestClass::Undefined") }
+          it("indicates the name is valid")             { expect(const).to be_valid_name }
           it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
           it("indicates it has been mutated")           { expect(const).to be_mutated }
           it("indicates it has been stubbed")           { expect(const).to be_stubbed }
@@ -524,6 +531,7 @@ module RSpec
           let(:const) { Constant.original("SomeUndefinedConst") }
 
           it("exposes its name")                      { expect(const.name).to eq("SomeUndefinedConst") }
+          it("indicates the name is valid")           { expect(const).to be_valid_name }
           it("indicates it was previously undefined") { expect(const).not_to be_previously_defined }
           it("indicates it has not been mutated")     { expect(const).not_to be_mutated }
           it("indicates it has not not been stubbed") { expect(const).not_to be_stubbed }
@@ -536,6 +544,7 @@ module RSpec
           let(:const) { Constant.original("TestClass::M") }
 
           it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates the name is valid")         { expect(const).to be_valid_name }
           it("indicates it was previously defined") { expect(const).to be_previously_defined }
           it("indicates it has been mutated")       { expect(const).to be_mutated }
           it("indicates it has not been stubbed")   { expect(const).not_to be_stubbed }
@@ -549,11 +558,25 @@ module RSpec
           let(:const) { Constant.original("TestClass::M") }
 
           it("exposes its name")                    { expect(const.name).to eq("TestClass::M") }
+          it("indicates the name is valid")         { expect(const).to be_valid_name }
           it("indicates it was previously defined") { expect(const).to be_previously_defined }
           it("indicates it has been mutated")       { expect(const).to be_mutated }
           it("indicates it has not been stubbed")   { expect(const).not_to be_stubbed }
           it("indicates it has been hidden")        { expect(const).to be_hidden }
           it("exposes its original value")          { expect(const.original_value).to eq(:m) }
+        end
+
+        context "for an invalid const name (such as an anonymous module's `inspect` output)" do
+          let(:mod)   { Module.new }
+          let(:const) { Constant.original(mod.inspect) }
+
+          it("exposes the provided string as the name") { expect(const.name).to eq(mod.inspect) }
+          it("indicates the name is invalid")           { expect(const).not_to be_valid_name }
+          it("indicates it was not previously defined") { expect(const).not_to be_previously_defined }
+          it("indicates it has not been mutated")       { expect(const).not_to be_mutated }
+          it("indicates it has not been stubbed")       { expect(const).not_to be_stubbed }
+          it("indicates it has not been hidden")        { expect(const).not_to be_hidden  }
+          it("returns nil for its original value")      { expect(const.original_value).to be_nil }
         end
       end
     end
