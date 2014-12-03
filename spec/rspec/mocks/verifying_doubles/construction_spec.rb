@@ -29,7 +29,7 @@ module RSpec
 
           RSpec.configuration.mock_with(:rspec) do |config|
             config.when_declaring_verifying_double do |reference|
-              reference.const.define_attribute_methods!
+              reference.target.define_attribute_methods!
             end
           end
 

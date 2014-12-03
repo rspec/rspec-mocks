@@ -57,7 +57,7 @@ module RSpec
               "Can not perform constant replacement with an object."
       end
 
-      def const
+      def target
         @object.class
       end
 
@@ -80,7 +80,7 @@ module RSpec
       end
       alias description const_to_replace
 
-      def const
+      def target
         @object
       end
     end
@@ -105,7 +105,7 @@ module RSpec
       end
       alias description const_to_replace
 
-      def const
+      def target
         object
       end
 
