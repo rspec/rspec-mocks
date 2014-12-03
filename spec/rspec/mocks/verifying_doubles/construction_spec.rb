@@ -28,8 +28,8 @@ module RSpec
           test_class = Class.new(ClassThatDynamicallyDefinesMethods)
 
           RSpec.configuration.mock_with(:rspec) do |config|
-            config.when_declaring_verifying_double do |type|
-              type.define_attribute_methods!
+            config.when_declaring_verifying_double do |reference|
+              reference.const.define_attribute_methods!
             end
           end
 
