@@ -124,21 +124,25 @@ module RSpec
         expect(block_called).to be_truthy
       end
 
-      it 'allows the terminal action to be overriden' do
-        dbl = double
-        stubbed_double = allow(dbl).to receive(:foo)
+      describe "a double that already has a terminal `and_return(x)` action" do
+        let(:dbl) { double }
+        let(:stubbed_double) { allow(dbl).to receive(:foo) }
+        before { stubbed_double.and_return(1) }
 
-        stubbed_double.and_return(1)
-        expect(dbl.foo).to eq(1)
+        it 'allows the terminal action to be overriden to `and_return(y)`' do
+          stubbed_double.and_return(3)
+          expect(dbl.foo).to eq(3)
+        end
 
-        stubbed_double.and_return(3)
-        expect(dbl.foo).to eq(3)
+        it 'allows the terminal action to be overriden to `and_raise(y)`' do
+          stubbed_double.and_raise("boom")
+          expect { dbl.foo }.to raise_error("boom")
+        end
 
-        stubbed_double.and_raise("boom")
-        expect { dbl.foo }.to raise_error("boom")
-
-        stubbed_double.and_throw(:bar)
-        expect { dbl.foo }.to throw_symbol(:bar)
+        it 'allows the terminal action to be overriden to `and_throw(y)`' do
+          stubbed_double.and_throw(:bar)
+          expect { dbl.foo }.to throw_symbol(:bar)
+        end
       end
 
       it 'allows the inner implementation block to be overriden' do
