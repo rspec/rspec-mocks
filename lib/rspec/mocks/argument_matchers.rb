@@ -198,7 +198,20 @@ module RSpec
         end
 
         def description(name)
-          "#{name}(#{@expected.inspect.sub(/^\{/, "").sub(/\}$/, "")})"
+          "#{name}(#{formatted_expected_hash.inspect.sub(/^\{/, "").sub(/\}$/, "")})"
+        end
+
+      private
+
+        def formatted_expected_hash
+          Hash[
+            @expected.map do |k, v|
+              k = RSpec::Support.rspec_description_for_object(k)
+              v = RSpec::Support.rspec_description_for_object(v)
+
+              [k, v]
+            end
+          ]
         end
       end
 
@@ -231,11 +244,24 @@ module RSpec
         end
 
         def ===(actual)
-          Set.new(actual).superset?(Set.new(@expected))
+          actual = actual.uniq
+          @expected.uniq.all? do |expected_element|
+            actual.any? do |actual_element|
+              RSpec::Support::FuzzyMatcher.values_match?(expected_element, actual_element)
+            end
+          end
         end
 
         def description
-          "array_including(#{@expected.join(", ")})"
+          "array_including(#{formatted_expected_values})"
+        end
+
+      private
+
+        def formatted_expected_values
+          @expected.map do |x|
+            RSpec::Support.rspec_description_for_object(x)
+          end.join(", ")
         end
       end
 

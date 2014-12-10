@@ -6,6 +6,12 @@ module RSpec
           expect(ArrayIncludingMatcher.new([1, 2, 3]).description).to eq "array_including(1, 2, 3)"
         end
 
+        it "describes passed matchers" do
+          description = array_including(fake_matcher(Object.new)).description
+
+          expect(description).to include(MatcherHelpers.fake_matcher_description)
+        end
+
         context "passing" do
           it "matches the same array" do
             expect(array_including(1, 2, 3)).to be === [1, 2, 3]
@@ -26,11 +32,28 @@ module RSpec
           it "works with duplicates in actual" do
             expect(array_including(1, 2, 3)).to be === [1, 1, 2, 3]
           end
+
+          it "is composable with other matchers" do
+            klass = Class.new
+            dbl = double
+            expect(dbl).to receive(:a_message).with(3, array_including(instance_of(klass)))
+            dbl.a_message(3, [1, klass.new, 4])
+          end
         end
 
         context "failing" do
           it "fails when not all the entries in the expected are present" do
             expect(array_including(1,2,3,4,5)).not_to be === [1,2]
+          end
+
+          it "fails when passed a composed matcher is pased and not satisfied" do
+            with_unfulfilled_double do |dbl|
+              expect {
+                klass = Class.new
+                expect(dbl).to receive(:a_message).with(3, array_including(instance_of(klass)))
+                dbl.a_message(3, [1, 4])
+              }.to fail_with(/expected: \(3, array_including\(an_instance_of\(\)\)\)/)
+            end
           end
         end
       end

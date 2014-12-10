@@ -214,11 +214,7 @@ module RSpec
 
       def diff_message(expected_args, actual_args)
         formatted_expected_args = expected_args.map do |x|
-          if arg_has_valid_description?(x)
-            x.description
-          else
-            x
-          end
+          RSpec::Support.rspec_description_for_object(x)
         end
 
         formatted_expected_args, actual_args = unpack_string_args(formatted_expected_args, actual_args)
