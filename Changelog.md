@@ -10,6 +10,8 @@ Enhancements:
 * Support names for verified doubles (`instance_double`, `instance_spy`,
   `class_double`, `class_spy`, `object_double`, `object_spy`). (Cezary
   Baginski, #826)
+* Make `array_including` and `hash_including` argument matchers composable.
+  (Sam Phippen, #819)
 
 Bug Fixes:
 
