@@ -43,6 +43,8 @@ Bug Fixes:
   like IRB, but some gems have loaded it, thinking it needs to be loaded
   when using rspec-mocks outside the context of rspec-core.
   (Myron Marston, #846)
+* Prevent message expectations from being modified by customization methods
+  (e.g. `with`) after they have been invoked. (Sam Phippen and Melanie Gilman, #837)
 
 ### 3.1.3 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)
