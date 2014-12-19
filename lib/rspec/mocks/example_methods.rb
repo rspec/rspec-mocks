@@ -393,6 +393,13 @@ module RSpec
       end
 
       # @private
+      def self.extended(object)
+        # This gets extended in so that if `RSpec::Matchers` is included in
+        # `klass` later, it's definition of `expect` will take precedence.
+        object.extend ExpectHost unless object.respond_to?(:expect)
+      end
+
+      # @private
       def self.declare_verifying_double(type, ref, *args)
         if RSpec::Mocks.configuration.verify_doubled_constant_names? &&
           !ref.defined?

@@ -1,3 +1,3 @@
 require 'rspec/mocks'
-include RSpec::Mocks::ExampleMethods
+extend RSpec::Mocks::ExampleMethods
 RSpec::Mocks.setup
