@@ -1,7 +1,7 @@
 Feature: Standalone
 
   `require "rspec/mocks/standalone"` to expose the API at the top level (e.g. `main`) outside
-  the RSpec environment. This is especially useful for exploring rspec-mocks in irb.
+  the RSpec environment in a REPL like IRB or in a one-off script.
 
   Scenario: Allow a message outside RSpec
     Given a file named "example.rb" with:

@@ -35,6 +35,14 @@ Bug Fixes:
 * Fix `RSpec::Mocks::Constant.original` when called with an invalid
   constant to return an object indicating the constant name is invalid,
   rather than blowing up. (Myron Marston, #833)
+* Make `extend RSpec::Mocks::ExampleMethods` on any object work properly
+  to add the rspec-mocks API to that object. Previously, `expect` would
+  be undefined. (Myron Marston, #846)
+* Fix `require 'rspec/mocks/standalone'` so that it only affects `main`
+  and not every object. It's really only intended to be used in a REPL
+  like IRB, but some gems have loaded it, thinking it needs to be loaded
+  when using rspec-mocks outside the context of rspec-core.
+  (Myron Marston, #846)
 
 ### 3.1.3 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)
