@@ -10,6 +10,11 @@ module RSpec
     # Raised when doubles or partial doubles are used outside of the per-test lifecycle.
     OutsideOfExampleError = Class.new(StandardError)
 
+    # Raised when an expectation customization method (e.g. `with`,
+    # `and_return`) is called on a message expectation which has already been
+    # invoked.
+    MockExpectationAlreadyInvokedError = Class.new(Exception)
+
     # @private
     UnsupportedMatcherError  = Class.new(StandardError)
     # @private
