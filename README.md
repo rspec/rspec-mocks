@@ -52,7 +52,7 @@ rspec-mocks supports 3 forms for declaring method stubs:
 allow(book).to receive(:title) { "The RSpec Book" }
 allow(book).to receive(:title).and_return("The RSpec Book")
 allow(book).to receive_messages(
-    :title => "The RSpec Book", 
+    :title => "The RSpec Book",
     :subtitle => "Behaviour-Driven Development with RSpec, Cucumber, and Friends")
 ```
 
@@ -377,7 +377,7 @@ general we discourage its use for a number of reasons:
 
 * The `rspec-mocks` API is designed for individual object instances, but this
   feature operates on entire classes of objects. As a result there are some
-  sematically confusing edge cases. For example in
+  semantically confusing edge cases. For example in
   `expect_any_instance_of(Widget).to receive(:name).twice` it isn't clear
   whether each specific instance is expected to receive `name` twice, or if two
   receives total are expected. (It's the former.)
