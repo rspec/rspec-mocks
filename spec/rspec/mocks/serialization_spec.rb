@@ -62,10 +62,10 @@ module RSpec
             before(:each) { ::YAML::ENGINE.yamler = 'syck' }
             around(:each) { |example| with_isolated_stderr(&example) }
             it_behaves_like 'normal YAML serialization'
-          end
+          end if defined?(::YAML::ENGINE)
 
           context 'using Psych as the YAML engine' do
-            before(:each) { ::YAML::ENGINE.yamler = 'psych' }
+            before(:each) { ::YAML::ENGINE.yamler = 'psych' } if defined?(::YAML::ENGINE)
             it_behaves_like 'normal YAML serialization'
           end
         else
