@@ -125,8 +125,8 @@ module RSpec::Mocks
 
     [:ensure_registered, :proxy_for].each do |method|
       describe "##{method}" do
-        define_method :get_proxy do |space, object|
-          space.__send__(method, object)
+        define_method :get_proxy do |the_space, object|
+          the_space.__send__(method, object)
         end
 
         it 'returns the proxy for the given object' do
@@ -174,20 +174,20 @@ module RSpec::Mocks
 
     describe "#constant_mutator_for" do
       it 'returns the mutator for the given const name' do
-        space = RSpec::Mocks.space
+        the_space = RSpec::Mocks.space
         stub_const("Foo", 3)
         stub_const("Bar", 4)
 
-        expect(space.constant_mutator_for("Foo")).to equal(space.constant_mutator_for("Foo"))
-        expect(space.constant_mutator_for("Bar")).to equal(space.constant_mutator_for("Bar"))
-        expect(space.constant_mutator_for("Foo")).not_to equal(space.constant_mutator_for("Bar"))
+        expect(the_space.constant_mutator_for("Foo")).to equal(the_space.constant_mutator_for("Foo"))
+        expect(the_space.constant_mutator_for("Bar")).to equal(the_space.constant_mutator_for("Bar"))
+        expect(the_space.constant_mutator_for("Foo")).not_to equal(the_space.constant_mutator_for("Bar"))
       end
 
       it 'can stil return a mutator from a parent context' do
-        space = RSpec::Mocks.space
+        the_space = RSpec::Mocks.space
 
         stub_const("Foo", 3)
-        mutator = space.constant_mutator_for("Foo")
+        mutator = the_space.constant_mutator_for("Foo")
 
         in_new_space_scope do
           subspace = RSpec::Mocks.space

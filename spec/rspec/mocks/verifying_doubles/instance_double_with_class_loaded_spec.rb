@@ -154,54 +154,54 @@ module RSpec
       end
 
       context 'for null objects' do
-        let(:o) { instance_double('LoadedClass').as_null_object }
+        let(:obj) { instance_double('LoadedClass').as_null_object }
 
         it 'only allows defined methods' do
-          expect(o.defined_instance_method).to eq(o)
-          prevents { o.undefined_method }
-          prevents { o.send(:undefined_method) }
-          prevents { o.__send__(:undefined_method) }
+          expect(obj.defined_instance_method).to eq(obj)
+          prevents { obj.undefined_method }
+          prevents { obj.send(:undefined_method) }
+          prevents { obj.__send__(:undefined_method) }
         end
 
         it 'verifies arguments' do
           expect {
-            o.defined_instance_method(:too, :many, :args)
+            obj.defined_instance_method(:too, :many, :args)
           }.to raise_error(ArgumentError, "Wrong number of arguments. Expected 0, got 3.")
         end
 
         it "includes the double's name in a private method error" do
           expect {
-            o.rand
+            obj.rand
           }.to raise_error(NoMethodError, %r{private.*Double "LoadedClass \(instance\)"})
         end
 
         it 'reports what public messages it responds to accurately' do
-          expect(o.respond_to?(:defined_instance_method)).to be true
-          expect(o.respond_to?(:defined_instance_method, true)).to be true
-          expect(o.respond_to?(:defined_instance_method, false)).to be true
+          expect(obj.respond_to?(:defined_instance_method)).to be true
+          expect(obj.respond_to?(:defined_instance_method, true)).to be true
+          expect(obj.respond_to?(:defined_instance_method, false)).to be true
 
-          expect(o.respond_to?(:undefined_method)).to be false
-          expect(o.respond_to?(:undefined_method, true)).to be false
-          expect(o.respond_to?(:undefined_method, false)).to be false
+          expect(obj.respond_to?(:undefined_method)).to be false
+          expect(obj.respond_to?(:undefined_method, true)).to be false
+          expect(obj.respond_to?(:undefined_method, false)).to be false
         end
 
         it 'reports that it responds to defined private methods when the appropriate arg is passed' do
-          expect(o.respond_to?(:defined_private_method)).to be false
-          expect(o.respond_to?(:defined_private_method, true)).to be true
-          expect(o.respond_to?(:defined_private_method, false)).to be false
+          expect(obj.respond_to?(:defined_private_method)).to be false
+          expect(obj.respond_to?(:defined_private_method, true)).to be true
+          expect(obj.respond_to?(:defined_private_method, false)).to be false
         end
 
         if RUBY_VERSION.to_f < 2.0 # respond_to?(:protected_method) changed behavior in Ruby 2.0.
           it 'reports that it responds to protected methods' do
-            expect(o.respond_to?(:defined_protected_method)).to be true
-            expect(o.respond_to?(:defined_protected_method, true)).to be true
-            expect(o.respond_to?(:defined_protected_method, false)).to be true
+            expect(obj.respond_to?(:defined_protected_method)).to be true
+            expect(obj.respond_to?(:defined_protected_method, true)).to be true
+            expect(obj.respond_to?(:defined_protected_method, false)).to be true
           end
         else
           it 'reports that it responds to protected methods when the appropriate arg is passed' do
-            expect(o.respond_to?(:defined_protected_method)).to be false
-            expect(o.respond_to?(:defined_protected_method, true)).to be true
-            expect(o.respond_to?(:defined_protected_method, false)).to be false
+            expect(obj.respond_to?(:defined_protected_method)).to be false
+            expect(obj.respond_to?(:defined_protected_method, true)).to be true
+            expect(obj.respond_to?(:defined_protected_method, false)).to be false
           end
         end
       end
