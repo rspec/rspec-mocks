@@ -81,10 +81,10 @@ RSpec.describe "and_call_original" do
       end
 
       it 'works for SimpleDelegator subclasses', :if => (RUBY_VERSION.to_f > 1.8) do
-        instance = Class.new(SimpleDelegator).new(1)
-        def instance.foo; :bar; end
-        expect(instance).to receive(:foo).and_call_original
-        expect(instance.foo).to eq(:bar)
+        inst = Class.new(SimpleDelegator).new(1)
+        def inst.foo; :bar; end
+        expect(inst).to receive(:foo).and_call_original
+        expect(inst.foo).to eq(:bar)
       end
     end
 
@@ -162,14 +162,14 @@ RSpec.describe "and_call_original" do
     end
 
     it 'works for aliased methods' do
-      klass = Class.new do
+      klazz = Class.new do
         class << self
           alias alternate_new new
         end
       end
 
-      expect(klass).to receive(:alternate_new).and_call_original
-      expect(klass.alternate_new).to be_an_instance_of(klass)
+      expect(klazz).to receive(:alternate_new).and_call_original
+      expect(klazz.alternate_new).to be_an_instance_of(klazz)
     end
 
     context 'on an object that defines method_missing' do

@@ -90,8 +90,8 @@ RSpec.describe RSpec::Mocks::Double do
             expect(yielded_arg).to receive(:bar)
           end
 
-          obj.method_that_accepts_a_block do |obj|
-            obj.bar
+          obj.method_that_accepts_a_block do |object|
+            object.bar
             foo
           end
 
@@ -103,12 +103,12 @@ RSpec.describe RSpec::Mocks::Double do
           it "yields the default argument when the argument is not given" do
             pending "Not sure how to achieve this yet. See rspec/rspec-mocks#714 and rspec/rspec-support#85."
             default_arg = Object.new
-            obj = Object.new
+            object = Object.new
 
-            allow(obj).to receive(:a_message).and_yield
+            allow(object).to receive(:a_message).and_yield
             expect(default_arg).to receive(:bar)
 
-            eval("obj.a_message { |receiver=default_arg| receiver.bar }")
+            eval("object.a_message { |receiver=default_arg| receiver.bar }")
           end
 
           it "yields given argument when the argument is given" do
@@ -116,12 +116,12 @@ RSpec.describe RSpec::Mocks::Double do
             allow(default_arg).to receive(:bar)
 
             given_arg = Object.new
-            obj = Object.new
+            object = Object.new
 
-            allow(obj).to receive(:a_message).and_yield(given_arg)
+            allow(object).to receive(:a_message).and_yield(given_arg)
             expect(given_arg).to receive(:bar)
 
-            eval("obj.a_message { |receiver=default_arg| receiver.bar }")
+            eval("object.a_message { |receiver=default_arg| receiver.bar }")
           end
         end
 

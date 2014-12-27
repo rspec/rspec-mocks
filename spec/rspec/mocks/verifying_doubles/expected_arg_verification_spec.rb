@@ -10,13 +10,13 @@ module RSpec
       context "when doubling an unloaded class" do
         it 'allows any arguments' do
           expect(defined?(UnloadedClass)).to be_falsey
-          dbl = instance_double("UnloadedClass")
+          inst_dbl = instance_double("UnloadedClass")
 
           expect {
-            expect(dbl).to receive(:message).with(:foo, :bar, :bazz)
+            expect(inst_dbl).to receive(:message).with(:foo, :bar, :bazz)
           }.not_to raise_error
 
-          reset dbl
+          reset inst_dbl
         end
       end
 
