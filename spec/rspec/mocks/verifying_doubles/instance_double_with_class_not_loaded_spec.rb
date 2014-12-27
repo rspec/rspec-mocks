@@ -40,16 +40,16 @@ module RSpec
       end
 
       context 'for null objects' do
-        let(:o) { instance_double('NonLoadedClass').as_null_object }
+        let(:obj) { instance_double('NonLoadedClass').as_null_object }
 
         it 'returns self from any message' do
-          expect(o.a.b.c).to be(o)
+          expect(obj.a.b.c).to be(obj)
         end
 
         it 'reports it responds to any message' do
-          expect(o.respond_to?(:a)).to be true
-          expect(o.respond_to?(:a, false)).to be true
-          expect(o.respond_to?(:a, true)).to be true
+          expect(obj.respond_to?(:a)).to be true
+          expect(obj.respond_to?(:a, false)).to be true
+          expect(obj.respond_to?(:a, true)).to be true
         end
       end
 

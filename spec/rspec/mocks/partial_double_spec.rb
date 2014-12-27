@@ -107,17 +107,17 @@ module RSpec
       end
 
       it "includes the class name in the error when mocking a class method that is called an extra time with the wrong args" do
-        klass = Class.new do
+        klazz = Class.new do
           def self.inspect
             "MyClass"
           end
         end
 
-        expect(klass).to receive(:bar).with(1)
-        klass.bar(1)
+        expect(klazz).to receive(:bar).with(1)
+        klazz.bar(1)
 
         expect {
-          klass.bar(2)
+          klazz.bar(2)
         }.to raise_error(RSpec::Mocks::MockExpectationError, /MyClass/)
       end
 

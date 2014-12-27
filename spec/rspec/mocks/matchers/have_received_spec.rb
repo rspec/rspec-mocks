@@ -138,68 +138,68 @@ module RSpec
         end
 
         context "counts" do
-          let(:dbl) { double(:expected_method => nil) }
+          let(:the_dbl) { double(:expected_method => nil) }
 
           before do
-            dbl.expected_method
-            dbl.expected_method
-            dbl.expected_method
+            the_dbl.expected_method
+            the_dbl.expected_method
+            the_dbl.expected_method
           end
 
           context "exactly" do
             it 'passes when the message was received the given number of times' do
-              expect(dbl).to have_received(:expected_method).exactly(3).times
+              expect(the_dbl).to have_received(:expected_method).exactly(3).times
             end
 
             it 'fails when the message was received more times than expected' do
               expect {
-                expect(dbl).to have_received(:expected_method).exactly(1).times
+                expect(the_dbl).to have_received(:expected_method).exactly(1).times
               }.to raise_error(/expected: 1 time.*received: 3 times/m)
               expect {
-                expect(dbl).to have_received(:expected_method).exactly(2).times
+                expect(the_dbl).to have_received(:expected_method).exactly(2).times
               }.to raise_error(/expected: 2 times.*received: 3 times/m)
               expect {
-                dbl.expected_method
-                dbl.expected_method
-                expect(dbl).to have_received(:expected_method).exactly(2).times
+                the_dbl.expected_method
+                the_dbl.expected_method
+                expect(the_dbl).to have_received(:expected_method).exactly(2).times
               }.to raise_error(/expected: 2 times.*received: 5 times/m)
             end
 
             it 'fails when the message was received fewer times' do
               expect {
-                expect(dbl).to have_received(:expected_method).exactly(4).times
+                expect(the_dbl).to have_received(:expected_method).exactly(4).times
               }.to raise_error(/expected: 4 times.*received: 3 times/m)
             end
           end
 
           context 'at_least' do
             it 'passes when the message was received the given number of times' do
-              expect(dbl).to have_received(:expected_method).at_least(3).times
+              expect(the_dbl).to have_received(:expected_method).at_least(3).times
             end
 
             it 'passes when the message was received more times' do
-              expect(dbl).to have_received(:expected_method).at_least(2).times
+              expect(the_dbl).to have_received(:expected_method).at_least(2).times
             end
 
             it 'fails when the message was received fewer times' do
               expect {
-                expect(dbl).to have_received(:expected_method).at_least(4).times
+                expect(the_dbl).to have_received(:expected_method).at_least(4).times
               }.to raise_error(/expected: at least 4 times.*received: 3 times/m)
             end
           end
 
           context 'at_most' do
             it 'passes when the message was received the given number of times' do
-              expect(dbl).to have_received(:expected_method).at_most(3).times
+              expect(the_dbl).to have_received(:expected_method).at_most(3).times
             end
 
             it 'passes when the message was received fewer times' do
-              expect(dbl).to have_received(:expected_method).at_most(4).times
+              expect(the_dbl).to have_received(:expected_method).at_most(4).times
             end
 
             it 'fails when the message was received more times' do
               expect {
-                expect(dbl).to have_received(:expected_method).at_most(2).times
+                expect(the_dbl).to have_received(:expected_method).at_most(2).times
               }.to raise_error(/expected: at most 2 times.*received: 3 times/m)
             end
           end
@@ -295,125 +295,125 @@ module RSpec
         end
 
         context 'ordered' do
-          let(:dbl) { double :one => 1, :two => 2, :three => 3 }
+          let(:the_dbl) { double :one => 1, :two => 2, :three => 3 }
 
           it 'passes when the messages were received in order' do
-            dbl.one
-            dbl.two
+            the_dbl.one
+            the_dbl.two
 
-            expect(dbl).to have_received(:one).ordered
-            expect(dbl).to have_received(:two).ordered
+            expect(the_dbl).to have_received(:one).ordered
+            expect(the_dbl).to have_received(:two).ordered
           end
 
           it 'passes with exact receive counts when received in order' do
-            3.times { dbl.one }
-            2.times { dbl.two }
-            dbl.three
+            3.times { the_dbl.one }
+            2.times { the_dbl.two }
+            the_dbl.three
 
-            expect(dbl).to have_received(:one).thrice.ordered
-            expect(dbl).to have_received(:two).twice.ordered
-            expect(dbl).to have_received(:three).once.ordered
+            expect(the_dbl).to have_received(:one).thrice.ordered
+            expect(the_dbl).to have_received(:two).twice.ordered
+            expect(the_dbl).to have_received(:three).once.ordered
           end
 
           pending 'passes with at most receive counts when received in order' do
-            dbl.one
-            dbl.one
-            dbl.two
+            the_dbl.one
+            the_dbl.one
+            the_dbl.two
 
-            expect(dbl).to have_received(:one).at_most(3).times.ordered
-            expect(dbl).to have_received(:one).at_most(:thrice).times.ordered
-            expect(dbl).to have_received(:two).once.ordered
+            expect(the_dbl).to have_received(:one).at_most(3).times.ordered
+            expect(the_dbl).to have_received(:one).at_most(:thrice).times.ordered
+            expect(the_dbl).to have_received(:two).once.ordered
           end
 
           pending 'passes with at least receive counts when received in order' do
-            dbl.one
-            dbl.one
-            dbl.two
+            the_dbl.one
+            the_dbl.one
+            the_dbl.two
 
-            expect(dbl).to have_received(:one).at_least(1).times.ordered
-            expect(dbl).to have_received(:two).once.ordered
+            expect(the_dbl).to have_received(:one).at_least(1).times.ordered
+            expect(the_dbl).to have_received(:two).once.ordered
           end
 
           it 'fails with exact receive counts when received out of order' do
-            dbl.one
-            dbl.two
-            dbl.one
+            the_dbl.one
+            the_dbl.two
+            the_dbl.one
 
             expect {
-              expect(dbl).to have_received(:one).twice.ordered
-              expect(dbl).to have_received(:two).once.ordered
+              expect(the_dbl).to have_received(:one).twice.ordered
+              expect(the_dbl).to have_received(:two).once.ordered
             }.to raise_error(/received :two out of order/m)
           end
 
           pending "fails with at most receive counts when recieved out of order" do
-            dbl.one
-            dbl.two
-            dbl.one
+            the_dbl.one
+            the_dbl.two
+            the_dbl.one
 
             expect {
-              expect(dbl).to have_received(:one).at_most(2).times.ordered
-              expect(dbl).to have_received(:two).once.ordered
+              expect(the_dbl).to have_received(:one).at_most(2).times.ordered
+              expect(the_dbl).to have_received(:two).once.ordered
             }.to raise_error(/received :two out of order/m)
           end
 
           pending "fails with at least receive counts when recieved out of order" do
-            dbl.one
-            dbl.two
-            dbl.one
+            the_dbl.one
+            the_dbl.two
+            the_dbl.one
 
             expect {
-              expect(dbl).to have_received(:one).at_least(1).times.ordered
-              expect(dbl).to have_received(:two).once.ordered
+              expect(the_dbl).to have_received(:one).at_least(1).times.ordered
+              expect(the_dbl).to have_received(:two).once.ordered
             }.to raise_error(/received :two out of order/m)
           end
 
           it 'fails when the messages are received out of order' do
-            dbl.two
-            dbl.one
+            the_dbl.two
+            the_dbl.one
 
             expect {
-              expect(dbl).to have_received(:one).ordered
-              expect(dbl).to have_received(:two).ordered
+              expect(the_dbl).to have_received(:one).ordered
+              expect(the_dbl).to have_received(:two).ordered
             }.to raise_error(/received :two out of order/m)
           end
 
           context "when used with `with`" do
             before do
-              dbl.one(1)
-              dbl.one(2)
+              the_dbl.one(1)
+              the_dbl.one(2)
             end
 
             it "passes when the order lines up" do
-              expect(dbl).to have_received(:one).with(1).ordered
-              expect(dbl).to have_received(:one).with(2).ordered
+              expect(the_dbl).to have_received(:one).with(1).ordered
+              expect(the_dbl).to have_received(:one).with(2).ordered
             end
 
             it "fails when the order is not matched" do
               expect {
-                expect(dbl).to have_received(:one).with(2).ordered
-                expect(dbl).to have_received(:one).with(1).ordered
+                expect(the_dbl).to have_received(:one).with(2).ordered
+                expect(the_dbl).to have_received(:one).with(1).ordered
               }.to fail_with(/received :one out of order/m)
             end
           end
 
           context "when used on individually allowed messages" do
             before do
-              allow(dbl).to receive(:foo)
-              allow(dbl).to receive(:bar)
+              allow(the_dbl).to receive(:foo)
+              allow(the_dbl).to receive(:bar)
 
-              dbl.foo
-              dbl.bar
+              the_dbl.foo
+              the_dbl.bar
             end
 
             it 'passes when the messages were received in order' do
-              expect(dbl).to have_received(:foo).ordered
-              expect(dbl).to have_received(:bar).ordered
+              expect(the_dbl).to have_received(:foo).ordered
+              expect(the_dbl).to have_received(:bar).ordered
             end
 
             it 'fails when the messages are received out of order' do
               expect {
-                expect(dbl).to have_received(:bar).ordered
-                expect(dbl).to have_received(:foo).ordered
+                expect(the_dbl).to have_received(:bar).ordered
+                expect(the_dbl).to have_received(:foo).ordered
               }.to raise_error(/received :foo out of order/m)
             end
           end

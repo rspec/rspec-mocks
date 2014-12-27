@@ -11,8 +11,8 @@ RSpec.describe "a double receiving to_ary" do
     end
 
     it "supports Array#flatten" do
-      obj = double('foo')
-      expect([obj].flatten).to eq([obj])
+      dbl = double('foo')
+      expect([dbl].flatten).to eq([dbl])
     end
   end
 
