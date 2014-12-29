@@ -1,45 +1,45 @@
 RSpec.describe "expection set on previously stubbed method" do
   it "fails if message is not received after expectation is set" do
-    double = double(:msg => nil)
-    double.msg
-    expect(double).to receive(:msg)
-    expect { verify double }.to raise_error(RSpec::Mocks::MockExpectationError)
+    dbl = double(:msg => nil)
+    dbl.msg
+    expect(dbl).to receive(:msg)
+    expect { verify dbl }.to raise_error(RSpec::Mocks::MockExpectationError)
   end
 
   it "outputs arguments of similar calls" do
-    double = double('double', :foo => true)
-    expect(double).to receive(:foo).with('first')
-    double.foo('second')
-    double.foo('third')
+    dbl = double('double', :foo => true)
+    expect(dbl).to receive(:foo).with('first')
+    dbl.foo('second')
+    dbl.foo('third')
     expect {
-      verify double
+      verify dbl
     }.to raise_error(%Q|Double "double" received :foo with unexpected arguments\n  expected: ("first")\n       got: ("second"), ("third")|)
-    reset double
+    reset dbl
   end
 
   context "with argument constraint on stub" do
     it "matches any args if no arg constraint set on expectation" do
-      double = double("mock")
-      allow(double).to receive(:foo).with(3).and_return("stub")
-      expect(double).to receive(:foo).at_least(:once).and_return("expectation")
-      double.foo
-      verify double
+      dbl = double("mock")
+      allow(dbl).to receive(:foo).with(3).and_return("stub")
+      expect(dbl).to receive(:foo).at_least(:once).and_return("expectation")
+      dbl.foo
+      verify dbl
     end
 
     it "matches specific args set on expectation" do
-      double = double("mock")
-      allow(double).to receive(:foo).with(3).and_return("stub")
-      expect(double).to receive(:foo).at_least(:once).with(4).and_return("expectation")
-      double.foo(4)
-      verify double
+      dbl = double("mock")
+      allow(dbl).to receive(:foo).with(3).and_return("stub")
+      expect(dbl).to receive(:foo).at_least(:once).with(4).and_return("expectation")
+      dbl.foo(4)
+      verify dbl
     end
 
     it "fails if expectation's arg constraint is not met" do
-      double = double("mock")
-      allow(double).to receive(:foo).with(3).and_return("stub")
-      expect(double).to receive(:foo).at_least(:once).with(4).and_return("expectation")
-      double.foo(3)
-      expect { verify double }.to raise_error(/expected: \(4\)\s+got: \(3\)/)
+      dbl = double("mock")
+      allow(dbl).to receive(:foo).with(3).and_return("stub")
+      expect(dbl).to receive(:foo).at_least(:once).with(4).and_return("expectation")
+      dbl.foo(3)
+      expect { verify dbl }.to raise_error(/expected: \(4\)\s+got: \(3\)/)
     end
 
     it 'distinguishes between individual values and arrays properly' do

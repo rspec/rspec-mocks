@@ -125,35 +125,35 @@ module RSpec
       end
 
       describe "a double that already has a terminal `and_return(x)` action" do
-        let(:dbl) { double }
-        let(:stubbed_double) { allow(dbl).to receive(:foo) }
+        let(:the_dbl) { double }
+        let(:stubbed_double) { allow(the_dbl).to receive(:foo) }
         before { stubbed_double.and_return(1) }
 
         it 'allows the terminal action to be overriden to `and_return(y)`' do
           stubbed_double.and_return(3)
-          expect(dbl.foo).to eq(3)
+          expect(the_dbl.foo).to eq(3)
         end
 
         it 'allows the terminal action to be overriden to `and_raise(y)`' do
           stubbed_double.and_raise("boom")
-          expect { dbl.foo }.to raise_error("boom")
+          expect { the_dbl.foo }.to raise_error("boom")
         end
 
         it 'allows the terminal action to be overriden to `and_throw(y)`' do
           stubbed_double.and_throw(:bar)
-          expect { dbl.foo }.to throw_symbol(:bar)
+          expect { the_dbl.foo }.to throw_symbol(:bar)
         end
       end
 
       describe "a double that already has a terminal block action" do
-        let(:dbl) { double }
-        let(:stubbed_double) { allow(dbl).to receive(:foo) }
+        let(:the_dbl) { double }
+        let(:stubbed_double) { allow(the_dbl).to receive(:foo) }
 
         it "allows the block action to be overridden" do
           allow(RSpec).to receive(:warning)
           stubbed_double.with(:arg) { :with_block }
           stubbed_double.at_least(:once) { :at_least_block }
-          expect(dbl.foo(:arg)).to eq(:at_least_block)
+          expect(the_dbl.foo(:arg)).to eq(:at_least_block)
         end
       end
 

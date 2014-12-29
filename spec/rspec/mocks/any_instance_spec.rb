@@ -695,22 +695,22 @@ module RSpec
         end
 
         it 'works with a BasicObject subclass that mixes in Kernel', :if => defined?(BasicObject) do
-          klass = Class.new(BasicObject) do
+          klazz = Class.new(BasicObject) do
             include ::Kernel
             def foo; end
           end
 
-          expect_any_instance_of(klass).to receive(:foo)
-          klass.new.foo
+          expect_any_instance_of(klazz).to receive(:foo)
+          klazz.new.foo
         end
 
         it 'works with a SimpleDelegator subclass', :if => (RUBY_VERSION.to_f > 1.8) do
-          klass = Class.new(SimpleDelegator) do
+          klazz = Class.new(SimpleDelegator) do
             def foo; end
           end
 
-          expect_any_instance_of(klass).to receive(:foo)
-          klass.new(Object.new).foo
+          expect_any_instance_of(klazz).to receive(:foo)
+          klazz.new(Object.new).foo
         end
 
         context "with argument matching" do
@@ -1094,13 +1094,13 @@ module RSpec
             end
 
             it "does not pass the instance to and_call_original" do
-              klass = Class.new do
+              klazz = Class.new do
                 def call(*args)
                   args.first
                 end
               end
-              expect_any_instance_of(klass).to receive(:call).and_call_original
-              instance = klass.new
+              expect_any_instance_of(klazz).to receive(:call).and_call_original
+              instance = klazz.new
               expect(instance.call(:bees)).to be :bees
             end
           end
@@ -1159,21 +1159,21 @@ module RSpec
         end
 
         it "doesn't bomb if the object doesn't support `dup`" do
-          klass = Class.new do
+          klazz = Class.new do
             undef_method :dup
           end
-          allow_any_instance_of(klass).to receive(:foo)
+          allow_any_instance_of(klazz).to receive(:foo)
         end
 
         it "doesn't fail when dup accepts parameters" do
-          klass = Class.new do
+          klazz = Class.new do
             def dup(funky_option)
             end
           end
 
-          allow_any_instance_of(klass).to receive(:foo)
+          allow_any_instance_of(klazz).to receive(:foo)
 
-          expect { klass.new.dup('Dup dup dup') }.to_not raise_error
+          expect { klazz.new.dup('Dup dup dup') }.to_not raise_error
         end
       end
 

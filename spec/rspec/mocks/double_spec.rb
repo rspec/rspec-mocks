@@ -13,8 +13,8 @@ module RSpec
       end
 
       it "uses 'Double' in failure messages" do
-        double = double('name')
-        expect { double.foo }.to raise_error(/Double "name" received/)
+        dbl = double('name')
+        expect { dbl.foo }.to raise_error(/Double "name" received/)
       end
 
       it "hides internals in its inspect representation" do
