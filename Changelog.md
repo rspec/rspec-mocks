@@ -45,6 +45,10 @@ Bug Fixes:
   (Myron Marston, #846)
 * Prevent message expectations from being modified by customization methods
   (e.g. `with`) after they have been invoked. (Sam Phippen and Melanie Gilman, #837)
+* Handle cases where a method stub cannot be removed due to something
+  external to RSpec monkeying with the method definition. This can
+  happen, for example, when you `file.reopen(io)` after previously
+  stubbing a method on the `file` object. (Myron Marston, #853)
 
 ### 3.1.3 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)
