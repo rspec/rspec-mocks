@@ -78,8 +78,7 @@ module RSpec
         return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
-        definition_target.__send__(:remove_method, @method_name)
-
+        remove_method_from_definition_target
         @method_stasher.restore if @method_stasher.method_is_stashed?
         restore_original_visibility
 
@@ -254,6 +253,30 @@ module RSpec
           object_singleton_class
         end
 
+      end
+
+    private
+
+      def remove_method_from_definition_target
+        definition_target.__send__(:remove_method, @method_name)
+      rescue NameError
+        # This can happen when the method has been monkeyed with by
+        # something outside RSpec. This happens, for example, when
+        # `file.write` has been stubbed, and then `file.reopen(other_io)`
+        # is later called, as `File#reopen` appears to redefine `write`.
+        #
+        # Note: we could avoid rescuing this by checking
+        # `definition_target.instance_method(@method_name).owner == definition_target`,
+        # saving us from the cost of the expensive exception, but this error is
+        # extremely rare (it was discovered on 2014-12-30, only happens on
+        # RUBY_VERSION < 2.0 and our spec suite only hits this condition once),
+        # so we'd rather avoid the cost of that check for every method double,
+        # and risk the rare situation where this exception will get raised.
+        RSpec.warn_with(
+          "WARNING: RSpec could not fully restore #{@object.inspect}." \
+          "#{@method_name}, possibly because the method has been redefined " \
+          "by something outside of RSpec."
+        )
       end
     end
   end
