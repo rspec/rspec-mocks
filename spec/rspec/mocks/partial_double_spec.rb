@@ -160,7 +160,7 @@ module RSpec
         end
       end
 
-      it "allows `write` to be stubbed and reset" do
+      it "allows `write` to be stubbed and reset", :unless => Support::Ruby.jruby? do
         allow(file_1).to receive(:write)
         file_1.reopen(file_2)
         expect_output_warning_on_ruby_lt_2 { reset file_1 }
