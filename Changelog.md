@@ -193,7 +193,7 @@ Bug Fixes:
   behavior. (Maurício Linhares)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.2...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.3...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
