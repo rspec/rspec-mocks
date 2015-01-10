@@ -243,7 +243,7 @@ Bug Fixes:
   behavior. (Maurício Linhares)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.2...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.3...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -305,6 +305,13 @@ Bug Fixes:
   use `#inspect` rather than `#description` if `#description`
   returns `nil` or `''` so that you still get a useful message.
   (Nick DeLuca)
+
+### 2.99.3 / 2015-01-09
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.2...v2.99.3)
+
+Bug Fixes:
+
+* Fix regression that caused an error when a test double was deserialized from YAML. (Yuji Nakayama, #777)
 
 ### 2.99.2 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.1...v2.99.2)
