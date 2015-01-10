@@ -1,7 +1,7 @@
 module RSpec
   module Mocks
     module Version
-      STRING = '2.99.2'
+      STRING = '2.99.3'
     end
   end
 end

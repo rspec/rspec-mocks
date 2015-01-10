@@ -1,4 +1,4 @@
-### 2.99.3 Development
+### 2.99.3 / 2015-01-09
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.2...v2.99.3)
 
 Bug Fixes:
