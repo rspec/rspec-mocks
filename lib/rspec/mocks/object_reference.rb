@@ -70,7 +70,7 @@ module RSpec
       end
     end
 
-    # Used when a module is passed to `class_double` or `instance_double`.
+    # Used when an anonymous module is passed to `class_double` or `instance_double`.
     # Represents a reference to that module.
     #
     # @private
