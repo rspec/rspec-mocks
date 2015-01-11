@@ -26,7 +26,7 @@ module RSpec
           expect(o.defined_method).to eq(1)
         end
 
-        it 'allows constants to be looked up and declared to verifying double callbacks' do
+        it 'allows named constants to be looked up and declared to verifying double callbacks' do
           expect { |probe|
             RSpec.configuration.mock_with(:rspec) do |config|
               config.verify_doubled_constant_names = true
@@ -35,6 +35,18 @@ module RSpec
 
             instance_double("RSpec::Mocks::ClassThatDynamicallyDefinesMethods")
           }.to yield_with_args(have_attributes :target => ClassThatDynamicallyDefinesMethods)
+        end
+
+        it 'allows anonymous constants to be looked up and declared to verifying double callbacks' do
+          anonymous_module = Module.new
+          expect { |probe|
+            RSpec.configuration.mock_with(:rspec) do |config|
+              config.verify_doubled_constant_names = true
+              config.when_declaring_verifying_double(&probe)
+            end
+
+            instance_double(anonymous_module)
+          }.to yield_with_args(have_attributes :target => anonymous_module)
         end
 
         it 'allows classes to be customised' do
@@ -57,13 +69,23 @@ module RSpec
           }.to raise_error(/Module or String expected/)
         end
 
-        it 'declares the module to verifying double callbacks' do
+        it 'declares named modules to verifying double callbacks' do
           expect { |probe|
             RSpec.configuration.mock_with(:rspec) do |config|
               config.when_declaring_verifying_double(&probe)
             end
             class_double CustomModule
           }.to yield_with_args(have_attributes :target => CustomModule)
+        end
+
+        it 'declares anonymous modules to verifying double callbacks' do
+          anonymous_module = Module.new
+          expect { |probe|
+            RSpec.configuration.mock_with(:rspec) do |config|
+              config.when_declaring_verifying_double(&probe)
+            end
+            class_double anonymous_module
+          }.to yield_with_args(have_attributes :target => anonymous_module)
         end
       end
 
