@@ -11,7 +11,8 @@ Feature: Dynamic classes
 
   Some of these classes may have methods to define these methods on the objects at runtime.
   (For example, `ActiveRecord` does this to define methods from database columns.) For these
-  cases we provide an API which can be used to customise verifying doubles on creation.
+  cases we provide an API which can be used to customise verifying doubles on creation. We
+  use this ourselves in `rspec-rails` to set up some niceties for you.
 
   These types of methods are supported at class level (with `class_double`) however, since
   `respond_to?` can be queried directly on the class.
