@@ -60,11 +60,11 @@ module RSpec
               "Can not perform constant replacement with an object."
       end
 
-      # The target of the verifying double (the object's class).
+      # The target of the verifying double (the object itself).
       #
-      # @return Class
+      # @return Object
       def target
-        @object.class
+        @object
       end
 
       # Always returns true for an object as the class is defined.
