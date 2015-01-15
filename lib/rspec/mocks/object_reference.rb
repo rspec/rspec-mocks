@@ -61,7 +61,7 @@ module RSpec
       # is invalid when passing an object argument to `object_double`.
       def const_to_replace
         raise ArgumentError,
-              "Can not perform constant replacement with an object."
+              "Can not perform constant replacement with an anonymous object."
       end
 
       # The target of the verifying double (the object itself).
