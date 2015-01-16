@@ -8,7 +8,7 @@ module RSpec
         case object_module_or_name
         when Module
           if anonymous_module?(object_module_or_name)
-            AnonymousModuleReference.new(object_module_or_name)
+            DirectObjectReference.new(object_module_or_name)
           else
             # Use a `NamedObjectReference` if it has a name because this
             # will use the original value of the constant in case it has
@@ -39,76 +39,93 @@ module RSpec
       private_class_method :anonymous_module?
     end
 
-    # Used when an object is passed to `object_double`.
+    # An implementation of rspec-mocks' reference interface.
+    # Used when an object is passed to {ExampleMethods#object_double}, or
+    # an anonymous class or module is passed to {ExampleMethods#instance_double}
+    # or {ExampleMethods#class_double}.
     # Represents a reference to that object.
-    #
-    # @private
+    # @see NamedObjectReference
     class DirectObjectReference
+      # @param object [Object] the object to which this refers
       def initialize(object)
         @object = object
       end
 
+      # @return [String] the object's description (via `#inspect`).
       def description
         @object.inspect
       end
 
+      # Defined for interface parity with the other object reference
+      # implementations. Raises an `ArgumentError` to indicate that `as_stubbed_const`
+      # is invalid when passing an object argument to `object_double`.
       def const_to_replace
         raise ArgumentError,
-              "Can not perform constant replacement with an object."
+              "Can not perform constant replacement with an anonymous object."
       end
 
+      # The target of the verifying double (the object itself).
+      #
+      # @return [Object]
       def target
-        @object.class
+        @object
       end
 
+      # Always returns true for an object as the class is defined.
+      #
+      # @return [true]
       def defined?
         true
       end
 
+      # Yields if the reference target is loaded, providing a generic mechanism
+      # to optionally run a bit of code only when a reference's target is
+      # loaded.
+      #
+      # This specific implementation always yields because direct references
+      # are always loaded.
+      #
+      # @yield [Object] the target of this reference.
       def when_loaded
         yield @object
       end
     end
 
-    # Used when an anonymous module is passed to `class_double` or `instance_double`.
-    # Represents a reference to that module.
-    #
-    # @private
-    class AnonymousModuleReference < DirectObjectReference
-      def const_to_replace
-        @object.name
-      end
-      alias description const_to_replace
-
-      def target
-        @object
-      end
-    end
-
-    # Used when a string is passed to `class_double`, `instance_double`
-    # or `object_double`.
+    # An implementation of rspec-mocks' reference interface.
+    # Used when a string is passed to {ExampleMethods#object_double},
+    # and when a string, named class or named module is passed to
+    # {ExampleMethods#instance_double}, or {ExampleMethods#class_double}.
     # Represents a reference to the object named (via a constant lookup)
     # by the string.
-    #
-    # @private
+    # @see DirectObjectReference
     class NamedObjectReference
+      # @param const_name [String] constant name
       def initialize(const_name)
         @const_name = const_name
       end
 
+      # @return [Boolean] true if the named constant is defined, false otherwise.
       def defined?
         !!object
       end
 
+      # @return [String] the constant name to replace with a double.
       def const_to_replace
         @const_name
       end
       alias description const_to_replace
 
+      # @return [Object, nil] the target of the verifying double (the named object), or
+      #   nil if it is not defined.
       def target
         object
       end
 
+      # Yields if the reference target is loaded, providing a generic mechanism
+      # to optionally run a bit of code only when a reference's target is
+      # loaded.
+      #
+      # @yield [Object] the target object
       def when_loaded
         yield object if object
       end

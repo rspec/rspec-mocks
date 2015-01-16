@@ -91,12 +91,14 @@ module RSpec
 
       describe 'object doubles' do
         it 'declares the class to verifying double callbacks' do
+          object = Object.new
+
           expect { |probe|
             RSpec.configuration.mock_with(:rspec) do |config|
               config.when_declaring_verifying_double(&probe)
             end
-            object_double Object.new
-          }.to yield_with_args(have_attributes :target => Object)
+            object_double object
+          }.to yield_with_args(have_attributes :target => object)
         end
       end
 

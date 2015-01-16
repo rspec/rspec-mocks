@@ -50,7 +50,7 @@ module RSpec
       it 'does not allow as_stubbed_constant for real objects' do
         expect {
           object_double(LoadedClass.new).as_stubbed_const
-        }.to raise_error(/Can not perform constant replacement with an object/)
+        }.to raise_error(/Can not perform constant replacement with an anonymous object/)
       end
 
       it 'is not a module' do
