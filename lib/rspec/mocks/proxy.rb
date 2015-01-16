@@ -163,12 +163,12 @@ module RSpec
         attr_reader :args
 
         def initialize(args)
-          @args = args
-          @original_hashes = args.map { |arg| [arg, hash_of(arg)] }
+          @args          = args
+          @original_hash = hash_of(args)
         end
 
         def has_mutations?
-          @original_hashes.any? { |(arg, hash)| hash != hash_of(arg) }
+          @original_hash != hash_of(args)
         end
 
       private
