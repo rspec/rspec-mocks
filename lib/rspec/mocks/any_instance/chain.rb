@@ -34,6 +34,7 @@ module RSpec
           record :and_throw
           record :and_yield
           record :and_call_original
+          record :and_wrap_original
           record :with
           record :once
           record :twice
