@@ -12,6 +12,8 @@ Enhancements:
   Baginski, #826)
 * Make `array_including` and `hash_including` argument matchers composable.
   (Sam Phippen, #819)
+* Make `allow_any_instance_of(...).to receive(...).and_wrap_original`
+  work. (Ryan Fitzgerald, #869)
 
 Bug Fixes:
 
