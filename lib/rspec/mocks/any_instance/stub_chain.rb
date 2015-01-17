@@ -31,7 +31,8 @@ module RSpec
             :and_return => [:with, nil],
             :and_raise => [:with, nil],
             :and_yield => [:with, nil],
-            :and_call_original => [:with, nil]
+            :and_call_original => [:with, nil],
+            :and_wrap_original => [:with, nil]
           }
         end
 
