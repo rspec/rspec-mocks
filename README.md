@@ -8,6 +8,15 @@ alike.
     gem install rspec       # for rspec-core, rspec-expectations, rspec-mocks
     gem install rspec-mocks # for rspec-mocks only
 
+Want to run against the `master` branch? You'll need to include the dependent
+RSpec repos as well. Add the following to your `Gemfile`:
+
+```ruby
+%w[rspec-core rspec-expectations rspec-mocks rspec-support].each do |lib|
+  gem lib, :git => "git://github.com/rspec/#{lib}.git", :branch => 'master'
+end
+```
+
 ## Test Doubles
 
 A test double is an object that stands in for another object in your system
