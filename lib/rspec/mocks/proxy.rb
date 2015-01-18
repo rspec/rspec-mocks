@@ -88,7 +88,9 @@ module RSpec
           @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
         end
 
-        @messages_received.each do |(actual_method_name, args, _)|
+        @messages_received.each do |(actual_method_name, received_arg_list, _)|
+          expectation.fail_if_problematic_received_arg_mutations(received_arg_list)
+          args = received_arg_list.args
           next unless expectation.matches?(actual_method_name, *args)
 
           expectation.safe_invoke(nil)
@@ -98,7 +100,8 @@ module RSpec
 
       # @private
       def check_for_unexpected_arguments(expectation)
-        @messages_received.each do |(method_name, args, _)|
+        @messages_received.each do |(method_name, received_arg_list, _)|
+          args = received_arg_list.args
           next unless expectation.matches_name_but_not_args(method_name, *args)
 
           raise_unexpected_message_args_error(expectation, *args)
@@ -138,7 +141,11 @@ module RSpec
 
       # @private
       def received_message?(method_name, *args, &block)
-        @messages_received.any? { |array| array == [method_name, args, block] }
+        @messages_received.any? do |(received_method_name, received_arg_list, received_block)|
+          method_name == received_method_name &&
+            args == received_arg_list.args &&
+            block == received_block
+        end
       end
 
       # @private
@@ -149,7 +156,35 @@ module RSpec
       # @private
       def record_message_received(message, *args, &block)
         @order_group.invoked SpecificMessage.new(object, message, args)
-        @messages_received << [message, args, block]
+        @messages_received << [message, ReceivedArgList.new(args), block]
+      end
+
+      class ReceivedArgList
+        attr_reader :args
+
+        def initialize(args)
+          @args          = args
+          @original_hash = hash_of(args)
+        end
+
+        def has_mutations?
+          @original_hash != hash_of(args)
+        end
+
+      private
+
+        def hash_of(arg)
+          arg.hash
+        rescue Exception
+          # While `Object#hash` is a built-in ruby method that we expect args to
+          # support, there's no guarantee that all args will. For example, a
+          # `BasicObject` instance will raise a `NoMethodError`. Given that
+          # we use the hash only to advise the user of a rare case we don't
+          # support involving mutations, it seems better to ignore this error
+          # and use a static value in its place (which will make us assume no
+          # mutation has occurred).
+          :failed_to_get_hash
+        end
       end
 
       # @private

@@ -15,6 +15,10 @@ module RSpec
     # invoked.
     MockExpectationAlreadyInvokedError = Class.new(Exception)
 
+    # Raised for situations that RSpec cannot support due to external mutations
+    # made externally on arguments that RSpec is holding onto to use for later comparisons.
+    CannotSupportArgMutationsError = Class.new(StandardError)
+
     # @private
     UnsupportedMatcherError  = Class.new(StandardError)
     # @private

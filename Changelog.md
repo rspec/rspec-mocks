@@ -51,6 +51,8 @@ Bug Fixes:
   external to RSpec monkeying with the method definition. This can
   happen, for example, when you `file.reopen(io)` after previously
   stubbing a method on the `file` object. (Myron Marston, #853)
+* Provide a clear error when received message args are mutated before
+  a `have_received(...).with(...)` expectation. (Myron Marston, #868)
 
 ### 3.1.3 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.2...v3.1.3)

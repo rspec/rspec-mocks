@@ -123,6 +123,34 @@ module RSpec
               expect(dbl).to have_received(:expected_method).with(:unexpected, :args)
             }.to raise_error(/with unexpected arguments/)
           end
+
+          context "when a passed arg is later mutated before the `have_received(...).with(...)` expectation" do
+            it 'gives the user a clear error since we cannot support mutations' do
+              dbl = spy
+              dbl.foo(arg = "bar")
+              arg << "bazz"
+
+              expect {
+                expect(dbl).to have_received(:foo).with("bar")
+              }.to raise_error(CannotSupportArgMutationsError)
+            end
+
+            it 'does not prevent `have_received` without `with`' do
+              dbl = spy
+              dbl.foo(arg = "bar")
+              arg << "bazz"
+
+              expect(dbl).to have_received(:foo)
+            end
+          end
+
+          it 'does not blow up when objects that do not support `#hash` are passed as args', :if => defined?(::BasicObject) do
+            dbl = spy
+            dbl.foo(arg = ::BasicObject.new)
+            expect { arg.hash }.to raise_error(NoMethodError)
+
+            expect(dbl).to have_received(:foo).with(arg)
+          end
         end
 
         it 'generates a useful description' do
