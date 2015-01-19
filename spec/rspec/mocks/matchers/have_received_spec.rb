@@ -142,6 +142,15 @@ module RSpec
 
               expect(dbl).to have_received(:foo)
             end
+
+             it 'does not prevent `have_received(...).with(...)` for a different method that has had no arg mutations' do
+               dbl = spy
+               dbl.foo(arg = "foo")
+               arg << "foo"
+               dbl.bar("bar")
+
+               expect(dbl).to have_received(:bar).with("bar")
+             end
           end
 
           it 'does not blow up when objects that do not support `#hash` are passed as args', :if => defined?(::BasicObject) do

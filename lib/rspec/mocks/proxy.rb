@@ -89,7 +89,10 @@ module RSpec
         end
 
         @messages_received.each do |(actual_method_name, received_arg_list, _)|
-          expectation.fail_if_problematic_received_arg_mutations(received_arg_list)
+          if expectation.message == actual_method_name
+            expectation.fail_if_problematic_received_arg_mutations(received_arg_list)
+          end
+
           args = received_arg_list.args
           next unless expectation.matches?(actual_method_name, *args)
 
