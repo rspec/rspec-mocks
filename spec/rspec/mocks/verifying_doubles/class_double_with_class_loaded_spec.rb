@@ -124,6 +124,22 @@ module RSpec
         end
       end
 
+      context "when given a class that has an overriden `#name` method" do
+        it "properly verifies" do
+          check_verification class_double(LoadedClassWithOverridenName)
+        end
+
+        it "can still stub the const" do
+          class_double(LoadedClassWithOverridenName).as_stubbed_const
+          check_verification LoadedClassWithOverridenName
+        end
+
+        def check_verification(o)
+          allow(o).to receive(:defined_class_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+      end
+
       context "when the class const has been previously stubbed" do
         before { stub_const("LoadedClass", Class.new) }
 

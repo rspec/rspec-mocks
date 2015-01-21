@@ -13,7 +13,7 @@ module RSpec
             # Use a `NamedObjectReference` if it has a name because this
             # will use the original value of the constant in case it has
             # been stubbed.
-            NamedObjectReference.new(object_module_or_name.name)
+            NamedObjectReference.new(name_of(object_module_or_name))
           end
         when String
           NamedObjectReference.new(object_module_or_name)
@@ -29,14 +29,22 @@ module RSpec
 
       if Module.new.name.nil?
         def self.anonymous_module?(mod)
-          !mod.name
+          !name_of(mod)
         end
       else # 1.8.7
         def self.anonymous_module?(mod)
-          mod.name == ""
+          name_of(mod) == ""
         end
       end
       private_class_method :anonymous_module?
+
+      def self.name_of(mod)
+        MODULE_NAME_METHOD.bind(mod).call
+      end
+      private_class_method :name_of
+
+      # @private
+      MODULE_NAME_METHOD = Module.instance_method(:name)
     end
 
     # An implementation of rspec-mocks' reference interface.

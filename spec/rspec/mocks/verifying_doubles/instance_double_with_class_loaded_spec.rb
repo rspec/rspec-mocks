@@ -153,6 +153,14 @@ module RSpec
         end
       end
 
+      context "when given a class that has an overriden `#name` method" do
+        it "properly verifies" do
+          o = instance_double(LoadedClassWithOverridenName)
+          allow(o).to receive(:defined_instance_method)
+          prevents { allow(o).to receive(:undefined_method) }
+        end
+      end
+
       context 'for null objects' do
         let(:obj) { instance_double('LoadedClass').as_null_object }
 
