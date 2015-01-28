@@ -44,6 +44,14 @@ module RSpec
               }.to fail_with(unexpected_failure_message_for(o.inspect))
             end
           end
+
+          context "on default method stub" do
+            it "error message display starts in new line" do
+              d = double(:double)
+              allow(d).to receive(:foo).with({})
+              expect { d.foo([]) }.to fail_with(/\nDiff/)
+            end
+          end
         end
       end
     end
