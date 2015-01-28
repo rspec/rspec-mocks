@@ -65,7 +65,7 @@ module RSpec
         diff = diff_message(expectation.expected_args, args)
 
         message = default_error_message(expectation, expected_args, actual_args)
-        message << "Diff:\n #{diff}" unless diff.empty?
+        message << "\nDiff:\n #{diff}" unless diff.empty?
         message << "\n Please stub a default value first if message might be received with other args as well. \n"
 
         __raise message
