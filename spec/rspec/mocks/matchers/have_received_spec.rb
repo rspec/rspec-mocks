@@ -414,6 +414,25 @@ module RSpec
             }.to raise_error(/received :two out of order/m)
           end
 
+          context "when multiple calls to the same method are interleaved with other method calls" do
+            before do
+              the_dbl.one
+              the_dbl.one
+              the_dbl.two
+              the_dbl.one
+              the_dbl.two
+            end
+
+            it 'passes when appropriate' do
+              expect(the_dbl).to have_received(:one).twice.ordered
+              expect(the_dbl).to have_received(:two).once.ordered
+              expect(the_dbl).to have_received(:one).once.ordered
+              expect(the_dbl).to have_received(:two).once.ordered
+            end
+
+            it 'fails when appropriate'
+          end
+
           context "when used with `with`" do
             before do
               the_dbl.one(1)
