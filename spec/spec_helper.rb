@@ -104,6 +104,15 @@ RSpec.configure do |config|
   config.extend RSpec::Support::RubyFeatures
   config.include RSpec::Support::RubyFeatures
 
+  config.define_derived_metadata :ordered_and_vauge_counts_unsupported do |meta|
+    meta[:pending] = "`.ordered` combined with a vauge count (e.g. `at_least` or `at_most`) is not yet supported (see #713)"
+  end
+
+  # We have yet to try to address this issue, and it's just noise in our output,
+  # so skip it locally. However, on CI we want it to still run them so that if
+  # we do something that makes these specs pass, we are notified.
+  config.filter_run_excluding :ordered_and_vauge_counts_unsupported unless ENV['CI']
+
   RSpec::Matchers.define_negated_matcher :a_string_excluding, :include
 end
 

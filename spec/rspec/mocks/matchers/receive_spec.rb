@@ -344,7 +344,7 @@ module RSpec
             dbl.two
           end
 
-          pending "fails with at least when the ordering is incorrect" do
+          it "fails with at least when the ordering is incorrect", :ordered_and_vauge_counts_unsupported do
             expect {
               expect(dbl).to receive(:one).at_least(2).times.ordered
               expect(dbl).to receive(:two).once.ordered
@@ -364,7 +364,7 @@ module RSpec
             dbl.two
           end
 
-          pending "fails with at most when the ordering is incorrect" do
+          it "fails with at most when the ordering is incorrect", :ordered_and_vauge_counts_unsupported do
             expect {
               expect(dbl).to receive(:one).at_most(2).times.ordered
               expect(dbl).to receive(:two).once.ordered
