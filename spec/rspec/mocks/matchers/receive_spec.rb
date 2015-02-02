@@ -183,17 +183,17 @@ module RSpec
         it 'sets up a negative message expectation that fails if the message is received' do
           wrapped.not_to receive(:foo)
 
-          expect {
+          expect_fast_failure_from(receiver, /expected: 0 times.*received: 1 time/m) do
             receiver.foo
-          }.to raise_error(/expected: 0 times.*received: 1 time/m)
+          end
         end
 
         it 'supports `to_not` as an alias for `not_to`' do
           wrapped.to_not receive(:foo)
 
-          expect {
+          expect_fast_failure_from(receiver, /expected: 0 times.*received: 1 time/m) do
             receiver.foo
-          }.to raise_error(/expected: 0 times.*received: 1 time/m)
+          end
         end
 
         it 'allows the caller to constrain the received arguments' do
@@ -204,9 +204,9 @@ module RSpec
             receiver.foo(:b)
           }.not_to raise_error
 
-          expect {
+          expect_fast_failure_from(receiver, /expected: 0 times.*received: 1 time/m) do
             receiver.foo(:a)
-          }.to raise_error(/expected: 0 times.*received: 1 time/m)
+          end
         end
 
         it 'prevents confusing double-negative expressions involving `never`' do
@@ -453,23 +453,23 @@ module RSpec
         end
 
         it 'supports `expect(...).not_to receive`' do
-          dbl = double
+          expect_fast_failure_from(double) do |dbl|
+            framework.new.instance_exec do
+              expect(dbl).not_to receive(:foo)
+            end
 
-          framework.new.instance_exec do
-            expect(dbl).not_to receive(:foo)
+            dbl.foo
           end
-
-          expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
 
         it 'supports `expect(...).to_not receive`' do
-          dbl = double
+          expect_fast_failure_from(double) do |dbl|
+            framework.new.instance_exec do
+              expect(dbl).to_not receive(:foo)
+            end
 
-          framework.new.instance_exec do
-            expect(dbl).to_not receive(:foo)
+            dbl.foo
           end
-
-          expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
         end
       end
 

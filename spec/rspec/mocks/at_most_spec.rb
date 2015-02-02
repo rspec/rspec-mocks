@@ -76,26 +76,27 @@ module RSpec
         expect(@double).to receive(:do_something).at_most(2).times
         @double.do_something
         @double.do_something
-        expect {
+
+        expect_fast_failure_from(@double, /expected: at most 2 times.*received: 3 times/m) do
           @double.do_something
-        }.to raise_error(/expected: at most 2 times.*received: 3 times/m)
+        end
       end
 
       it "fails fast when at_most(:once) and is called twice" do
         expect(@double).to receive(:do_something).at_most(:once)
         @double.do_something
-        expect {
+        expect_fast_failure_from(@double, /expected: at most 1 time.*received: 2 times/m) do
           @double.do_something
-        }.to raise_error(/expected: at most 1 time.*received: 2 times/m)
+        end
       end
 
       it "fails fast when at_most(:twice) and is called three times" do
         expect(@double).to receive(:do_something).at_most(:twice)
         @double.do_something
         @double.do_something
-        expect {
+        expect_fast_failure_from(@double, /expected: at most 2 times.*received: 3 times/m) do
           @double.do_something
-        }.to raise_error(/expected: at most 2 times.*received: 3 times/m)
+        end
       end
 
       it "fails fast when at_most(:thrice) and is called four times" do
@@ -103,11 +104,10 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        expect {
+        expect_fast_failure_from(@double, /expected: at most 3 times.*received: 4 times/m) do
           @double.do_something
-        }.to raise_error(/expected: at most 3 times.*received: 4 times/m)
+        end
       end
-
     end
   end
 end

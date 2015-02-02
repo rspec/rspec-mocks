@@ -11,9 +11,10 @@ module RSpec
 
       it 'is not caught by StandardError rescue blocks' do
         expect(Foo).not_to receive(:bar)
-        expect {
+
+        expect_fast_failure_from(Foo) do
           Foo.foo
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
       end
     end
   end

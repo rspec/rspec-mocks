@@ -380,7 +380,10 @@ module RSpec
       context "expect_any_instance_of(...).not_to receive" do
         it "fails if the method is called" do
           expect_any_instance_of(klass).not_to receive(:existing_method)
-          expect { klass.new.existing_method }.to raise_error(RSpec::Mocks::MockExpectationError)
+
+          expect_fast_failure_from(klass.new) do |instance|
+            instance.existing_method
+          end
         end
 
         it "passes if no method is called" do
@@ -398,15 +401,18 @@ module RSpec
           allow_any_instance_of(klass).to receive(:foo).and_return(1)
           expect(instance.foo).to eq(1)
           expect_any_instance_of(klass).not_to receive(:foo)
-          expect { instance.foo }.to fail
+
+          expect_fast_failure_from(instance) do
+            instance.foo
+          end
         end
 
         context "with constraints" do
           it "fails if the method is called with the specified parameters" do
             expect_any_instance_of(klass).not_to receive(:existing_method_with_arguments).with(:argument_one, :argument_two)
-            expect {
-              klass.new.existing_method_with_arguments(:argument_one, :argument_two)
-            }.to raise_error(RSpec::Mocks::MockExpectationError)
+            expect_fast_failure_from(klass.new) do |instance|
+              instance.existing_method_with_arguments(:argument_one, :argument_two)
+            end
           end
 
           it "passes if the method is called with different parameters" do
@@ -777,12 +783,12 @@ module RSpec
             end
 
             it "fails for more than one invocation" do
-              expect do
-                expect_any_instance_of(klass).to receive(:foo).once
-                instance = klass.new
+              expect_any_instance_of(klass).to receive(:foo).once
+
+              expect_fast_failure_from(klass.new) do |instance|
                 2.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end
             end
           end
 
@@ -794,12 +800,12 @@ module RSpec
             end
 
             it "fails for more than two invocations" do
-              expect do
-                expect_any_instance_of(klass).to receive(:foo).twice
-                instance = klass.new
+              expect_any_instance_of(klass).to receive(:foo).twice
+
+              expect_fast_failure_from(klass.new) do |instance|
                 3.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end
             end
           end
 
@@ -811,12 +817,11 @@ module RSpec
             end
 
             it "fails for more than three invocations" do
-              expect do
-                expect_any_instance_of(klass).to receive(:foo).thrice
-                instance = klass.new
+              expect_any_instance_of(klass).to receive(:foo).thrice
+              expect_fast_failure_from(klass.new) do |instance|
                 4.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end
             end
 
             it "fails for less than three invocations" do
@@ -846,12 +851,11 @@ module RSpec
             end
 
             it "fails for n invocations where n > 3" do
-              expect do
-                expect_any_instance_of(klass).to receive(:foo).exactly(3).times
-                instance = klass.new
+              expect_any_instance_of(klass).to receive(:foo).exactly(3).times
+              expect_fast_failure_from(klass.new) do |instance|
                 4.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end
             end
           end
 
@@ -892,12 +896,11 @@ module RSpec
             end
 
             it "fails for n invocations where n > 3" do
-              expect do
-                expect_any_instance_of(klass).to receive(:foo).at_most(3).times
-                instance = klass.new
+              expect_any_instance_of(klass).to receive(:foo).at_most(3).times
+              expect_fast_failure_from(klass.new) do |instance|
                 4.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end
             end
           end
 
@@ -908,10 +911,10 @@ module RSpec
             end
 
             it "fails on the first invocation" do
-              expect do
-                expect_any_instance_of(klass).to receive(:foo).never
-                klass.new.foo
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              expect_any_instance_of(klass).to receive(:foo).never
+              expect_fast_failure_from(klass.new) do |instance|
+                instance.foo
+              end
             end
 
             context "when combined with other expectations" do

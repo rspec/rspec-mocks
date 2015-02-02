@@ -19,9 +19,9 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        expect {
+        expect_fast_failure_from(@double) do
           @double.do_something
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
       end
 
       it "fails when exactly n times method is never called" do

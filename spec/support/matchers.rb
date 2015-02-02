@@ -4,7 +4,7 @@ module RSpec
       raise_error(RSpec::Mocks::MockExpectationError)
     end
 
-    def fail_with(message)
+    def fail_with(message=nil)
       raise_error(RSpec::Mocks::MockExpectationError, message)
     end
 

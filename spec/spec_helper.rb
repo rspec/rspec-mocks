@@ -43,7 +43,13 @@ module VerifyAndResetHelpers
   def with_unfulfilled_double
     d = double("double")
     yield d
+  ensure
     reset d
+  end
+
+  def expect_fast_failure_from(double, *fail_with_args, &blk)
+    expect { blk.call(double) }.to fail_with(*fail_with_args)
+    reset double
   end
 end
 

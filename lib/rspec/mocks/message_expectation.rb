@@ -422,9 +422,8 @@ module RSpec
         end
 
         def verify_messages_received
-          InsertOntoBacktrace.line(@expected_from) do
-            generate_error unless expected_messages_received? || failed_fast?
-          end
+          return if expected_messages_received?
+          InsertOntoBacktrace.line(@expected_from) { generate_error }
         end
 
         def expected_messages_received?
