@@ -6,6 +6,10 @@ module RSpec
     #
     # @private
     class MethodReference
+      def self.for(object_reference, method_name)
+        new(object_reference, method_name)
+      end
+
       def initialize(object_reference, method_name)
         @object_reference = object_reference
         @method_name = method_name
@@ -133,6 +137,14 @@ module RSpec
 
     # @private
     class ObjectMethodReference < MethodReference
+      def self.for(object_reference, method_name)
+        if ClassNewMethodReference.applies_to?(method_name) { object_reference.when_loaded { |o| o } }
+          ClassNewMethodReference.new(object_reference, method_name)
+        else
+          super
+        end
+      end
+
     private
 
       def method_implemented?(object)
@@ -149,6 +161,31 @@ module RSpec
 
       def visibility_from(object)
         MethodReference.method_visibility_for(object, @method_name)
+      end
+    end
+
+    # When a class's `.new` method is stubbed, we want to use the method
+    # signature from `#initialize` because `.new`'s signature is a generic
+    # `def new(*args)` and it simply delegates to `#initialize` and forwards
+    # all args...so the method with the actually used signature is `#initialize`.
+    #
+    # This method reference implementation handles that specific case.
+    # @private
+    class ClassNewMethodReference < ObjectMethodReference
+      def self.applies_to?(method_name)
+        return false unless method_name == :new
+        klass = yield
+        return false unless klass.respond_to?(:new, true)
+
+        # We only want to apply our special logic to normal `new` methods.
+        # Methods that the user has monkeyed with should be left as-is.
+        klass.method(:new).owner == ::Class
+      end
+
+      def with_signature
+        @object_reference.when_loaded do |klass|
+          yield Support::MethodSignature.new(klass.instance_method(:initialize))
+        end
       end
     end
   end
