@@ -309,6 +309,9 @@ module RSpec
             "works"
           end
 
+          def initialize(a, b)
+          end
+
           def respond_to?(method_name, include_all=false)
             method_name.to_s == "dynamic_method" || super
           end
@@ -329,7 +332,7 @@ module RSpec
         end
       end
 
-      let(:object) { klass.new }
+      let(:object) { klass.new(1, 2) }
 
       before do
         RSpec::Mocks.configuration.verify_partial_doubles = true
@@ -410,6 +413,52 @@ module RSpec
         expect(object.implemented).to eq(:value)
       end
 
+      context "when `.new` is stubbed" do
+        before do
+          expect(klass.instance_method(:initialize).arity).to eq(2)
+        end
+
+        it 'uses the method signature from `#initialize` for arg verification' do
+          prevents(/arguments/) { allow(klass).to receive(:new).with(1) }
+          allow(klass).to receive(:new).with(1, 2)
+        end
+
+        context "on a class that has redefined `new`" do
+          it "uses the method signature of the redefined `new` for arg verification" do
+            subclass = Class.new(klass) do
+              def self.new(a); end
+            end
+
+            prevents(/arguments/) { allow(subclass).to receive(:new).with(1, 2) }
+            allow(subclass).to receive(:new).with(1)
+          end
+        end
+
+        context "on a class that has undefined `new`" do
+          it "prevents it from being stubbed" do
+            subclass = Class.new(klass) do
+              class << self
+                undef new
+              end
+            end
+
+            prevents(/does not implement/) { allow(subclass).to receive(:new).with(1, 2) }
+          end
+        end
+
+        context "on a class with a private `new`" do
+          it 'uses the method signature from `#initialize` for arg verification' do
+            pending "Failing on JRuby due to https://github.com/jruby/jruby/issues/2565" if RSpec::Support::Ruby.jruby?
+
+            subclass = Class.new(klass) do
+              private_class_method :new
+            end
+
+            prevents(/arguments/) { allow(subclass).to receive(:new).with(1) }
+            allow(subclass).to receive(:new).with(1, 2)
+          end
+        end
+      end
     end
   end
 end

@@ -5,6 +5,9 @@ class LoadedClass
   N = :n
   INSTANCE = LoadedClass.new
 
+  def initialize(a, b)
+  end
+
   class << self
 
     def respond_to?(method_name, include_all = false)

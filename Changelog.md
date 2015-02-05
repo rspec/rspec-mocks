@@ -1,3 +1,12 @@
+### 3.3.0 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...master)
+
+Enhancements:
+
+* When stubbing `new` on `MyClass` or `class_double(MyClass)`, use the
+  method signature from `MyClass#initialize` to verify arguments.
+  (Myron Marston, #886)
+
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.3...v3.2.0)
 

@@ -71,7 +71,7 @@ module RSpec
 
       def method_reference
         @method_reference ||= Hash.new do |h, k|
-          h[k] = @method_reference_class.new(@doubled_module, k)
+          h[k] = @method_reference_class.for(@doubled_module, k)
         end
       end
 
@@ -95,7 +95,7 @@ module RSpec
         # A custom method double is required to pass through a way to lookup
         # methods to determine their parameters.
         @method_doubles = Hash.new do |h, k|
-          h[k] = VerifyingExistingMethodDouble.new(object, k, self)
+          h[k] = VerifyingExistingMethodDouble.for(object, k, self)
         end
       end
 
@@ -167,6 +167,25 @@ module RSpec
 
       def unimplemented?
         !@valid_method
+      end
+
+      def self.for(object, method_name, proxy)
+        if ClassNewMethodReference.applies_to?(method_name) { object }
+          VerifyingExistingClassNewMethodDouble
+        else
+          self
+        end.new(object, method_name, proxy)
+      end
+    end
+
+    # Used in place of a `VerifyingExistingMethodDouble` for the specific case
+    # of mocking or stubbing a `new` method on a class. In this case, we substitute
+    # the method signature from `#initialize` since new's signature is just `*args`.
+    #
+    # @private
+    class VerifyingExistingClassNewMethodDouble < VerifyingExistingMethodDouble
+      def with_signature
+        yield Support::MethodSignature.new(object.instance_method(:initialize))
       end
     end
   end

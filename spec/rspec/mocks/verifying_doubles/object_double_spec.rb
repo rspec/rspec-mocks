@@ -3,6 +3,8 @@ require 'support/doubled_classes'
 module RSpec
   module Mocks
     RSpec.describe 'An object double' do
+      let(:loaded_instance) { LoadedClass.new(1, 2) }
+
       it 'can replace an unloaded constant' do
         o = object_double("LoadedClass::NOINSTANCE").as_stubbed_const
 
@@ -28,7 +30,7 @@ module RSpec
       end
 
       it 'can create a double that matches the interface of any arbitrary object' do
-        o = object_double(LoadedClass.new)
+        o = object_double(loaded_instance)
 
         prevents { expect(o).to receive(:undefined_instance_method) }
         prevents { expect(o).to receive(:defined_class_method) }
@@ -49,7 +51,7 @@ module RSpec
 
       it 'does not allow as_stubbed_constant for real objects' do
         expect {
-          object_double(LoadedClass.new).as_stubbed_const
+          object_double(loaded_instance).as_stubbed_const
         }.to raise_error(/Can not perform constant replacement with an anonymous object/)
       end
 
@@ -58,7 +60,7 @@ module RSpec
       end
 
       it 'validates `with` args against the method signature when stubbing a method' do
-        dbl = object_double(LoadedClass.new)
+        dbl = object_double(loaded_instance)
         prevents(/Wrong number of arguments. Expected 2, got 3./) {
           allow(dbl).to receive(:instance_method_with_two_args).with(3, :foo, :args)
         }

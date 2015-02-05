@@ -115,6 +115,57 @@ module RSpec
         }
       end
 
+      context "when `.new` is stubbed" do
+        before do
+          expect(LoadedClass.instance_method(:initialize).arity).to eq(2)
+        end
+
+        it 'uses the method signature from `#initialize` for arg verification' do
+          o = class_double(LoadedClass)
+          prevents(/arguments/) { allow(o).to receive(:new).with(1) }
+          allow(o).to receive(:new).with(1, 2)
+        end
+
+        context "on a class that has redefined `new`" do
+          it "uses the method signature of the redefined `new` for arg verification" do
+            klass = Class.new(LoadedClass) do
+              def self.new(a); end
+            end
+
+            o = class_double(klass)
+            prevents(/arguments/) { allow(o).to receive(:new).with(1, 2) }
+            allow(o).to receive(:new).with(1)
+          end
+        end
+
+        context "on a class that has undefined `new`" do
+          it "prevents it from being stubbed" do
+            klass = Class.new(LoadedClass) do
+              class << self
+                undef new
+              end
+            end
+
+            o = class_double(klass)
+            prevents(/does not implement/) { allow(o).to receive(:new).with(1, 2) }
+          end
+        end
+
+        context "on a class with a private `new`" do
+          it 'uses the method signature from `#initialize` for arg verification' do
+            pending "Failing on JRuby due to https://github.com/jruby/jruby/issues/2565" if RSpec::Support::Ruby.jruby?
+
+            klass = Class.new(LoadedClass) do
+              private_class_method :new
+            end
+
+            o = class_double(klass)
+            prevents(/arguments/) { allow(o).to receive(:new).with(1) }
+            allow(o).to receive(:new).with(1, 2)
+          end
+        end
+      end
+
       context "when given an anonymous class" do
         it 'properly verifies' do
           subclass = Class.new(LoadedClass)
