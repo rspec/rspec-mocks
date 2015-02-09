@@ -177,11 +177,6 @@ module RSpec
       end
 
       # @private
-      def raise_block_failed_error(message, detail)
-        __raise "#{intro} received :#{message} but passed block failed with: #{detail}"
-      end
-
-      # @private
       def raise_missing_block_error(args_to_yield)
         __raise "#{intro} asked to yield |#{arg_list(*args_to_yield)}| but no block was passed"
       end
