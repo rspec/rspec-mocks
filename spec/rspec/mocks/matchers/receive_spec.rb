@@ -298,11 +298,26 @@ module RSpec
           let(:receiver) { double }
           let(:wrapped)  { expect(receiver) }
 
-          it 'sets up a message expectation that formats argument matchers correctly' do
-            wrapped.to receive(:foo).with an_instance_of Fixnum
-            expect { verify_all }.to(
-              raise_error(/expected: 1 time with arguments: \(an instance of Fixnum\)\n\s+received: 0 times$/)
-            )
+          context "when a message is not received" do
+            it 'sets up a message expectation that formats argument matchers correctly' do
+              wrapped.to receive(:foo).with an_instance_of Fixnum
+              expect { verify_all }.to(
+                raise_error(/expected: 1 time with arguments: \(an instance of Fixnum\)\n\s+received: 0 times$/)
+              )
+            end
+          end
+
+          context "when a message is received the wrong number of times" do
+            it "sets up a message expectation that formats argument matchers correctly" do
+              wrapped.to receive(:foo).with(anything, hash_including(:bar => anything))
+
+              receiver.foo(1, :bar => 2)
+              receiver.foo(1, :bar => 3)
+
+              expect { verify_all }.to(
+                raise_error(/received: 2 times with arguments: \(anything, hash_including\(:bar=>"anything"\)\)$/)
+              )
+            end
           end
         end
         it_behaves_like "resets partial mocks cleanly" do
