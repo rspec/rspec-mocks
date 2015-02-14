@@ -123,7 +123,7 @@ module RSpec
         it "rejects goose when expecting a duck", :reset => true do
           expect(a_double).to receive(:random_call).with(duck_type(:abs, :div))
           expect {
-            a_double.random_call("I don't respond to :abs or :div") 
+            a_double.random_call("I don't respond to :abs or :div")
           }.to fail_matching "expected: (duck_type(:abs, :div))"
         end
       end
