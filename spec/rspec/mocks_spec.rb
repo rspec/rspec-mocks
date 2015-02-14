@@ -8,7 +8,7 @@ RSpec.describe RSpec::Mocks do
       # (Users won't hit this problem because they won't require all the files
       # individually in whatever order the file system returns)
       'require "rspec/mocks/any_instance"'
-    ], :allowed_loaded_feature_regexps => [/stringio/] do
+    ], :allowed_loaded_feature_regexps => [] do
 
     if RUBY_VERSION == '1.9.2'
       before(:example, :description => /spec files/) do
