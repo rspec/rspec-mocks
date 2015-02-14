@@ -1,14 +1,22 @@
 require 'rspec/support/spec/library_wide_checks'
 
 RSpec.describe RSpec::Mocks do
-  it_behaves_like 'library wide checks', 'rspec-mocks',
-    :preamble_for_lib => [
-      'require "rspec/mocks"',
-      # Must be required before other files due to how our autoloads are setup.
-      # (Users won't hit this problem because they won't require all the files
-      # individually in whatever order the file system returns)
-      'require "rspec/mocks/any_instance"'
-    ], :allowed_loaded_feature_regexps => [] do
+  lib_preamble = [
+    'require "rspec/mocks"',
+    # Must be required before other files due to how our autoloads are setup.
+    # (Users won't hit this problem because they won't require all the files
+    # individually in whatever order the file system returns)
+    'require "rspec/mocks/any_instance"'
+  ]
+
+  # On 1.9.2 we load securerandom to get around the lack of `BasicObject#__id__.
+  # Loading securerandom loads many other stdlibs it depends on. Rather than
+  # declaring it (and all the stdlibs it loads) as allowed, it's easier just
+  # to prevent the loading of securerandom by faking out `BasicObject#__id__
+  lib_preamble.unshift "class BasicObject; def __id__; end; end" if RUBY_VERSION == '1.9.2'
+
+  it_behaves_like 'library wide checks', 'rspec-mocks', :preamble_for_lib => lib_preamble,
+    :allowed_loaded_feature_regexps => [] do
 
     if RUBY_VERSION == '1.9.2'
       before(:example, :description => /spec files/) do
