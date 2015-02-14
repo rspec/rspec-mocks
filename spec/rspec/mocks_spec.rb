@@ -1,12 +1,14 @@
-require 'rspec/support/spec/prevent_load_time_warnings'
+require 'rspec/support/spec/library_wide_checks'
 
 RSpec.describe RSpec::Mocks do
-  it_behaves_like 'a library that issues no warnings when loaded',
-    'rspec-mocks', 'require "rspec/mocks"',
-    # Must be required before other files due to how our autoloads are setup.
-    # (Users won't hit this problem because they won't require all the files
-    # individually in whatever order the file system returns)
-    'require "rspec/mocks/any_instance"' do
+  it_behaves_like 'library wide checks', 'rspec-mocks',
+    :preamble_for_lib => [
+      'require "rspec/mocks"',
+      # Must be required before other files due to how our autoloads are setup.
+      # (Users won't hit this problem because they won't require all the files
+      # individually in whatever order the file system returns)
+      'require "rspec/mocks/any_instance"'
+    ], :allowed_loaded_feature_regexps => [/stringio/] do
 
     if RUBY_VERSION == '1.9.2'
       before(:example, :description => /spec files/) do
