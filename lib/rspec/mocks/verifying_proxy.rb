@@ -25,7 +25,8 @@ module RSpec
 
         @error_generator.raise_unimplemented_error(
           @doubled_module,
-          method_name
+          method_name,
+          @object
         )
       end
 

@@ -67,4 +67,4 @@ Feature: Using a class double
       """
     When I run `rspec spec/user_spec.rb`
     Then the output should contain "1 example, 1 failure"
-    And the output should contain "ConsoleNotifier does not implement:"
+    And the output should contain "the ConsoleNotifier class does not implement the class method:"

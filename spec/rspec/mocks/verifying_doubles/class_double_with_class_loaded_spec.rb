@@ -147,7 +147,7 @@ module RSpec
             end
 
             o = class_double(klass)
-            prevents(/does not implement/) { allow(o).to receive(:new).with(1, 2) }
+            prevents(/does not implement the class method/) { allow(o).to receive(:new).with(1, 2) }
           end
         end
 

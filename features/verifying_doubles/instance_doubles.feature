@@ -87,7 +87,7 @@ Feature: Using an instance double
       """
     When I run `rspec -r./spec/spec_helper spec/unit/user_spec.rb`
     Then the output should contain "1 example, 1 failure"
-    And the output should contain "ConsoleNotifier does not implement:"
+    And the output should contain "ConsoleNotifier class does not implement the instance method:"
 
   Scenario: spec fails with dependencies loaded and incorrect arity
     Given a file named "app/models/console_notifier.rb" with:
