@@ -16,7 +16,9 @@ RSpec.describe RSpec::Mocks do
   lib_preamble.unshift "class BasicObject; def __id__; end; end" if RUBY_VERSION == '1.9.2'
 
   it_behaves_like 'library wide checks', 'rspec-mocks', :preamble_for_lib => lib_preamble,
-    :allowed_loaded_feature_regexps => [] do
+    :allowed_loaded_feature_regexps => [
+      /rbconfig/ # loaded by rspec-support
+    ] do
 
     if RUBY_VERSION == '1.9.2'
       before(:example, :description => /spec files/) do
