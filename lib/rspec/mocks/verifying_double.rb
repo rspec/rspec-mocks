@@ -1,5 +1,4 @@
 RSpec::Support.require_rspec_mocks 'verifying_proxy'
-require 'stringio'
 
 module RSpec
   module Mocks
@@ -35,8 +34,16 @@ module RSpec
         super
       end
 
+      # @private
+      module SilentIO
+        def self.method_missing(*); end
+        def self.respond_to?(*)
+          true
+        end
+      end
+
       # Redefining `__send__` causes ruby to issue a warning.
-      old, $stderr = $stderr, StringIO.new
+      old, $stderr = $stderr, SilentIO
       def __send__(name, *args, &block)
         @__sending_message = name
         super

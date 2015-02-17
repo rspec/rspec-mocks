@@ -6,8 +6,9 @@ Enhancements:
 * When stubbing `new` on `MyClass` or `class_double(MyClass)`, use the
   method signature from `MyClass#initialize` to verify arguments.
   (Myron Marston, #886)
-* Matcher descriptions used for `received` in too-many-calls failure output.
-  (Tim Wade, #891)
+* Use matcher descriptions when generating description of received arguments
+  for mock expectation failures. (Tim Wade, #891)
+* Avoid loading `stringio` unnecessarily. (Myron Marston, #894)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.3...v3.2.0)
