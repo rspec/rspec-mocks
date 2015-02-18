@@ -13,8 +13,8 @@ module RSpec
         o = instance_double('LoadedClass', :defined_instance_method => 1)
         expect(o.defined_instance_method).to eq(1)
 
-        prevents { allow(o).to receive(:undefined_instance_method) }
-        prevents { allow(o).to receive(:defined_class_method) }
+        prevents(/does not implement the instance method/) { allow(o).to receive(:undefined_instance_method) }
+        prevents(/does not implement the instance method/) { allow(o).to receive(:defined_class_method) }
       end
 
       it 'only allows instance methods that exist to be expected' do

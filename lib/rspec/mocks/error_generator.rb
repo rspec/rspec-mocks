@@ -98,11 +98,17 @@ module RSpec
       # rubocop:enable Style/ParameterLists
 
       # @private
-      def raise_unimplemented_error(doubled_module, method_name)
-        __raise "%s does not implement: %s" % [
-          doubled_module.description,
-          method_name
-        ]
+      def raise_unimplemented_error(doubled_module, method_name, object)
+        message = case object
+                  when InstanceVerifyingDouble
+                    "the %s class does not implement the instance method: %s"
+                  when ClassVerifyingDouble
+                    "the %s class does not implement the class method: %s"
+                  else
+                    "%s does not implement: %s"
+                  end
+
+        __raise message % [doubled_module.description, method_name]
       end
 
       # @private
