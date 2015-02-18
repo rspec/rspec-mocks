@@ -9,6 +9,8 @@ Enhancements:
 * Use matcher descriptions when generating description of received arguments
   for mock expectation failures. (Tim Wade, #891)
 * Avoid loading `stringio` unnecessarily. (Myron Marston, #894)
+* Verifying doubles failure messages now distinguish between class and instance
+  level methods. (Tim Wade, #896)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.3...v3.2.0)
