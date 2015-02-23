@@ -214,11 +214,10 @@ if defined?(BasicObject)
     # the end of the example.
     #
     # @example
-    #
-    #     logger = double('logger')
-    #     thing_that_logs = ThingThatLogs.new(logger)
-    #     logger.should_receive(:log)
-    #     thing_that_logs.do_something_that_logs_a_message
+    #   logger = double('logger')
+    #   thing_that_logs = ThingThatLogs.new(logger)
+    #   logger.should_receive(:log)
+    #   thing_that_logs.do_something_that_logs_a_message
     #
     # @note This is only available when you have enabled the `should` syntax.
     # @see RSpec::Mocks::ExampleMethods#expect
@@ -232,10 +231,9 @@ if defined?(BasicObject)
     # Tells the object to respond to the message with the specified value.
     #
     # @example
-    #
-    #     counter.stub(:count).and_return(37)
-    #     counter.stub(:count => 37)
-    #     counter.stub(:count) { 37 }
+    #   counter.stub(:count).and_return(37)
+    #   counter.stub(:count => 37)
+    #   counter.stub(:count) { 37 }
     #
     # @note This is only available when you have enabled the `should` syntax.
     # @see RSpec::Mocks::ExampleMethods#allow
@@ -269,10 +267,9 @@ if defined?(BasicObject)
     # implementation calls `foo.baz.bar`, the stub will not work.
     #
     # @example
-    #
-    #     double.stub_chain("foo.bar") { :baz }
-    #     double.stub_chain(:foo, :bar => :baz)
-    #     double.stub_chain(:foo, :bar) { :baz }
+    #   double.stub_chain("foo.bar") { :baz }
+    #   double.stub_chain(:foo, :bar => :baz)
+    #   double.stub_chain(:foo, :bar) { :baz }
     #
     #     # Given any of ^^ these three forms ^^:
     #     double.foo.bar # => :baz
@@ -311,15 +308,14 @@ class Class
   # class.
   #
   # @example
+  #   Car.any_instance.should_receive(:go)
+  #   race = Race.new
+  #   race.cars << Car.new
+  #   race.go # assuming this delegates to all of its cars
+  #           # this example would pass
   #
-  #     Car.any_instance.should_receive(:go)
-  #     race = Race.new
-  #     race.cars << Car.new
-  #     race.go # assuming this delegates to all of its cars
-  #             # this example would pass
-  #
-  #     Account.any_instance.stub(:balance) { Money.new(:USD, 25) }
-  #     Account.new.balance # => Money.new(:USD, 25))
+  #   Account.any_instance.stub(:balance) { Money.new(:USD, 25) }
+  #   Account.new.balance # => Money.new(:USD, 25))
   #
   # @return [Recorder]
   #

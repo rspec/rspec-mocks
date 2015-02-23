@@ -19,7 +19,6 @@ module RSpec
       # Defaults to `true`.
       #
       # @example
-      #
       #   RSpec.configure do |rspec|
       #     rspec.mock_with :rspec do |mocks|
       #       mocks.yield_receiver_to_any_instance_implementation_blocks = false
@@ -35,7 +34,6 @@ module RSpec
       # the process.
       #
       # @example
-      #
       #   RSpec.configure do |rspec|
       #     rspec.mock_with :rspec do |mocks|
       #       mocks.add_stub_and_should_receive_to Delegator
@@ -55,7 +53,6 @@ module RSpec
       # disable `expect` syntax.
       #
       # @example
-      #
       #   RSpec.configure do |rspec|
       #     rspec.mock_with :rspec do |mocks|
       #       mocks.syntax = [:expect, :should]
@@ -81,7 +78,6 @@ module RSpec
       # that are enabled.
       #
       # @example
-      #
       #   unless RSpec::Mocks.configuration.syntax.include?(:expect)
       #     raise "this RSpec extension gem requires the rspec-mocks `:expect` syntax"
       #   end
@@ -107,7 +103,6 @@ module RSpec
       # Provides a way to perform customisations when verifying doubles.
       #
       # @example
-      #
       #  RSpec::Mocks.configuration.when_declaring_verifying_double do |ref|
       #    ref.some_method!
       #  end

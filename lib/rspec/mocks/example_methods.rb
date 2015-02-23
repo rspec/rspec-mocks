@@ -24,7 +24,6 @@ module RSpec
       # hash of message/return-value pairs.
       #
       # @example
-      #
       #   book = double("book", :title => "The RSpec Book")
       #   book.title #=> "The RSpec Book"
       #
@@ -219,7 +218,6 @@ module RSpec
       # @return [Object] the stubbed value of the constant
       #
       # @example
-      #
       #   stub_const("MyClass", Class.new) # => Replaces (or defines) MyClass with a new class object.
       #   stub_const("SomeModel::PER_PAGE", 5) # => Sets SomeModel::PER_PAGE to 5.
       #
@@ -253,7 +251,6 @@ module RSpec
       #   The current constant scoping at the point of call is not considered.
       #
       # @example
-      #
       #   hide_const("MyClass") # => MyClass is now an undefined constant
       def hide_const(constant_name)
         ConstantMutator.hide(constant_name)
@@ -271,7 +268,6 @@ module RSpec
       #   called.
       #
       # @example
-      #
       #   invitation = double('invitation', accept: true)
       #   user.accept_invitation(invitation)
       #   expect(invitation).to have_received(:accept)
@@ -290,7 +286,6 @@ module RSpec
       # on it.
       #
       # @example
-      #
       #   expect(obj).to receive(:foo).with(5).and_return(:return_value)
       #
       # @note This method is usually provided by rspec-expectations. However,
@@ -303,7 +298,6 @@ module RSpec
       # on it.
       #
       # @example
-      #
       #   allow(dbl).to receive(:foo).with(5).and_return(:return_value)
       #
       # @note If you disable the `:expect` syntax this method will be undefined.
@@ -313,7 +307,6 @@ module RSpec
       # on instances of it.
       #
       # @example
-      #
       #   expect_any_instance_of(MyClass).to receive(:foo)
       #
       # @note If you disable the `:expect` syntax this method will be undefined.
@@ -323,7 +316,6 @@ module RSpec
       # on instances of it.
       #
       # @example
-      #
       #   allow_any_instance_of(MyClass).to receive(:foo)
       #
       # @note This is only available when you have enabled the `expect` syntax.
@@ -336,7 +328,6 @@ module RSpec
       # times, and configure how the object should respond to the message.
       #
       # @example
-      #
       #   expect(obj).to receive(:hello).with("world").exactly(3).times
       #
       # @note If you disable the `:expect` syntax this method will be undefined.
@@ -349,7 +340,6 @@ module RSpec
       # interface.
       #
       # @example
-      #
       #   allow(obj).to receive_messages(:speak => "Hello World")
       #   allow(obj).to receive_messages(:speak => "Hello", :meow => "Meow")
       #
@@ -373,16 +363,15 @@ module RSpec
       # implementation calls `foo.baz.bar`, the stub will not work.
       #
       # @example
+      #   allow(double).to receive_message_chain("foo.bar") { :baz }
+      #   allow(double).to receive_message_chain(:foo, :bar => :baz)
+      #   allow(double).to receive_message_chain(:foo, :bar) { :baz }
       #
-      #     allow(double).to receive_message_chain("foo.bar") { :baz }
-      #     allow(double).to receive_message_chain(:foo, :bar => :baz)
-      #     allow(double).to receive_message_chain(:foo, :bar) { :baz }
+      #   # Given any of ^^ these three forms ^^:
+      #   double.foo.bar # => :baz
       #
-      #     # Given any of ^^ these three forms ^^:
-      #     double.foo.bar # => :baz
-      #
-      #     # Common use in Rails/ActiveRecord:
-      #     allow(Article).to receive_message_chain("recent.published") { [Article.new] }
+      #   # Common use in Rails/ActiveRecord:
+      #   allow(Article).to receive_message_chain("recent.published") { [Article.new] }
       #
       # @note If you disable the `:expect` syntax this method will be undefined.
 
