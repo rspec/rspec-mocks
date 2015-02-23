@@ -278,6 +278,9 @@ module RSpec
       #
       #   # You can also use most message expectations:
       #   expect(invitation).to have_received(:accept).with(mailer).once
+      #
+      # @note `have_received(...).with(...)` is unable to work properly when
+      #   passed arguments are mutated after the spy records the received message.
       def have_received(method_name, &block)
         Matchers::HaveReceived.new(method_name, &block)
       end

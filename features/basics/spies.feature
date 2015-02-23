@@ -13,6 +13,7 @@ Feature: Spies
   `have_received` supports the same fluent interface for [setting constraints](../setting-constraints) that normal message expectations do.
 
   Note: The `have_received` API shown here will only work if you are using rspec-expectations.
+  Note: `have_received(...).with(...)` is unable to work properly when passed arguments are mutated after the spy records the received message.
 
   Scenario: Using a spy
     Given a file named "spy_spec.rb" with:

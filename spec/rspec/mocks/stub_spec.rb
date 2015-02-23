@@ -102,6 +102,26 @@ module RSpec
         end
       end
 
+      context "when the stubbed method is called" do
+        it "does not call any methods on the passed args, since that could mutate them", :issue => 892 do
+          recorder = Class.new(defined?(::BasicObject) ? ::BasicObject : ::Object) do
+            def called_methods
+              @called_methods ||= []
+            end
+
+            def method_missing(name, *)
+              called_methods << name
+              self
+            end
+          end.new
+
+          allow(@stub).to receive(:foo)
+          expect {
+            @stub.foo(recorder)
+          }.not_to change(recorder, :called_methods)
+        end
+      end
+
       context "stubbing with prepend", :if => Support::RubyFeatures.module_prepends_supported? do
         module ToBePrepended
           def value
