@@ -27,7 +27,7 @@ module RSpec
         @stub = Object.new
       end
 
-      describe "using stub" do
+      describe "using `and_return`" do
         it "returns declared value when message is received" do
           allow(@instance).to receive(:msg).and_return(:return_value)
           expect(@instance.msg).to equal(:return_value)
