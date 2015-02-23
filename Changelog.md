@@ -6,6 +6,10 @@ Bug Fixes:
 * Add missing `rspec/support/differ` require so that rspec-mocks can be
   used w/o rspec-expectations (which also loads the differ and hided the
   fact we forgot to require it). (Myron Marston, #893)
+* Revert tracking of received arg mutation (added in 3.2 to provide an
+  error in a situation we can't support) as our implementation has side
+  effects on non-standard objects and there's no solution we could come
+  up with that always works. (Myron Marston, #900)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.3...v3.2.0)
