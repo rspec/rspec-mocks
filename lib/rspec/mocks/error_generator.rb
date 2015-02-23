@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support 'differ'
+
 module RSpec
   module Mocks
     # Raised when a message expectation is not satisfied.

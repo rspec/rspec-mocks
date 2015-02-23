@@ -1,3 +1,12 @@
+### 3.2.1 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)
+
+Bug Fixes:
+
+* Add missing `rspec/support/differ` require so that rspec-mocks can be
+  used w/o rspec-expectations (which also loads the differ and hided the
+  fact we forgot to require it). (Myron Marston, #900)
+
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.3...v3.2.0)
 
