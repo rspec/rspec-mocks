@@ -510,17 +510,6 @@ module RSpec
           @actual_received_count += 1
         end
 
-        def fail_if_problematic_received_arg_mutations(received_arg_list)
-          return if @argument_list_matcher == ArgumentListMatcher::MATCH_ALL
-          return unless received_arg_list.has_mutations?
-
-          raise CannotSupportArgMutationsError,
-                "`have_received(...).with(...)` cannot be used when received " \
-                "message args have later been mutated. You can use a normal " \
-                "message expectation (`expect(...).to receive(...).with(...)`) " \
-                "instead."
-        end
-
       private
 
         def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)

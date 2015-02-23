@@ -17,7 +17,6 @@ module RSpec
       # Acts like an arg splat, matching any number of args at any point in an arg list.
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(1, 2, any_args)
       #
       #   # matches any of these:
@@ -31,7 +30,6 @@ module RSpec
       # Matches any argument at all.
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(anything)
       def anything
         AnyArgMatcher::INSTANCE
@@ -40,7 +38,6 @@ module RSpec
       # Matches no arguments.
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(no_args)
       def no_args
         NoArgsMatcher::INSTANCE
@@ -49,7 +46,6 @@ module RSpec
       # Matches if the actual argument responds to the specified messages.
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(duck_type(:hello))
       #   expect(object).to receive(:message).with(duck_type(:hello, :goodbye))
       def duck_type(*args)
@@ -59,7 +55,6 @@ module RSpec
       # Matches a boolean value.
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(boolean())
       def boolean
         BooleanMatcher::INSTANCE
@@ -69,7 +64,6 @@ module RSpec
       # Ignores any additional keys.
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(hash_including(:key => val))
       #   expect(object).to receive(:message).with(hash_including(:key))
       #   expect(object).to receive(:message).with(hash_including(:key, :key2 => val2))
@@ -81,7 +75,6 @@ module RSpec
       # Ignores duplicates and additional values
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(array_including(1,2,3))
       #   expect(object).to receive(:message).with(array_including([1,2,3]))
       def array_including(*args)
@@ -92,7 +85,6 @@ module RSpec
       # Matches a hash that doesn't include the specified key(s) or key/value.
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(hash_excluding(:key => val))
       #   expect(object).to receive(:message).with(hash_excluding(:key))
       #   expect(object).to receive(:message).with(hash_excluding(:key, :key2 => :val2))
@@ -105,7 +97,6 @@ module RSpec
       # Matches if `arg.instance_of?(klass)`
       #
       # @example
-      #
       #   expect(object).to receive(:message).with(instance_of(Thing))
       def instance_of(klass)
         InstanceOf.new(klass)
@@ -114,8 +105,8 @@ module RSpec
       alias_method :an_instance_of, :instance_of
 
       # Matches if `arg.kind_of?(klass)`
-      # @example
       #
+      # @example
       #   expect(object).to receive(:message).with(kind_of(Thing))
       def kind_of(klass)
         KindOf.new(klass)
