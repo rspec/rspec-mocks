@@ -20,6 +20,9 @@ module RSpec
     # Raised for situations that RSpec cannot support due to mutations made
     # externally on arguments that RSpec is holding onto to use for later
     # comparisons.
+    #
+    # @deprecated We no longer raise this error but the constant remains until
+    #   RSpec 4 for SemVer reasons.
     CannotSupportArgMutationsError = Class.new(StandardError)
 
     # @private

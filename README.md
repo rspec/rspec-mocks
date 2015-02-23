@@ -136,8 +136,7 @@ class_spy("Invitation") # => same as `class_double("Invitation").as_null_object`
 object_spy("Invitation") # => same as `object_double("Invitation").as_null_object`
 ```
 
-Stubbing and verifying messages received in this way implements the Test Spy
-pattern.
+Verifying messages received in this way implements the Test Spy pattern.
 
 ```ruby
 invitation = spy('invitation')
@@ -155,6 +154,20 @@ expect(invitation).to_not have_received(:accept).with(mailer)
 invitation = spy('invitation', :accept => true)
 expect(invitation).to have_received(:accept).with(mailer)
 expect(invitation.accept).to eq(true)
+```
+
+Note that `have_received(...).with(...)` is unable to work properly when
+passed arguments are mutated after the spy records the received message.
+For example, this does not work properly:
+
+```ruby
+greeter = spy("greeter")
+
+message = "Hello"
+greeter.greet_with(message)
+message << ", World"
+
+expect(greeter).to have_received(:greet_with).with("Hello")
 ```
 
 ## Nomenclature
