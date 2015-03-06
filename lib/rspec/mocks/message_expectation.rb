@@ -142,13 +142,9 @@ module RSpec
       #   allow(car).to receive(:go).and_raise(OutOfGas)
       #   allow(car).to receive(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
       #   allow(car).to receive(:go).and_raise(OutOfGas.new(2, :oz))
-      def and_raise(exception=RuntimeError, message=nil)
+      def and_raise(*args)
         raise_already_invoked_error_if_necessary(__method__)
-        if exception.respond_to?(:exception)
-          exception = message ? exception.exception(message) : exception.exception
-        end
-
-        self.terminal_implementation_action = Proc.new { raise exception }
+        self.terminal_implementation_action = Proc.new { raise(*args) }
         nil
       end
 
