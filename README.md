@@ -417,8 +417,8 @@ There are many different viewpoints about the meaning of mocks and stubs. If
 you are interested in learning more, here is some recommended reading:
 
 * Mock Objects: http://www.mockobjects.com/
-* Endo-Testing: http://stalatest.googlecode.com/svn/trunk/Literatur/mockobjects.pdf
-* Mock Roles, Not Objects: http://jmock.org/oopsla2004.pdf
+* Endo-Testing: http://www.ccs.neu.edu/research/demeter/related-work/extreme-programming/MockObjectsFinal.PDF
+* Mock Roles, Not Objects: http://www.jmock.org/oopsla2004.pdf
 * Test Double: http://www.martinfowler.com/bliki/TestDouble.html
 * Test Double Patterns: http://xunitpatterns.com/Test%20Double%20Patterns.html
 * Mocks aren't stubs: http://www.martinfowler.com/articles/mocksArentStubs.html
