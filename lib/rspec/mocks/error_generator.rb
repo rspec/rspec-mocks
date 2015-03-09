@@ -104,9 +104,19 @@ module RSpec
       def raise_unimplemented_error(doubled_module, method_name, object)
         message = case object
                   when InstanceVerifyingDouble
-                    "the %s class does not implement the instance method: %s"
+                    "the %s class does not implement the instance method: %s" <<
+                      if ObjectMethodReference.for(doubled_module, method_name).implemented?
+                        ". Perhaps you meant to use `class_double` instead?"
+                      else
+                        ""
+                      end
                   when ClassVerifyingDouble
-                    "the %s class does not implement the class method: %s"
+                    "the %s class does not implement the class method: %s" <<
+                      if InstanceMethodReference.for(doubled_module, method_name).implemented?
+                        ". Perhaps you meant to use `instance_double` instead?"
+                      else
+                        ""
+                      end
                   else
                     "%s does not implement: %s"
                   end

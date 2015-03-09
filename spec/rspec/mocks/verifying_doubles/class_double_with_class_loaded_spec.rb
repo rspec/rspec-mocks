@@ -28,6 +28,18 @@ module RSpec
         prevents { expect(o).to receive(:defined_instance_method) }
       end
 
+      USE_INSTANCE_DOUBLE_MSG = "Perhaps you meant to use `instance_double`"
+
+      it "suggests using `instance_double` when an instance method is stubbed" do
+        o = class_double("LoadedClass")
+        prevents(a_string_including(USE_INSTANCE_DOUBLE_MSG)) { allow(o).to receive(:defined_instance_method) }
+      end
+
+      it "doesn't suggest `instance_double` when a non-instance method is stubbed'" do
+        o = class_double("LoadedClass")
+        prevents(a_string_excluding(USE_INSTANCE_DOUBLE_MSG)) { allow(o).to receive(:undefined_instance_method) }
+      end
+
       it 'gives a descriptive error message for NoMethodError' do
         o = class_double("LoadedClass")
         expect {
