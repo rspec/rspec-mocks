@@ -10,7 +10,7 @@ Enhancements:
   for mock expectation failures. (Tim Wade, #891)
 * Avoid loading `stringio` unnecessarily. (Myron Marston, #894)
 * Verifying doubles failure messages now distinguish between class and instance
-  level methods. (Tim Wade, #896)
+  level methods. (Tim Wade, #896, #908)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)
