@@ -28,6 +28,18 @@ module RSpec
         prevents { expect(o).to receive(:defined_class_method) }
       end
 
+      USE_CLASS_DOUBLE_MSG = "Perhaps you meant to use `class_double`"
+
+      it "suggests using `class_double` when a class method is stubbed" do
+        o = instance_double("LoadedClass")
+        prevents(a_string_including(USE_CLASS_DOUBLE_MSG)) { allow(o).to receive(:defined_class_method) }
+      end
+
+      it "doesn't suggest `class_double` when a non-class method is stubbed" do
+        o = instance_double("LoadedClass")
+        prevents(a_string_excluding(USE_CLASS_DOUBLE_MSG)) { allow(o).to receive(:undefined_class_method) }
+      end
+
       it 'allows `send` to be stubbed if it is defined on the class' do
         o = instance_double('LoadedClass')
         allow(o).to receive(:send).and_return("received")
