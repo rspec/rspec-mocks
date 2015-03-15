@@ -17,7 +17,7 @@ Feature: Any Instance
   * The `rspec-mocks` API is designed for individual object instances, but this feature
     operates on entire classes of objects. As a result there are some semantically confusing
     edge cases. For example, in `expect_any_instance_of(Widget).to
-    receive(:name).twice` it isn't clear whether each specific instance is expected to
+    receive(:name).twice` it isn't clear whether a specific instance is expected to
     receive `name` twice, or if two receives total are expected. (It's the former.)
   * Using this feature is often a design smell. It may be that your test is trying to do too
     much or that the object under test is too complex.
