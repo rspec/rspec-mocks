@@ -24,6 +24,9 @@ Bug Fixes:
   error in a situation we can't support) as our implementation has side
   effects on non-standard objects and there's no solution we could come
   up with that always works. (Myron Marston, #900)
+* Ensure expectations that raise eagerly also raise during RSpec verification.
+  This means that if exceptions are caught inside test execution the test will
+  still fail. (Sam Phippen, #884)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.1.3...v3.2.0)
