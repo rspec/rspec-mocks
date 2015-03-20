@@ -34,9 +34,9 @@ module RSpec
       it "fails fast when called twice" do
         expect(@double).to receive(:do_something).once
         @double.do_something
-        expect {
+        expect_fast_failure_from(@double) do
           @double.do_something
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
       end
 
       it "fails when not called" do

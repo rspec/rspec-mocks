@@ -192,9 +192,10 @@ RSpec.describe "Using the legacy should syntax" do
     end
 
     it 'fails when the message is received' do
-      dbl = double
-      dbl.should_not_receive(:foo)
-      expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
+      with_unfulfilled_double do |dbl|
+        dbl.should_not_receive(:foo)
+        expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
+      end
     end
 
     it 'does not fail on verification if the message is not received' do
@@ -339,7 +340,10 @@ RSpec.describe "Using the legacy should syntax" do
       describe "#should_not_receive" do
         it "fails if the method is called" do
           klass.any_instance.should_not_receive(:existing_method)
-          expect { klass.new.existing_method }.to raise_error(RSpec::Mocks::MockExpectationError)
+          instance = klass.new
+          expect_fast_failure_from(instance) do
+            instance.existing_method
+          end
         end
 
         it "passes if no method is called" do
@@ -354,9 +358,10 @@ RSpec.describe "Using the legacy should syntax" do
         context "with constraints" do
           it "fails if the method is called with the specified parameters" do
             klass.any_instance.should_not_receive(:existing_method_with_arguments).with(:argument_one, :argument_two)
-            expect {
-              klass.new.existing_method_with_arguments(:argument_one, :argument_two)
-            }.to raise_error(RSpec::Mocks::MockExpectationError)
+            instance = klass.new
+            expect_fast_failure_from(instance) do
+              instance.existing_method_with_arguments(:argument_one, :argument_two)
+            end
           end
 
           it "passes if the method is called with different parameters" do

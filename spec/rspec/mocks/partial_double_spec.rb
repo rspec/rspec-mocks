@@ -45,12 +45,12 @@ module RSpec
 
       it "can disallow messages from being received" do
         expect(object).not_to receive(:fuhbar)
-        expect {
-          object.fuhbar
-        }.to raise_error(
-          RSpec::Mocks::MockExpectationError,
+        expect_fast_failure_from(
+          object,
           /expected\: 0 times with any arguments\n    received\: 1 time/
-        )
+        ) do
+          object.fuhbar
+        end
       end
 
       it "can expect a message and set a return value" do
@@ -88,9 +88,10 @@ module RSpec
 
       it "can accept the string form of a message for a negative message expectation" do
         expect(object).not_to receive('foobar')
-        expect {
+
+        expect_fast_failure_from(object) do
           object.foobar
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
       end
 
       it "uses reports nil in the error message" do
@@ -360,6 +361,7 @@ module RSpec
 
       it 'verifies arity range when matching arguments' do
         prevents { expect(object).to receive(:implemented).with('bogus') }
+        reset object
       end
 
       it 'allows a method defined with method_missing to be expected' do

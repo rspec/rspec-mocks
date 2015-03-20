@@ -28,9 +28,9 @@ module RSpec
       it "fails fast when call count is higher than expected" do
         expect(@double).to receive(:do_something).thrice
         3.times { @double.do_something }
-        expect {
+        expect_fast_failure_from(@double) do
           @double.do_something
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        end
       end
 
       it "fails when call count is lower than expected" do

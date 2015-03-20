@@ -123,7 +123,10 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        expect { @double.do_something }.to raise_error
+
+        expect_fast_failure_from(@double) do
+          @double.do_something
+        end
       end
     end
   end

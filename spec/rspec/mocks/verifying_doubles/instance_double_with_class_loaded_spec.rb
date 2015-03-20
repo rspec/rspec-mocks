@@ -72,6 +72,8 @@ module RSpec
         prevents {
           expect(o).to receive(:defined_instance_method).with(:a)
         }
+
+        reset o
       end
 
       it 'checks that stubbed methods are invoked with the correct arity' do
@@ -108,6 +110,7 @@ module RSpec
               expect(o).to receive(:kw_args_method).
                 with(1, 2, 3, hash_including(:required_arg => 1))
             }
+            reset o
           end
 
           it 'does not allow matchers to be used in an actual method call' do

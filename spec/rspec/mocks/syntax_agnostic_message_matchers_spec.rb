@@ -59,10 +59,10 @@ module RSpec
       end
 
       it "fails if never is specified and the message is called" do
-        expect {
+        expect_fast_failure_from(subject, /expected.*0 times/) do
           ::RSpec::Mocks.expect_message(subject, :foo).never
           subject.foo
-        }.to raise_error(/expected.*0 times/)
+        end
       end
 
       it "sets up basic message expectation, verifies as called" do
