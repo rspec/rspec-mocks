@@ -101,7 +101,7 @@ Feature: Dynamic classes
       #
       # or you can use:
       #
-      # RSpec::Mocks.configuration.when_declaring_verifying_double do |refernece|
+      # RSpec::Mocks.configuration.when_declaring_verifying_double do |reference|
       #   reference.target.define_attribute_methods
       # end
       """
