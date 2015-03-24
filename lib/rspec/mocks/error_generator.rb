@@ -280,7 +280,7 @@ module RSpec
       end
 
       def arg_list(*args)
-        args.map { |arg| arg_has_valid_description?(arg) ? arg.description : arg.inspect }.join(", ")
+        args.map { |arg| arg_has_valid_description?(arg) ? arg.description : RSpec::Support::OutputFormatter.format(arg) }.join(", ")
       end
 
       def arg_has_valid_description?(arg)
@@ -292,7 +292,7 @@ module RSpec
       end
 
       def received_arg_list(*args)
-        args.map(&:inspect).join(", ")
+        args.map { |arg| RSpec::Support::OutputFormatter.format(arg) }.join(", ")
       end
 
       def count_message(count, expectation_count_type=nil)
