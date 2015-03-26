@@ -141,9 +141,38 @@ module RSpec
           let(:the_dbl) { double(:expected_method => nil) }
 
           before do
-            the_dbl.expected_method
-            the_dbl.expected_method
-            the_dbl.expected_method
+            the_dbl.expected_method(:one)
+            the_dbl.expected_method(:two)
+            the_dbl.expected_method(:one)
+          end
+
+          context "when constrained by `with`" do
+            it 'only considers the calls with matching args' do
+              expect(the_dbl).to have_received(:expected_method).with(:one).twice
+              expect(the_dbl).to have_received(:expected_method).with(:two).once
+            end
+
+            context "when the message is received too many times" do
+              it 'includes the counts of calls with matching args in the error message' do
+                expect {
+                  expect(the_dbl).to have_received(:expected_method).with(:one).once
+                }.to fail_with(a_string_including(
+                  "expected: 1 time",
+                  "received: 2 times"
+                ))
+              end
+            end
+
+            context "when the message is received too few times" do
+              it 'includes the counts of calls with matching args in the error message' do
+                expect {
+                  expect(the_dbl).to have_received(:expected_method).with(:two).twice
+                }.to fail_with(a_string_including(
+                  "expected: 2 times",
+                  "received: 1 time"
+                ))
+              end
+            end
           end
 
           context "exactly" do
