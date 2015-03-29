@@ -50,36 +50,35 @@ module RSpec
       end
 
       # @private
-      def raise_unexpected_message_args_error(expectation, *args)
+      def message_error(expectation, *args)
         expected_args = format_args(*expectation.expected_args)
         actual_args = format_received_args(*args)
-        diff = diff_message(expectation.expected_args, args)
-
         message = default_error_message(expectation, expected_args, actual_args)
-        message << "\nDiff:#{diff}" unless diff.empty?
 
-        __raise message
+        if single_message?(args)
+          diff = diff_message(expectation.expected_args, *args)
+          message << "\nDiff:#{diff}" unless diff.empty?
+        end
+
+        message
+      end
+
+      # @private
+      def raise_unexpected_message_args_error(expectation, *args)
+        __raise message_error(expectation, *args)
       end
 
       # @private
       def raise_missing_default_stub_error(expectation, *args)
-        expected_args = format_args(*expectation.expected_args)
-        actual_args = format_received_args(*args)
-        diff = diff_message(expectation.expected_args, args)
-
-        message = default_error_message(expectation, expected_args, actual_args)
-        message << "\nDiff:\n #{diff}" unless diff.empty?
+        message = message_error(expectation, *args)
         message << "\n Please stub a default value first if message might be received with other args as well. \n"
 
         __raise message
       end
 
       # @private
-      def raise_similar_message_args_error(expectation, *args_for_multiple_calls)
-        expected_args = format_args(*expectation.expected_args)
-        actual_args = args_for_multiple_calls.map { |a| format_received_args(*a) }.join(", ")
-
-        __raise(default_error_message(expectation, expected_args, actual_args))
+      def raise_similar_message_args_error(expectation, *args)
+        __raise message_error(expectation, *args)
       end
 
       def default_error_message(expectation, expected_args, actual_args)
@@ -288,11 +287,12 @@ module RSpec
       end
 
       def format_received_args(*args)
-        args.empty? ? "(no args)" : "(" + received_arg_list(*args) + ")"
-      end
-
-      def received_arg_list(*args)
-        args.map(&:inspect).join(", ")
+        return "(no args)" if args.empty? || args.first.empty?
+        return formatted_single_message(args) if single_message?(args)
+        grouped_list = grouped_args(args).map do |arg, index|
+          [formatted_single_message([arg]), group_count(index, args)].join
+        end
+        grouped_list.join("\n            ")
       end
 
       def count_message(count, expectation_count_type=nil)
@@ -303,6 +303,22 @@ module RSpec
 
       def times(count)
         "#{count} time#{count == 1 ? '' : 's'}"
+      end
+
+      def formatted_single_message(args)
+        "(" + args.first.map(&:inspect).join(", ") + ")"
+      end
+
+      def grouped_args(args)
+        Hash[args.group_by { |x| x }.map { |k, v| [k, v.count] }]
+      end
+
+      def single_message?(args)
+        args.size == 1
+      end
+
+      def group_count(index, args)
+        args.size > 1 || index > 1 ? ' (' + times(index) + ')' : ''
       end
     end
   end

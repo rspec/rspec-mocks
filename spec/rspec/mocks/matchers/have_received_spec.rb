@@ -141,9 +141,106 @@ module RSpec
           let(:the_dbl) { double(:expected_method => nil) }
 
           before do
-            the_dbl.expected_method
-            the_dbl.expected_method
-            the_dbl.expected_method
+            the_dbl.expected_method(:one)
+            the_dbl.expected_method(:two)
+            the_dbl.expected_method(:one)
+          end
+
+          context "when constrained by `with`" do
+            it 'only considers the calls with matching args' do
+              expect(the_dbl).to have_received(:expected_method).with(:one).twice
+              expect(the_dbl).to have_received(:expected_method).with(:two).once
+            end
+
+            context "when the message is received without any args matching" do
+              it 'includes unmatched args in the error message' do
+                expect {
+                  expect(the_dbl).to have_received(:expected_method).with(:three).once
+                }.to raise_error(Expectations::ExpectationNotMetError,
+                                 a_string_including("expected: (:three)",
+                                                    "got:", "(:one) (2 times)",
+                                                            "(:two) (1 time)"))
+              end
+            end
+
+            context "when the message is received too many times" do
+              it 'includes the counts of calls with matching args in the error message' do
+                expect {
+                  expect(the_dbl).to have_received(:expected_method).with(:one).once
+                }.to raise_error(Expectations::ExpectationNotMetError,
+                                 a_string_including("expected: 1 time",
+                                                    "received: 2 times"))
+              end
+            end
+
+            context "when the message is received too few times" do
+              it 'includes the counts of calls with matching args in the error message' do
+                expect {
+                  expect(the_dbl).to have_received(:expected_method).with(:two).twice
+                }.to raise_error(Expectations::ExpectationNotMetError,
+                                 a_string_including("expected: 2 times",
+                                                    "received: 1 time"))
+              end
+            end
+
+            context "when contrained with grouped arguments `with`" do
+              it 'groups the "got" arguments based on the method call that included them' do
+                dbl = double(:expected_method => nil)
+                dbl.expected_method(:one, :four)
+                dbl.expected_method(:two, :four)
+                dbl.expected_method(:three, :four)
+                dbl.expected_method(:one, :four)
+                dbl.expected_method(:three, :four)
+                dbl.expected_method(:three, :four)
+
+                expect {
+                  expect(dbl).to have_received(:expected_method).with(:four, :four).once
+                }.to raise_error(
+                  Expectations::ExpectationNotMetError,
+                  a_string_including("expected: (:four, :four)",
+                                     "got:","(:one, :four) (2 times)",
+                                            "(:two, :four) (1 time)",
+                                            "(:three, :four) (3 times)"))
+              end
+
+              it 'includes single arguments based on the method call that included them' do
+                dbl = double(:expected_method => nil)
+                dbl.expected_method(:one, :four)
+
+                expect {
+                  expect(dbl).to have_received(:expected_method).with(:three, :four).once
+                }.to raise_error(
+                  Expectations::ExpectationNotMetError,
+                  a_string_including("expected: (:three, :four)",
+                                     "got: (:one, :four)"))
+              end
+
+              it 'keeps the array combinations distinguished in the group' do
+                dbl = double(:expected_method => nil)
+                dbl.expected_method([:one], :four)
+                dbl.expected_method(:one, [:four])
+
+                expect {
+                  expect(dbl).to have_received(:expected_method).with(:one, :four).once
+                }.to raise_error(
+                  Expectations::ExpectationNotMetError,
+                  a_string_including("expected: (:one, :four)",
+                                     "got:","([:one], :four)",
+                                            "(:one, [:four])"))
+              end
+
+              it 'does not group counts on repeated arguments for a single message' do
+                dbl = double(:expected_method => nil)
+                dbl.expected_method(:one, :one, :two)
+
+                expect {
+                  expect(dbl).to have_received(:expected_method).with(:one, :two, :three).once
+                }.to raise_error(
+                  Expectations::ExpectationNotMetError,
+                  a_string_including("expected: (:one, :two, :three)",
+                                     "got:","(:one, :one, :two)"))
+              end
+            end
           end
 
           context "exactly" do
