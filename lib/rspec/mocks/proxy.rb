@@ -104,9 +104,8 @@ module RSpec
         return if @messages_received.any? do |(method_name, args, _)|
                     !expectation.matches_name_but_not_args(method_name, *args)
                   end
-        unexpected_args = @messages_received.map { |_, args, _| args }
 
-        raise_unexpected_message_args_error(expectation, *unexpected_args)
+        raise_unexpected_message_args_error(expectation, *messages_arg_list)
       end
 
       # @private
@@ -146,6 +145,11 @@ module RSpec
       end
 
       # @private
+      def messages_arg_list
+        @messages_received.map { |_, args, _| args }
+      end
+
+      # @private
       def has_negative_expectation?(message)
         method_double_for(message).expectations.find { |expectation| expectation.negative_expectation_for?(message) }
       end
@@ -170,6 +174,7 @@ module RSpec
           end
           stub.invoke(nil, *args, &block)
         elsif expectation
+          expectation.unadvise(messages_arg_list)
           expectation.invoke(stub, *args, &block)
         elsif (expectation = find_almost_matching_expectation(message, *args))
           expectation.advise(*args) if null_object? unless expectation.expected_messages_received?

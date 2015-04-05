@@ -45,6 +45,29 @@ module RSpec
           verify @double
         }.to raise_error(RSpec::Mocks::MockExpectationError)
       end
+
+      context "when called with the wrong number of times with the specified args and also called with different args" do
+        it "mentions the wrong call count in the failure message rather than the different args" do
+          allow(@double).to receive(:do_something) # allow any args...
+          expect(@double).to receive(:do_something).with(:args, 1).once
+
+          @double.do_something(:args, 2)
+          @double.do_something(:args, 1)
+
+          expect {
+            # we've grouped these lines because it should probably fail fast
+            # on the first line (since our expectation above only allows one
+            # call with these args), but currently it fails with a confusing
+            # message on verification, and ultimately we care more about
+            # what the message is than when it is raised. Still, it would be
+            # preferrable for the error to be triggered on the first line,
+            # so it'd be good to update this spec to enforce that once we
+            # get the failure message right.
+            @double.do_something(:args, 1)
+            verify @double
+          }.to fail_with(a_string_including("expected: 1 time", "received: 2 times"))
+        end
+      end
     end
   end
 end

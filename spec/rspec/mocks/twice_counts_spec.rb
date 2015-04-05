@@ -59,6 +59,23 @@ module RSpec
         }.to raise_error(RSpec::Mocks::MockExpectationError)
         reset @double
       end
+
+      context "when called with the wrong number of times with the specified args and also called with different args" do
+        it "mentions the wrong call count in the failure message rather than the different args" do
+          allow(@double).to receive(:do_something) # allow any args...
+          expect(@double).to receive(:do_something).with(:args, 1).twice
+
+          @double.do_something(:args, 2)
+          @double.do_something(:args, 1)
+          @double.do_something(:args, 2)
+          @double.do_something(:args, 1)
+
+          expect {
+            @double.do_something(:args, 1)
+            verify @double
+          }.to fail_with(a_string_including("expected: 2 times", "received: 3 times"))
+        end
+      end
     end
   end
 end
