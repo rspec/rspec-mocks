@@ -45,26 +45,26 @@ module RSpec
       end
 
       # @private
-      def raise_unexpected_message_error(message, *args)
-        __raise "#{intro} received unexpected message :#{message}#{arg_message(*args)}"
+      def raise_unexpected_message_error(message, args)
+        __raise "#{intro} received unexpected message :#{message}#{arg_message(args)}"
       end
 
       # @private
-      def raise_unexpected_message_args_error(expectation, *args_for_multiple_calls)
-        __raise error_message(expectation, *args_for_multiple_calls)
+      def raise_unexpected_message_args_error(expectation, args_for_multiple_calls)
+        __raise error_message(expectation, args_for_multiple_calls)
       end
 
       # @private
-      def raise_missing_default_stub_error(expectation, *args)
-        message = error_message(expectation, *args)
+      def raise_missing_default_stub_error(expectation, args)
+        message = error_message(expectation, args)
         message << "\n Please stub a default value first if message might be received with other args as well. \n"
 
         __raise message
       end
 
       # @private
-      def raise_similar_message_args_error(expectation, *args_for_multiple_calls)
-        __raise error_message(expectation, *args_for_multiple_calls)
+      def raise_similar_message_args_error(expectation, args_for_multiple_calls)
+        __raise error_message(expectation, args_for_multiple_calls)
       end
 
       def default_error_message(expectation, expected_args, actual_args)
@@ -78,10 +78,10 @@ module RSpec
 
       # rubocop:disable Style/ParameterLists
       # @private
-      def raise_expectation_error(message, expected_received_count, argument_list_matcher, actual_received_count, expectation_count_type, *args)
+      def raise_expectation_error(message, expected_received_count, argument_list_matcher, actual_received_count, expectation_count_type, args)
         expected_part = expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
-        received_part = received_part_of_expectation_error(actual_received_count, *args)
-        __raise "(#{intro}).#{message}#{format_args(*args)}\n    #{expected_part}\n    #{received_part}"
+        received_part = received_part_of_expectation_error(actual_received_count, args)
+        __raise "(#{intro}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}"
       end
       # rubocop:enable Style/ParameterLists
 
@@ -131,7 +131,7 @@ module RSpec
       end
 
       # @private
-      def received_part_of_expectation_error(actual_received_count, *args)
+      def received_part_of_expectation_error(actual_received_count, args)
         "received: #{count_message(actual_received_count)}" +
           method_call_args_description(args) do
             actual_received_count > 0 && args.length > 0
@@ -153,7 +153,7 @@ module RSpec
         when ArgumentMatchers::NoArgsMatcher  then " with no arguments"
         else
           if block.call
-            " with arguments: #{format_args(*args)}"
+            " with arguments: #{format_args(args)}"
           else
             ""
           end
@@ -161,8 +161,8 @@ module RSpec
       end
 
       # @private
-      def describe_expectation(verb, message, expected_received_count, _actual_received_count, *args)
-        "#{verb} #{message}#{format_args(*args)} #{count_message(expected_received_count)}"
+      def describe_expectation(verb, message, expected_received_count, _actual_received_count, args)
+        "#{verb} #{message}#{format_args(args)} #{count_message(expected_received_count)}"
       end
 
       # @private
@@ -172,12 +172,12 @@ module RSpec
 
       # @private
       def raise_missing_block_error(args_to_yield)
-        __raise "#{intro} asked to yield |#{arg_list(*args_to_yield)}| but no block was passed"
+        __raise "#{intro} asked to yield |#{arg_list(args_to_yield)}| but no block was passed"
       end
 
       # @private
       def raise_wrong_arity_error(args_to_yield, signature)
-        __raise "#{intro} yielded |#{arg_list(*args_to_yield)}| to block with #{signature.description}"
+        __raise "#{intro} yielded |#{arg_list(args_to_yield)}| to block with #{signature.description}"
       end
 
       # @private
@@ -211,13 +211,13 @@ module RSpec
         "with unexpected arguments\n  expected: #{expected_args_string}\n       got: #{actual_args_string}"
       end
 
-      def error_message(expectation, *args_for_multiple_calls)
-        expected_args = format_args(*expectation.expected_args)
-        actual_args = format_received_args(*args_for_multiple_calls)
+      def error_message(expectation, args_for_multiple_calls)
+        expected_args = format_args(expectation.expected_args)
+        actual_args = format_received_args(args_for_multiple_calls)
         message = default_error_message(expectation, expected_args, actual_args)
 
         if args_for_multiple_calls.one?
-          diff = diff_message(expectation.expected_args, *args_for_multiple_calls)
+          diff = diff_message(expectation.expected_args, args_for_multiple_calls.first)
           message << "\nDiff:#{diff}" unless diff.empty?
         end
 
@@ -269,16 +269,16 @@ module RSpec
         Kernel.raise(RSpec::Mocks::MockExpectationError, message)
       end
 
-      def arg_message(*args)
-        " with " + format_args(*args)
+      def arg_message(args)
+        " with " + format_args(args)
       end
 
-      def format_args(*args)
+      def format_args(args)
         return "(no args)" if args.empty?
-        "(#{arg_list(*args)})"
+        "(#{arg_list(args)})"
       end
 
-      def arg_list(*args)
+      def arg_list(args)
         args.map { |arg| arg_has_valid_description?(arg) ? arg.description : arg.inspect }.join(", ")
       end
 
@@ -286,9 +286,9 @@ module RSpec
         RSpec::Support.is_a_matcher?(arg) && arg.respond_to?(:description)
       end
 
-      def format_received_args(*args_for_multiple_calls)
+      def format_received_args(args_for_multiple_calls)
         grouped_args(args_for_multiple_calls).map do |args_for_one_call, index|
-          "#{format_args(*args_for_one_call)}#{group_count(index, args_for_multiple_calls)}"
+          "#{format_args(args_for_one_call)}#{group_count(index, args_for_multiple_calls)}"
         end.join("\n            ")
       end
 

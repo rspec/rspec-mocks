@@ -105,7 +105,7 @@ module RSpec
                     !expectation.matches_name_but_not_args(method_name, *args)
                   end
 
-        raise_unexpected_message_args_error(expectation, *messages_arg_list)
+        raise_unexpected_message_args_error(expectation, messages_arg_list)
       end
 
       # @private
@@ -180,11 +180,11 @@ module RSpec
           expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
 
           if null_object? || !has_negative_expectation?(message)
-            raise_unexpected_message_args_error(expectation, args)
+            raise_unexpected_message_args_error(expectation, [args])
           end
         elsif (stub = find_almost_matching_stub(message, *args))
           stub.advise(*args)
-          raise_missing_default_stub_error(stub, args)
+          raise_missing_default_stub_error(stub, [args])
         elsif Class === @object
           @object.superclass.__send__(message, *args, &block)
         else
@@ -193,18 +193,18 @@ module RSpec
       end
 
       # @private
-      def raise_unexpected_message_error(method_name, *args)
-        @error_generator.raise_unexpected_message_error method_name, *args
+      def raise_unexpected_message_error(method_name, args)
+        @error_generator.raise_unexpected_message_error method_name, args
       end
 
       # @private
-      def raise_unexpected_message_args_error(expectation, *args)
-        @error_generator.raise_unexpected_message_args_error(expectation, *args)
+      def raise_unexpected_message_args_error(expectation, args)
+        @error_generator.raise_unexpected_message_args_error(expectation, args)
       end
 
       # @private
-      def raise_missing_default_stub_error(expectation, *args)
-        @error_generator.raise_missing_default_stub_error(expectation, *args)
+      def raise_missing_default_stub_error(expectation, args)
+        @error_generator.raise_missing_default_stub_error(expectation, args)
       end
 
       # @private
