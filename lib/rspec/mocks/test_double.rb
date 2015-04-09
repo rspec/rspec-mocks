@@ -129,6 +129,10 @@ module RSpec
     # A generic test double object. `double`, `instance_double` and friends
     # return an instance of this.
     class Double
+      RSpec::Support::ObjectInspector.register TestDouble do |dbl|
+        "Double (#{dbl.instance_variable_get('@name')})"
+      end
+
       include TestDouble
     end
   end
