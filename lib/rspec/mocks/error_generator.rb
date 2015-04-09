@@ -191,12 +191,12 @@ module RSpec
           end
       end
 
-      def method_call_args_description(args, &block)
+      def method_call_args_description(args)
         case args.first
         when ArgumentMatchers::AnyArgsMatcher then " with any arguments"
         when ArgumentMatchers::NoArgsMatcher  then " with no arguments"
         else
-          if block.call
+          if yield
             " with arguments: #{format_args(args)}"
           else
             ""
