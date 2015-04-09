@@ -274,7 +274,8 @@ module RSpec
       end
 
       def format_args(*args)
-        args.empty? ? "(no args)" : "(" + arg_list(*args) + ")"
+        return "(no args)" if args.empty?
+        "(#{arg_list(*args)})"
       end
 
       def arg_list(*args)
@@ -287,7 +288,7 @@ module RSpec
 
       def format_received_args(*args_for_multiple_calls)
         grouped_args(args_for_multiple_calls).map do |args_for_one_call, index|
-          [format_args(*args_for_one_call), group_count(index, args_for_multiple_calls)].join
+          "#{format_args(*args_for_one_call)}#{group_count(index, args_for_multiple_calls)}"
         end.join("\n            ")
       end
 
@@ -306,7 +307,7 @@ module RSpec
       end
 
       def group_count(index, args)
-        args.size > 1 || index > 1 ? ' (' + times(index) + ')' : ''
+        " (#{times(index)})" if args.size > 1 || index > 1
       end
     end
   end
