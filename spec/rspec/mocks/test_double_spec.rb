@@ -48,6 +48,19 @@ module RSpec
           end
         end
       end
+
+      describe ".register" do
+        pending "able to register test doubles" do
+          user = double('User')
+          allow(user).to receive(:name).and_return("FooBar")
+
+          RSpec::Mocks::TestDouble.register user.class do |user|
+            "User (#{user.name})"
+          end
+
+          expect(double.inspect).to eq("User (FooBar)")
+        end
+      end
     end
   end
 end
