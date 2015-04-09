@@ -11,12 +11,21 @@ Enhancements:
 * Avoid loading `stringio` unnecessarily. (Myron Marston, #894)
 * Verifying doubles failure messages now distinguish between class and instance
   level methods. (Tim Wade, #896, #908)
+* Improve mock expectation failure messages so that it combines both
+  number of times and the received arguments in the output. (John Ceh, #918)
 
 Bug Fixes:
 
 * Ensure expectations that raise eagerly also raise during RSpec verification.
   This means that if exceptions are caught inside test execution the test will
   still fail. (Sam Phippen, #884)
+* Fix `have_received(msg).with(args).exactly(n).times` and
+  `receive(msg).with(args).exactly(n).times` failure messages
+  for when the message was received the wrong number of times with
+  the specified args, and also received additional times with other
+  arguments. Previously it confusingly listed the arguments as being
+  mis-matched (even when the double was allowed to receive with any
+  args) rather than listing the count. (John Ceh, #918)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)
