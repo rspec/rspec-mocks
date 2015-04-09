@@ -131,36 +131,6 @@ module RSpec
       end
 
       # @private
-      def received_part_of_expectation_error(actual_received_count, args)
-        "received: #{count_message(actual_received_count)}" +
-          method_call_args_description(args) do
-            actual_received_count > 0 && args.length > 0
-          end
-      end
-
-      # @private
-      def expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
-        "expected: #{count_message(expected_received_count, expectation_count_type)}" +
-          method_call_args_description(argument_list_matcher.expected_args) do
-            argument_list_matcher.expected_args.length > 0
-          end
-      end
-
-      # @private
-      def method_call_args_description(args, &block)
-        case args.first
-        when ArgumentMatchers::AnyArgsMatcher then " with any arguments"
-        when ArgumentMatchers::NoArgsMatcher  then " with no arguments"
-        else
-          if block.call
-            " with arguments: #{format_args(args)}"
-          else
-            ""
-          end
-        end
-      end
-
-      # @private
       def describe_expectation(verb, message, expected_received_count, _actual_received_count, args)
         "#{verb} #{message}#{format_args(args)} #{count_message(expected_received_count)}"
       end
@@ -206,6 +176,33 @@ module RSpec
       end
 
     private
+
+      def received_part_of_expectation_error(actual_received_count, args)
+        "received: #{count_message(actual_received_count)}" +
+          method_call_args_description(args) do
+            actual_received_count > 0 && args.length > 0
+          end
+      end
+
+      def expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
+        "expected: #{count_message(expected_received_count, expectation_count_type)}" +
+          method_call_args_description(argument_list_matcher.expected_args) do
+            argument_list_matcher.expected_args.length > 0
+          end
+      end
+
+      def method_call_args_description(args, &block)
+        case args.first
+        when ArgumentMatchers::AnyArgsMatcher then " with any arguments"
+        when ArgumentMatchers::NoArgsMatcher  then " with no arguments"
+        else
+          if block.call
+            " with arguments: #{format_args(args)}"
+          else
+            ""
+          end
+        end
+      end
 
       def unexpected_arguments_message(expected_args_string, actual_args_string)
         "with unexpected arguments\n  expected: #{expected_args_string}\n       got: #{actual_args_string}"
