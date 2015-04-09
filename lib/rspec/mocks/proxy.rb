@@ -198,13 +198,13 @@ module RSpec
       end
 
       # @private
-      def raise_unexpected_message_args_error(expectation, args)
-        @error_generator.raise_unexpected_message_args_error(expectation, args)
+      def raise_unexpected_message_args_error(expectation, args_for_multiple_calls)
+        @error_generator.raise_unexpected_message_args_error(expectation, args_for_multiple_calls)
       end
 
       # @private
-      def raise_missing_default_stub_error(expectation, args)
-        @error_generator.raise_missing_default_stub_error(expectation, args)
+      def raise_missing_default_stub_error(expectation, args_for_multiple_calls)
+        @error_generator.raise_missing_default_stub_error(expectation, args_for_multiple_calls)
       end
 
       # @private

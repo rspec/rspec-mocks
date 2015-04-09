@@ -55,8 +55,8 @@ module RSpec
       end
 
       # @private
-      def raise_missing_default_stub_error(expectation, args)
-        message = error_message(expectation, args)
+      def raise_missing_default_stub_error(expectation, args_for_multiple_calls)
+        message = error_message(expectation, args_for_multiple_calls)
         message << "\n Please stub a default value first if message might be received with other args as well. \n"
 
         __raise message
