@@ -98,11 +98,14 @@ module RSpec
 
       # @private
       def check_for_unexpected_arguments(expectation)
-        @messages_received.each do |(method_name, args, _)|
-          next unless expectation.matches_name_but_not_args(method_name, *args)
+        return if @messages_received.empty?
 
-          raise_unexpected_message_args_error(expectation, *args)
-        end
+        # Check if any of the arguments were expected.
+        return if @messages_received.any? do |(method_name, args, _)|
+                    !expectation.matches_name_but_not_args(method_name, *args)
+                  end
+
+        raise_unexpected_message_args_error(expectation, *messages_arg_list)
       end
 
       # @private
@@ -142,6 +145,11 @@ module RSpec
       end
 
       # @private
+      def messages_arg_list
+        @messages_received.map { |_, args, _| args }
+      end
+
+      # @private
       def has_negative_expectation?(message)
         method_double_for(message).expectations.find { |expectation| expectation.negative_expectation_for?(message) }
       end
@@ -166,16 +174,17 @@ module RSpec
           end
           stub.invoke(nil, *args, &block)
         elsif expectation
+          expectation.unadvise(messages_arg_list)
           expectation.invoke(stub, *args, &block)
         elsif (expectation = find_almost_matching_expectation(message, *args))
           expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
 
           if null_object? || !has_negative_expectation?(message)
-            raise_unexpected_message_args_error(expectation, *args)
+            raise_unexpected_message_args_error(expectation, args)
           end
         elsif (stub = find_almost_matching_stub(message, *args))
           stub.advise(*args)
-          raise_missing_default_stub_error(stub, *args)
+          raise_missing_default_stub_error(stub, args)
         elsif Class === @object
           @object.superclass.__send__(message, *args, &block)
         else

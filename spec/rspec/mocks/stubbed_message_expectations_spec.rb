@@ -13,7 +13,13 @@ RSpec.describe "expection set on previously stubbed method" do
     dbl.foo('third')
     expect {
       verify dbl
-    }.to raise_error(%Q|Double "double" received :foo with unexpected arguments\n  expected: ("first")\n       got: ("second"), ("third")|)
+    }.to raise_error(
+      RSpec::Mocks::MockExpectationError,
+      a_string_including(
+        %Q|Double "double" received :foo with unexpected arguments|,
+        "expected: (\"first\")",
+        "got:","(\"second\")",
+               "(\"third\")"))
     reset dbl
   end
 
@@ -52,5 +58,17 @@ RSpec.describe "expection set on previously stubbed method" do
         expect(e.message).to include('expected: ("a", ["b"])', 'got: (["a"], "b")')
       }
     end
+
+    it 'distinguishes between duplicate individual values and arrays properly' do
+      dbl = double
+      allow(dbl).to receive(:foo).with('a', ['b'], 'b')
+
+      expect {
+        dbl.foo(['a'], 'b', 'b')
+      }.to raise_error { |e|
+        expect(e.message).to include('expected: ("a", ["b"], "b")', 'got: (["a"], "b", "b")')
+      }
+    end
+
   end
 end

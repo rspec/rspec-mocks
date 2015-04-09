@@ -32,6 +32,9 @@ module RSpec
           end
         end
       end
+
+      def unadvise(_)
+      end
     end
 
     # Represents an individual method stub or message expectation. The methods
@@ -457,6 +460,10 @@ module RSpec
 
         def advise(*args)
           similar_messages << args
+        end
+
+        def unadvise(args)
+          similar_messages.delete_if { |message| args.include?(message) }
         end
 
         def generate_error
