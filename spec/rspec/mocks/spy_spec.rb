@@ -39,13 +39,13 @@ RSpec.describe "the spy family of methods" do
     it 'fails fast when `have_received` is passed an undefined method name' do
       expect {
         expect(subject).to have_received(:bar)
-      }.to fail_matching("does not implement")
+      }.to fail_including("does not implement")
     end
 
     it 'fails fast when negative `have_received` is passed an undefined method name' do
       expect {
         expect(subject).to_not have_received(:bar)
-      }.to fail_matching("does not implement")
+      }.to fail_including("does not implement")
     end
   end
 

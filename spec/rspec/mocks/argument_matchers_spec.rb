@@ -22,7 +22,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(boolean)
           expect {
             a_double.random_call("false")
-          }.to fail_matching "expected: (boolean)"
+          }.to fail_including "expected: (boolean)"
         end
       end
 
@@ -41,7 +41,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(kind_of(Numeric))
           expect {
             a_double.random_call(true)
-          }.to fail_matching "expected: (kind of Numeric)"
+          }.to fail_including "expected: (kind of Numeric)"
         end
 
         it "matches arguments that have defined `kind_of?` to return true" do
@@ -88,7 +88,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(instance_of(Numeric))
           expect {
             a_double.random_call(1.5)
-          }.to fail_matching "expected: (an_instance_of(Numeric))"
+          }.to fail_including "expected: (an_instance_of(Numeric))"
         end
       end
 
@@ -105,7 +105,7 @@ module RSpec
 
         it "handles non matching instances nicely", :reset => true do
           expect(a_double).to receive(:random_call).with(anything)
-          expect { a_double.random_call }.to fail_matching "expected: (anything)"
+          expect { a_double.random_call }.to fail_including "expected: (anything)"
         end
       end
 
@@ -124,7 +124,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(duck_type(:abs, :div))
           expect {
             a_double.random_call("I don't respond to :abs or :div")
-          }.to fail_matching "expected: (duck_type(:abs, :div))"
+          }.to fail_including "expected: (duck_type(:abs, :div))"
         end
       end
 
@@ -161,11 +161,11 @@ module RSpec
           end
 
           it "does not match a call where the first two args do not match", :reset => true do
-            expect { a_double.random_call(1, "bar", 2, 3) }.to fail_matching "expected: (1, /foo/, *(any args))"
+            expect { a_double.random_call(1, "bar", 2, 3) }.to fail_including "expected: (1, /foo/, *(any args))"
           end
 
           it "does not match a call of no args", :reset => true do
-            expect { a_double.random_call }.to fail_matching "expected: (1, /foo/, *(any args))"
+            expect { a_double.random_call }.to fail_including "expected: (1, /foo/, *(any args))"
           end
         end
 
@@ -185,11 +185,11 @@ module RSpec
           end
 
           it "does not match a call where the last two args do not match", :reset => true do
-            expect { a_double.random_call(1, "bar", 2, 3) }.to fail_matching "expected: (*(any args), 1, /foo/)"
+            expect { a_double.random_call(1, "bar", 2, 3) }.to fail_including "expected: (*(any args), 1, /foo/)"
           end
 
           it "does not match a call of no args", :reset => true do
-            expect { a_double.random_call }.to fail_matching "expected: (*(any args), 1, /foo/)"
+            expect { a_double.random_call }.to fail_including "expected: (*(any args), 1, /foo/)"
           end
         end
 
@@ -209,11 +209,11 @@ module RSpec
           end
 
           it "does not match a call where the first and last args do not match", :reset => true do
-            expect { a_double.random_call(nil, "bar", 2, 3) }.to fail_matching "expected: (1, *(any args), /foo/)"
+            expect { a_double.random_call(nil, "bar", 2, 3) }.to fail_including "expected: (1, *(any args), /foo/)"
           end
 
           it "does not match a call of no args", :reset => true do
-            expect { a_double.random_call }.to fail_matching "expected: (1, *(any args), /foo/)"
+            expect { a_double.random_call }.to fail_including "expected: (1, *(any args), /foo/)"
           end
         end
 
@@ -234,7 +234,7 @@ module RSpec
 
         it "fails no_args with one arg", :reset => true do
           expect(a_double).to receive(:msg).with(no_args)
-          expect { a_double.msg(37) }.to fail_matching "expected: (no args)"
+          expect { a_double.msg(37) }.to fail_including "expected: (no args)"
         end
 
         context "when passed with other arguments" do
@@ -256,7 +256,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(hash_including(:a => 1))
           expect {
             a_double.random_call(:a => 2)
-          }.to fail_matching "expected: (hash_including(:a=>1))"
+          }.to fail_including "expected: (hash_including(:a=>1))"
         end
       end
 
@@ -270,7 +270,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(hash_excluding(:a => 1))
           expect {
             a_double.random_call(:a => 1)
-          }.to fail_matching "expected: (hash_not_including(:a=>1))"
+          }.to fail_including "expected: (hash_not_including(:a=>1))"
         end
       end
 
@@ -284,14 +284,14 @@ module RSpec
           expect(a_double).to receive(:msg).with(array_including(1, 2, 3))
           expect {
              a_double.msg(1, 2, 3)
-          }.to fail_matching "expected: (array_including(1, 2, 3))"
+          }.to fail_including "expected: (array_including(1, 2, 3))"
         end
 
         it "fails array_including when arg doesn't contain all elements", :reset => true do
           expect(a_double).to receive(:msg).with(array_including(1, 2, 3))
           expect {
              a_double.msg([1, 2])
-          }.to fail_matching "expected: (array_including(1, 2, 3))"
+          }.to fail_including "expected: (array_including(1, 2, 3))"
         end
       end
 
@@ -308,7 +308,7 @@ module RSpec
           expect(a_double).to receive(:msg).with(equal(3))
           # This spec is generating warnings on 1.8.7, not sure why so
           # this does with_isolated_stderr to kill them. @samphippen 3rd Jan 2013.
-          expect { with_isolated_stderr { a_double.msg(37) } }.to fail_matching "expected: (equal 3)"
+          expect { with_isolated_stderr { a_double.msg(37) } }.to fail_including "expected: (equal 3)"
         end
 
         it "fails when given an arbitrary object that returns false from #===", :reset => true do
@@ -363,14 +363,14 @@ module RSpec
           expect(a_double).to receive(:random_call).with(:a => "b", :c => "d")
           expect do
             a_double.random_call(:a => "b", :c => "e")
-          end.to fail_matching(/expected: \(\{(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")\}\)/)
+          end.to fail_with(/expected: \(\{(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")\}\)/)
         end
 
         it "fails for a hash w/ wrong keys", :reset => true do
           expect(a_double).to receive(:random_call).with(:a => "b", :c => "d")
           expect do
             a_double.random_call("a" => "b", "c" => "d")
-          end.to fail_matching(/expected: \(\{(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")\}\)/)
+          end.to fail_with(/expected: \(\{(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")\}\)/)
         end
 
         it "matches a class against itself" do
@@ -403,21 +403,21 @@ module RSpec
           arg = double(:description => nil, :inspect => "my_thing")
 
           expect(a_double).to receive(:msg).with(3)
-          expect { a_double.msg arg }.to fail_matching "got: (my_thing)"
+          expect { a_double.msg arg }.to fail_including "got: (my_thing)"
         end
 
         it "fails with sensible message when arg#description is nil", :reset => true do
           arg = double(:description => nil, :inspect => "my_thing")
 
           expect(a_double).to receive(:msg).with(arg)
-          expect { a_double.msg 3 }.to fail_matching "expected: (my_thing)"
+          expect { a_double.msg 3 }.to fail_including "expected: (my_thing)"
         end
 
         it "fails with sensible message when arg#description is blank", :reset => true do
           arg = double(:description => "", :inspect => "my_thing")
 
           expect(a_double).to receive(:msg).with(arg)
-          expect { a_double.msg 3 }.to fail_matching "expected: (my_thing)"
+          expect { a_double.msg 3 }.to fail_including "expected: (my_thing)"
         end
       end
     end
