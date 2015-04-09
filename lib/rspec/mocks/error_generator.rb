@@ -46,7 +46,7 @@ module RSpec
 
       # @private
       def raise_unexpected_message_error(message, args)
-        __raise "#{intro} received unexpected message :#{message}#{arg_message(args)}"
+        __raise "#{intro} received unexpected message :#{message} with #{format_args(args)}"
       end
 
       # @private
@@ -267,10 +267,6 @@ module RSpec
       def __raise(message)
         message = opts[:message] unless opts[:message].nil?
         Kernel.raise(RSpec::Mocks::MockExpectationError, message)
-      end
-
-      def arg_message(args)
-        " with " + format_args(args)
       end
 
       def format_args(args)
