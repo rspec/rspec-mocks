@@ -46,6 +46,31 @@ Feature: Matching arguments
       |     expected: (1, anything, /bar/)               |
       |          got: (1, nil, "other")                  |
 
+  Scenario: Using a RSpec matcher
+    Given a file named "rspec_matcher_spec.rb" with:
+      """ruby
+      RSpec.describe "Using a RSpec matcher" do
+        let(:dbl) { double }
+        before { expect(dbl).to receive(:foo).with(a_collection_containing_exactly(1, 2)) }
+
+        it "passes when the args match" do
+          dbl.foo([2, 1])
+        end
+
+        it "fails when the args do not match" do
+          dbl.foo([1, 3])
+        end
+      end
+      """
+    When I run `rspec rspec_matcher_spec.rb`
+    Then it should fail with the following output:
+      | 2 examples, 1 failure                               |
+      |                                                     |
+      | Failure/Error: dbl.foo([1, 3])                      |
+      | Double received :foo with unexpected arguments      |
+      | expected: (a collection containing exactly 1 and 2) |
+      | got: ([1, 3])                                       |
+
   Scenario: Using a custom matcher
     Given a file named "custom_matcher_spec.rb" with:
       """ruby
