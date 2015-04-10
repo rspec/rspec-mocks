@@ -26,6 +26,9 @@ Bug Fixes:
   arguments. Previously it confusingly listed the arguments as being
   mis-matched (even when the double was allowed to receive with any
   args) rather than listing the count. (John Ceh, #918)
+* Fix `any_args`/`anything` support so that we avoid calling `obj == anything`
+  on user objects that may have improperly implemented `==` in a way that
+  raises errors. (Myron Marston, #924)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)
