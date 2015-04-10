@@ -71,6 +71,14 @@ module RSpec
           @double.do_something(:args, 1)
 
           expect {
+            # we've grouped these lines because it should probably fail fast
+            # on the first line (since our expectation above only allows one
+            # call with these args), but currently it fails with a confusing
+            # message on verification, and ultimately we care more about
+            # what the message is than when it is raised. Still, it would be
+            # preferrable for the error to be triggered on the first line,
+            # so it'd be good to update this spec to enforce that once we
+            # get the failure message right.
             @double.do_something(:args, 1)
             verify @double
           }.to fail_with(a_string_including("expected: 2 times", "received: 3 times"))

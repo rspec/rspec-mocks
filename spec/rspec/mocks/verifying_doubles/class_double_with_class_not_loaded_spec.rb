@@ -13,7 +13,7 @@ module RSpec
         o = class_double("NonLoadedClass")
         expect {
           o.foo
-        }.to fail_matching('Double "NonLoadedClass"')
+        }.to fail_including('Double "NonLoadedClass"')
       end
 
       it 'allows any method to be stubbed' do

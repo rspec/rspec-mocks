@@ -28,7 +28,7 @@ module RSpec
       def verify_messages_received
         InsertOntoBacktrace.line(@backtrace_line) do
           unless @received
-            @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil)
+            @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil, [])
           end
         end
       end
@@ -468,9 +468,9 @@ module RSpec
 
         def generate_error
           if similar_messages.empty?
-            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *expected_args)
+            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, expected_args)
           else
-            @error_generator.raise_similar_message_args_error(self, *@similar_messages)
+            @error_generator.raise_similar_message_args_error(self, @similar_messages)
           end
         end
 
@@ -483,7 +483,7 @@ module RSpec
         def description_for(verb)
           @error_generator.describe_expectation(
             verb, @message, @expected_received_count,
-            @actual_received_count, *expected_args
+            @actual_received_count, expected_args
           )
         end
 
@@ -522,7 +522,7 @@ module RSpec
             @failed_fast = true
             # args are the args we actually received, @argument_list_matcher is the
             # list of args we were expecting
-            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, *args)
+            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, args)
           end
 
           @order_group.handle_order_constraint self
