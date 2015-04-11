@@ -64,7 +64,7 @@ module RSpec
       def resolve_expected_args_based_on(actual_args)
         return [] if [ArgumentMatchers::NoArgsMatcher::INSTANCE] == expected_args
 
-        any_args_index = expected_args.index(ArgumentMatchers::AnyArgsMatcher::INSTANCE)
+        any_args_index = expected_args.index { |a| ArgumentMatchers::AnyArgsMatcher::INSTANCE == a }
         return expected_args unless any_args_index
 
         replace_any_args_with_splat_of_anything(any_args_index, actual_args.count)
@@ -81,10 +81,10 @@ module RSpec
       end
 
       def ensure_expected_args_valid!
-        if expected_args.count(ArgumentMatchers::AnyArgsMatcher::INSTANCE) > 1
+        if expected_args.count { |a| ArgumentMatchers::AnyArgsMatcher::INSTANCE == a } > 1
           raise ArgumentError, "`any_args` can only be passed to " \
                 "`with` once but you have passed it multiple times."
-        elsif expected_args.count > 1 && expected_args.include?(ArgumentMatchers::NoArgsMatcher::INSTANCE)
+        elsif expected_args.count > 1 && expected_args.any? { |a| ArgumentMatchers::NoArgsMatcher::INSTANCE == a }
           raise ArgumentError, "`no_args` can only be passed as a " \
                 "singleton argument to `with` (i.e. `with(no_args)`), " \
                 "but you have passed additional arguments."

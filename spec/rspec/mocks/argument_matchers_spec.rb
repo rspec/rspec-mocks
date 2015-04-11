@@ -321,6 +321,40 @@ module RSpec
         end
       end
 
+      context "handling objects with a wrong definition of `==` that raises errors for other types" do
+        Color = Struct.new(:r, :g, :b) do
+          def ==(other)
+            other.r == r && other.g == g && other.b == b
+          end
+        end
+
+        before(:context) do
+          expect { Color.new(0, 0, 0) == Object.new }.to raise_error(NoMethodError)
+        end
+
+        it 'matches against an equal instance of the same type' do
+          expect(a_double).to receive(:random_call).with(Color.new(0, 0, 0))
+          a_double.random_call(Color.new(0, 0, 0))
+        end
+
+        it 'fails when matched against an unequal instance of the same class', :reset do
+          expect(a_double).to receive(:random_call).with(Color.new(0, 0, 0))
+          expect { a_double.random_call(Color.new(0, 1, 0)) }.to fail
+        end
+
+        it 'can match multiple instances of the type against multiple equal instances of the type' do
+          expect(a_double).to receive(:random_call).with(
+            Color.new(0, 0, 0),
+            Color.new(0, 1, 0)
+          )
+
+          a_double.random_call(
+            Color.new(0, 0, 0),
+            Color.new(0, 1, 0)
+          )
+        end
+      end
+
       context "handling non-matcher arguments" do
         it "matches string against regexp" do
           expect(a_double).to receive(:random_call).with(/bcd/)
