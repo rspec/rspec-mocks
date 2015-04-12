@@ -519,7 +519,7 @@ module RSpec
         @stub.foo("baz")
         expect {
           @stub.foo("other")
-        }.to raise_error
+        }.to fail
       end
 
       it 'uses the correct stubbed response when responding to a mock expectation' do

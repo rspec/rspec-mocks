@@ -776,7 +776,7 @@ module RSpec
               expect(@double).to receive(:foo).with('bar')
               expect do
                 @double.foo('baz')
-              end.to raise_error
+              end.to fail
               reset @double
             end
           end
@@ -788,7 +788,7 @@ module RSpec
               expect(@double).to receive(:foo).with(d1)
               expect do
                 @double.foo(d2)
-              end.to raise_error
+              end.to fail
               reset @double
             end
           end
@@ -800,7 +800,7 @@ module RSpec
               expect(@double).to receive(:foo).with(d1)
               expect do
                 @double.foo(d2)
-              end.to raise_error
+              end.to fail
               reset @double
             end
           end

@@ -38,7 +38,7 @@ module RSpec
       it "fails when there are too few calls (if there is no stub)" do
         @double.do_something
         @double.do_something
-        expect { verify @double }.to raise_error
+        expect { verify @double }.to fail
       end
 
       it "fails when there are too many calls (if there is no stub)" do
@@ -46,7 +46,7 @@ module RSpec
         @double.do_something
         @double.do_something
         @double.do_something
-        expect { verify @double }.to raise_error
+        expect { verify @double }.to fail
       end
     end
 
@@ -116,7 +116,7 @@ module RSpec
       it "fails when called less than the specified number" do
         @double.do_something
         @double.do_something
-        expect { verify @double }.to raise_error
+        expect { verify @double }.to fail
       end
 
       it "fails fast when called greater than the specified number" do
