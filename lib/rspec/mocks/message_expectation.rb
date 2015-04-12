@@ -487,8 +487,8 @@ module RSpec
           )
         end
 
-        def raise_out_of_order_error
-          @error_generator.raise_out_of_order_error @message
+        def raise_out_of_order_error(message=nil)
+          @error_generator.raise_out_of_order_error(message || @message)
         end
 
         def additional_expected_calls

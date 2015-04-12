@@ -41,7 +41,8 @@ module RSpec
       end
 
       def verify_invocation_order(expectation)
-        expectation.raise_out_of_order_error unless expectations_invoked_in_order?
+        message = @invocation_order[@index] ? @invocation_order[@index].message : nil
+        expectation.raise_out_of_order_error(message) unless expectations_invoked_in_order?
         true
       end
 
@@ -55,6 +56,10 @@ module RSpec
         @expectations.empty?
       end
 
+      def message_range
+        (@index..end_range)
+      end
+
     private
 
       def remaining_expectations
@@ -66,15 +71,27 @@ module RSpec
       end
 
       def invoked_expectations
-        @expectations.select { |e| e.ordered? && @invocation_order.include?(e) }
+        @expectations[order_range].select { |e| e.ordered? && @invocation_order.include?(e) }
       end
 
       def expected_invocations
-        @invocation_order.map { |invocation| expectation_for(invocation) }.compact
+        @invocation_order[order_range].map { |invocation| expectation_for(invocation) }.compact
       end
 
       def expectation_for(message)
-        @expectations.find { |e| message == e }
+        @expectations[order_range].find { |e| message == e }
+      end
+
+      def order_range
+        (start_range..end_range)
+      end
+
+      def start_range
+        @index - (@index.zero? ? 0 : 1)
+      end
+
+      def end_range
+        @expectations.size - 1
       end
     end
   end
