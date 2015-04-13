@@ -125,5 +125,5 @@ Feature: Spies
       |           received: 2 times with any arguments                                                   |
       |                                                                                                  |
       |  2) An invitiation fails when an order constraint is not satisifed                               |
-      |     Failure/Error: expect(invitation).to have_received(:deliver).with("foo@example.com").ordered |
+      |     Failure/Error: expect(invitation).to have_received(:deliver).with("bar@example.com").ordered |
       |       Double "invitation" received :deliver out of order                                         |
