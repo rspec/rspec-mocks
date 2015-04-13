@@ -459,6 +459,73 @@ module RSpec
             }.to raise_error(/received :two out of order/m)
           end
 
+          context "Specifying ordering for calls that are interleaved with each other" do
+            it 'passes when using `have_received`' do
+              dbl = spy
+
+              dbl.one
+              dbl.one
+              dbl.two
+              dbl.one
+              dbl.two
+
+              expect(dbl).to have_received(:one).twice.ordered
+              expect(dbl).to have_received(:two).once.ordered
+              expect(dbl).to have_received(:one).once.ordered
+              expect(dbl).to have_received(:two).once.ordered
+            end
+
+            it 'fails when using `have_received` with out of order interleaved messages' do
+              dbl = spy
+
+              dbl.one
+              dbl.one
+              dbl.two
+              dbl.one
+              dbl.two
+
+              expect {
+                expect(dbl).to have_received(:two).once.ordered
+                expect(dbl).to have_received(:one).twice.ordered
+                expect(dbl).to have_received(:one).once.ordered
+                expect(dbl).to have_received(:two).once.ordered
+              }.to raise_error(/received :one out of order/m)
+            end
+
+            it 'passes when using `receive`' do
+              dbl = double
+
+              expect(dbl).to receive(:one).twice.ordered
+              expect(dbl).to receive(:two).once.ordered
+              expect(dbl).to receive(:one).once.ordered
+              expect(dbl).to receive(:two).once.ordered
+
+              dbl.one
+              dbl.one
+              dbl.two
+              dbl.one
+              dbl.two
+            end
+
+            it 'fails when using `receive` with out of order interleaved messages' do
+              pending "Getting expected 1 got 0 error instead of order error"
+              expect {
+                dbl = double
+
+                expect(dbl).to receive(:two).once.ordered
+                expect(dbl).to receive(:one).twice.ordered
+                expect(dbl).to receive(:one).once.ordered
+                expect(dbl).to receive(:two).once.ordered
+
+                dbl.one
+                dbl.one
+                dbl.two
+                dbl.one
+                dbl.two
+              }.to raise_error(/received :one out of order/m)
+            end
+          end
+
           context "when used with `with`" do
             before do
               the_dbl.one(1)

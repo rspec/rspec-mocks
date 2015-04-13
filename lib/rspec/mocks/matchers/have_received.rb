@@ -107,7 +107,11 @@ module RSpec
 
         def expected_messages_received_in_order?
           mock_proxy.replay_received_message_on @expectation, &@block
-          @expectation.expected_messages_received? && @expectation.ensure_expected_ordering_received!
+          if @expectation.ordered?
+            @expectation.ensure_expected_ordering_received! && @expectation.expected_messages_received?
+          else
+            @expectation.expected_messages_received? && @expectation.ensure_expected_ordering_received!
+          end
         end
 
         def mock_proxy
