@@ -123,7 +123,7 @@ module RSpec::Mocks::Matchers
           expect(object).to receive_message_chain(:to_a, :farce, :length => 3)
           object.to_a
           verify_all
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "raises when expect is used and all but the last message in the chain are called" do
@@ -131,7 +131,7 @@ module RSpec::Mocks::Matchers
           expect(object).to receive_message_chain(:foo, :bar, :baz)
           object.foo.bar
           verify_all
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "does not raise when expect is used and the entire chain is called" do
@@ -163,7 +163,7 @@ module RSpec::Mocks::Matchers
         expect {
           expect_any_instance_of(Object).to receive_message_chain(:to_a, :length => 3)
           verify_all
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "affects previously stubbed instances when `expect_any_instance_of` is called" do

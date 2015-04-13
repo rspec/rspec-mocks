@@ -160,7 +160,7 @@ module RSpec
           it "fails the spec with an expectation error when the arguments do not match" do
             expect do
               klass.new.foo(:param_one, :param_three)
-            end.to(raise_error(RSpec::Mocks::MockExpectationError))
+            end.to fail
           end
         end
 
@@ -584,14 +584,14 @@ module RSpec
               expect_any_instance_of(klass).to receive(:foo)
               klass.new
               verify_all
-            end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
+            end.to fail_with foo_expectation_error_message
           end
 
           it "fails if no instance is created" do
             expect do
               expect_any_instance_of(klass).to receive(:foo).and_return(1)
               verify_all
-            end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
+            end.to fail_with foo_expectation_error_message
           end
 
           it "fails if no instance is created and there are multiple expectations" do
@@ -599,7 +599,7 @@ module RSpec
               expect_any_instance_of(klass).to receive(:foo)
               expect_any_instance_of(klass).to receive(:bar)
               verify_all
-            end.to raise_error(RSpec::Mocks::MockExpectationError, 'Exactly one instance should have received the following message(s) but didn\'t: bar, foo')
+            end.to fail_with 'Exactly one instance should have received the following message(s) but didn\'t: bar, foo'
           end
 
           it "allows expectations on instances to take priority" do
@@ -626,7 +626,7 @@ module RSpec
 
                 instance_one.foo
                 instance_two.foo
-              end.to raise_error(RSpec::Mocks::MockExpectationError, /The message 'foo' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
+              end.to fail_with(/The message 'foo' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
             end
           end
 
@@ -637,7 +637,7 @@ module RSpec
                 expect(klass).to receive(:woot)
                 klass.new.foo
                 verify_all
-              end.to(raise_error(RSpec::Mocks::MockExpectationError) do |error|
+              end.to(fail do |error|
                 expect(error.message).not_to eq(existing_method_expectation_error_message)
               end)
             end
@@ -662,14 +662,14 @@ module RSpec
               expect_any_instance_of(klass).to receive(:existing_method)
               klass.new
               verify_all
-            end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
+            end.to fail_with existing_method_expectation_error_message
           end
 
           it "fails if no instance is created" do
             expect do
               expect_any_instance_of(klass).to receive(:existing_method)
               verify_all
-            end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
+            end.to fail_with existing_method_expectation_error_message
           end
 
           it "fails if no instance is created and there are multiple expectations" do
@@ -677,7 +677,7 @@ module RSpec
               expect_any_instance_of(klass).to receive(:existing_method)
               expect_any_instance_of(klass).to receive(:another_existing_method)
               verify_all
-            end.to raise_error(RSpec::Mocks::MockExpectationError, 'Exactly one instance should have received the following message(s) but didn\'t: another_existing_method, existing_method')
+            end.to fail_with 'Exactly one instance should have received the following message(s) but didn\'t: another_existing_method, existing_method'
           end
 
           context "after any one instance has received a message" do
@@ -695,7 +695,7 @@ module RSpec
 
                 instance_one.existing_method
                 instance_two.existing_method
-              end.to raise_error(RSpec::Mocks::MockExpectationError, /The message 'existing_method' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
+              end.to fail_with(/The message 'existing_method' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
             end
           end
         end
@@ -736,7 +736,7 @@ module RSpec
             expect do
               expect(instances[0].foo(:param_one, :param_two)).to eq(:result_one)
               expect(instances[1].foo(:param_three, :param_four)).to eq(:result_two)
-            end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end.to fail
 
             # ignore the fact that should_receive expectations were not met
             instances.each { |instance| reset instance }
@@ -753,7 +753,7 @@ module RSpec
             instance = klass.new
             expect do
               instance.foo(:param_one, :param_three)
-            end.to raise_error(RSpec::Mocks::MockExpectationError)
+            end.to fail
 
             # ignore the fact that should_receive expectations were not met
             reset instance
@@ -771,7 +771,7 @@ module RSpec
               expect do
                 expect_any_instance_of(klass).to receive(:foo).once
                 verify_all
-              end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
+              end.to fail_with foo_expectation_error_message
             end
 
             it "fails when an instance is declared but there are no invocations" do
@@ -779,7 +779,7 @@ module RSpec
                 expect_any_instance_of(klass).to receive(:foo).once
                 klass.new
                 verify_all
-              end.to raise_error(RSpec::Mocks::MockExpectationError, foo_expectation_error_message)
+              end.to fail_with foo_expectation_error_message
             end
 
             it "fails for more than one invocation" do
@@ -830,7 +830,7 @@ module RSpec
                 instance = klass.new
                 2.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end.to fail
             end
           end
 
@@ -847,7 +847,7 @@ module RSpec
                 instance = klass.new
                 2.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end.to fail
             end
 
             it "fails for n invocations where n > 3" do
@@ -872,7 +872,7 @@ module RSpec
                 instance = klass.new
                 2.times { instance.foo }
                 verify instance
-              end.to raise_error(RSpec::Mocks::MockExpectationError)
+              end.to fail
             end
 
             it "passes for n invocations where n > 3" do
@@ -929,7 +929,7 @@ module RSpec
                   expect_any_instance_of(klass).to receive(:foo).never
                   expect_any_instance_of(klass).to receive(:existing_method).and_return(5)
                   verify_all
-                end.to raise_error(RSpec::Mocks::MockExpectationError, existing_method_expectation_error_message)
+                end.to fail_with existing_method_expectation_error_message
               end
             end
           end
@@ -1195,7 +1195,7 @@ module RSpec
             expect_any_instance_of(klass).to receive(:existing_method)
             instance_one.existing_method
             instance_two.existing_method
-          end.to raise_error(RSpec::Mocks::MockExpectationError, /The message 'existing_method' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
+          end.to fail_with(/The message 'existing_method' was received by .*#{instance_two.object_id}.* but has already been received by #{instance_one.inspect}/)
         end
       end
 

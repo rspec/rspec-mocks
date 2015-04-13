@@ -81,7 +81,7 @@ module RSpec
       it "sets up multiple expectations" do
         expect(obj).to receive_messages(:a => 1, :b => 2)
         obj.a
-        expect { verify_all }.to raise_error RSpec::Mocks::MockExpectationError
+        expect { verify_all }.to fail
       end
 
       it 'fails with a sensible message' do
@@ -112,7 +112,7 @@ module RSpec
       it "sets up multiple expectations" do
         expect_any_instance_of(Object).to receive_messages(:a => 1, :b => 2)
         obj.a
-        expect { RSpec::Mocks.space.verify_all }.to raise_error RSpec::Mocks::MockExpectationError
+        expect { RSpec::Mocks.space.verify_all }.to fail
         RSpec::Mocks.space.reset_all
       end
 

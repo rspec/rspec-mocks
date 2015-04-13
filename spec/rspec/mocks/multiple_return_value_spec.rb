@@ -80,7 +80,7 @@ module RSpec
 
       it "fails when called less than the specified number" do
         expect(@double.do_something).to equal(11)
-        expect { verify @double }.to raise_error(RSpec::Mocks::MockExpectationError)
+        expect { verify @double }.to fail
       end
 
       context "when method is stubbed too" do
@@ -95,7 +95,7 @@ module RSpec
 
         it "fails when called less than the specified number" do
           expect(@double.do_something).to equal(11)
-          expect { verify @double }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify @double }.to fail
         end
       end
     end

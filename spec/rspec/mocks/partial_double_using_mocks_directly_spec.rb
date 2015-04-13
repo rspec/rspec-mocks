@@ -29,14 +29,14 @@ module RSpec::Mocks
       expect(obj).to receive(:msg)
       expect {
         verify obj
-      }.to raise_error(RSpec::Mocks::MockExpectationError)
+      }.to fail
     end
 
     it "fails when message is received with incorrect args" do
       expect(obj).to receive(:msg).with(:correct_arg)
       expect {
         obj.msg(:incorrect_arg)
-      }.to raise_error(RSpec::Mocks::MockExpectationError)
+      }.to fail
       obj.msg(:correct_arg)
     end
 

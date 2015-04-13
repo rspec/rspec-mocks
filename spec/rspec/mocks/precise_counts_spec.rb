@@ -11,7 +11,7 @@ module RSpec
         @double.do_something
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "fails fast when exactly n times method is called more than n times" do
@@ -28,7 +28,7 @@ module RSpec
         expect(@double).to receive(:do_something).exactly(3).times
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "passes if exactly n times method is called exactly n times" do

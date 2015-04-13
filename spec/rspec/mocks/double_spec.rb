@@ -41,7 +41,7 @@ module RSpec
           b = double('b')
           expect(a).to receive(:append).with(b)
           verify_all
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it 'allows string representation of methods in constructor' do
@@ -78,7 +78,7 @@ module RSpec
         expected_error_line = __LINE__; expect(@double).to receive(:wont_happen).with("x", 3)
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError) { |e|
+        }.to fail { |e|
           # NOTE - this regexp ended w/ $, but jruby adds extra info at the end of the line
           expect(e.backtrace[0]).to match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
         }
@@ -89,7 +89,7 @@ module RSpec
         expected_error_line = __LINE__; expect(@double).to receive(:wont_happen).with("x", 3)
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError) { |e|
+        }.to fail { |e|
           # NOTE - this regexp ended w/ $, but jruby adds extra info at the end of the line
           expect(e.backtrace[0]).to match(/#{File.basename(__FILE__)}:#{expected_error_line}/)
         }
@@ -217,7 +217,7 @@ module RSpec
         expect(@double).to receive(:something).with("a","b","c").and_return("booh")
         expect {
           @double.something("a","d","c")
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
+        }.to fail_with "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")"
       end
 
       describe "even when a similar expectation with different arguments exist" do
@@ -227,7 +227,7 @@ module RSpec
           expect {
             @double.something("a","b","c")
             @double.something("z","x","g")
-          }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"z\", \"x\", \"c\")\n       got: (\"z\", \"x\", \"g\")")
+          }.to fail_with "Double \"test double\" received :something with unexpected arguments\n  expected: (\"z\", \"x\", \"c\")\n       got: (\"z\", \"x\", \"g\")"
         end
       end
 
@@ -237,7 +237,7 @@ module RSpec
         expect {
           @double.something("a","d","c")
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
+        }.to fail_with "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")"
       end
 
       it "raises exception if args don't match when method called even when using null_object" do
@@ -246,7 +246,7 @@ module RSpec
         expect {
           @double.something("a","d","c")
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")")
+        }.to fail_with "Double \"test double\" received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")"
       end
 
       describe 'with a method that has a default argument' do
@@ -257,14 +257,14 @@ module RSpec
           expect {
             @double.method_with_default_argument(nil)
             verify @double
-          }.to raise_error(RSpec::Mocks::MockExpectationError, a_string_starting_with("Double \"test double\" received :method_with_default_argument with unexpected arguments\n  expected: ({})\n       got: (nil)"))
+          }.to fail_with a_string_starting_with("Double \"test double\" received :method_with_default_argument with unexpected arguments\n  expected: ({})\n       got: (nil)")
         end
       end
 
       it "fails if unexpected method called" do
         expect {
           @double.something("a","b","c")
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received unexpected message :something with (\"a\", \"b\", \"c\")")
+        }.to fail_with "Double \"test double\" received unexpected message :something with (\"a\", \"b\", \"c\")"
       end
 
       it "uses block for expectation if provided" do
@@ -336,9 +336,7 @@ module RSpec
       it "fails right away when method defined as never is received" do
         expect(@double).to receive(:not_expected).never
         expect { @double.not_expected }.
-          to raise_error(RSpec::Mocks::MockExpectationError,
-                         %Q|(Double "test double").not_expected(no args)\n    expected: 0 times with any arguments\n    received: 1 time|
-        )
+          to fail_with %Q|(Double "test double").not_expected(no args)\n    expected: 0 times with any arguments\n    received: 1 time|
       end
 
       it "raises RuntimeError by default" do
@@ -389,7 +387,7 @@ module RSpec
         expect(@double).to receive(:something).with(2).and_raise(RuntimeError)
         expect {
           @double.something 1
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "throws when told to" do
@@ -412,14 +410,14 @@ module RSpec
         expect(@double).to receive(:something).with(no_args())
         expect {
           @double.something 1
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (no args)\n       got: (1)")
+        }.to fail_with "Double \"test double\" received :something with unexpected arguments\n  expected: (no args)\n       got: (1)"
       end
 
       it "fails when args are expected but none are received" do
         expect(@double).to receive(:something).with(1)
         expect {
           @double.something
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :something with unexpected arguments\n  expected: (1)\n       got: (no args)")
+        }.to fail_with "Double \"test double\" received :something with unexpected arguments\n  expected: (1)\n       got: (no args)"
       end
 
       it "returns value from block by default" do
@@ -523,7 +521,7 @@ module RSpec
         expect(@double).to receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
         expect {
           @double.yield_back {|a|}
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" yielded |\"wha\", \"zup\"| to block with arity of 1")
+        }.to fail_with "Double \"test double\" yielded |\"wha\", \"zup\"| to block with arity of 1"
       end
 
       if kw_args_supported?
@@ -531,8 +529,7 @@ module RSpec
           expect(@double).to receive(:yield_back).and_yield(:x => 1, :y => 2)
           expect {
             eval("@double.yield_back { |x: 1| }")
-          }.to raise_error(RSpec::Mocks::MockExpectationError,
-                           'Double "test double" yielded |{:x=>1, :y=>2}| to block with optional keyword args (:x)')
+          }.to fail_with 'Double "test double" yielded |{:x=>1, :y=>2}| to block with optional keyword args (:x)'
         end
       end
 
@@ -543,14 +540,14 @@ module RSpec
         expect {
           c = []
           @double.yield_back {|a,b| c << [a, b]}
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" yielded |\"down\"| to block with arity of 2")
+        }.to fail_with "Double \"test double\" yielded |\"down\"| to block with arity of 2"
       end
 
       it "fails when calling yielding method without block" do
         expect(@double).to receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
         expect {
           @double.yield_back
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" asked to yield |[\"wha\", \"zup\"]| but no block was passed")
+        }.to fail_with "Double \"test double\" asked to yield |[\"wha\", \"zup\"]| but no block was passed"
       end
 
       it "is able to double send" do
@@ -577,7 +574,7 @@ module RSpec
         verify @double
         expect {
           @double.foobar
-        }.to raise_error(RSpec::Mocks::MockExpectationError, %q|Double "test double" received unexpected message :foobar with (no args)|)
+        }.to fail_with %q|Double "test double" received unexpected message :foobar with (no args)|
       end
 
       it "restores objects to their original state on rspec_reset" do
@@ -608,7 +605,7 @@ module RSpec
       it "raises an error when a previously stubbed method has a negative expectation" do
         allow(@double).to receive(:msg).and_return(:stub_value)
         expect(@double).not_to receive(:msg)
-        expect { @double.msg(:arg) }.to raise_error(RSpec::Mocks::MockExpectationError)
+        expect { @double.msg(:arg) }.to fail
       end
 
       it "temporarily replaces a method stub on a non-double" do
