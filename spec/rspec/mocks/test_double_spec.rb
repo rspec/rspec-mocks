@@ -49,17 +49,15 @@ module RSpec
         end
       end
 
-      describe ".register" do
-        pending "able to register test doubles" do
-          user = double('User')
-          allow(user).to receive(:name).and_return("FooBar")
+      pending "test doubles able to register themselves with ObjectInspector" do
+        allow_any_instance_of(TestDouble).to receive(:name).and_return("FooBar")
+        double('User')
 
-          RSpec::Mocks::TestDouble.register user.class do |user|
-            "User (#{user.name})"
-          end
-
-          expect(double.inspect).to eq("User (FooBar)")
+        RSpec::Support::ObjectInspector.register TestDouble do |user|
+          "User (#{user.name})"
         end
+
+        expect(double.inspect).to eq("User (FooBar)")
       end
     end
   end
