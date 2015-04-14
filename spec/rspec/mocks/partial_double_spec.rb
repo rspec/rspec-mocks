@@ -13,14 +13,14 @@ module RSpec
         expect(object).to receive(:foo)
         expect do
           verify object
-        end.to raise_error(RSpec::Mocks::MockExpectationError, /\(#<Object:.*>\).foo/)
+        end.to fail_with(/\(#<Object:.*>\).foo/)
       end
 
       it "names the class in the failure message when expectation is on class" do
         expect(Object).to receive(:foo)
         expect {
           verify Object
-        }.to raise_error(RSpec::Mocks::MockExpectationError, /<Object \(class\)>/)
+        }.to fail_with(/<Object \(class\)>/)
       end
 
       it "does not conflict with @options in the object" do
@@ -78,7 +78,7 @@ module RSpec
         expect(object).to receive(:foobar).with(:test_param).and_return(1)
         expect {
           verify object
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "can accept the string form of a message for a positive message expectation" do
@@ -119,7 +119,7 @@ module RSpec
 
         expect {
           klazz.bar(2)
-        }.to raise_error(RSpec::Mocks::MockExpectationError, /MyClass/)
+        }.to fail_with(/MyClass/)
       end
 
       it "shares message expectations with clone" do
@@ -134,7 +134,7 @@ module RSpec
         expect(object).to receive(:foobar)
         duplicate = object.dup
         expect{ duplicate.foobar }.to raise_error(NoMethodError, /foobar/)
-        expect{ verify object }.to raise_error(RSpec::Mocks::MockExpectationError, /foobar/)
+        expect{ verify object }.to fail_with(/foobar/)
       end
     end
 

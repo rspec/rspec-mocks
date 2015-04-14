@@ -1,11 +1,11 @@
 module RSpec
   module Matchers
-    def fail
-      raise_error(RSpec::Mocks::MockExpectationError)
+    def fail(&block)
+      raise_error(RSpec::Mocks::MockExpectationError, &block)
     end
 
-    def fail_with(*args)
-      raise_error(RSpec::Mocks::MockExpectationError, *args)
+    def fail_with(*args, &block)
+      raise_error(RSpec::Mocks::MockExpectationError, *args, &block)
     end
 
     def fail_including(*snippets)

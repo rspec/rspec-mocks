@@ -33,7 +33,7 @@ RSpec.describe RSpec::Mocks do
       expect(foo).to receive(:bar)
       expect do
         RSpec::Mocks.verify
-      end.to raise_error(RSpec::Mocks::MockExpectationError)
+      end.to fail
 
       RSpec::Mocks.teardown # so the mocks aren't re-verified after this example
     end

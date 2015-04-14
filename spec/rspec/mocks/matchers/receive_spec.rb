@@ -152,7 +152,7 @@ module RSpec
 
           expect {
             verify_all
-          }.to raise_error(RSpec::Mocks::MockExpectationError)
+          }.to fail
         end
 
         it "reports the line number of expectation of unreceived message", :pending => options.include?(:does_not_report_line_num) do
@@ -449,7 +449,7 @@ module RSpec
             expect(dbl).to receive(:foo)
           end
 
-          expect { verify dbl }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify dbl }.to fail
         end
 
         it 'supports `expect(...).not_to receive`' do

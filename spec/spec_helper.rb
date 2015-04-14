@@ -55,8 +55,7 @@ end
 
 module VerificationHelpers
   def prevents(msg = //, &block)
-    expect(&block).to \
-      raise_error(RSpec::Mocks::MockExpectationError, msg)
+    expect(&block).to fail_with msg
   end
 end
 

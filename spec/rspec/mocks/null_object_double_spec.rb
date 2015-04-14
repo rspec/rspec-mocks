@@ -63,7 +63,7 @@ module RSpec
         expect {
           expect(@double).to receive(:something)
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       it "ignores unexpected methods" do

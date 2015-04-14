@@ -3,7 +3,7 @@ RSpec.describe "expection set on previously stubbed method" do
     dbl = double(:msg => nil)
     dbl.msg
     expect(dbl).to receive(:msg)
-    expect { verify dbl }.to raise_error(RSpec::Mocks::MockExpectationError)
+    expect { verify dbl }.to fail
   end
 
   it "outputs arguments of similar calls" do

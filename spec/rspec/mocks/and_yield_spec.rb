@@ -74,7 +74,7 @@ RSpec.describe RSpec::Mocks::Double do
             # foo is not called here
           end
 
-          expect { verify configured_eval_context }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify configured_eval_context }.to fail
         end
 
       end
@@ -150,8 +150,8 @@ RSpec.describe RSpec::Mocks::Double do
             # foo is not called here
           end
 
-          expect { verify configured_eval_context }.to raise_error(RSpec::Mocks::MockExpectationError)
-          expect { verify yielded_arg }.to raise_error(RSpec::Mocks::MockExpectationError)
+          expect { verify configured_eval_context }.to fail
+          expect { verify yielded_arg }.to fail
         end
 
       end

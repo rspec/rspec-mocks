@@ -55,7 +55,7 @@ module RSpec
           subject.respond_to?(:basic)
         }.to(true)
 
-        expect { verify subject }.to raise_error(RSpec::Mocks::MockExpectationError)
+        expect { verify subject }.to fail
       end
 
       it "fails if never is specified and the message is called" do

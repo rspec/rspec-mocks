@@ -41,7 +41,7 @@ module RSpec
         expect(@double).to receive(:two).ordered
         expect {
           @double.two
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :two out of order")
+        }.to fail_with "Double \"test double\" received :two out of order"
       end
 
       it "fails when messages are received out of order (3rd message 1st)" do
@@ -51,7 +51,7 @@ module RSpec
         @double.one
         expect {
           @double.three
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
+        }.to fail_with "Double \"test double\" received :three out of order"
       end
 
       it "fails when messages are received out of order (3rd message 2nd)" do
@@ -61,7 +61,7 @@ module RSpec
         @double.one
         expect {
           @double.three
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
+        }.to fail_with "Double \"test double\" received :three out of order"
       end
 
       it "fails when messages are out of order across objects" do
@@ -73,7 +73,7 @@ module RSpec
         a.one
         expect {
           a.three
-        }.to raise_error(RSpec::Mocks::MockExpectationError, "Double \"test double\" received :three out of order")
+        }.to fail_with "Double \"test double\" received :three out of order"
         reset a
         reset b
       end

@@ -64,7 +64,7 @@ RSpec.describe "Using the legacy should syntax" do
       expect(dbl.foo.bar.baz).to eq(17)
       expect {
         dbl.foo.baz.bar
-      }.to raise_error(RSpec::Mocks::MockExpectationError)
+      }.to fail
     end
 
     include_examples "fails in a before(:all) block" do
@@ -125,7 +125,7 @@ RSpec.describe "Using the legacy should syntax" do
       obj = Object.new
       expect {
         obj.unstub(:foo)
-      }.to raise_error(RSpec::Mocks::MockExpectationError)
+      }.to fail
     end
   end
 
@@ -133,7 +133,7 @@ RSpec.describe "Using the legacy should syntax" do
     it 'fails on verification if the message is not received' do
       dbl = double
       dbl.should_receive(:foo)
-      expect { verify_all }.to raise_error(RSpec::Mocks::MockExpectationError)
+      expect { verify_all }.to fail
     end
 
     it 'does not fail on verification if the message is received' do
@@ -194,7 +194,7 @@ RSpec.describe "Using the legacy should syntax" do
     it 'fails when the message is received' do
       with_unfulfilled_double do |dbl|
         dbl.should_not_receive(:foo)
-        expect { dbl.foo }.to raise_error(RSpec::Mocks::MockExpectationError)
+        expect { dbl.foo }.to fail
       end
     end
 
@@ -242,7 +242,7 @@ RSpec.describe "Using the legacy should syntax" do
     it 'can mock a method' do
       klass.any_instance.should_receive(:foo)
       klass.new
-      expect { verify_all }.to raise_error(RSpec::Mocks::MockExpectationError)
+      expect { verify_all }.to fail
     end
 
     it 'can get method objects for the fluent interface', :if => RUBY_VERSION.to_f > 1.8 do
@@ -443,7 +443,7 @@ RSpec.describe "Using the legacy should syntax" do
         it "raises a MockExpectationError if the method has not been stubbed" do
           expect {
             klass.any_instance.unstub(:existing_method)
-          }.to raise_error(RSpec::Mocks::MockExpectationError, 'The method `existing_method` was not stubbed or was already unstubbed')
+          }.to fail_with 'The method `existing_method` was not stubbed or was already unstubbed'
         end
 
         it 'does not get confused about string vs symbol usage for the message' do

@@ -27,7 +27,7 @@ module RSpec
         expect(@double).to receive(:do_something).once.with("a", "b", "c")
         expect {
           @double.do_something("d", "e", "f")
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
         reset @double
       end
 
@@ -43,7 +43,7 @@ module RSpec
         expect(@double).to receive(:do_something).once
         expect {
           verify @double
-        }.to raise_error(RSpec::Mocks::MockExpectationError)
+        }.to fail
       end
 
       context "when called with the wrong number of times with the specified args and also called with different args" do
