@@ -88,7 +88,7 @@ module RSpec
           @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
         end
 
-        @messages_received.each do |(actual_method_name, args, _)|
+        @messages_received[with_range(expectation)].each do |(actual_method_name, args, _)|
           next unless expectation.matches?(actual_method_name, *args)
 
           expectation.safe_invoke(nil)
@@ -265,6 +265,10 @@ module RSpec
 
       def find_almost_matching_stub(method_name, *args)
         method_double_for(method_name).stubs.find { |stub| stub.matches_name_but_not_args(method_name, *args) }
+      end
+
+      def with_range(expectation)
+        expectation.expectation_count_type || !expectation.ordered? ? (0..-1) : @order_group.message_range
       end
     end
 
