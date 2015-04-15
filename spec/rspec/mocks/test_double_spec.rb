@@ -49,15 +49,13 @@ module RSpec
         end
       end
 
-      pending "test doubles able to register themselves with ObjectInspector" do
-        allow_any_instance_of(TestDouble).to receive(:name).and_return("FooBar")
-        double('User')
-
-        RSpec::Support::ObjectInspector.register TestDouble do |user|
-          "User (#{user.name})"
+      pending "register itself with ObjectInspector" do
+        RSpec::Support::ObjectInspector.register TestDouble do |dbl|
+          "Double (#{dbl.instance_variable_get('@name')})"
         end
 
-        expect(double.inspect).to eq("User (FooBar)")
+        foobar = double('FooBar')
+        expect(RSpec::Support::ObjectInspector.inspect(foobar)).to eq("Double (FooBar)")
       end
     end
   end
