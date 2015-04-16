@@ -49,11 +49,7 @@ module RSpec
         end
       end
 
-      pending "register itself with ObjectInspector" do
-        RSpec::Support::ObjectInspector.register TestDouble do |dbl|
-          "Double (#{dbl.instance_variable_get('@name')})"
-        end
-
+      it "register itself with ObjectInspector" do
         foobar = double('FooBar')
         expect(RSpec::Support::ObjectInspector.inspect(foobar)).to eq("Double (FooBar)")
       end
