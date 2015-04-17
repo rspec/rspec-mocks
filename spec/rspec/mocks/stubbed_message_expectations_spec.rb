@@ -16,7 +16,7 @@ RSpec.describe "expection set on previously stubbed method" do
     }.to raise_error(
       RSpec::Mocks::MockExpectationError,
       a_string_including(
-        %Q|Double "double" received :foo with unexpected arguments|,
+        %Q|#<Double "double"> received :foo with unexpected arguments|,
         "expected: (\"first\")",
         "got:","(\"second\")",
                "(\"third\")"))
