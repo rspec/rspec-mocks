@@ -248,16 +248,11 @@ module RSpec
       end
 
       def intro
-        if @name
-          "Double #{@name.inspect}"
-        elsif TestDouble === @target
-          "Double"
-        elsif Class === @target
-          "<#{@target.inspect} (class)>"
-        elsif @target
-          @target
-        else
-          "nil"
+        case @target
+        when TestDouble then TestDoubleFormatter.format(@target, :unwrapped)
+        when Class      then "<#{@target.inspect} (class)>"
+        when NilClass   then "nil"
+        else @target
         end
       end
 

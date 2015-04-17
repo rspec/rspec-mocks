@@ -48,11 +48,6 @@ module RSpec
           end
         end
       end
-
-      it "register itself with ObjectInspector" do
-        foobar = double('FooBar')
-        expect(RSpec::Support::ObjectInspector.inspect(foobar)).to eq("Double (FooBar)")
-      end
     end
   end
 end

@@ -738,7 +738,7 @@ module RSpec
       describe "double created with no name" do
         it "does not use a name in a failure message" do
           double = double()
-          expect {double.foo}.to raise_error(/Double received/)
+          expect {double.foo}.to raise_error.with_message(a_string_including("Double (anonymous) received"))
         end
 
         it "does respond to initially stubbed methods" do

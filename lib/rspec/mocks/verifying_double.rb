@@ -62,8 +62,6 @@ module RSpec
         possible_name = args.first
         name = if String === possible_name || Symbol === possible_name
                  args.shift
-               else
-                 @description
                end
 
         super(name, *args)
@@ -79,11 +77,6 @@ module RSpec
     class InstanceVerifyingDouble
       include TestDouble
       include VerifyingDouble
-
-      def initialize(doubled_module, *args)
-        @description = "#{doubled_module.description} (instance)"
-        super
-      end
 
       def __build_mock_proxy(order_group)
         VerifyingProxy.new(self, order_group, @name,
@@ -107,11 +100,6 @@ module RSpec
       end
 
     private
-
-      def initialize(doubled_module, *args)
-        @description = doubled_module.description
-        super
-      end
 
       def __build_mock_proxy(order_group)
         VerifyingProxy.new(self, order_group, @name,

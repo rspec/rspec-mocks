@@ -129,11 +129,46 @@ module RSpec
     # A generic test double object. `double`, `instance_double` and friends
     # return an instance of this.
     class Double
-      RSpec::Support::ObjectInspector.register TestDouble do |dbl|
-        "Double (#{dbl.instance_variable_get('@name')})"
+      include TestDouble
+    end
+
+    # @private
+    module TestDoubleFormatter
+      def self.format(dbl, unwrap=false)
+        format = "#{type_desc(dbl)}#{verified_module_desc(dbl)} #{name_desc(dbl)}"
+        return format if unwrap
+        "#<#{format}>"
       end
 
-      include TestDouble
+      class << self
+      private
+
+        def type_desc(dbl)
+          case dbl
+          when InstanceVerifyingDouble then "InstanceDouble"
+          when ClassVerifyingDouble    then "ClassDouble"
+          when ObjectVerifyingDouble   then "ObjectDouble"
+          else "Double"
+          end
+        end
+
+        # @private
+        IVAR_GET = Object.instance_method(:instance_variable_get)
+
+        def verified_module_desc(dbl)
+          return nil unless VerifyingDouble === dbl
+          "(#{IVAR_GET.bind(dbl).call(:@doubled_module).description})"
+        end
+
+        def name_desc(dbl)
+          return "(anonymous)" unless (name = IVAR_GET.bind(dbl).call(:@name))
+          name.inspect
+        end
+      end
+    end
+
+    RSpec::Support::ObjectInspector.register TestDouble do |dbl|
+      TestDoubleFormatter.format(dbl)
     end
   end
 end
