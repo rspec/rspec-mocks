@@ -19,7 +19,7 @@ module RSpec
 
       it "hides internals in its inspect representation" do
         m = double('cup')
-        expect(m.inspect).to match(/#<RSpec::Mocks::Double:0x[a-f0-9.]+ @name="cup">/)
+        expect(m.inspect).to eq('#<Double "cup">')
       end
 
       it 'does not blow up when resetting standard object methods' do

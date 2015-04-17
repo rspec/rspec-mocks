@@ -2,6 +2,8 @@ require 'rspec/matchers/fail_matchers'
 require 'support/doubled_classes'
 
 RSpec.describe "Test doubles format well in failure messages" do
+  include RSpec::Matchers::FailMatchers
+
   RSpec::Matchers.define :format_in_failures_as do |expected|
     match do |dbl|
       values_match?(expected, actual_formatting(dbl))
@@ -86,5 +88,22 @@ RSpec.describe "Test doubles format well in failure messages" do
         expect(object_double(:foo)).to format_in_failures_as('#<ObjectDouble(:foo) (anonymous)>')
       end
     end
+  end
+
+  it 'formats the doubles when they appear in data structures and diffs' do
+    allow(RSpec::Expectations.configuration).to receive(:color?).and_return(false)
+
+    foo = double("Foo")
+    bar = double("Bar")
+
+    expect {
+      expect([foo]).to include(bar)
+    }.to fail_with(<<-EOS.gsub(/^\s+\|/, ''))
+      |expected [#<Double "Foo">] to include #<Double "Bar">
+      |Diff:
+      |@@ -1,2 +1,2 @@
+      |-[#<Double "Bar">]
+      |+[#<Double "Foo">]
+    EOS
   end
 end

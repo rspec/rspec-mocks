@@ -39,7 +39,7 @@ module RSpec
 
       # @private
       def inspect
-        "#<#{self.class}:#{'0x%x' % object_id} @name=#{@name.inspect}>"
+        TestDoubleFormatter.format(self)
       end
 
       # @private
@@ -165,10 +165,6 @@ module RSpec
           name.inspect
         end
       end
-    end
-
-    RSpec::Support::ObjectInspector.register TestDouble do |dbl|
-      TestDoubleFormatter.format(dbl)
     end
   end
 end
