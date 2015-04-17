@@ -13,6 +13,8 @@ Enhancements:
   level methods. (Tim Wade, #896, #908)
 * Improve mock expectation failure messages so that it combines both
   number of times and the received arguments in the output. (John Ceh, #918)
+* Improve how test doubles are represented in failure messages.
+  (@sivagollapalli, Myron Marston, #932)
 
 Bug Fixes:
 
