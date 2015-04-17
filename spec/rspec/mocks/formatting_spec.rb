@@ -76,16 +76,16 @@ RSpec.describe "Test doubles format well in failure messages" do
     end
   end
 
-  describe "`object_double(:foo)`" do
+  describe "`object_double([])`" do
     context "with a name" do
-      specify '#<ObjectDouble(:foo) "Name">' do
-        expect(object_double(:foo, "Name")).to format_in_failures_as('#<ObjectDouble(:foo) "Name">')
+      specify '#<ObjectDouble([]) "Name">' do
+        expect(object_double([], "Name")).to format_in_failures_as('#<ObjectDouble([]) "Name">')
       end
     end
 
     context "without a name" do
-      specify '#<ObjectDouble(:foo) (anonymous)>' do
-        expect(object_double(:foo)).to format_in_failures_as('#<ObjectDouble(:foo) (anonymous)>')
+      specify '#<ObjectDouble([]) (anonymous)>' do
+        expect(object_double([])).to format_in_failures_as('#<ObjectDouble([]) (anonymous)>')
       end
     end
   end
