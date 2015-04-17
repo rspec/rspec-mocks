@@ -37,7 +37,7 @@ Feature: Yielding
      When I run `rspec no_caller_block_spec.rb`
      Then it should fail with:
       """
-      Double asked to yield |[2, 3]| but no block was passed
+      #<Double (anonymous)> asked to yield |[2, 3]| but no block was passed
       """
 
   Scenario: It fails when the caller's block does not accept the provided arguments
@@ -54,7 +54,7 @@ Feature: Yielding
      When I run `rspec arg_mismatch_spec.rb`
      Then it should fail with:
       """
-      Double yielded |2, 3| to block with arity of 1
+      #<Double (anonymous)> yielded |2, 3| to block with arity of 1
       """
 
   Scenario: Yield multiple times

@@ -56,8 +56,8 @@ Feature: Message Order
     Then the examples should all fail, producing the following output:
       |  1) Constraining order fails when messages are received out of order on one collaborator   |
       |     Failure/Error: collaborator_1.step_2                                                   |
-      |       Double "Collaborator 1" received :step_2 out of order                                |
+      |       #<Double "Collaborator 1"> received :step_2 out of order                             |
       |                                                                                            |
       |  2) Constraining order fails when messages are received out of order between collaborators |
       |     Failure/Error: collaborator_2.step_2                                                   |
-      |       Double "Collaborator 2" received :step_2 out of order                                |
+      |       #<Double "Collaborator 2"> received :step_2 out of order                             |
