@@ -34,9 +34,8 @@ module RSpec
     class ErrorGenerator
       attr_writer :opts
 
-      def initialize(target, name)
+      def initialize(target)
         @target = target
-        @name = name
       end
 
       # @private

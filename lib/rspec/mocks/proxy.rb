@@ -14,11 +14,10 @@ module RSpec
       end
 
       # @private
-      def initialize(object, order_group, name=nil, options={})
+      def initialize(object, order_group, options={})
         @object = object
         @order_group = order_group
-        @name = name
-        @error_generator = ErrorGenerator.new(object, name)
+        @error_generator = ErrorGenerator.new(object)
         @messages_received = []
         @options = options
         @null_object = false

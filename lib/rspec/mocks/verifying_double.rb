@@ -79,7 +79,7 @@ module RSpec
       include VerifyingDouble
 
       def __build_mock_proxy(order_group)
-        VerifyingProxy.new(self, order_group, @name,
+        VerifyingProxy.new(self, order_group,
                            @doubled_module,
                            InstanceMethodReference
         )
@@ -102,7 +102,7 @@ module RSpec
     private
 
       def __build_mock_proxy(order_group)
-        VerifyingProxy.new(self, order_group, @name,
+        VerifyingProxy.new(self, order_group,
                            @doubled_module,
                            ObjectMethodReference
         )

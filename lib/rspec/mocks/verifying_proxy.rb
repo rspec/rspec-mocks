@@ -56,8 +56,8 @@ module RSpec
     class VerifyingProxy < TestDoubleProxy
       include VerifyingProxyMethods
 
-      def initialize(object, order_group, name, doubled_module, method_reference_class)
-        super(object, order_group, name)
+      def initialize(object, order_group, doubled_module, method_reference_class)
+        super(object, order_group)
         @object                 = object
         @doubled_module         = doubled_module
         @method_reference_class = method_reference_class

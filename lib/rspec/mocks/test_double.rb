@@ -91,7 +91,7 @@ module RSpec
         # https://github.com/jruby/jruby/issues/1398
         visibility = proxy.visibility_for(message)
         if visibility == :private || visibility == :protected
-          ErrorGenerator.new(self, @name).raise_non_public_error(
+          ErrorGenerator.new(self).raise_non_public_error(
             message, visibility
           )
         end
@@ -112,12 +112,12 @@ module RSpec
       end
 
       def __build_mock_proxy(order_group)
-        TestDoubleProxy.new(self, order_group, @name)
+        TestDoubleProxy.new(self, order_group)
       end
 
       def __raise_expired_error
         return false unless @__expired
-        ErrorGenerator.new(self, @name).raise_expired_test_double_error
+        ErrorGenerator.new(self).raise_expired_test_double_error
       end
 
       def initialize_copy(other)
