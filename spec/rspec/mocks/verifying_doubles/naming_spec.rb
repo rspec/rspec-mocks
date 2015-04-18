@@ -26,55 +26,55 @@ module RSpec
     end
 
     RSpec.describe 'Verified double naming' do
-      shared_examples "a named verifying double" do |default_name|
+      shared_examples "a named verifying double" do |type_desc|
         context "when a name is given as a string" do
           subject { create_double("LoadedClass", "foo") }
-          it { is_expected.to fail_expectations_as('Double "foo"') }
+          it { is_expected.to fail_expectations_as(%Q{#{type_desc}(LoadedClass) "foo"}) }
         end
 
         context "when a name is given as a symbol" do
           subject { create_double("LoadedClass", :foo) }
-          it { is_expected.to fail_expectations_as('Double :foo') }
+          it { is_expected.to fail_expectations_as(%Q{#{type_desc}(LoadedClass) :foo}) }
         end
 
         context "when no name is given" do
           subject { create_double("LoadedClass") }
-          it { is_expected.to fail_expectations_as("Double \"#{default_name}\"") }
+          it { is_expected.to fail_expectations_as(%Q{#{type_desc}(LoadedClass) (anonymous)}) }
         end
       end
 
       describe "instance_double" do
-        it_behaves_like "a named verifying double", "LoadedClass (instance)" do
+        it_behaves_like "a named verifying double", "InstanceDouble" do
           alias :create_double :instance_double
         end
       end
 
       describe "instance_spy" do
-        it_behaves_like "a named verifying double", "LoadedClass (instance)" do
+        it_behaves_like "a named verifying double", "InstanceDouble" do
           alias :create_double :instance_spy
         end
       end
 
       describe "class_double" do
-        it_behaves_like "a named verifying double", "LoadedClass" do
+        it_behaves_like "a named verifying double", "ClassDouble" do
           alias :create_double :class_double
         end
       end
 
       describe "class_spy" do
-        it_behaves_like "a named verifying double", "LoadedClass" do
+        it_behaves_like "a named verifying double", "ClassDouble" do
           alias :create_double :class_spy
         end
       end
 
       describe "object_double" do
-        it_behaves_like "a named verifying double", "LoadedClass" do
+        it_behaves_like "a named verifying double", "ObjectDouble" do
           alias :create_double :object_double
         end
       end
 
       describe "object_spy" do
-        it_behaves_like "a named verifying double", "LoadedClass" do
+        it_behaves_like "a named verifying double", "ObjectDouble" do
           alias :create_double :object_spy
         end
       end

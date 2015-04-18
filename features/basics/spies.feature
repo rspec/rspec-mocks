@@ -79,7 +79,7 @@ Feature: Spies
       """
         2) failure when the message has not been received for a partial double
            Failure/Error: expect(Invitation).to have_received(:deliver)
-             (<Invitation (class)>).deliver(*(any args))
+             (Invitation (class)).deliver(*(any args))
                  expected: 1 time with any arguments
                  received: 0 times with any arguments
       """
@@ -116,14 +116,14 @@ Feature: Spies
       """
     When I run `rspec setting_constraints_spec.rb --order defined`
     Then it should fail with the following output:
-      | 4 examples, 2 failures                                                                           |
-      |                                                                                                  |
-      |  1) An invitiation fails when a count constraint is not satisfied                                |
-      |     Failure/Error: expect(invitation).to have_received(:deliver).at_least(3).times               |
-      |       (Double "invitation").deliver(*(any args))                                                 |
-      |           expected: at least 3 times with any arguments                                          |
-      |           received: 2 times with any arguments                                                   |
-      |                                                                                                  |
-      |  2) An invitiation fails when an order constraint is not satisifed                               |
-      |     Failure/Error: expect(invitation).to have_received(:deliver).with("foo@example.com").ordered |
-      |       Double "invitation" received :deliver out of order                                         |
+      | 4 examples, 2 failures                                                                              |
+      |                                                                                                     |
+      |  1) An invitiation fails when a count constraint is not satisfied                                   |
+      |     Failure/Error: expect(invitation).to have_received(:deliver).at_least(3).times                  |
+      |       (Double "invitation").deliver(*(any args))                                                    |
+      |           expected: at least 3 times with any arguments                                             |
+      |           received: 2 times with any arguments                                                      |
+      |                                                                                                     |
+      |  2) An invitiation fails when an order constraint is not satisifed                                  |
+      |     Failure/Error: expect(invitation).to have_received(:deliver).with("foo@example.com").ordered    |
+      |       #<Double "invitation"> received :deliver out of order                                         |

@@ -34,9 +34,8 @@ module RSpec
     class ErrorGenerator
       attr_writer :opts
 
-      def initialize(target, name)
+      def initialize(target)
         @target = target
-        @name = name
       end
 
       # @private
@@ -81,7 +80,7 @@ module RSpec
       def raise_expectation_error(message, expected_received_count, argument_list_matcher, actual_received_count, expectation_count_type, args)
         expected_part = expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
         received_part = received_part_of_expectation_error(actual_received_count, args)
-        __raise "(#{intro}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}"
+        __raise "(#{intro(:unwrapped)}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}"
       end
       # rubocop:enable Style/ParameterLists
 
@@ -247,17 +246,15 @@ module RSpec
         RSpec::Support::Differ.new(:color => RSpec::Mocks.configuration.color?)
       end
 
-      def intro
-        if @name
-          "Double #{@name.inspect}"
-        elsif TestDouble === @target
-          "Double"
-        elsif Class === @target
-          "<#{@target.inspect} (class)>"
-        elsif @target
-          @target
-        else
-          "nil"
+      def intro(unwrapped=false)
+        case @target
+        when TestDouble then TestDoubleFormatter.format(@target, unwrapped)
+        when Class then
+          formatted = "#{@target.inspect} (class)"
+          return formatted if unwrapped
+          "#<#{formatted}>"
+        when NilClass then "nil"
+        else @target
         end
       end
 

@@ -9,11 +9,11 @@ module RSpec
         RSpec::Mocks.configuration.verify_doubled_constant_names = false
       end
 
-      it 'includes the double name in errors for unexpected messages' do
+      it 'includes the doubled module in errors for unexpected messages' do
         o = instance_double("NonLoadedClass")
         expect {
           o.foo
-        }.to fail_including('Double "NonLoadedClass (instance)"')
+        }.to fail_including('InstanceDouble(NonLoadedClass)')
       end
 
       it 'allows any instance method to be stubbed' do

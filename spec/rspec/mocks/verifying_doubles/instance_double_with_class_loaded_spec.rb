@@ -51,7 +51,7 @@ module RSpec
         expect {
           o.defined_private_method
         }.to raise_error(NoMethodError,
-                           /Double "LoadedClass \(instance\)"/)
+                         a_string_including("InstanceDouble(LoadedClass)"))
       end
 
       it 'does not allow dynamic methods to be expected' do
@@ -195,7 +195,7 @@ module RSpec
         it "includes the double's name in a private method error" do
           expect {
             obj.rand
-          }.to raise_error(NoMethodError, %r{private.*Double "LoadedClass \(instance\)"})
+          }.to raise_error(NoMethodError, a_string_including("private", "InstanceDouble(LoadedClass)"))
         end
 
         it 'reports what public messages it responds to accurately' do

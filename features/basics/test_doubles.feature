@@ -23,7 +23,7 @@ Feature: Test Doubles
      When I run `rspec double_spec.rb`
      Then it should fail with:
       """
-      Double "Some Collaborator" received unexpected message :foo with (no args)
+      #<Double "Some Collaborator"> received unexpected message :foo with (no args)
       """
 
   Scenario: A hash can be used to define allowed messages and return values

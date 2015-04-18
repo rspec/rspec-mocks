@@ -39,12 +39,12 @@ Feature: Matching arguments
       """
     When I run `rspec basic_example_spec.rb`
     Then it should fail with the following output:
-      | 2 examples, 1 failure                            |
-      |                                                  |
-      | Failure/Error: dbl.foo(1, nil, "other")          |
-      |   Double received :foo with unexpected arguments |
-      |     expected: (1, anything, /bar/)               |
-      |          got: (1, nil, "other")                  |
+      | 2 examples, 1 failure                                           |
+      |                                                                 |
+      | Failure/Error: dbl.foo(1, nil, "other")                         |
+      |   #<Double (anonymous)> received :foo with unexpected arguments |
+      |     expected: (1, anything, /bar/)                              |
+      |          got: (1, nil, "other")                                 |
 
   Scenario: Using a RSpec matcher
     Given a file named "rspec_matcher_spec.rb" with:
@@ -64,12 +64,12 @@ Feature: Matching arguments
       """
     When I run `rspec rspec_matcher_spec.rb`
     Then it should fail with the following output:
-      | 2 examples, 1 failure                               |
-      |                                                     |
-      | Failure/Error: dbl.foo([1, 3])                      |
-      | Double received :foo with unexpected arguments      |
-      | expected: (a collection containing exactly 1 and 2) |
-      | got: ([1, 3])                                       |
+      | 2 examples, 1 failure                                         |
+      |                                                               |
+      | Failure/Error: dbl.foo([1, 3])                                |
+      | #<Double (anonymous)> received :foo with unexpected arguments |
+      | expected: (a collection containing exactly 1 and 2)           |
+      | got: ([1, 3])                                                 |
 
   Scenario: Using a custom matcher
     Given a file named "custom_matcher_spec.rb" with:
@@ -93,12 +93,12 @@ Feature: Matching arguments
       """
     When I run `rspec custom_matcher_spec.rb`
     Then it should fail with the following output:
-      | 2 examples, 1 failure                            |
-      |                                                  |
-      | Failure/Error: dbl.foo(13)                       |
-      |   Double received :foo with unexpected arguments |
-      |     expected: (a multiple of 3)                  |
-      |          got: (13)                               |
+      | 2 examples, 1 failure                                           |
+      |                                                                 |
+      | Failure/Error: dbl.foo(13)                                      |
+      |   #<Double (anonymous)> received :foo with unexpected arguments |
+      |     expected: (a multiple of 3)                                 |
+      |          got: (13)                                              |
 
   Scenario: Responding differently based on the arguments
     Given a file named "responding_differently_spec.rb" with:

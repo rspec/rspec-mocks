@@ -20,7 +20,7 @@ module RSpec
         expect(Object).to receive(:foo)
         expect {
           verify Object
-        }.to fail_with(/<Object \(class\)>/)
+        }.to fail_with(/Object \(class\)/)
       end
 
       it "does not conflict with @options in the object" do

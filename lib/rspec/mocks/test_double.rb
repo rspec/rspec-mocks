@@ -39,7 +39,7 @@ module RSpec
 
       # @private
       def inspect
-        "#<#{self.class}:#{'0x%x' % object_id} @name=#{@name.inspect}>"
+        TestDoubleFormatter.format(self)
       end
 
       # @private
@@ -91,7 +91,7 @@ module RSpec
         # https://github.com/jruby/jruby/issues/1398
         visibility = proxy.visibility_for(message)
         if visibility == :private || visibility == :protected
-          ErrorGenerator.new(self, @name).raise_non_public_error(
+          ErrorGenerator.new(self).raise_non_public_error(
             message, visibility
           )
         end
@@ -112,12 +112,12 @@ module RSpec
       end
 
       def __build_mock_proxy(order_group)
-        TestDoubleProxy.new(self, order_group, @name)
+        TestDoubleProxy.new(self, order_group)
       end
 
       def __raise_expired_error
         return false unless @__expired
-        ErrorGenerator.new(self, @name).raise_expired_test_double_error
+        ErrorGenerator.new(self).raise_expired_test_double_error
       end
 
       def initialize_copy(other)
@@ -130,6 +130,41 @@ module RSpec
     # return an instance of this.
     class Double
       include TestDouble
+    end
+
+    # @private
+    module TestDoubleFormatter
+      def self.format(dbl, unwrap=false)
+        format = "#{type_desc(dbl)}#{verified_module_desc(dbl)} #{name_desc(dbl)}"
+        return format if unwrap
+        "#<#{format}>"
+      end
+
+      class << self
+      private
+
+        def type_desc(dbl)
+          case dbl
+          when InstanceVerifyingDouble then "InstanceDouble"
+          when ClassVerifyingDouble    then "ClassDouble"
+          when ObjectVerifyingDouble   then "ObjectDouble"
+          else "Double"
+          end
+        end
+
+        # @private
+        IVAR_GET = Object.instance_method(:instance_variable_get)
+
+        def verified_module_desc(dbl)
+          return nil unless VerifyingDouble === dbl
+          "(#{IVAR_GET.bind(dbl).call(:@doubled_module).description})"
+        end
+
+        def name_desc(dbl)
+          return "(anonymous)" unless (name = IVAR_GET.bind(dbl).call(:@name))
+          name.inspect
+        end
+      end
     end
   end
 end

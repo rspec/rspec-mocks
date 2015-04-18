@@ -44,7 +44,7 @@ module RSpec
         o = class_double("LoadedClass")
         expect {
           o.defined_private_class_method
-        }.to raise_error(NoMethodError, /Double "LoadedClass"/)
+        }.to raise_error(NoMethodError, a_string_including("ClassDouble(LoadedClass)"))
       end
 
       it 'checks that stubbed methods are invoked with the correct arity' do

@@ -92,8 +92,8 @@ Feature: Scope
       """
     When I run `rspec leak_test_double_spec.rb`
     Then it should fail with the following output:
-      | 2 examples, 1 failure                                                                                                      |
-      |                                                                                                                            |
-      |  1) Account keeps track of the balance                                                                                     |
-      |     Failure/Error: self.class.logger.log("Credited $#{amount}")                                                            |
-      |       Double "Logger" was originally created in one example but has leaked into another example and can no longer be used. |
+      | 2 examples, 1 failure                                                                                                         |
+      |                                                                                                                               |
+      |  1) Account keeps track of the balance                                                                                        |
+      |     Failure/Error: self.class.logger.log("Credited $#{amount}")                                                               |
+      |       #<Double "Logger"> was originally created in one example but has leaked into another example and can no longer be used. |
