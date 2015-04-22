@@ -175,7 +175,7 @@ module RSpec
       end
 
       shared_examples "an expect syntax negative expectation" do
-        it 'sets up a negaive message expectation that passes if the message is not received' do
+        it 'sets up a negative message expectation that passes if the message is not received' do
           wrapped.not_to receive(:foo)
           verify_all
         end
