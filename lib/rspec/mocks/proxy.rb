@@ -45,8 +45,10 @@ module RSpec
         nil
       end
 
+      DEFAULT_MESSAGE_EXPECTATION_OPTS = {}.freeze
+
       # @private
-      def add_message_expectation(method_name, opts={}, &block)
+      def add_message_expectation(method_name, opts=DEFAULT_MESSAGE_EXPECTATION_OPTS, &block)
         location = opts.fetch(:expected_from) { CallerFilter.first_non_rspec_line }
         meth_double = method_double_for(method_name)
 
