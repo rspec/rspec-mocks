@@ -176,6 +176,11 @@ module RSpec
       def and_yield(*args, &block)
         raise_already_invoked_error_if_necessary(__method__)
         yield @eval_context = Object.new if block
+
+        # Initialize args to yield now that it's being used, see also: comment
+        # in constructor.
+        @args_to_yield ||= []
+
         @args_to_yield << args
         self.initial_implementation_action = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
         self
@@ -370,7 +375,10 @@ module RSpec
           @expectation_type = type
           @ordered = false
           @at_least = @at_most = @exactly = nil
-          @args_to_yield = []
+
+          # Initialized to nil so that we don't allocate an array for every
+          # mock or stub. See also comment in `and_yield`.
+          @args_to_yield = nil
           @failed_fast = nil
           @eval_context = nil
           @yield_receiver_to_implementation_block = false

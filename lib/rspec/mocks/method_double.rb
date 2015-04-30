@@ -45,7 +45,7 @@ module RSpec
 
       # @private
       def configure_method
-        @original_visibility = [visibility, method_name]
+        @original_visibility = visibility
         @method_stasher.stash unless @method_is_proxied
         define_proxy_method
       end
@@ -101,7 +101,7 @@ module RSpec
         return unless @original_visibility &&
           MethodReference.method_defined_at_any_visibility?(object_singleton_class, @method_name)
 
-        object_singleton_class.__send__(*@original_visibility)
+        object_singleton_class.__send__(@original_visibility, method_name)
       end
 
       # @private
