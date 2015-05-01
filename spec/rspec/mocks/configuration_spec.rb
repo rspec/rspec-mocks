@@ -178,9 +178,9 @@ module RSpec
           block = proc { |ref| ref }
           block2 = proc { |ref| ref }
           RSpec.configuration.mock_with :rspec do |config|
-            config.when_declaring_verifying_double(&block)
+            config.before_verifying_doubles(&block)
             config.when_declaring_verifying_double(&block2)
-            expect(config.verifying_double_declaration_callbacks).to eq [block, block2]
+            expect(config.verifying_double_callbacks).to eq [block, block2]
           end
         end
       end

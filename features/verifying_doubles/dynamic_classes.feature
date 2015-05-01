@@ -94,14 +94,14 @@ Feature: Dynamic classes
     And a file named "spec/fake_record_helper.rb" with:
       """ruby
       RSpec.configuration.mock_with(:rspec) do |config|
-        config.when_declaring_verifying_double do |reference|
+        config.before_verifying_doubles do |reference|
           reference.target.define_attribute_methods
         end
       end
       #
       # or you can use:
       #
-      # RSpec::Mocks.configuration.when_declaring_verifying_double do |reference|
+      # RSpec::Mocks.configuration.before_verifying_doubles do |reference|
       #   reference.target.define_attribute_methods
       # end
       """
