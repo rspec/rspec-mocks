@@ -66,7 +66,7 @@ restored to its original value after the test completes.
 ```ruby
 FOO = 42
 hide_const("FOO")
-FOO => NameError: uninitialized constant FOO
+FOO # => NameError: uninitialized constant FOO
 ```
 
 Like stubbed constants, names must be fully qualified.
