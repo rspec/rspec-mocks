@@ -349,6 +349,28 @@ module RSpec
         expect(object.send(:defined_private_method)).to eq("works")
       end
 
+      it 'runs the before_verifying_double callbacks before verifying an expectation' do
+        expect { |probe|
+          RSpec.configuration.mock_with(:rspec) do |config|
+            config.before_verifying_doubles(&probe)
+          end
+
+          expect(object).to receive(:implemented)
+        }.to yield_with_args(have_attributes :target => object)
+        object.implemented
+      end
+
+      it 'runs the before_verifying_double callbacks before verifying an allowance' do
+        expect { |probe|
+          RSpec.configuration.mock_with(:rspec) do |config|
+            config.before_verifying_doubles(&probe)
+          end
+
+          allow(object).to receive(:implemented)
+        }.to yield_with_args(have_attributes :target => object)
+        object.implemented
+      end
+
       it 'does not allow a non-existing method to be expected' do
         prevents { expect(object).to receive(:unimplemented) }
       end
@@ -374,10 +396,35 @@ module RSpec
         object.implemented
       end
 
-      it 'allows private methods to be expected on any_instance' do
+      it 'allows private methods to be expected on any_instance expectation' do
         expect_any_instance_of(klass).to receive(:defined_private_method).and_call_original
         object.send(:defined_private_method)
       end
+
+      it 'runs the before_verifying_double callbacks on any_instance before verifying a double allowance' do
+        expect_any_instance_of(klass).to receive(:implemented)
+
+        expect { |probe|
+          RSpec.configuration.mock_with(:rspec) do |config|
+            config.before_verifying_doubles(&probe)
+          end
+
+          object.implemented
+        }.to yield_with_args(have_attributes :target => klass)
+      end
+
+      it 'runs the before_verifying_double callbacks on any_instance before verifying a double' do
+        allow_any_instance_of(klass).to receive(:implemented)
+
+        expect { |probe|
+          RSpec.configuration.mock_with(:rspec) do |config|
+            config.before_verifying_doubles(&probe)
+          end
+
+          object.implemented
+        }.to yield_with_args(have_attributes :target => klass)
+      end
+
 
       it 'does not allow a non-existing method to be called on any_instance' do
         prevents(/does not implement/) {

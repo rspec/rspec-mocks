@@ -98,6 +98,10 @@ module RSpec
         @method_doubles = Hash.new do |h, k|
           h[k] = VerifyingExistingMethodDouble.for(object, k, self)
         end
+
+        RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|
+          block.call @doubled_module
+        end
       end
 
       def method_reference
