@@ -402,7 +402,7 @@ module RSpec
                 "Disable check with `verify_doubled_constant_names` configuration option."
         end
 
-        RSpec::Mocks.configuration.verifying_double_declaration_callbacks.each do |block|
+        RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|
           block.call(ref)
         end
 

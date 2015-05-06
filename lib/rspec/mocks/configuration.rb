@@ -103,17 +103,18 @@ module RSpec
       # Provides a way to perform customisations when verifying doubles.
       #
       # @example
-      #  RSpec::Mocks.configuration.when_declaring_verifying_double do |ref|
+      #  RSpec::Mocks.configuration.before_verifying_doubles do |ref|
       #    ref.some_method!
       #  end
-      def when_declaring_verifying_double(&block)
-        verifying_double_declaration_callbacks << block
+      def before_verifying_doubles(&block)
+        verifying_double_callbacks << block
       end
+      alias :when_declaring_verifying_double :before_verifying_doubles
 
       # @api private
       # Returns an array of blocks to call when verifying doubles
-      def verifying_double_declaration_callbacks
-        @verifying_double_declaration_callbacks ||= []
+      def verifying_double_callbacks
+        @verifying_double_callbacks ||= []
       end
 
       def transfer_nested_constants?
