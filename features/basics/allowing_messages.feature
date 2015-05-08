@@ -2,7 +2,7 @@ Feature: Allowing messages
 
   [Test doubles](./test-doubles) are "strict" by default -- messages that have not been specifically
   allowed or expected will trigger an error. Use `allow(...).to receive(...)` to configure
-  which messages are the double is allowed to receive. You can also use `allow(...).to
+  which messages the double is allowed to receive. You can also use `allow(...).to
   receive_messages(...)` to configure allowed messages (and return values) in bulk.
 
   Scenario: Allowed messages return nil by default

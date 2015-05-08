@@ -19,7 +19,7 @@ Feature: Partial test doubles
   expect(Person).to receive(:find) { person }
   ```
 
-  RSpec replaces the method we're stubbing or mocking with its own test-double-like method.
+  RSpec replaces the method we're stubbing or mocking with its own test-double like method.
   At the end of the example, RSpec verifies any message expectations, and then restores the
   original methods.
 
