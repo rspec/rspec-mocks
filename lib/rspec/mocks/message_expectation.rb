@@ -252,7 +252,7 @@ module RSpec
       # @example
       #   expect(car).to receive(:stop).never
       def never
-        ErrorGenerator.raise_double_negation_error("expect(obj)") if negative?
+        error_generator.raise_double_negation_error("expect(obj)") if negative?
         @expected_received_count = 0
         self
       end
@@ -553,11 +553,7 @@ module RSpec
         def raise_already_invoked_error_if_necessary(calling_customization)
           return unless has_been_invoked?
 
-          error_message = "The message expectation for #{orig_object.inspect}.#{message} has already been invoked " \
-            "and cannot be modified further (e.g. using `#{calling_customization}`). All message expectation " \
-            "customizations must be applied before it is used for the first time."
-
-          raise MockExpectationAlreadyInvokedError, error_message
+          error_generator.raise_already_invoked_error(message, calling_customization)
         end
 
         def failed_fast?
@@ -713,11 +709,13 @@ module RSpec
     #
     # @private
     class InsertOntoBacktrace
-      def self.line(location)
-        yield
+      RAISE_METHOD = method(:raise)
+
+      def self.line(location, &block)
+        RSpec::Support.with_failure_notifier(RAISE_METHOD, &block)
       rescue RSpec::Mocks::MockExpectationError => error
         error.backtrace.insert(0, location)
-        Kernel.raise error
+        RSpec::Support.notify_failure(error)
       end
     end
   end

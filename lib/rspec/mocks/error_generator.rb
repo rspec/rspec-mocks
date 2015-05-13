@@ -34,7 +34,7 @@ module RSpec
     class ErrorGenerator
       attr_writer :opts
 
-      def initialize(target)
+      def initialize(target=nil)
         @target = target
       end
 
@@ -167,11 +167,46 @@ module RSpec
                 "method has been mocked instead of stubbed or spied."
       end
 
-      def self.raise_double_negation_error(wrapped_expression)
-        raise "Isn't life confusing enough? You've already set a " \
-              "negative message expectation and now you are trying to " \
-              "negate it again with `never`. What does an expression like " \
-              "`#{wrapped_expression}.not_to receive(:msg).never` even mean?"
+      # @private
+      def raise_double_negation_error(wrapped_expression)
+        __raise "Isn't life confusing enough? You've already set a " \
+                "negative message expectation and now you are trying to " \
+                "negate it again with `never`. What does an expression like " \
+                "`#{wrapped_expression}.not_to receive(:msg).never` even mean?"
+      end
+
+      # @private
+      def raise_verifying_double_not_defined_error(ref)
+        notify(VerifyingDoubleNotDefinedError.new(
+          "#{ref.description.inspect} is not a defined constant. " \
+          "Perhaps you misspelt it? " \
+          "Disable check with `verify_doubled_constant_names` configuration option."
+        ))
+      end
+
+      # @private
+      def raise_have_received_disallowed(type, reason)
+        __raise "Using #{type}(...) with the `have_received` " \
+                "matcher is not supported#{reason}."
+      end
+
+      # @private
+      def raise_cant_constrain_count_for_negated_have_received_error(count_constraint)
+        __raise "can't use #{count_constraint} when negative"
+      end
+
+      # @private
+      def raise_method_not_stubbed_error(method_name)
+        __raise "The method `#{method_name}` was not stubbed or was already unstubbed"
+      end
+
+      # @private
+      def raise_already_invoked_error(message, calling_customization)
+        error_message = "The message expectation for #{intro}.#{message} has already been invoked " \
+          "and cannot be modified further (e.g. using `#{calling_customization}`). All message expectation " \
+          "customizations must be applied before it is used for the first time."
+
+        notify MockExpectationAlreadyInvokedError.new(error_message)
       end
 
     private
@@ -260,7 +295,11 @@ module RSpec
 
       def __raise(message)
         message = opts[:message] unless opts[:message].nil?
-        Kernel.raise(RSpec::Mocks::MockExpectationError, message)
+        notify RSpec::Mocks::MockExpectationError.new(message)
+      end
+
+      def notify(exception)
+        RSpec::Support.notify_failure(exception)
       end
 
       def format_args(args)
@@ -299,6 +338,11 @@ module RSpec
       def group_count(index, args)
         " (#{times(index)})" if args.size > 1 || index > 1
       end
+    end
+
+    # @private
+    def self.error_generator
+      @error_generator ||= ErrorGenerator.new
     end
   end
 end

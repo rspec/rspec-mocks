@@ -69,9 +69,7 @@ module RSpec
       private
 
         def disallow(type, reason="")
-          raise RSpec::Mocks::MockExpectationError,
-                "Using #{type}(...) with the `have_received` " \
-                "matcher is not supported#{reason}."
+          RSpec::Mocks.error_generator.raise_have_received_disallowed(type, reason)
         end
 
         def expect
@@ -88,8 +86,7 @@ module RSpec
 
         def ensure_count_unconstrained
           return unless count_constraint
-          raise RSpec::Mocks::MockExpectationError,
-                "can't use #{count_constraint} when negative"
+          RSpec::Mocks.error_generator.raise_cant_constrain_count_for_negated_have_received_error(count_constraint)
         end
 
         def count_constraint

@@ -396,10 +396,7 @@ module RSpec
         if RSpec::Mocks.configuration.verify_doubled_constant_names? &&
           !ref.defined?
 
-          raise VerifyingDoubleNotDefinedError,
-                "#{ref.description.inspect} is not a defined constant. " \
-                "Perhaps you misspelt it? " \
-                "Disable check with `verify_doubled_constant_names` configuration option."
+          RSpec::Mocks.error_generator.raise_verifying_double_not_defined_error(ref)
         end
 
         RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|

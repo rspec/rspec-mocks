@@ -75,9 +75,7 @@ module RSpec
           return unless ExpectationChain === instance
           return if @instance_with_expectation.equal?(instance)
 
-          raise RSpec::Mocks::MockExpectationError,
-                "Exactly one instance should have received the following " \
-                "message(s) but didn't: #{unfulfilled_expectations.sort.join(', ')}"
+          AnyInstance.error_generator.raise_second_instance_received_message_error(unfulfilled_expectations)
         end
       end
     end

@@ -76,7 +76,7 @@ module RSpec
         # @see Methods#unstub
         def unstub(method_name)
           unless @observed_methods.include?(method_name.to_sym)
-            raise RSpec::Mocks::MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
+            AnyInstance.error_generator.raise_method_not_stubbed_error(method_name)
           end
           message_chains.remove_stub_chains_for!(method_name)
           stubs[method_name].clear
@@ -91,9 +91,7 @@ module RSpec
           return unless @expectation_set
           return if message_chains.all_expectations_fulfilled?
 
-          raise RSpec::Mocks::MockExpectationError,
-                "Exactly one instance should have received the following " \
-                "message(s) but didn't: #{message_chains.unfulfilled_expectations.sort.join(', ')}"
+          AnyInstance.error_generator.raise_second_instance_received_message_error(message_chains.unfulfilled_expectations)
         end
 
         # @private
@@ -221,8 +219,7 @@ module RSpec
 
           if RSpec::Mocks.configuration.verify_partial_doubles?
             unless public_protected_or_private_method_defined?(method_name)
-              raise MockExpectationError,
-                    "#{@klass} does not implement ##{method_name}"
+              AnyInstance.error_generator.raise_does_not_implement_error(@klass, method_name)
             end
           end
 
@@ -242,7 +239,9 @@ module RSpec
           @klass.__send__(:define_method, method_name) do |*_args, &_blk|
             invoked_instance = recorder.instance_that_received(method_name)
             inspect = "#<#{self.class}:#{object_id} #{instance_variables.map { |name| "#{name}=#{instance_variable_get name}" }.join(', ')}>"
-            raise RSpec::Mocks::MockExpectationError, "The message '#{method_name}' was received by #{inspect} but has already been received by #{invoked_instance}"
+            AnyInstance.error_generator.raise_message_already_received_by_other_instance_error(
+              method_name, inspect, invoked_instance
+            )
           end
         end
 
@@ -252,9 +251,7 @@ module RSpec
             problem_mod = prepended_modules.find { |mod| mod.method_defined?(method_name) }
             return unless problem_mod
 
-            raise RSpec::Mocks::MockExpectationError,
-                  "Using `any_instance` to stub a method (#{method_name}) that has been " \
-                  "defined on a prepended module (#{problem_mod}) is not supported."
+            AnyInstance.error_generator.raise_not_supported_with_prepend_error(method_name, problem_mod)
           end
         else
           def allow_no_prepended_module_definition_of(_method_name)
