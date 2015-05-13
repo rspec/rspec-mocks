@@ -30,10 +30,6 @@ module RSpec
 
     private
 
-      def expectation(_object, _message, &_return_block)
-        raise NotImplementedError
-      end
-
       def chain_on(object, *chain, &block)
         initialize(object, *chain, &block)
         setup_chain
