@@ -709,11 +709,13 @@ module RSpec
     #
     # @private
     class InsertOntoBacktrace
-      def self.line(location)
-        yield
+      RAISE_METHOD = method(:raise)
+
+      def self.line(location, &block)
+        RSpec::Support.with_failure_notifier(RAISE_METHOD, &block)
       rescue RSpec::Mocks::MockExpectationError => error
         error.backtrace.insert(0, location)
-        Kernel.raise error
+        RSpec::Support.notify_failure(error)
       end
     end
   end

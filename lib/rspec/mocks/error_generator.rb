@@ -299,7 +299,7 @@ module RSpec
       end
 
       def notify(exception)
-        Kernel.raise(exception)
+        RSpec::Support.notify_failure(exception)
       end
 
       def format_args(args)
