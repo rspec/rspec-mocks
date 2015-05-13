@@ -198,7 +198,7 @@ module RSpec
 
       # @private
       def raise_method_not_stubbed_error
-        raise MockExpectationError, "The method `#{method_name}` was not stubbed or was already unstubbed"
+        RSpec::Mocks.error_generator.raise_method_not_stubbed_error(method_name)
       end
 
       # In Ruby 2.0.0 and above prepend will alter the method lookup chain.

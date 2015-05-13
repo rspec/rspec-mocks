@@ -8,10 +8,6 @@ module RSpec
                   "message(s) but didn't: #{unfulfilled_expectations.sort.join(', ')}"
         end
 
-        def raise_method_cant_be_unstubbed_error(method_name)
-          __raise "The method `#{method_name}` was not stubbed or was already unstubbed"
-        end
-
         def raise_does_not_implement_error(klass, method_name)
           __raise "#{klass} does not implement ##{method_name}"
         end

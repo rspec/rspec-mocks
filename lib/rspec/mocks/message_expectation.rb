@@ -553,11 +553,7 @@ module RSpec
         def raise_already_invoked_error_if_necessary(calling_customization)
           return unless has_been_invoked?
 
-          error_message = "The message expectation for #{orig_object.inspect}.#{message} has already been invoked " \
-            "and cannot be modified further (e.g. using `#{calling_customization}`). All message expectation " \
-            "customizations must be applied before it is used for the first time."
-
-          raise MockExpectationAlreadyInvokedError, error_message
+          error_generator.raise_already_invoked_error(message, calling_customization)
         end
 
         def failed_fast?

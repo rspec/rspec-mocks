@@ -76,7 +76,7 @@ module RSpec
         # @see Methods#unstub
         def unstub(method_name)
           unless @observed_methods.include?(method_name.to_sym)
-            AnyInstance.error_generator.raise_method_cant_be_unstubbed_error(method_name)
+            AnyInstance.error_generator.raise_method_not_stubbed_error(method_name)
           end
           message_chains.remove_stub_chains_for!(method_name)
           stubs[method_name].clear
