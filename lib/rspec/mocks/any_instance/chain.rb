@@ -76,7 +76,7 @@ module RSpec
         end
 
         def never
-          ErrorGenerator.raise_double_negation_error("expect_any_instance_of(MyClass)") if negated?
+          AnyInstance.error_generator.raise_double_negation_error("expect_any_instance_of(MyClass)") if negated?
           super
         end
 

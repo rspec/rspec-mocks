@@ -34,7 +34,7 @@ module RSpec
     class ErrorGenerator
       attr_writer :opts
 
-      def initialize(target)
+      def initialize(target=nil)
         @target = target
       end
 
@@ -167,11 +167,12 @@ module RSpec
                 "method has been mocked instead of stubbed or spied."
       end
 
-      def self.raise_double_negation_error(wrapped_expression)
-        raise "Isn't life confusing enough? You've already set a " \
-              "negative message expectation and now you are trying to " \
-              "negate it again with `never`. What does an expression like " \
-              "`#{wrapped_expression}.not_to receive(:msg).never` even mean?"
+      # @private
+      def raise_double_negation_error(wrapped_expression)
+        __raise "Isn't life confusing enough? You've already set a " \
+                "negative message expectation and now you are trying to " \
+                "negate it again with `never`. What does an expression like " \
+                "`#{wrapped_expression}.not_to receive(:msg).never` even mean?"
       end
 
     private

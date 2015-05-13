@@ -1,5 +1,6 @@
 %w[
   any_instance/chain
+  any_instance/error_generator
   any_instance/stub_chain
   any_instance/stub_chain_chain
   any_instance/expect_chain_chain
