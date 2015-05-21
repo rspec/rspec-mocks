@@ -118,7 +118,7 @@ module RSpec
           @error_generator.raise_only_valid_on_a_partial_double(:and_call_original)
         else
           warn_about_stub_override if implementation.inner_action
-          @implementation = AndWrapOriginalImplementation.new(@method_double.original_method, block)
+          @implementation = AndWrapOriginalImplementation.new(@method_double.original_implementation_callable, block)
           @yield_receiver_to_implementation_block = false
         end
 

@@ -34,6 +34,8 @@ Bug Fixes:
 * Fix `any_args`/`anything` support so that we avoid calling `obj == anything`
   on user objects that may have improperly implemented `==` in a way that
   raises errors. (Myron Marston, #924)
+* Fix edge case involving stubbing the same method on a class and a subclass
+  which previously hit a `NoMethodError` internally in RSpec. (Myron Marston #954)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)

@@ -163,11 +163,11 @@ module RSpec
 
         # Trigger an eager find of the original method since if we find it any
         # later we end up getting a stubbed method with incorrect arity.
-        save_original_method!
+        save_original_implementation_callable!
       end
 
       def with_signature
-        yield Support::MethodSignature.new(original_method)
+        yield Support::MethodSignature.new(original_implementation_callable)
       end
 
       def unimplemented?
