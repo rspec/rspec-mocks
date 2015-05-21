@@ -74,6 +74,18 @@ module RSpec
         object.foobar
       end
 
+      it 'allows a class and a subclass to both be stubbed' do
+        pending "Does not work on 1.8.7 due to singleton method restrictions" if RUBY_VERSION == "1.8.7" && RSpec::Support::Ruby.mri?
+        the_klass = Class.new
+        the_subklass = Class.new(the_klass)
+
+        allow(the_klass).to receive(:foo).and_return(1)
+        allow(the_subklass).to receive(:foo).and_return(2)
+
+        expect(the_klass.foo).to eq(1)
+        expect(the_subklass.foo).to eq(2)
+      end
+
       it "verifies the method was called when expecting a message" do
         expect(object).to receive(:foobar).with(:test_param).and_return(1)
         expect {
