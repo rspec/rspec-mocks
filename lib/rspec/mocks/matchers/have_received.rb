@@ -96,10 +96,10 @@ module RSpec
         end
 
         def generate_failure_message
-          mock_proxy.check_for_unexpected_arguments(@expectation)
-          @expectation.generate_error
-        rescue RSpec::Mocks::MockExpectationError => error
-          error.message
+          RSpec::Support.with_failure_notifier(Proc.new { |e| return e.message }) do
+            mock_proxy.check_for_unexpected_arguments(@expectation)
+            @expectation.generate_error
+          end
         end
 
         def expected_messages_received_in_order?

@@ -20,4 +20,30 @@ RSpec.describe "Failure notification" do
     error = capture_errors { verify dbl }.first
     expect(error.backtrace.first).to match(/#{File.basename(__FILE__)}:#{expected_from_line}/)
   end
+
+  context "when using `aggregate_failures`" do
+    specify 'spy failures for unreceived messages are reported correctly' do
+      expect {
+        aggregate_failures do
+          expect(spy).to have_received(:foo)
+        end
+      }.to raise_error(RSpec::Expectations::ExpectationNotMetError) do |e|
+        expect(e).not_to be_a(RSpec::Expectations::MultipleExpectationsNotMetError)
+        expect(e.message).to include("expected: 1 time", "received: 0 times")
+      end
+    end
+
+    specify 'spy failures for messages received with unexpected args are reported correctly' do
+      expect {
+        aggregate_failures do
+          the_spy = spy
+          the_spy.foo(1)
+          expect(the_spy).to have_received(:foo).with(2)
+        end
+      }.to raise_error(RSpec::Expectations::ExpectationNotMetError) do |e|
+        expect(e).not_to be_a(RSpec::Expectations::MultipleExpectationsNotMetError)
+        expect(e.message).to include("expected: (2)", "got: (1)")
+      end
+    end
+  end
 end
