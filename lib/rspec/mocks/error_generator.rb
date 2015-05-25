@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support "object_formatter"
+
 module RSpec
   module Mocks
     # Raised when a message expectation is not satisfied.
@@ -308,11 +310,7 @@ module RSpec
       end
 
       def arg_list(args)
-        args.map { |arg| arg_has_valid_description?(arg) ? arg.description : arg.inspect }.join(", ")
-      end
-
-      def arg_has_valid_description?(arg)
-        RSpec::Support.is_a_matcher?(arg) && arg.respond_to?(:description)
+        args.map { |arg| RSpec::Support::ObjectFormatter.format(arg) }.join(", ")
       end
 
       def format_received_args(args_for_multiple_calls)

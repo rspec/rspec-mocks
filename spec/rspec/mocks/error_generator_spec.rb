@@ -8,6 +8,16 @@ module RSpec
       end
 
       describe "formatting arguments" do
+        it 'formats time objects with increased precision' do
+          time = Time.utc(1969, 12, 31, 19, 01, 40, 101)
+          expected_output = "1969-12-31 19:01:40.000101"
+
+          o = double(:double)
+          expect {
+            o.bees(time)
+          }.to fail_including(expected_output)
+        end
+
         context "on non-matcher objects that define #description" do
           it "does not use the object's description" do
             o = double(:double, :description => "Friends")

@@ -16,3 +16,4 @@ Gemfile-custom
 bundle
 .rbx
 .rspec-local
+spec/examples.txt

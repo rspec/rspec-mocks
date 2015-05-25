@@ -18,6 +18,9 @@ Enhancements:
 * Rename `RSpec::Mocks::Configuration#when_declaring_verifying_double` to
   `RSpec::Mocks::Configuration#before_verifying_doubles` and utilise when
   verifying partial doubles. (Jon Rowe, #940)
+* Use rspec-support's `ObjectFormatter` for improved formatting of
+  arguments in failure messages so that, for example, full time
+  precisions is displayed for time objets. (Gavin Miller, Myron Marston, #955)
 
 Bug Fixes:
 
