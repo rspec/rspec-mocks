@@ -526,24 +526,26 @@ module RSpec
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
           if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
-            @actual_received_count += increment
             @failed_fast = true
             # args are the args we actually received, @argument_list_matcher is the
             # list of args we were expecting
-            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, args)
+            @error_generator.raise_expectation_error(
+              @message, @expected_received_count,
+              @argument_list_matcher,
+              @actual_received_count + increment,
+              expectation_count_type, args
+            )
           end
 
           @order_group.handle_order_constraint self
 
-          begin
-            if implementation.present?
-              implementation.call(*args, &block)
-            elsif parent_stub
-              parent_stub.invoke(nil, *args, &block)
-            end
-          ensure
-            @actual_received_count += increment
+          if implementation.present?
+            implementation.call(*args, &block)
+          elsif parent_stub
+            parent_stub.invoke(nil, *args, &block)
           end
+        ensure
+          @actual_received_count += increment
         end
 
         def has_been_invoked?
