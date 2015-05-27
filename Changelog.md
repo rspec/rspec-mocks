@@ -14,13 +14,13 @@ Enhancements:
 * Improve mock expectation failure messages so that it combines both
   number of times and the received arguments in the output. (John Ceh, #918)
 * Improve how test doubles are represented in failure messages.
-  (@sivagollapalli, Myron Marston, #932)
+  (Siva Gollapalli, Myron Marston, #932)
 * Rename `RSpec::Mocks::Configuration#when_declaring_verifying_double` to
   `RSpec::Mocks::Configuration#before_verifying_doubles` and utilise when
   verifying partial doubles. (Jon Rowe, #940)
 * Use rspec-support's `ObjectFormatter` for improved formatting of
   arguments in failure messages so that, for example, full time
-  precisions is displayed for time objets. (Gavin Miller, Myron Marston, #955)
+  precisions is displayed for time objects. (Gavin Miller, Myron Marston, #955)
 
 Bug Fixes:
 
