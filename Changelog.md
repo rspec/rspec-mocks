@@ -39,6 +39,8 @@ Bug Fixes:
   raises errors. (Myron Marston, #924)
 * Fix edge case involving stubbing the same method on a class and a subclass
   which previously hit a `NoMethodError` internally in RSpec. (Myron Marston #954)
+* Fix edge case where the message received count would be incremented multiple
+  times for one failure. (Myron Marston, #957)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)
