@@ -13,8 +13,6 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-mocks-#{RSpec::Mocks::Version::STRING}"
   s.description = "RSpec's 'test double' framework, with support for stubbing and mocking"
 
-  s.rubyforge_project  = "rspec"
-
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += %w[README.md License.txt Changelog.md .yardopts .document]
   s.test_files       = []
