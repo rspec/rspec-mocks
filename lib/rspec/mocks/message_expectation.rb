@@ -26,11 +26,10 @@ module RSpec
       end
 
       def verify_messages_received
-        InsertOntoBacktrace.line(@backtrace_line) do
-          unless @received
-            @error_generator.raise_expectation_error(@message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil, [])
-          end
-        end
+        return if @received
+        @error_generator.raise_expectation_error(
+          @message, 1, ArgumentListMatcher::MATCH_ALL, 0, nil, [], @backtrace_line
+        )
       end
 
       def unadvise(_)
@@ -434,7 +433,7 @@ module RSpec
 
         def verify_messages_received
           return if expected_messages_received?
-          InsertOntoBacktrace.line(@expected_from) { generate_error }
+          generate_error
         end
 
         def expected_messages_received?
@@ -476,9 +475,15 @@ module RSpec
 
         def generate_error
           if similar_messages.empty?
-            @error_generator.raise_expectation_error(@message, @expected_received_count, @argument_list_matcher, @actual_received_count, expectation_count_type, expected_args)
+            @error_generator.raise_expectation_error(
+              @message, @expected_received_count, @argument_list_matcher,
+              @actual_received_count, expectation_count_type, expected_args,
+              @expected_from
+            )
           else
-            @error_generator.raise_similar_message_args_error(self, @similar_messages)
+            @error_generator.raise_similar_message_args_error(
+              self, @similar_messages, @expected_from
+            )
           end
         end
 
@@ -704,20 +709,6 @@ module RSpec
       def cannot_modify_further_error
         CannotModifyFurtherError.new "This method has already been configured " \
           "to call the original implementation, and cannot be modified further."
-      end
-    end
-
-    # Insert original locations into stacktraces
-    #
-    # @private
-    class InsertOntoBacktrace
-      RAISE_METHOD = method(:raise)
-
-      def self.line(location, &block)
-        RSpec::Support.with_failure_notifier(RAISE_METHOD, &block)
-      rescue RSpec::Mocks::MockExpectationError => error
-        error.backtrace.insert(0, location)
-        RSpec::Support.notify_failure(error)
       end
     end
   end
