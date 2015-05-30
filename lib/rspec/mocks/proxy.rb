@@ -101,12 +101,15 @@ module RSpec
       def check_for_unexpected_arguments(expectation)
         return if @messages_received.empty?
 
-        # Check if any of the arguments were expected.
-        return if @messages_received.any? do |(method_name, args, _)|
-                    !expectation.matches_name_but_not_args(method_name, *args)
-                  end
+        return if @messages_received.any? { |method_name, args, _| expectation.matches?(method_name, *args) }
 
-        raise_unexpected_message_args_error(expectation, messages_arg_list)
+        name_but_not_args, others = @messages_received.partition do |(method_name, args, _)|
+          expectation.matches_name_but_not_args(method_name, *args)
+        end
+
+        return if name_but_not_args.empty? && !others.empty?
+
+        raise_unexpected_message_args_error(expectation, name_but_not_args.map { |args| args[1] })
       end
 
       # @private
