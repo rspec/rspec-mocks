@@ -32,7 +32,7 @@ RSpec.describe "Reraising eager raises during the verify step" do
     with_unfulfilled_double do |dbl|
       expect(dbl).to receive(:foo).with(1,2,3)
       expect { dbl.foo(1,2,4) }.to fail
-      expect { RSpec::Mocks.verify }.to fail_with(/expected: 1 time with arguments: \(1, 2, 3\)/)
+      expect { verify_all }.to fail_with(/expected: 1 time with arguments: \(1, 2, 3\)/)
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe "Reraising eager raises during the verify step" do
       expect(dbl).to receive(:bar).ordered
       expect { dbl.bar }.to fail
       dbl.foo # satisfy the `foo` expectation so that only the bar one fails below
-      expect { RSpec::Mocks.verify }.to fail_with(/received :bar out of order/)
+      expect { verify_all }.to fail_with(/received :bar out of order/)
     end
   end
 end
