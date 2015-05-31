@@ -137,6 +137,16 @@ module RSpec
           expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
         end
 
+        it 'produces an error message that matches the expected method if another method was called' do
+          my_spy = spy
+          my_spy.foo(1)
+          my_spy.bar(3)
+
+          expect {
+            expect(my_spy).to have_received(:foo).with(3)
+          }.to fail_including("received :foo with unexpected arguments", "expected: (3)", "got: (1)")
+        end
+
         context "counts" do
           let(:the_dbl) { double(:expected_method => nil) }
 
