@@ -41,6 +41,8 @@ Bug Fixes:
   which previously hit a `NoMethodError` internally in RSpec. (Myron Marston #954)
 * Fix edge case where the message received count would be incremented multiple
   times for one failure. (Myron Marston, #957)
+* Fix failure messages for when spies received the expected message with
+  different arguments and also received another message. (Maurício Linhares, #960)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)
