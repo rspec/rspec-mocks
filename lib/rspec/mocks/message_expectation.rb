@@ -486,6 +486,10 @@ module RSpec
           end
         end
 
+        def raise_unexpected_message_args_error(args_for_multiple_calls)
+          @error_generator.raise_unexpected_message_args_error(self, args_for_multiple_calls)
+        end
+
         def expectation_count_type
           return :at_least if @at_least
           return :at_most if @at_most

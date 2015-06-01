@@ -109,7 +109,7 @@ module RSpec
 
         return if name_but_not_args.empty? && !others.empty?
 
-        raise_unexpected_message_args_error(expectation, name_but_not_args.map { |args| args[1] })
+        expectation.raise_unexpected_message_args_error(name_but_not_args.map { |args| args[1] })
       end
 
       # @private
@@ -184,7 +184,7 @@ module RSpec
           expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
 
           if null_object? || !has_negative_expectation?(message)
-            raise_unexpected_message_args_error(expectation, [args])
+            expectation.raise_unexpected_message_args_error([args])
           end
         elsif (stub = find_almost_matching_stub(message, *args))
           stub.advise(*args)
@@ -199,11 +199,6 @@ module RSpec
       # @private
       def raise_unexpected_message_error(method_name, args)
         @error_generator.raise_unexpected_message_error method_name, args
-      end
-
-      # @private
-      def raise_unexpected_message_args_error(expectation, args_for_multiple_calls)
-        @error_generator.raise_unexpected_message_args_error(expectation, args_for_multiple_calls)
       end
 
       # @private
