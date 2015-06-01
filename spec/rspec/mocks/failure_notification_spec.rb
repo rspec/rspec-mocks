@@ -54,5 +54,23 @@ RSpec.describe "Failure notification" do
         expect(e.message).to include("expected: (2)", "got: (1)")
       end
     end
+
+    specify "failing negative expectations are only notified once" do
+      expect {
+        aggregate_failures do
+          dbl = double
+
+          expect(dbl).not_to receive(:foo)
+          expect(dbl).not_to receive(:bar)
+
+          dbl.foo
+          dbl.bar
+
+          verify_all
+        end
+      }.to raise_error(RSpec::Expectations::MultipleExpectationsNotMetError) do |e|
+        expect(e.failures.count).to eq(2)
+      end
+    end
   end
 end

@@ -477,7 +477,7 @@ module RSpec
             @error_generator.raise_expectation_error(
               @message, @expected_received_count, @argument_list_matcher,
               @actual_received_count, expectation_count_type, expected_args,
-              @expected_from
+              @expected_from, exception_source_id
             )
           else
             @error_generator.raise_similar_message_args_error(
@@ -487,7 +487,7 @@ module RSpec
         end
 
         def raise_unexpected_message_args_error(args_for_multiple_calls)
-          @error_generator.raise_unexpected_message_args_error(self, args_for_multiple_calls)
+          @error_generator.raise_unexpected_message_args_error(self, args_for_multiple_calls, exception_source_id)
         end
 
         def expectation_count_type
@@ -530,6 +530,10 @@ module RSpec
 
       private
 
+        def exception_source_id
+          @exception_source_id ||= "#{self.class.name} #{__id__}"
+        end
+
         def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
@@ -540,7 +544,7 @@ module RSpec
               @message, @expected_received_count,
               @argument_list_matcher,
               @actual_received_count + increment,
-              expectation_count_type, args
+              expectation_count_type, args, nil, exception_source_id
             )
           end
 
