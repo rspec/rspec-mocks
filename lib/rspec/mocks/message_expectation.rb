@@ -378,7 +378,6 @@ module RSpec
           # Initialized to nil so that we don't allocate an array for every
           # mock or stub. See also comment in `and_yield`.
           @args_to_yield = nil
-          @failed_fast = nil
           @eval_context = nil
           @yield_receiver_to_implementation_block = false
 
@@ -531,7 +530,6 @@ module RSpec
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
           if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
-            @failed_fast = true
             # args are the args we actually received, @argument_list_matcher is the
             # list of args we were expecting
             @error_generator.raise_expectation_error(
@@ -561,10 +559,6 @@ module RSpec
           return unless has_been_invoked?
 
           error_generator.raise_already_invoked_error(message, calling_customization)
-        end
-
-        def failed_fast?
-          @failed_fast
         end
 
         def set_expected_received_count(relativity, n)
