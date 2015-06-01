@@ -64,8 +64,8 @@ module RSpec
       end
 
       # @private
-      def raise_similar_message_args_error(expectation, args_for_multiple_calls)
-        __raise error_message(expectation, args_for_multiple_calls)
+      def raise_similar_message_args_error(expectation, args_for_multiple_calls, backtrace_line=nil)
+        __raise error_message(expectation, args_for_multiple_calls), backtrace_line
       end
 
       def default_error_message(expectation, expected_args, actual_args)
@@ -79,10 +79,12 @@ module RSpec
 
       # rubocop:disable Style/ParameterLists
       # @private
-      def raise_expectation_error(message, expected_received_count, argument_list_matcher, actual_received_count, expectation_count_type, args)
+      def raise_expectation_error(message, expected_received_count, argument_list_matcher,
+                                  actual_received_count, expectation_count_type, args,
+                                  backtrace_line=nil)
         expected_part = expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
         received_part = received_part_of_expectation_error(actual_received_count, args)
-        __raise "(#{intro(:unwrapped)}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}"
+        __raise "(#{intro(:unwrapped)}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}", backtrace_line
       end
       # rubocop:enable Style/ParameterLists
 
@@ -295,9 +297,23 @@ module RSpec
         end
       end
 
-      def __raise(message)
+      def __raise(message, backtrace_line=nil)
         message = opts[:message] unless opts[:message].nil?
-        notify RSpec::Mocks::MockExpectationError.new(message)
+        exception = RSpec::Mocks::MockExpectationError.new(message)
+        prepend_to_backtrace(exception, backtrace_line) if backtrace_line
+        notify exception
+      end
+
+      if RSpec::Support::Ruby.jruby?
+        def prepend_to_backtrace(exception, line)
+          raise exception
+        rescue RSpec::Mocks::MockExpectationError => with_backtrace
+          with_backtrace.backtrace.unshift(line)
+        end
+      else
+        def prepend_to_backtrace(exception, line)
+          exception.set_backtrace(caller.unshift line)
+        end
       end
 
       def notify(exception)

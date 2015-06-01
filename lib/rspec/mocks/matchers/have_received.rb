@@ -96,7 +96,7 @@ module RSpec
         end
 
         def generate_failure_message
-          RSpec::Support.with_failure_notifier(Proc.new { |e| return e.message }) do
+          RSpec::Support.with_failure_notifier(Proc.new { |err, _opt| return err.message }) do
             mock_proxy.check_for_unexpected_arguments(@expectation)
             @expectation.generate_error
           end

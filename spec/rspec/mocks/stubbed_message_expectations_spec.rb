@@ -23,6 +23,22 @@ RSpec.describe "expection set on previously stubbed method" do
     reset dbl
   end
 
+  it 'indicates the site of expecation in the stacktrace when outputing arguments of similar calls' do
+    dbl = double('double', :foo => true)
+    expect(dbl).to receive(:foo).with('first'); line = __LINE__
+
+    dbl.foo('second')
+    dbl.foo('third')
+
+    expect {
+      verify dbl
+    }.to raise_error(an_object_having_attributes(
+      :backtrace => a_collection_starting_with(
+        a_string_including("#{__FILE__}:#{line}")
+      )
+    ))
+  end
+
   context "with argument constraint on stub" do
     it "matches any args if no arg constraint set on expectation" do
       dbl = double("mock")
