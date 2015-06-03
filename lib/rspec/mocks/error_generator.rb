@@ -51,8 +51,8 @@ module RSpec
       end
 
       # @private
-      def raise_unexpected_message_args_error(expectation, args_for_multiple_calls)
-        __raise error_message(expectation, args_for_multiple_calls)
+      def raise_unexpected_message_args_error(expectation, args_for_multiple_calls, source_id=nil)
+        __raise error_message(expectation, args_for_multiple_calls), nil, source_id
       end
 
       # @private
@@ -81,10 +81,10 @@ module RSpec
       # @private
       def raise_expectation_error(message, expected_received_count, argument_list_matcher,
                                   actual_received_count, expectation_count_type, args,
-                                  backtrace_line=nil)
+                                  backtrace_line=nil, source_id=nil)
         expected_part = expected_part_of_expectation_error(expected_received_count, expectation_count_type, argument_list_matcher)
         received_part = received_part_of_expectation_error(actual_received_count, args)
-        __raise "(#{intro(:unwrapped)}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}", backtrace_line
+        __raise "(#{intro(:unwrapped)}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}", backtrace_line, source_id
       end
       # rubocop:enable Style/ParameterLists
 
@@ -297,11 +297,11 @@ module RSpec
         end
       end
 
-      def __raise(message, backtrace_line=nil)
+      def __raise(message, backtrace_line=nil, source_id=nil)
         message = opts[:message] unless opts[:message].nil?
         exception = RSpec::Mocks::MockExpectationError.new(message)
         prepend_to_backtrace(exception, backtrace_line) if backtrace_line
-        notify exception
+        notify exception, :source_id => source_id
       end
 
       if RSpec::Support::Ruby.jruby?
@@ -316,8 +316,8 @@ module RSpec
         end
       end
 
-      def notify(exception)
-        RSpec::Support.notify_failure(exception)
+      def notify(*args)
+        RSpec::Support.notify_failure(*args)
       end
 
       def format_args(args)
