@@ -52,7 +52,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
         expect(d).to receive(:foo).with(expected_hash)
         expect {
           d.foo(:bad => :hash)
-        }.to fail_with("#<Double \"double\"> received :foo with unexpected arguments\n  expected: (#{expected_hash.inspect})\n       got: (#{actual_hash.inspect})\nDiff:\n@@ -1,2 +1,2 @@\n-[#{expected_hash.inspect}]\n+[#{actual_hash.inspect}]\n")
+        }.to fail_with(/\A#<Double "double"> received :foo with unexpected arguments\n  expected: \(#{hash_regex_inspect expected_hash}\)\n       got: \(#{hash_regex_inspect actual_hash}\)\nDiff:\n@@ \-1\,2 \+1\,2 @@\n\-\[#{hash_regex_inspect expected_hash}\]\n\+\[#{hash_regex_inspect actual_hash}\]\n\z/)
       end
     end
 
@@ -61,7 +61,22 @@ RSpec.describe "Diffs printed when arguments don't match" do
         expect(d).to receive(:foo).with(expected_hash)
         expect {
           d.foo(Object.new)
-        }.to fail_with(/-\[#{Regexp.escape(expected_hash.inspect)}\].*\+\[#<Object.*>\]/m)
+        }.to fail_with(/-\[#{hash_regex_inspect expected_hash}\].*\+\[#<Object.*>\]/m)
+      end
+    end
+
+    if RUBY_VERSION.to_f < 1.9
+      # Ruby 1.8 hashes are not ordered, but `#inspect` on a particular unchanged
+      # hash instance should return consistent output. However, on Travis that does
+      # not always seem to be true and we have no idea why. Somehow, the travis build
+      # has occasionally failed due to the output ordering varying between `inspect`
+      # calls to the same hash. This regex allows us to work around that.
+      def hash_regex_inspect(hash)
+        "\\{(#{hash.map { |key,value| "#{key.inspect}=>#{value.inspect}.*" }.join "|"}){#{hash.size}}\\}"
+      end
+    else
+      def hash_regex_inspect(hash)
+        Regexp.escape(hash.inspect)
       end
     end
 
