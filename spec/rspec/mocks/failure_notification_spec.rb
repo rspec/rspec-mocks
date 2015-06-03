@@ -1,7 +1,7 @@
 RSpec.describe "Failure notification" do
   def capture_errors(&block)
     errors = []
-    RSpec::Support.with_failure_notifier(lambda { |e| errors << e }, &block)
+    RSpec::Support.with_failure_notifier(Proc.new { |e, _opts| errors << e }, &block)
     errors
   end
 
