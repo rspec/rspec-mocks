@@ -253,7 +253,7 @@ module RSpec
 
         if args_for_multiple_calls.one?
           diff = diff_message(expectation.expected_args, args_for_multiple_calls.first)
-          message << "\nDiff:#{diff}" unless diff.empty?
+          message << "\nDiff:#{diff}" unless diff.strip.empty?
         end
 
         message

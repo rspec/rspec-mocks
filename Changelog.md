@@ -43,6 +43,7 @@ Bug Fixes:
   times for one failure. (Myron Marston, #957)
 * Fix failure messages for when spies received the expected message with
   different arguments and also received another message. (Maurício Linhares, #960)
+* Silence whitespace-only diffs. (Myron Marston, #969)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.2.0...v3.2.1)
