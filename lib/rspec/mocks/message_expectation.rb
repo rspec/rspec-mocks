@@ -358,6 +358,8 @@ module RSpec
           else
             self.inner_implementation_action = block
           end
+        elsif args.empty?
+          RSpec.deprecate "Using `with` without arguments", :replacement => "`with(no_args)`"
         end
 
         @argument_list_matcher = ArgumentListMatcher.new(*args, &block)
