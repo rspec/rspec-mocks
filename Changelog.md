@@ -1,3 +1,9 @@
+### Development
+
+Enhancements:
+
+* Deprecate using `with` with no arguments e.g. `with()`. (Yousuke, #970)
+
 ### 2.99.3 / 2015-01-09
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.2...v2.99.3)
 

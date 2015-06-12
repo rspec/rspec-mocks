@@ -777,18 +777,9 @@ module RSpec
             @double.foo('bar')
           end
 
-          it "warns of deprecation when called without arguments" do
-            expect(RSpec).to receive(:deprecate) do |message, opts|
-              expect(message).to match(/Using `with` without arguments/)
-            end
-            obj = Object.new
-            obj.stub(:foo).with().and_return('bar')
-            expect(obj.foo).to eq('bar')
-          end
-
           it 'includes callsite in deprecation when called without arguments' do
             obj = Object.new
-            expect_deprecation_with_call_site __FILE__, __LINE__ + 1
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /Using `with` without arguments/)
             obj.stub(:foo).with().and_return('bar')
             expect(obj.foo).to eq('bar')
           end
