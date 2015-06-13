@@ -383,6 +383,22 @@ module RSpec
         object.implemented
       end
 
+      context "for a class" do
+        it "only runs the `before_verifying_doubles` callback for the class (not for superclasses)" do
+          subclass = Class.new(klass)
+
+          expect { |probe|
+            RSpec.configuration.mock_with(:rspec) do |config|
+              config.before_verifying_doubles(&probe)
+            end
+
+            allow(subclass).to receive(:new)
+          }.to yield_successive_args(
+            an_object_having_attributes(:target => subclass),
+          )
+        end
+      end
+
       it 'does not allow a non-existing method to be expected' do
         prevents { expect(object).to receive(:unimplemented) }
       end
