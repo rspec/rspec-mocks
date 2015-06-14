@@ -394,7 +394,7 @@ module RSpec
 
             allow(subclass).to receive(:new)
           }.to yield_successive_args(
-            an_object_having_attributes(:target => subclass),
+            an_object_having_attributes(:target => subclass)
           )
         end
       end

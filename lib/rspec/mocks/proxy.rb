@@ -391,7 +391,7 @@ module RSpec
         return @superclass_proxy if defined?(@superclass_proxy)
 
         if (superclass = object.superclass)
-          @superclass_proxy = @source_space.proxy_for(superclass)
+          @superclass_proxy = @source_space.superclass_proxy_for(superclass)
         else
           @superclass_proxy = nil
         end
