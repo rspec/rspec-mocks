@@ -35,6 +35,10 @@ module RSpec
         false
       end
 
+      def superclass_proxy_for(*_args)
+        raise_lifecycle_message
+      end
+
       def new_scope
         Space.new
       end
@@ -109,6 +113,13 @@ module RSpec
         end
       end
 
+      def superclass_proxy_for(klass)
+        proxy_mutex.synchronize do
+          id = id_for(klass)
+          proxies.fetch(id) { superclass_proxy_not_found_for(id, klass) }
+        end
+      end
+
       alias ensure_registered proxy_for
 
       def registered?(object)
@@ -150,11 +161,7 @@ module RSpec
                       when NilClass   then ProxyForNil.new(@expectation_ordering)
                       when TestDouble then object.__build_mock_proxy_unless_expired(@expectation_ordering)
                       when Class
-                        if RSpec::Mocks.configuration.verify_partial_doubles?
-                          VerifyingPartialClassDoubleProxy.new(self, object, @expectation_ordering)
-                        else
-                          PartialClassDoubleProxy.new(self, object, @expectation_ordering)
-                        end
+                        class_proxy_with_callback_verification_strategy(object, CallbackInvocationStrategy.new)
                       else
                         if RSpec::Mocks.configuration.verify_partial_doubles?
                           VerifyingPartialDoubleProxy.new(object, @expectation_ordering)
@@ -162,6 +169,24 @@ module RSpec
                           PartialDoubleProxy.new(object, @expectation_ordering)
                         end
                       end
+      end
+
+      def superclass_proxy_not_found_for(id, object)
+        raise "superclass_proxy_not_found_for called with something that is not a class" unless Class === object
+        proxies[id] = class_proxy_with_callback_verification_strategy(object, NoCallbackInvocationStrategy.new)
+      end
+
+      def class_proxy_with_callback_verification_strategy(object, strategy)
+        if RSpec::Mocks.configuration.verify_partial_doubles?
+          VerifyingPartialClassDoubleProxy.new(
+            self,
+            object,
+            @expectation_ordering,
+            strategy
+          )
+        else
+          PartialClassDoubleProxy.new(self, object, @expectation_ordering)
+        end
       end
 
       def any_instance_recorder_not_found_for(id, klass)
