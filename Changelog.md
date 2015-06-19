@@ -1,9 +1,9 @@
-### 3.4.0 Development
+### 3.3.1 Development
 
 Bug Fixes:
 
-* Fix bug in before_verifying_double callback logic that caused it to be called
-  once for class in the ancestor list when mocking or stubbing a class. Now it
+* Fix bug in `before_verifying_double` callback logic that caused it to be called
+  one for class in the ancestor list when mocking or stubbing a class. Now it
   is only called for the mocked or stubbed class, as you would expect. (Sam
   Phippen, #974)
 
