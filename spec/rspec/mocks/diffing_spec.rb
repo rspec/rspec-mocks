@@ -140,6 +140,10 @@ RSpec.describe "Diffs printed when arguments don't match" do
             def self.name
               "RSpec::Mocks::ArgumentMatchers::"
             end
+
+            def inspect
+              "#<MyCollab>"
+            end
           end.new
 
           expect(RSpec::Support.is_a_matcher?(collab)).to be true
