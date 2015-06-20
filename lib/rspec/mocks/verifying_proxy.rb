@@ -4,6 +4,21 @@ RSpec::Support.require_rspec_mocks 'method_reference'
 module RSpec
   module Mocks
     # @private
+    class CallbackInvocationStrategy
+      def call(doubled_module)
+        RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|
+          block.call doubled_module
+        end
+      end
+    end
+
+    # @private
+    class NoCallbackInvocationStrategy
+      def call(_doubled_module)
+      end
+    end
+
+    # @private
     module VerifyingProxyMethods
       def add_stub(method_name, opts={}, &implementation)
         ensure_implemented(method_name)
@@ -86,10 +101,13 @@ module RSpec
     end
 
     # @private
+    DEFAULT_CALLBACK_INVOCATION_STRATEGY = CallbackInvocationStrategy.new
+
+    # @private
     class VerifyingPartialDoubleProxy < PartialDoubleProxy
       include VerifyingProxyMethods
 
-      def initialize(object, expectation_ordering)
+      def initialize(object, expectation_ordering, optional_callback_invocation_strategy=DEFAULT_CALLBACK_INVOCATION_STRATEGY)
         super(object, expectation_ordering)
         @doubled_module = DirectObjectReference.new(object)
 
@@ -99,9 +117,7 @@ module RSpec
           h[k] = VerifyingExistingMethodDouble.for(object, k, self)
         end
 
-        RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|
-          block.call @doubled_module
-        end
+        optional_callback_invocation_strategy.call(@doubled_module)
       end
 
       def method_reference
