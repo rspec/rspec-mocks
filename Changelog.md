@@ -1,10 +1,11 @@
-### 3.3.1 Development
+### 3.3.1 / 2015-06-19
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.0...v3.3.1)
 
 Bug Fixes:
 
 * Fix bug in `before_verifying_double` callback logic that caused it to be called
-  one for class in the ancestor list when mocking or stubbing a class. Now it
-  is only called for the mocked or stubbed class, as you would expect. (Sam
+  once for each class in the ancestor list when mocking or stubbing a class. Now
+  it is only called for the mocked or stubbed class, as you would expect. (Sam
   Phippen, #974)
 
 ### 3.3.0 / 2015-06-12
