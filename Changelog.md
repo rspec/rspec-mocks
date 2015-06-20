@@ -1,8 +1,9 @@
-### Development
+### 2.99.4 / 2015-06-19
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.3...v2.99.4)
 
-Enhancements:
+Bug Fixes:
 
-* Deprecate using `with` with no arguments e.g. `with()`. (Yousuke, #970)
+* Add missing deprecation for using `with` with no arguments e.g. `with()`. (Yousuke, #970)
 
 ### 2.99.3 / 2015-01-09
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v2.99.2...v2.99.3)
