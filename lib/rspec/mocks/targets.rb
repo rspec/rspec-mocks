@@ -19,7 +19,7 @@ module RSpec
         method_name = options.fetch(:from)
         define_method(method_name) do |matcher, &block|
           case matcher
-          when Matchers::Receive
+          when Matchers::Receive, Matchers::HaveReceived
             define_matcher(matcher, matcher_method, &block)
           when Matchers::ReceiveMessages, Matchers::ReceiveMessageChain
             raise_negation_unsupported(method_name, matcher)
@@ -47,7 +47,7 @@ module RSpec
 
       def raise_unsupported_matcher(method_name, matcher)
         raise UnsupportedMatcherError,
-              "only the `receive` or `receive_messages` matchers are supported " \
+              "only the `receive`, `have_received` and `receive_messages` matchers are supported " \
               "with `#{expression}(...).#{method_name}`, but you have provided: #{matcher}"
       end
 

@@ -1,6 +1,26 @@
 module RSpec
   module Mocks
-    RSpec.describe Matchers::HaveReceived do
+    # This shared example group is highly unusual as it is used to test how
+    # `have_received` works in two situations:
+    #
+    # * With rspec-mocks as a standalone library.
+    # * Together with rspec-expectations.
+    #
+    # To simulate the former, we've had to hack things a bit. Special care must be taken:
+    #
+    # * Only define examples with `it`, (not `fit`, `xit`, `specify`, etc). We redefine
+    #   `it` below to make it support our needs here but that definition isn't applied to
+    #   the other forms.
+    # * All normal expectations must use `_expect`, not `expect`. Expectations
+    #   for `have_received` should use `expect`.
+    RSpec.shared_examples_for Matchers::HaveReceived do
+      # Make rspec-expectations' `expect` available via an alias so that when
+      # this group is included below in a context that simulates rspec-expectations
+      # not being loaded by using rspec-mocks' `expect` instead of rspec-expectations'
+      # `expect`, we still have a way to use the expectations one for normal expectations.
+      # In this group, all normal expectations should use `_expect` instead of `expect`.
+      alias _expect expect
+
       describe "expect(...).to have_received" do
         it 'passes when the double has received the given message' do
           dbl = double_with_met_expectation(:expected_method)
@@ -15,15 +35,26 @@ module RSpec
         it 'fails when the double has not received the given message' do
           dbl = double_with_unmet_expectation(:expected_method)
 
-          expect {
+          _expect {
             expect(dbl).to have_received(:expected_method)
           }.to raise_error(/expected: 1 time/)
+        end
+
+        it "notifies failures via rspec-support's failure notification system" do
+          dbl = double_with_unmet_expectation(:expected_method)
+          captured = nil
+
+          RSpec::Support.with_failure_notifier(Proc.new { |e, _opt| captured = e }) do
+            expect(dbl).to have_received(:expected_method)
+          end
+
+          _expect(captured.message).to include("expected: 1 time")
         end
 
         it 'fails when a null object has not received the given message' do
           dbl = double.as_null_object
 
-          expect {
+          _expect {
             expect(dbl).to have_received(:expected_method)
           }.to raise_error(/expected: 1 time/)
         end
@@ -31,7 +62,7 @@ module RSpec
         it 'fails when the method has not been previously stubbed' do
           dbl = double
 
-          expect {
+          _expect {
             expect(dbl).to have_received(:expected_method)
           }.to raise_error(/method has not been stubbed/)
         end
@@ -41,7 +72,7 @@ module RSpec
           expect(dbl).to receive(:expected_method)
           dbl.expected_method
 
-          expect {
+          _expect {
             expect(dbl).to have_received(:expected_method)
           }.to raise_error(/method has been mocked instead of stubbed/)
         end
@@ -53,7 +84,7 @@ module RSpec
           expect(dbl).to have_received(:foo) { |*args|
             yielded << args
           }
-          expect(yielded).to include([:a,:b,:c])
+          _expect(yielded).to include([:a,:b,:c])
         end
 
         it "takes a do-end block and yields the arguments given to the stubbed method call" do
@@ -63,15 +94,15 @@ module RSpec
           expect(dbl).to have_received(:foo) do |*args|
             yielded << args
           end
-          expect(yielded).to include([:a,:b,:c])
+          _expect(yielded).to include([:a,:b,:c])
         end
 
         it "passes if expectations against the yielded arguments pass" do
           dbl = double(:foo => nil)
           dbl.foo(42)
-          expect {
+          _expect {
             expect(dbl).to have_received(:foo) { |arg|
-              expect(arg).to eq(42)
+              _expect(arg).to eq(42)
             }
           }.to_not raise_error
         end
@@ -79,9 +110,9 @@ module RSpec
         it "fails if expectations against the yielded arguments fail" do
           dbl = double(:foo => nil)
           dbl.foo(43)
-          expect {
+          _expect {
             expect(dbl).to have_received(:foo) { |arg|
-              expect(arg).to eq(42)
+              _expect(arg).to eq(42)
             }
           }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
         end
@@ -94,8 +125,8 @@ module RSpec
           expect(dbl).to have_received(:foo) { called << :curly } do
             called << :do_end
           end
-          expect(called).to include(:curly)
-          expect(called).not_to include(:do_end)
+          _expect(called).to include(:curly)
+          _expect(called).not_to include(:do_end)
         end
 
         it 'resets expectations on class methods when mocks are reset' do
@@ -105,7 +136,7 @@ module RSpec
           reset dbl
           allow(dbl).to receive(:expected_method)
 
-          expect {
+          _expect {
             expect(dbl).to have_received(:expected_method)
           }.to raise_error(/0 times/)
         end
@@ -119,7 +150,7 @@ module RSpec
           it 'fails when the given args do not match the args used with the message' do
             dbl = double_with_met_expectation(:expected_method, :expected, :args)
 
-            expect {
+            _expect {
               expect(dbl).to have_received(:expected_method).with(:unexpected, :args)
             }.to raise_error(/with unexpected arguments/)
           end
@@ -127,14 +158,14 @@ module RSpec
 
         it 'generates a useful description' do
           matcher = have_received(:expected_method).with(:expected_args).once
-          expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
+          _expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
         end
 
         it 'can generate a description after mocks have been torn down (e.g. when rspec-core requests it)' do
           matcher = have_received(:expected_method).with(:expected_args).once
           matcher.matches?(double(:expected_method => 1))
           RSpec::Mocks.teardown
-          expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
+          _expect(matcher.description).to eq 'have received expected_method(:expected_args) 1 time'
         end
 
         it 'produces an error message that matches the expected method if another method was called' do
@@ -142,7 +173,7 @@ module RSpec
           my_spy.foo(1)
           my_spy.bar(3)
 
-          expect {
+          _expect {
             expect(my_spy).to have_received(:foo).with(3)
           }.to fail_including("received :foo with unexpected arguments", "expected: (3)", "got: (1)")
         end
@@ -164,7 +195,7 @@ module RSpec
 
             context "when the message is received without any args matching" do
               it 'includes unmatched args in the error message' do
-                expect {
+                _expect {
                   expect(the_dbl).to have_received(:expected_method).with(:three).once
                 }.to fail_including("expected: (:three)",
                                     "got:", "(:one) (2 times)",
@@ -174,7 +205,7 @@ module RSpec
 
             context "when the message is received too many times" do
               it 'includes the counts of calls with matching args in the error message' do
-                expect {
+                _expect {
                   expect(the_dbl).to have_received(:expected_method).with(:one).once
                 }.to fail_including("expected: 1 time", "received: 2 times")
               end
@@ -182,7 +213,7 @@ module RSpec
 
             context "when the message is received too few times" do
               it 'includes the counts of calls with matching args in the error message' do
-                expect {
+                _expect {
                   expect(the_dbl).to have_received(:expected_method).with(:two).twice
                 }.to fail_including("expected: 2 times", "received: 1 time")
               end
@@ -198,7 +229,7 @@ module RSpec
                 dbl.expected_method(:three, :four)
                 dbl.expected_method(:three, :four)
 
-                expect {
+                _expect {
                   expect(dbl).to have_received(:expected_method).with(:four, :four).once
                 }.to fail_including("expected: (:four, :four)",
                                     "got:","(:one, :four) (2 times)",
@@ -210,7 +241,7 @@ module RSpec
                 dbl = double(:expected_method => nil)
                 dbl.expected_method(:one, :four)
 
-                expect {
+                _expect {
                   expect(dbl).to have_received(:expected_method).with(:three, :four).once
                 }.to fail_including("expected: (:three, :four)", "got: (:one, :four)")
               end
@@ -220,7 +251,7 @@ module RSpec
                 dbl.expected_method([:one], :four)
                 dbl.expected_method(:one, [:four])
 
-                expect {
+                _expect {
                   expect(dbl).to have_received(:expected_method).with(:one, :four).once
                 }.to fail_including("expected: (:one, :four)",
                                     "got:","([:one], :four)",
@@ -231,7 +262,7 @@ module RSpec
                 dbl = double(:expected_method => nil)
                 dbl.expected_method(:one, :one, :two)
 
-                expect {
+                _expect {
                   expect(dbl).to have_received(:expected_method).with(:one, :two, :three).once
                 }.to fail_including("expected: (:one, :two, :three)", "got:","(:one, :one, :two)")
               end
@@ -244,13 +275,13 @@ module RSpec
             end
 
             it 'fails when the message was received more times than expected' do
-              expect {
+              _expect {
                 expect(the_dbl).to have_received(:expected_method).exactly(1).times
               }.to raise_error(/expected: 1 time.*received: 3 times/m)
-              expect {
+              _expect {
                 expect(the_dbl).to have_received(:expected_method).exactly(2).times
               }.to raise_error(/expected: 2 times.*received: 3 times/m)
-              expect {
+              _expect {
                 the_dbl.expected_method
                 the_dbl.expected_method
                 expect(the_dbl).to have_received(:expected_method).exactly(2).times
@@ -258,7 +289,7 @@ module RSpec
             end
 
             it 'fails when the message was received fewer times' do
-              expect {
+              _expect {
                 expect(the_dbl).to have_received(:expected_method).exactly(4).times
               }.to raise_error(/expected: 4 times.*received: 3 times/m)
             end
@@ -274,7 +305,7 @@ module RSpec
             end
 
             it 'fails when the message was received fewer times' do
-              expect {
+              _expect {
                 expect(the_dbl).to have_received(:expected_method).at_least(4).times
               }.to raise_error(/expected: at least 4 times.*received: 3 times/m)
             end
@@ -290,7 +321,7 @@ module RSpec
             end
 
             it 'fails when the message was received more times' do
-              expect {
+              _expect {
                 expect(the_dbl).to have_received(:expected_method).at_most(2).times
               }.to raise_error(/expected: at most 2 times.*received: 3 times/m)
             end
@@ -306,7 +337,7 @@ module RSpec
             it 'fails when the message was never received' do
               dbl = double(:expected_method => nil)
 
-              expect {
+              _expect {
                 expect(dbl).to have_received(:expected_method).once
               }.to raise_error(/expected: 1 time.*received: 0 times/m)
             end
@@ -316,7 +347,7 @@ module RSpec
               dbl.expected_method
               dbl.expected_method
 
-              expect {
+              _expect {
                 expect(dbl).to have_received(:expected_method).once
               }.to raise_error(/expected: 1 time.*received: 2 times/m)
             end
@@ -335,7 +366,7 @@ module RSpec
               dbl = double(:expected_method => nil)
               dbl.expected_method
 
-              expect {
+              _expect {
                 expect(dbl).to have_received(:expected_method).twice
               }.to raise_error(/expected: 2 times.*received: 1 time/m)
             end
@@ -346,7 +377,7 @@ module RSpec
               dbl.expected_method
               dbl.expected_method
 
-              expect {
+              _expect {
                 expect(dbl).to have_received(:expected_method).twice
               }.to raise_error(/expected: 2 times.*received: 3 times/m)
             end
@@ -367,7 +398,7 @@ module RSpec
               dbl.expected_method
               dbl.expected_method
 
-              expect {
+              _expect {
                 expect(dbl).to have_received(:expected_method).thrice
               }.to raise_error(/expected: 3 times.*received: 2 times/m)
             end
@@ -379,7 +410,7 @@ module RSpec
               dbl.expected_method
               dbl.expected_method
 
-              expect {
+              _expect {
                 expect(dbl).to have_received(:expected_method).thrice
               }.to raise_error(/expected: 3 times.*received: 4 times/m)
             end
@@ -431,7 +462,7 @@ module RSpec
             the_dbl.two
             the_dbl.one
 
-            expect {
+            _expect {
               expect(the_dbl).to have_received(:one).twice.ordered
               expect(the_dbl).to have_received(:two).once.ordered
             }.to raise_error(/received :two out of order/m)
@@ -442,7 +473,7 @@ module RSpec
             the_dbl.two
             the_dbl.one
 
-            expect {
+            _expect {
               expect(the_dbl).to have_received(:one).at_most(2).times.ordered
               expect(the_dbl).to have_received(:two).once.ordered
             }.to raise_error(/received :two out of order/m)
@@ -453,7 +484,7 @@ module RSpec
             the_dbl.two
             the_dbl.one
 
-            expect {
+            _expect {
               expect(the_dbl).to have_received(:one).at_least(1).times.ordered
               expect(the_dbl).to have_received(:two).once.ordered
             }.to raise_error(/received :two out of order/m)
@@ -463,7 +494,7 @@ module RSpec
             the_dbl.two
             the_dbl.one
 
-            expect {
+            _expect {
               expect(the_dbl).to have_received(:one).ordered
               expect(the_dbl).to have_received(:two).ordered
             }.to raise_error(/received :two out of order/m)
@@ -481,7 +512,7 @@ module RSpec
             end
 
             it "fails when the order is not matched" do
-              expect {
+              _expect {
                 expect(the_dbl).to have_received(:one).with(2).ordered
                 expect(the_dbl).to have_received(:one).with(1).ordered
               }.to fail_with(/received :one out of order/m)
@@ -503,7 +534,7 @@ module RSpec
             end
 
             it 'fails when the messages are received out of order' do
-              expect {
+              _expect {
                 expect(the_dbl).to have_received(:bar).ordered
                 expect(the_dbl).to have_received(:foo).ordered
               }.to raise_error(/received :foo out of order/m)
@@ -521,15 +552,26 @@ module RSpec
         it 'fails when the double has received the given message' do
           dbl = double_with_met_expectation(:expected_method)
 
-          expect {
+          _expect {
             expect(dbl).not_to have_received(:expected_method)
           }.to raise_error(/expected: 0 times.*received: 1 time/m)
+        end
+
+        it "notifies failures via rspec-support's failure notification system" do
+          dbl = double_with_met_expectation(:expected_method)
+          captured = nil
+
+          RSpec::Support.with_failure_notifier(Proc.new { |e, _opt| captured = e }) do
+            expect(dbl).not_to have_received(:expected_method)
+          end
+
+          _expect(captured.message).to match(/expected: 0 times.*received: 1 time/m)
         end
 
         it 'fails when the method has not been previously stubbed' do
           dbl = double
 
-          expect {
+          _expect {
             expect(dbl).not_to have_received(:expected_method)
           }.to raise_error(/method has not been stubbed/)
         end
@@ -543,7 +585,7 @@ module RSpec
           it 'fails when the given args match the args used with the message' do
             dbl = double_with_met_expectation(:expected_method, :expected, :args)
 
-            expect {
+            _expect {
               expect(dbl).not_to have_received(:expected_method).with(:expected, :args)
             }.to raise_error(/expected: 0 times.*received: 1 time/m) # TODO: better message
           end
@@ -552,7 +594,7 @@ module RSpec
         %w(exactly at_least at_most times once twice).each do |constraint|
           it "does not allow #{constraint} to be used because it creates confusion" do
             dbl = double_with_unmet_expectation(:expected_method)
-            expect {
+            _expect {
               expect(dbl).not_to have_received(:expected_method).send(constraint)
             }.to raise_error(/can't use #{constraint} when negative/)
           end
@@ -561,7 +603,7 @@ module RSpec
 
       describe "allow(...).to have_received" do
         it "fails because its nonsensical" do
-          expect {
+          _expect {
             allow(double).to have_received(:some_method)
           }.to fail_with("Using allow(...) with the `have_received` matcher is not supported as it would have no effect.")
         end
@@ -569,7 +611,7 @@ module RSpec
 
       describe "allow_any_instance_of(...).to have_received" do
         it "fails because its nonsensical" do
-          expect {
+          _expect {
             allow_any_instance_of(double).to have_received(:some_method)
           }.to fail_with("Using allow_any_instance_of(...) with the `have_received` matcher is not supported.")
         end
@@ -577,7 +619,7 @@ module RSpec
 
       describe "expect_any_instance_of(...).to have_received" do
         it "fails because we dont want to support it" do
-          expect {
+          _expect {
             expect_any_instance_of(double).to have_received(:some_method)
           }.to fail_with("Using expect_any_instance_of(...) with the `have_received` matcher is not supported.")
         end
@@ -600,12 +642,54 @@ module RSpec
       def double_with_unmet_expectation(method_name)
         double('double', method_name => true)
       end
+    end
 
-      # Override `fail_including` for this context, since `have_received` is a normal
-      # rspec-expectations matcher, the error class is different.
-      def fail_including(*snippets)
-        raise_error(RSpec::Expectations::ExpectationNotMetError, a_string_including(*snippets))
+    RSpec.describe Matchers::HaveReceived, "when used in a context that has rspec-mocks and rspec-expectations available" do
+      include_examples Matchers::HaveReceived do
+        # Override `fail_including` for this context, since `have_received` is a normal
+        # rspec-expectations matcher, the error class is different.
+        def fail_including(*snippets)
+          raise_error(RSpec::Expectations::ExpectationNotMetError, a_string_including(*snippets))
+        end
       end
+    end
+
+    RSpec.describe Matchers::HaveReceived, "when used in a context that has only rspec-mocks available" do
+      # We use a delegator here so that matchers can still be created
+      # via the `RSpec::Matchers` methods. This works because we
+      # instantiate `MocksScope` with the example group instance, so
+      # all undefined methods (including matcher methods) forward to it.
+      # However, `RSpec::Mocks::ExampleMethods` defines `expect` so instances
+      # of this class use the version of `expect` defined in rspec-mocks, not
+      # the one from rspec-expectations.
+      class MocksScope
+        include RSpec::Mocks::ExampleMethods
+
+        def initialize(example_group)
+          @example_group = example_group
+        end
+
+        def method_missing(*args, &block)
+          @example_group.__send__(*args, &block)
+        end
+      end
+
+      # Redefine `it` so that we can eval each example in a special scope
+      # to simulate rspec-expectations not being loaded.
+      def self.it(*args, &block)
+        # Necessary so line-number filtering works...
+        args << {} unless Hash === args.last
+        args.last[:caller] = caller
+
+        # delegate to the normal `it`...
+        super(*args) do
+          # ...but eval the block in a special scope that has `expect`
+          # from rspec-mocks, not from rspec-expectations.
+          MocksScope.new(self).instance_exec(&block)
+        end
+      end
+
+      include_examples Matchers::HaveReceived
     end
   end
 end

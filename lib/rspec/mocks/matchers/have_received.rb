@@ -36,11 +36,11 @@ module RSpec
         end
 
         def failure_message
-          generate_failure_message
+          capture_failure_message
         end
 
         def failure_message_when_negated
-          generate_failure_message
+          capture_failure_message
         end
 
         def description
@@ -52,6 +52,14 @@ module RSpec
             @constraints << [expectation, *args]
             self
           end
+        end
+
+        def setup_expectation(subject, &block)
+          notify_failure_message unless matches?(subject, &block)
+        end
+
+        def setup_negative_expectation(subject, &block)
+          notify_failure_message unless does_not_match?(subject, &block)
         end
 
         def setup_allowance(_subject, &_block)
@@ -95,11 +103,15 @@ module RSpec
           end
         end
 
-        def generate_failure_message
+        def capture_failure_message
           RSpec::Support.with_failure_notifier(Proc.new { |err, _opt| return err.message }) do
-            mock_proxy.check_for_unexpected_arguments(@expectation)
-            @expectation.generate_error
+            notify_failure_message
           end
+        end
+
+        def notify_failure_message
+          mock_proxy.check_for_unexpected_arguments(@expectation)
+          @expectation.generate_error
         end
 
         def expected_messages_received_in_order?

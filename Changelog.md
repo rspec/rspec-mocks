@@ -1,6 +1,11 @@
 ### 3.4.0 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.1...master)
 
+Enhancements:
+
+* Make `expect(...).to have_received` work without relying upon
+  rspec-expectations. (Myron Marston, #978)
+
 ### 3.3.1 / 2015-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.0...v3.3.1)
 

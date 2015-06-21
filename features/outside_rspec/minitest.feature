@@ -61,6 +61,28 @@ Feature: Integrate with Minitest
           expect(dbl).to_not receive(:message)
           dbl.message
         end
+
+        def test_passing_positive_spy_expectation
+          bond = spy
+          bond.james
+          expect(bond).to have_received(:james)
+        end
+
+        def test_failing_positive_spy_expectation
+          bond = spy
+          expect(bond).to have_received(:james)
+        end
+
+        def test_passing_negative_spy_expectation
+          bond = spy
+          expect(bond).not_to have_received(:james)
+        end
+
+        def test_failing_negative_spy_expectation
+          bond = spy
+          bond.james
+          expect(bond).not_to have_received(:james)
+        end
       end
       """
      When I run `ruby -Itest test/rspec_mocks_test.rb`
@@ -77,4 +99,16 @@ Feature: Integrate with Minitest
        |     expected: 1 time with any arguments                                       |
        |     received: 0 times with any arguments                                      |
        |                                                                               |
-       |  4 runs, 0 assertions, 0 failures, 2 errors, 0 skips                          |
+       |   3) Error:                                                                   |
+       | RSpecMocksTest#test_failing_positive_spy_expectation:                         |
+       | RSpec::Mocks::MockExpectationError: (Double (anonymous)).james(*(any args))   |
+       |     expected: 1 time with any arguments                                       |
+       |     received: 0 times with any arguments                                      |
+       |                                                                               |
+       |   4) Error:                                                                   |
+       | RSpecMocksTest#test_failing_negative_spy_expectation:                         |
+       | RSpec::Mocks::MockExpectationError: (Double (anonymous)).james(no args)       |
+       |     expected: 0 times with any arguments                                      |
+       |     received: 1 time                                                          |
+       |                                                                               |
+       |  8 runs, 0 assertions, 0 failures, 4 errors, 0 skips                          |
