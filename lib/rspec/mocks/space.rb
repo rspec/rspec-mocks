@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support 'reentrant_mutex'
+
 module RSpec
   module Mocks
     # @private
@@ -142,18 +144,8 @@ module RSpec
 
     private
 
-      # We don't want to depend on the stdlib ourselves, but if the user is
-      # using threads then a Mutex will be available to us. If not, we don't
-      # need to synchronize anyway.
       def new_mutex
-        defined?(::Mutex) ? ::Mutex.new : FakeMutex
-      end
-
-      # @private
-      module FakeMutex
-        def self.synchronize
-          yield
-        end
+        Support::ReentrantMutex.new
       end
 
       def proxy_not_found_for(id, object)
