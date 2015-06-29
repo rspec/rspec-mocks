@@ -407,23 +407,29 @@ module RSpec
     class ProxyForNil < PartialDoubleProxy
       def initialize(order_group)
         @warn_about_expectations = true
+        @disallow_expectations = false
         super(nil, order_group)
       end
 
       attr_accessor :warn_about_expectations
+      attr_accessor :disallow_expectations
       alias warn_about_expectations? warn_about_expectations
+      alias disallow_expectations? disallow_expectations
 
       def add_message_expectation(method_name, opts={}, &block)
+        raise_error(method_name) if disallow_expectations?
         warn(method_name) if warn_about_expectations?
         super
       end
 
       def add_negative_message_expectation(location, method_name, &implementation)
+        raise_error(method_name) if disallow_expectations?
         warn(method_name) if warn_about_expectations?
         super
       end
 
       def add_stub(method_name, opts={}, &implementation)
+        raise_error(method_name) if disallow_expectations?
         warn(method_name) if warn_about_expectations?
         super
       end
@@ -433,6 +439,11 @@ module RSpec
       def warn(method_name)
         source = CallerFilter.first_non_rspec_line
         Kernel.warn("An expectation of :#{method_name} was set on nil. Called from #{source}. Use allow_message_expectations_on_nil to disable warnings.")
+      end
+
+      def raise_error(method_name)
+        source = CallerFilter.first_non_rspec_line
+        raise("An expectation of :#{method_name} was set on nil. Called from #{source}. To allow expectations on nil, set disallow_expectations_on_nil to false.")
       end
     end
   end

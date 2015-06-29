@@ -24,6 +24,13 @@ module RSpec
         nil.foo
       end
 
+      it "raises an error when expectations on nil are disallowed" do
+        disallow_message_expectations_on_nil
+
+        expect { expect(nil).to receive(:foo)     }.to raise_error(StandardError)
+        expect { expect(nil).not_to receive(:bar) }.to raise_error(StandardError)
+      end
+
       it 'does not call #nil? on a double extra times' do
         dbl = double
         expect(dbl).to receive(:nil?).once.and_return(false)
