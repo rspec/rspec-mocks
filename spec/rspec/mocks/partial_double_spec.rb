@@ -383,6 +383,22 @@ module RSpec
         object.implemented
       end
 
+      it 'avoids deadlocks when a proxy is accessed from within a `before_verifying_doubles` callback' do
+        _klass = Class.new { def message; end; }
+        called_for = []
+
+        RSpec.configuration.mock_with(:rspec) do |config|
+          config.before_verifying_doubles do |ref|
+            unless called_for.include? ref.target
+              called_for << ref.target
+              ::RSpec::Mocks.space.proxy_for(ref.target)
+            end
+          end
+        end
+
+        expect { allow(_klass.new).to receive(:message) }.to_not raise_error
+      end
+
       context "for a class" do
         it "only runs the `before_verifying_doubles` callback for the class (not for superclasses)" do
           subclass = Class.new(klass)

@@ -1,3 +1,11 @@
+### 3.3.2 Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.1...3-3-maintenance)
+
+Bug Fixes:
+
+* Prevent thread deadlock errors during proxy creation (e.g. when using
+  `before_verifying_doubles` callbacks). (Jon Rowe, #980, #979)
+
 ### 3.3.1 / 2015-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.0...v3.3.1)
 

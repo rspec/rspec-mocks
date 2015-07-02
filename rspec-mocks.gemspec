@@ -41,4 +41,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'cucumber', '~> 1.3.15'
   s.add_development_dependency 'aruba',    '~> 0.5'
   s.add_development_dependency 'minitest', '~> 5.2'
+  s.add_development_dependency "thread_order", "~> 1.1.0"
 end
