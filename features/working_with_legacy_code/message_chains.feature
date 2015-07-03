@@ -1,6 +1,7 @@
 Feature: Message Chains
 
-  You can use `receive_message_chain` in place of `receive` to stub a chain of messages:
+  You can use `receive_message_chain` in place of `receive` in certain instances
+  to stub a chain of messages:
 
   ```ruby
   allow(double).to receive_message_chain("foo.bar") { :baz }
@@ -19,6 +20,12 @@ Feature: Message Chains
   ```ruby
   allow(Article).to receive_message_chain("recent.published") { [Article.new] }
   ```
+  
+  `receive_message_chain` is designed to be used with evaluating a response like `and_return`, 
+  `and_yield` etc. For legacy reasons, parity with `stub_chain` is supported but its uses are
+  not considered good practice. Support for `stub_chain` pairity may be removed in future versions.
+  
+  Common method chains like `with` and `exactly` (i.e. `exactly(2).times`) are not supported.
 
   Warning:
   ========
@@ -29,6 +36,14 @@ Feature: Message Chains
   `receive_message_chain` still results in brittle examples. For example, if you write
   `allow(foo).to receive_message_chain(:bar, :baz => 37)` in a spec and then the
   implementation calls `foo.baz.bar`, the stub will not work.
+  
+  Method chaining is not fully supported so `receive_message_chain` is not a perfect replacement
+  of `receive`. (see [Issue 921](https://github.com/rspec/rspec-mocks/issues/921) for a more detailed
+  explanation.) Chaining with `recieve_message_chain` creates ambiguity in how the chains should
+  be applied and applies design pressure on complex interactions in the implementation code. Other
+  mocking methods like `double` and `instance_double` provide a better way of testing code with these
+  interactions.
+  
 
   Scenario: Use `receive_message_chain` on a double
     Given a file named "receive_message_chain_spec.rb" with:
