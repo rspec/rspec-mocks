@@ -197,16 +197,9 @@ module RSpec
       # By default warning messages are issued when expectations are set on
       # nil.  This is to prevent false-positives and to catch potential bugs
       # early on.
+      # @deprecated Use {RSpec::Mocks::Configuration#allow_message_expectations_on_nil} instead.
       def allow_message_expectations_on_nil
         RSpec::Mocks.space.proxy_for(nil).warn_about_expectations = false
-      end
-
-      # Raise an error when setting expectations on nil.
-      #
-      # By default warning messages are issued when expectations are set on
-      # nil.  This is to force test failures when an expectation is set on nil.
-      def disallow_message_expectations_on_nil
-        RSpec::Mocks.space.proxy_for(nil).disallow_expectations = true
       end
 
       # Stubs the named constant with the given value.

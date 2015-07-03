@@ -3,11 +3,28 @@ module RSpec
     # Provides configuration options for rspec-mocks.
     class Configuration
       def initialize
+        @allow_message_expectations_on_nil = nil
         @yield_receiver_to_any_instance_implementation_blocks = true
         @verify_doubled_constant_names = false
         @transfer_nested_constants = false
         @verify_partial_doubles = false
       end
+
+      # Sets whether RSpec will warn, ignore, or fail a test when
+      # expectations are set on nil.
+      # By default, when this flag is not set, warning messages are issued when
+      # expectations are set on nil. This is to prevent false-positives and to
+      # catch potential bugs early on.
+      # When set to `true`, warning messages are suppressed.
+      # When set to `false`, it will raise an error.
+      #
+      # @example
+      #   RSpec.configure do |config|
+      #     config.mock_with :rspec do |mocks|
+      #       mocks.allow_message_expectations_on_nil = false
+      #     end
+      #   end
+      attr_accessor :allow_message_expectations_on_nil
 
       def yield_receiver_to_any_instance_implementation_blocks?
         @yield_receiver_to_any_instance_implementation_blocks
