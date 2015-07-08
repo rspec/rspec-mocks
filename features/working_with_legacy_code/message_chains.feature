@@ -1,6 +1,6 @@
 Feature: Message Chains
 
-  You can use `receive_message_chain` in place of `receive` in certain instances
+  You can use `receive_message_chain` in place of `receive` in certain circumstances
   to stub a chain of messages:
 
   ```ruby
@@ -23,9 +23,9 @@ Feature: Message Chains
   
   `receive_message_chain` is designed to be used with evaluating a response like `and_return`, 
   `and_yield` etc. For legacy reasons, parity with `stub_chain` is supported but its uses are
-  not considered good practice. Support for `stub_chain` pairity may be removed in future versions.
+  not considered good practice. Support for `stub_chain` parity may be removed in future versions.
   
-  Common method chains like `with` and `exactly` (i.e. `exactly(2).times`) are not supported.
+  Customisations like `exactly` (i.e. `exactly(2).times`) are not supported.
 
   Warning:
   ========
