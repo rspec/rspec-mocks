@@ -5,6 +5,8 @@ Enhancements:
 
 * Make `expect(...).to have_received` work without relying upon
   rspec-expectations. (Myron Marston, #978)
+* Add option for failing tests when expectations are set on `nil`.
+  (Liz Rush, #983)
 
 ### 3.3.1 / 2015-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.0...v3.3.1)
