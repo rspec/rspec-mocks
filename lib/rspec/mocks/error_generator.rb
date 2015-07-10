@@ -218,9 +218,9 @@ module RSpec
       end
 
       def expectation_on_nil_message(method_name)
-        "An expectation of :#{method_name} was set on nil. " \
-          "To allow expectations on nil & suppress this message, set allow_expectations_on_nil to true. " \
-          "To disallow expectations on nil, set allow_expectations_on_nil to false"
+        "An expectation of `:#{method_name}` was set on `nil`. " \
+        "To allow expectations on `nil` and suppress this message, set `config.allow_expectations_on_nil` to `true`. " \
+        "To disallow expectations on `nil`, set `config.allow_expectations_on_nil` to `false`"
       end
 
     private
