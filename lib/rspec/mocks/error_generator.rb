@@ -213,6 +213,16 @@ module RSpec
         notify MockExpectationAlreadyInvokedError.new(error_message)
       end
 
+      def raise_expectation_on_nil_error(method_name)
+        __raise expectation_on_nil_message(method_name)
+      end
+
+      def expectation_on_nil_message(method_name)
+        "An expectation of :#{method_name} was set on nil. " \
+          "To allow expectations on nil & suppress this message, set allow_expectations_on_nil to true. " \
+          "To disallow expectations on nil, set allow_expectations_on_nil to false"
+      end
+
     private
 
       def received_part_of_expectation_error(actual_received_count, args)

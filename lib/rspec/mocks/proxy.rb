@@ -406,33 +406,62 @@ module RSpec
     # @private
     class ProxyForNil < PartialDoubleProxy
       def initialize(order_group)
-        @warn_about_expectations = true
+        set_expectation_behavior
         super(nil, order_group)
       end
 
+      attr_accessor :disallow_expectations
       attr_accessor :warn_about_expectations
-      alias warn_about_expectations? warn_about_expectations
 
       def add_message_expectation(method_name, opts={}, &block)
-        warn(method_name) if warn_about_expectations?
+        warn_or_raise!(method_name)
         super
       end
 
       def add_negative_message_expectation(location, method_name, &implementation)
-        warn(method_name) if warn_about_expectations?
+        warn_or_raise!(method_name)
         super
       end
 
       def add_stub(method_name, opts={}, &implementation)
-        warn(method_name) if warn_about_expectations?
+        warn_or_raise!(method_name)
         super
       end
 
     private
 
+      def set_expectation_behavior
+        case RSpec::Mocks.configuration.allow_message_expectations_on_nil
+        when false
+          @warn_about_expectations = false
+          @disallow_expectations = true
+        when true
+          @warn_about_expectations = false
+          @disallow_expectations = false
+        else
+          @warn_about_expectations = true
+          @disallow_expectations = false
+        end
+      end
+
+      def warn_or_raise!(method_name)
+        # This method intentionally swallows the message when
+        # neither disallow_expectations nor warn_about_expectations
+        # are set to true.
+        if disallow_expectations
+          raise_error(method_name)
+        elsif warn_about_expectations
+          warn(method_name)
+        end
+      end
+
       def warn(method_name)
-        source = CallerFilter.first_non_rspec_line
-        Kernel.warn("An expectation of :#{method_name} was set on nil. Called from #{source}. Use allow_message_expectations_on_nil to disable warnings.")
+        warning_msg = @error_generator.expectation_on_nil_message(method_name)
+        RSpec.warning(warning_msg)
+      end
+
+      def raise_error(method_name)
+        @error_generator.raise_expectation_on_nil_error(method_name)
       end
     end
   end
