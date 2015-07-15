@@ -1,5 +1,5 @@
-### 3.3.2 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.1...3-3-maintenance)
+### 3.3.2 / 2015-07-15
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.1...v3.3.2)
 
 Bug Fixes:
 
