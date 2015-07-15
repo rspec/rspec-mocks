@@ -1,5 +1,5 @@
 ### 3.4.0 Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.1...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.2...master)
 
 Enhancements:
 
@@ -7,6 +7,14 @@ Enhancements:
   rspec-expectations. (Myron Marston, #978)
 * Add option for failing tests when expectations are set on `nil`.
   (Liz Rush, #983)
+
+### 3.3.2 / 2015-07-15
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.1...v3.3.2)
+
+Bug Fixes:
+
+* Prevent thread deadlock errors during proxy creation (e.g. when using
+  `before_verifying_doubles` callbacks). (Jon Rowe, #980, #979)
 
 ### 3.3.1 / 2015-06-19
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.0...v3.3.1)
