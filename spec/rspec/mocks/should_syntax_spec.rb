@@ -500,7 +500,7 @@ RSpec.context "with default syntax configuration" do
 
   it "warns about unstubbing once, regardless of how many times it is called" do
     expect(RSpec).to receive(:deprecate).with(/Using.*without explicitly enabling/,
-      {:replacement => "`allow(...).to_receive(...).and_call_original` or explicitly enable `:should`"})
+      {:replacement => "`allow(...).to receive(...).and_call_original` or explicitly enable `:should`"})
     o = Object.new
     o2 = Object.new
 

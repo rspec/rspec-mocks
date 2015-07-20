@@ -48,7 +48,7 @@ module RSpec
           end
 
           def unstub(message)
-            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__, "`allow(...).to_receive(...).and_call_original` or explicitly enable `:should`")
+            ::RSpec::Mocks::Syntax.warn_unless_should_configured(__method__, "`allow(...).to receive(...).and_call_original` or explicitly enable `:should`")
             ::RSpec::Mocks.space.proxy_for(self).remove_stub(message)
           end
 
