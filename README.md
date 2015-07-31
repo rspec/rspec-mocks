@@ -27,7 +27,7 @@ can treat each RSpec repo as an independent project.
 
 For information about contributing to RSpec, please refer to the following markdown files:
 * [Build details](BUILD_DETAIL.md)
-* [Code of Conduct](code_of_conduct.md)
+* [Code of Conduct](CODE_OF_CONDUCT.md)
 * [Detailed contributing guide](CONTRIBUTING.md)
 * [Development setup guide](DEVELOPMENT.md)
 
