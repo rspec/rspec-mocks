@@ -328,6 +328,13 @@ module RSpec
       #   expect(api).to receive(:run).ordered
       #   expect(api).to receive(:finish).ordered
       def ordered(&block)
+        if type == :stub
+          RSpec.warning(
+            "`allow(...).to receive(..).ordered` is not supported and will" \
+            "have no effect, use `and_return(*ordered_values)` instead."
+          )
+        end
+
         self.inner_implementation_action = block
         additional_expected_calls.times do
           @order_group.register(self)
@@ -349,9 +356,13 @@ module RSpec
         attr_writer :expected_received_count, :expected_from, :argument_list_matcher
         protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
+        # @private
+        attr_reader :type
+
         # rubocop:disable Style/ParameterLists
         def initialize(error_generator, expectation_ordering, expected_from, method_double,
                        type=:expectation, opts={}, &implementation_block)
+          @type = type
           @error_generator = error_generator
           @error_generator.opts = opts
           @expected_from = expected_from
