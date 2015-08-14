@@ -425,6 +425,19 @@ general we discourage its use for a number of reasons:
   which doesn't help.)
 
 
+## Using rspec-mocks with minitest 5.6+
+
+The latest versions of minitest also define an `expect` method. To use the
+`expect` method defined by rspec-mocks with minitest, load the following file
+**after** minitest is loaded:
+
+```ruby
+require "rspec/mocks/minitest_integration"
+```
+
+minitest style `expect` usage should continue to work as normal. 
+
+
 ## Further Reading
 
 There are many different viewpoints about the meaning of mocks and stubs. If
