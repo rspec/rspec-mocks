@@ -129,6 +129,16 @@ module RSpec
           _expect(called).not_to include(:do_end)
         end
 
+        it 'forwards any block passed during method invocation to the `have_received` block' do
+          dbl = spy
+          block = lambda { }
+          dbl.foo(&block)
+
+          expect(dbl).to have_received(:foo) do |&passed_block|
+            _expect(passed_block).to be block
+          end
+        end
+
         it 'resets expectations on class methods when mocks are reset' do
           dbl = Object
           allow(dbl).to receive(:expected_method)

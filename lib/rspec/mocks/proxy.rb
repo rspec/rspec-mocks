@@ -89,11 +89,11 @@ module RSpec
           @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
         end
 
-        @messages_received.each do |(actual_method_name, args, _)|
+        @messages_received.each do |(actual_method_name, args, received_block)|
           next unless expectation.matches?(actual_method_name, *args)
 
           expectation.safe_invoke(nil)
-          block.call(*args) if block
+          block.call(*args, &received_block) if block
         end
       end
 

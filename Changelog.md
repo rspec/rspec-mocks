@@ -8,6 +8,11 @@ Enhancements:
 * Add option for failing tests when expectations are set on `nil`.
   (Liz Rush, #983)
 
+Bug Fixes:
+
+* Fix `have_received { ... }` so that any block passed when the message
+  was received is forwarded to the `have_received` block. (Myron Marston, #1006)
+
 ### 3.3.2 / 2015-07-15
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.1...v3.3.2)
 
