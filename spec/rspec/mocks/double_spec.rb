@@ -84,7 +84,7 @@ module RSpec
         }
       end
 
-      it "reports line number of expectation of unreceived message after a message expecation after similar stub" do
+      it "reports line number of expectation of unreceived message after a message expectation after similar stub" do
         allow(@double).to receive(:wont_happen)
         expected_error_line = __LINE__; expect(@double).to receive(:wont_happen).with("x", 3)
         expect {
@@ -175,7 +175,7 @@ module RSpec
         end
       end
 
-      it 'does not get confused when a negative expecation is used with a string and symbol message' do
+      it 'does not get confused when a negative expectation is used with a string and symbol message' do
         allow(@double).to receive(:foo) { 3 }
         expect(@double).not_to receive(:foo).with(1)
         expect(@double).not_to receive("foo").with(2)
