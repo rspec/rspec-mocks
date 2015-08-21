@@ -2,7 +2,7 @@ module RSpec
   module Mocks
     # A message expectation that only allows concrete return values to be set
     # for a message. While this same effect can be achieved using a standard
-    # MessageExpecation, this version is much faster and so can be used as an
+    # MessageExpectation, this version is much faster and so can be used as an
     # optimization.
     #
     # @private
@@ -169,7 +169,7 @@ module RSpec
       # Tells the object to yield one or more args to a block when the message
       # is received.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   stream.stub(:open).and_yield(StringIO.new)
       def and_yield(*args, &block)
@@ -191,7 +191,7 @@ module RSpec
       # Constrain a message expectation to be received a specific number of
       # times.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(dealer).to receive(:deal_card).exactly(10).times
       def exactly(n, &block)
@@ -204,7 +204,7 @@ module RSpec
       # Constrain a message expectation to be received at least a specific
       # number of times.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(dealer).to receive(:deal_card).at_least(9).times
       def at_least(n, &block)
@@ -223,7 +223,7 @@ module RSpec
       # Constrain a message expectation to be received at most a specific
       # number of times.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(dealer).to receive(:deal_card).at_most(10).times
       def at_most(n, &block)
@@ -235,7 +235,7 @@ module RSpec
 
       # Syntactic sugar for `exactly`, `at_least` and `at_most`
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(dealer).to receive(:deal_card).exactly(10).times
       #   expect(dealer).to receive(:deal_card).at_least(10).times
@@ -247,7 +247,7 @@ module RSpec
 
       # Expect a message not to be received at all.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(car).to receive(:stop).never
       def never
@@ -258,7 +258,7 @@ module RSpec
 
       # Expect a message to be received exactly one time.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(car).to receive(:go).once
       def once(&block)
@@ -269,7 +269,7 @@ module RSpec
 
       # Expect a message to be received exactly two times.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(car).to receive(:go).twice
       def twice(&block)
@@ -280,7 +280,7 @@ module RSpec
 
       # Expect a message to be received exactly three times.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(car).to receive(:go).thrice
       def thrice(&block)
@@ -302,7 +302,7 @@ module RSpec
       # A message expectation will fail if the message is received with different
       # arguments.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   allow(cart).to receive(:add) { :failure }
       #   allow(cart).to receive(:add).with(Book.new(:isbn => 1934356379)) { :success }
@@ -330,7 +330,7 @@ module RSpec
 
       # Expect messages to be received in a specific order.
       #
-      # @return [MessageExpecation] self, to support further chaining.
+      # @return [MessageExpectation] self, to support further chaining.
       # @example
       #   expect(api).to receive(:prepare).ordered
       #   expect(api).to receive(:run).ordered
@@ -345,7 +345,7 @@ module RSpec
       end
 
       # @private
-      # Contains the parts of `MessageExpecation` that aren't part of
+      # Contains the parts of `MessageExpectation` that aren't part of
       # rspec-mocks' public API. The class is very big and could really use
       # some collaborators it delegates to for this stuff but for now this was
       # the simplest way to split the public from private stuff to make it

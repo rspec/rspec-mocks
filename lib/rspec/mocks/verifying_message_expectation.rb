@@ -42,7 +42,7 @@ module RSpec
           verifier = Support::LooseSignatureVerifier.new(signature, args)
 
           unless verifier.valid?
-            # Fail fast is required, otherwise the message expecation will fail
+            # Fail fast is required, otherwise the message expectation will fail
             # as well ("expected method not called") and clobber this one.
             @failed_fast = true
             @error_generator.raise_invalid_arguments_error(verifier)

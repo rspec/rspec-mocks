@@ -918,13 +918,13 @@ module RSpec
             end
 
             context "when combined with other expectations" do
-              it "passes when the other expecations are met" do
+              it "passes when the other expectations are met" do
                 expect_any_instance_of(klass).to receive(:foo).never
                 expect_any_instance_of(klass).to receive(:existing_method).and_return(5)
                 expect(klass.new.existing_method).to eq(5)
               end
 
-              it "fails when the other expecations are not met" do
+              it "fails when the other expectations are not met" do
                 expect do
                   expect_any_instance_of(klass).to receive(:foo).never
                   expect_any_instance_of(klass).to receive(:existing_method).and_return(5)

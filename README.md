@@ -360,7 +360,7 @@ end
 ## Delegating to the Original Implementation
 
 When working with a partial mock object, you may occasionally
-want to set a message expecation without interfering with how
+want to set a message expectation without interfering with how
 the object responds to the message. You can use `and_call_original`
 to achieve this:
 

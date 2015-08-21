@@ -23,7 +23,7 @@ RSpec.describe "expection set on previously stubbed method" do
     reset dbl
   end
 
-  it 'indicates the site of expecation in the stacktrace when outputing arguments of similar calls' do
+  it 'indicates the site of expectation in the stacktrace when outputing arguments of similar calls' do
     dbl = double('double', :foo => true)
     expect(dbl).to receive(:foo).with('first'); line = __LINE__
 
