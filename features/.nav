@@ -18,6 +18,7 @@
   - throwing.feature
   - yielding.feature
   - calling_the_original_implementation.feature
+  - wrapping_the_original_implementation.feature
   - block_implementation.feature
 - setting_constraints:
   - matching_arguments.feature
