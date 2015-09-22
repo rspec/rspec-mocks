@@ -43,6 +43,23 @@ module RSpec
         expect(object.bar).to eq(2)
       end
 
+      it 'allows `respond_to?` to be stubbed' do
+        the_klass = Class.new do
+          def call(name)
+            if respond_to?(name)
+              send(name)
+            end
+          end
+        end
+
+        an_object = the_klass.new
+
+        expect(an_object).to receive(:respond_to?).with(:my_method) { true }
+        expect(an_object).to receive(:my_method)
+
+        an_object.call :my_method
+      end
+
       it "can disallow messages from being received" do
         expect(object).not_to receive(:fuhbar)
         expect_fast_failure_from(

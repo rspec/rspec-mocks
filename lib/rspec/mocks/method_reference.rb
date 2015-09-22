@@ -94,7 +94,24 @@ module RSpec
           # write `method_missing` in such a way that it handles a dynamic message
           # with private or protected visibility. Ruby doesn't provide you with
           # the caller info.
-          return :public if vis.nil? && object.respond_to?(method_name, false)
+          return :public if vis.nil? && object_responds_to?(object, method_name, false)
+        end
+      end
+
+      # @api private
+      KERNEL_RESPOND_TO_METHOD = ::Kernel.instance_method(:respond_to?)
+
+      if Support::RubyFeatures.supports_rebinding_module_methods?
+        def self.object_responds_to?(object, method_name, visibility)
+          KERNEL_RESPOND_TO_METHOD.bind(object).call(method_name, visibility)
+        end
+      else
+        def self.object_responds_to?(object, method_name, visibility)
+          if ::Kernel === object
+            KERNEL_RESPOND_TO_METHOD.bind(object).call(method_name, visibility)
+          else
+            object.respond_to?(method_name, visibility)
+          end
         end
       end
     end
