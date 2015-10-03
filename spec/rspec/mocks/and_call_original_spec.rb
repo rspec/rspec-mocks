@@ -1,6 +1,38 @@
 require 'delegate'
 
 RSpec.describe "and_call_original" do
+  context "on a decorator that lazily defines delegated methods via `method_missing`" do
+    let(:klass) do
+      Class.new do
+        def meth_1; :original; end
+      end
+    end
+
+    let(:decorator_class) do
+      Class.new do
+        def initialize(object)
+          @object = object
+        end
+
+        def method_missing(name, *args)
+          self.class.class_exec do
+            define_method(name, *args) do
+              @object.__send__(name, *args)
+            end
+          end
+
+          __send__(name, *args)
+        end
+      end
+    end
+
+    it "calls the original properly" do
+      decorator = decorator_class.new(klass.new)
+      expect(decorator).to receive(:meth_1).and_call_original
+      expect(decorator.meth_1).to eq :original
+    end
+  end
+
   context "on a partial double" do
     let(:klass) do
       Class.new do
