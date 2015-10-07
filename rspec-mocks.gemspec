@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = "RSpec's 'test double' framework, with support for stubbing and mocking"
 
   s.files            = `git ls-files -- lib/*`.split("\n")
-  s.files           += %w[README.md License.txt Changelog.md .yardopts .document]
+  s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
   s.test_files       = []
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
