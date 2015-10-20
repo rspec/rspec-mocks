@@ -392,26 +392,18 @@ module RSpec
 
             reset_all
           end
-        end
 
-        context "when expected message is respond_to?" do
-          context "and conditions are placed on expected call" do
-            context "and the conditions fail... :(" do
-              it "does not result in infinite recursion and stack overflow" do
-                # Setting a method expectation causes the method to be proxied
-                # RSpec may call #respond_to? when processing a failed expectation
-                # If those internal calls go to the proxied method, that could
-                #   result in another failed expectation error, causing infinite loop
-
-                expect {
-                  obj = Object.new
-                  expect(obj).to receive(:respond_to?).with('something highly unlikely')
-                  obj.respond_to?(:not_what_we_wanted)
-                }.to raise_error(/received :respond_to\? with unexpected arguments/)
-
-                reset_all
-              end
-            end
+          it 'does not result in infinite recursion when `respond_to?` is stubbed' do
+            # Setting a method expectation causes the method to be proxied
+            # RSpec may call #respond_to? when processing a failed expectation
+            # If those internal calls go to the proxied method, that could
+            #   result in another failed expectation error, causing infinite loop
+            expect {
+              obj = Object.new
+              expect(obj).to receive(:respond_to?).with('something highly unlikely')
+              obj.respond_to?(:not_what_we_wanted)
+            }.to raise_error(/received :respond_to\? with unexpected arguments/)
+            reset_all
           end
         end
       end
