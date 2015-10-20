@@ -366,7 +366,7 @@ module RSpec
 
               dbl.one
               dbl.two
-            }.to raise_error
+            }.to fail
 
             reset_all
           end
@@ -388,7 +388,7 @@ module RSpec
               dbl.one
               dbl.one
               dbl.two
-            }.to raise_error
+            }.to fail
 
             reset_all
           end
