@@ -30,7 +30,7 @@ RSpec.describe "and_call_original" do
       end
     end
 
-    context "when a non-existant method has been stubbed previously" do
+    context "when a non-existent method has been stubbed previously" do
       it 'restores the original NameError behavior' do
         expect { instance.abcd }.to raise_error(NameError).with_message(/abcd/)
 
@@ -249,7 +249,7 @@ RSpec.describe "and_call_original" do
 
     let(:request) { request_klass.new(:get, "http://foo.com/bar") }
 
-    it 'still works even though #method has been overriden' do
+    it 'still works even though #method has been overridden' do
       expect(request).to receive(:perform).and_call_original
       expect(request.perform).to eq(:the_response)
     end
