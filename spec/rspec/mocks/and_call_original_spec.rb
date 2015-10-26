@@ -30,7 +30,7 @@ RSpec.describe "and_call_original" do
       end
     end
 
-    context "when a non-existant method has been stubbed previously" do
+    context "when a non-existent method has been stubbed previously" do
       it 'restores the original NameError behavior' do
         expect { instance.abcd }.to raise_error(NameError).with_message(/abcd/)
 
@@ -143,6 +143,19 @@ RSpec.describe "and_call_original" do
       expect(subclass.new_instance).to be_a(subclass)
     end
 
+    context 'when a class method is stubbed in the superclass' do
+      it 'still works for class methods defined on a superclass' do
+        superclass = Class.new { def self.foo; "foo"; end }
+        subclass   = Class.new(superclass)
+
+        allow(superclass).to receive(:foo).and_return(:fake)
+        expect(subclass).to receive(:foo).and_call_original
+
+        expect(superclass.foo).to be :fake
+        expect(subclass.foo).to eq "foo"
+      end
+    end
+
     it 'works for class methods defined on a grandparent class' do
       sub_subclass = Class.new(Class.new(klass))
       expect(sub_subclass).to receive(:new_instance).and_call_original
@@ -236,7 +249,7 @@ RSpec.describe "and_call_original" do
 
     let(:request) { request_klass.new(:get, "http://foo.com/bar") }
 
-    it 'still works even though #method has been overriden' do
+    it 'still works even though #method has been overridden' do
       expect(request).to receive(:perform).and_call_original
       expect(request.perform).to eq(:the_response)
     end

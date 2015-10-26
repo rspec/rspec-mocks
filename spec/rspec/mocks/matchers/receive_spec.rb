@@ -267,6 +267,44 @@ module RSpec
         it_behaves_like "resets partial mocks cleanly" do
           let(:target) { allow(object) }
         end
+
+        context 'on a class method, from a class with subclasses' do
+          let(:superclass)     { Class.new { def self.foo; "foo"; end }}
+          let(:subclass_redef) { Class.new(superclass) { def self.foo; ".foo."; end }}
+          let(:subclass_deleg) { Class.new(superclass) { def self.foo; super.upcase; end }}
+          let(:subclass_asis)  { Class.new(superclass) }
+
+          context 'if the method is redefined in the subclass' do
+            it 'does not stub the method in the subclass' do
+              allow(superclass).to receive(:foo) { "foo!!" }
+              expect(superclass.foo).to eq "foo!!"
+              expect(subclass_redef.foo).to eq ".foo."
+            end
+          end
+
+          context 'if the method is not redefined in the subclass' do
+            it 'stubs the method in the subclass' do
+              allow(superclass).to receive(:foo) { "foo!!" }
+              expect(superclass.foo).to eq "foo!!"
+              expect(subclass_asis.foo).to eq "foo!!"
+            end
+          end
+
+          it 'creates stub which can be called using `super` in a subclass' do
+            allow(superclass).to receive(:foo) { "foo!!" }
+            expect(subclass_deleg.foo).to eq "FOO!!"
+          end
+
+          it 'can stub the same method simultaneously in the superclass and subclasses' do
+            allow(subclass_redef).to receive(:foo) { "__foo__" }
+            allow(superclass).to     receive(:foo) { "foo!!" }
+            allow(subclass_deleg).to receive(:foo) { "$$foo$$" }
+
+            expect(subclass_redef.foo).to eq "__foo__"
+            expect(superclass.foo).to     eq "foo!!"
+            expect(subclass_deleg.foo).to eq "$$foo$$"
+          end
+        end
       end
 
       describe "allow(...).not_to receive" do
