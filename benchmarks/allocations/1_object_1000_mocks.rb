@@ -1,5 +1,5 @@
 require_relative "helper"
-symbols = (1..1000).map {|x| :"#{x}"}
+symbols = (1..1000).map { |x| :"#{x}" }
 
 benchmark_allocations do
   o = Object.new

@@ -27,7 +27,7 @@ RSpec.describe "a double declaration with a block handed to:" do
     it 'forwards all given args to the block, even when it receives a block' do
       obj = Object.new
       yielded_args = []
-      allow(obj).to receive(:foo) { |*args, &bl| yielded_args << args }
+      allow(obj).to receive(:foo) { |*args, &_| yielded_args << args }
       obj.foo(1, 2, 3)
 
       expect(yielded_args).to eq([[1, 2, 3]])
@@ -43,7 +43,7 @@ RSpec.describe "a double declaration with a block handed to:" do
 
     it "returns the value of executing the block with given argument" do
       obj = Object.new
-      allow(obj).to receive(:foo).with('baz') {|x| 'bar' + x }
+      allow(obj).to receive(:foo).with('baz') { |x| 'bar' + x }
       expect(obj.foo('baz')).to eq('barbaz')
     end
   end

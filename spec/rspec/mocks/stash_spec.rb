@@ -3,7 +3,7 @@ module RSpec
     RSpec.describe "only stashing the original method" do
       let(:klass) do
         Class.new do
-          def self.foo(arg)
+          def self.foo(_)
             :original_value
           end
         end

@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
 require 'benchmark'
 require 'rspec/mocks'
 
-N = ENV.fetch('N', 10000).to_i
+N = ENV.fetch('N', 10_000).to_i
 M = ENV.fetch('M', 5).to_i
 
 puts "#{N} times, #{M} constants - ruby #{RUBY_VERSION}"

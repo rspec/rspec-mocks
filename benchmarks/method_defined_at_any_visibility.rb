@@ -4,10 +4,10 @@ n = 1_000_000
 
 Foo = Class.new do
   1.upto(n) do |i|
-    define_method(:"public_method_#{i}") { }
-    define_method(:"protected_method_#{i}") { }
+    define_method(:"public_method_#{i}") {}
+    define_method(:"protected_method_#{i}") {}
     protected :"protected_method_#{i}"
-    define_method(:"private_method_#{i}") { }
+    define_method(:"private_method_#{i}") {}
     private :"protected_method_#{i}"
   end
 end

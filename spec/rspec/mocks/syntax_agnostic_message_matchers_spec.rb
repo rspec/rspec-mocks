@@ -1,6 +1,5 @@
 module RSpec
   module Mocks
-
     RSpec.describe ".allow_message" do
       let(:subject) { Object.new }
 
@@ -92,8 +91,6 @@ module RSpec
 
         verify subject
       end
-
     end
-
   end
 end

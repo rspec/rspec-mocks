@@ -80,8 +80,7 @@ module RSpec
         o = instance_double('LoadedClass', :defined_instance_method => 25)
         expect {
           o.defined_instance_method(:a)
-        }.to raise_error(ArgumentError,
-                           "Wrong number of arguments. Expected 0, got 1.")
+        }.to raise_error(ArgumentError, "Wrong number of arguments. Expected 0, got 1.")
       end
 
       if required_kw_args_supported?
@@ -131,7 +130,7 @@ module RSpec
           end
         end
 
-        it 'checks that stubbed methods with required keyword args are ' +
+        it 'checks that stubbed methods with required keyword args are ' \
            'invoked with the required arguments' do
           o = instance_double('LoadedClass', :kw_args_method => true)
           expect {

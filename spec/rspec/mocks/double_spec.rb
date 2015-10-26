@@ -195,63 +195,63 @@ module RSpec
       end
 
       it "allows parameter as return value" do
-        expect(@double).to receive(:something).with("a","b","c").and_return("booh")
-        expect(@double.something("a","b","c")).to eq "booh"
+        expect(@double).to receive(:something).with("a", "b", "c").and_return("booh")
+        expect(@double.something("a", "b", "c")).to eq "booh"
         verify @double
       end
 
       it "returns the previously stubbed value if no return value is set" do
-        allow(@double).to receive(:something).with("a","b","c").and_return(:stubbed_value)
-        expect(@double).to receive(:something).with("a","b","c")
-        expect(@double.something("a","b","c")).to eq :stubbed_value
+        allow(@double).to receive(:something).with("a", "b", "c").and_return(:stubbed_value)
+        expect(@double).to receive(:something).with("a", "b", "c")
+        expect(@double.something("a", "b", "c")).to eq :stubbed_value
         verify @double
       end
 
       it "returns nil if no return value is set and there is no previously stubbed value" do
-        expect(@double).to receive(:something).with("a","b","c")
-        expect(@double.something("a","b","c")).to be_nil
+        expect(@double).to receive(:something).with("a", "b", "c")
+        expect(@double.something("a", "b", "c")).to be_nil
         verify @double
       end
 
       it "raises exception if args don't match when method called" do
-        expect(@double).to receive(:something).with("a","b","c").and_return("booh")
+        expect(@double).to receive(:something).with("a", "b", "c").and_return("booh")
         expect {
-          @double.something("a","d","c")
+          @double.something("a", "d", "c")
         }.to fail_with "#<Double \"test double\"> received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")"
       end
 
       describe "even when a similar expectation with different arguments exist" do
         it "raises exception if args don't match when method called, correctly reporting the offending arguments" do
-          expect(@double).to receive(:something).with("a","b","c").once
-          expect(@double).to receive(:something).with("z","x","c").once
+          expect(@double).to receive(:something).with("a", "b", "c").once
+          expect(@double).to receive(:something).with("z", "x", "c").once
           expect {
-            @double.something("a","b","c")
-            @double.something("z","x","g")
+            @double.something("a", "b", "c")
+            @double.something("z", "x", "g")
           }.to fail_with "#<Double \"test double\"> received :something with unexpected arguments\n  expected: (\"z\", \"x\", \"c\")\n       got: (\"z\", \"x\", \"g\")"
         end
       end
 
       it "raises exception if args don't match when method called even when the method is stubbed" do
         allow(@double).to receive(:something)
-        expect(@double).to receive(:something).with("a","b","c")
+        expect(@double).to receive(:something).with("a", "b", "c")
         expect {
-          @double.something("a","d","c")
+          @double.something("a", "d", "c")
           verify @double
         }.to fail_with "#<Double \"test double\"> received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")"
       end
 
       it "raises exception if args don't match when method called even when using null_object" do
         @double = double("test double").as_null_object
-        expect(@double).to receive(:something).with("a","b","c")
+        expect(@double).to receive(:something).with("a", "b", "c")
         expect {
-          @double.something("a","d","c")
+          @double.something("a", "d", "c")
           verify @double
         }.to fail_with "#<Double \"test double\"> received :something with unexpected arguments\n  expected: (\"a\", \"b\", \"c\")\n       got: (\"a\", \"d\", \"c\")"
       end
 
       describe 'with a method that has a default argument' do
         it "raises an exception if the arguments don't match when the method is called, correctly reporting the offending arguments" do
-          def @double.method_with_default_argument(arg={}); end
+          def @double.method_with_default_argument(_={}); end
           expect(@double).to receive(:method_with_default_argument).with({})
 
           expect {
@@ -263,7 +263,7 @@ module RSpec
 
       it "fails if unexpected method called" do
         expect {
-          @double.something("a","b","c")
+          @double.something("a", "b", "c")
         }.to fail_with "#<Double \"test double\"> received unexpected message :something with (\"a\", \"b\", \"c\")"
       end
 
@@ -289,13 +289,13 @@ module RSpec
 
       it "is wrappable in an array" do
         with_isolated_stderr do
-          expect( Array(@double) ).to eq([@double])
+          expect(Array(@double)).to eq([@double])
         end
       end
 
       it "is wrappable in an array when a null object" do
         with_isolated_stderr do
-          expect( Array(@double.as_null_object) ).to eq [@double]
+          expect(Array(@double.as_null_object)).to eq [@double]
         end
       end
 
@@ -319,7 +319,7 @@ module RSpec
       end
 
       it "passes proc to expectation block with an argument" do
-        expect(@double).to receive(:foo) { |arg, &block| expect(block.call).to eq(:bar) }
+        expect(@double).to receive(:foo) { |_, &block| expect(block.call).to eq(:bar) }
         @double.foo(:arg) { :bar }
       end
 
@@ -329,7 +329,7 @@ module RSpec
       end
 
       it "passes proc to stub block with an argument" do
-        allow(@double).to receive(:foo) { |arg, &block| expect(block.call).to eq(:bar) }
+        allow(@double).to receive(:foo) { |_, &block| expect(block.call).to eq(:bar) }
         @double.foo(:arg) { :bar }
       end
 
@@ -407,7 +407,7 @@ module RSpec
       end
 
       it "fails on no args if any args received" do
-        expect(@double).to receive(:something).with(no_args())
+        expect(@double).to receive(:something).with(no_args)
         expect {
           @double.something 1
         }.to fail_with "#<Double \"test double\"> received :something with unexpected arguments\n  expected: (no args)\n       got: (1)"
@@ -428,99 +428,99 @@ module RSpec
       end
 
       it "yields 0 args to blocks that take a variable number of arguments" do
-        expect(@double).to receive(:yield_back).with(no_args()).once.and_yield
+        expect(@double).to receive(:yield_back).with(no_args).once.and_yield
         a = nil
-        @double.yield_back {|*x| a = x}
+        @double.yield_back { |*x| a = x }
         expect(a).to eq []
         verify @double
       end
 
       it "yields 0 args multiple times to blocks that take a variable number of arguments" do
-        expect(@double).to receive(:yield_back).once.with(no_args()).once.and_yield.
+        expect(@double).to receive(:yield_back).once.with(no_args).once.and_yield.
                                                                     and_yield
         b = []
-        @double.yield_back {|*a| b << a}
-        expect(b).to eq [ [], [] ]
+        @double.yield_back { |*a| b << a }
+        expect(b).to eq [[], []]
         verify @double
       end
 
       it "yields one arg to blocks that take a variable number of arguments" do
-        expect(@double).to receive(:yield_back).with(no_args()).once.and_yield(99)
+        expect(@double).to receive(:yield_back).with(no_args).once.and_yield(99)
         a = nil
-        @double.yield_back {|*x| a = x}
+        @double.yield_back { |*x| a = x }
         expect(a).to eq [99]
         verify @double
       end
 
       it "yields one arg 3 times consecutively to blocks that take a variable number of arguments" do
-        expect(@double).to receive(:yield_back).once.with(no_args()).once.and_yield(99).
+        expect(@double).to receive(:yield_back).once.with(no_args).once.and_yield(99).
                                                                     and_yield(43).
                                                                     and_yield("something fruity")
         b = []
-        @double.yield_back {|*a| b << a}
+        @double.yield_back { |*a| b << a }
         expect(b).to eq [[99], [43], ["something fruity"]]
         verify @double
       end
 
       it "yields many args to blocks that take a variable number of arguments" do
-        expect(@double).to receive(:yield_back).with(no_args()).once.and_yield(99, 27, "go")
+        expect(@double).to receive(:yield_back).with(no_args).once.and_yield(99, 27, "go")
         a = nil
-        @double.yield_back {|*x| a = x}
+        @double.yield_back { |*x| a = x }
         expect(a).to eq [99, 27, "go"]
         verify @double
       end
 
       it "yields many args 3 times consecutively to blocks that take a variable number of arguments" do
-        expect(@double).to receive(:yield_back).once.with(no_args()).once.and_yield(99, :green, "go").
+        expect(@double).to receive(:yield_back).once.with(no_args).once.and_yield(99, :green, "go").
                                                                     and_yield("wait", :amber).
                                                                     and_yield("stop", 12, :red)
         b = []
-        @double.yield_back {|*a| b << a}
+        @double.yield_back { |*a| b << a }
         expect(b).to eq [[99, :green, "go"], ["wait", :amber], ["stop", 12, :red]]
         verify @double
       end
 
       it "yields single value" do
-        expect(@double).to receive(:yield_back).with(no_args()).once.and_yield(99)
+        expect(@double).to receive(:yield_back).with(no_args).once.and_yield(99)
         a = nil
-        @double.yield_back {|x| a = x}
+        @double.yield_back { |x| a = x }
         expect(a).to eq 99
         verify @double
       end
 
       it "yields single value 3 times consecutively" do
-        expect(@double).to receive(:yield_back).once.with(no_args()).once.and_yield(99).
+        expect(@double).to receive(:yield_back).once.with(no_args).once.and_yield(99).
                                                                     and_yield(43).
                                                                     and_yield("something fruity")
         b = []
-        @double.yield_back {|a| b << a}
+        @double.yield_back { |a| b << a }
         expect(b).to eq [99, 43, "something fruity"]
         verify @double
       end
 
       it "yields two values" do
-        expect(@double).to receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
+        expect(@double).to receive(:yield_back).with(no_args).once.and_yield('wha', 'zup')
         a, b = nil
-        @double.yield_back {|x,y| a=x; b=y}
+        @double.yield_back { |x, y| a = x; b = y }
         expect(a).to eq 'wha'
         expect(b).to eq 'zup'
         verify @double
       end
 
       it "yields two values 3 times consecutively" do
-        expect(@double).to receive(:yield_back).once.with(no_args()).once.and_yield('wha', 'zup').
+        expect(@double).to receive(:yield_back).once.with(no_args).once.and_yield('wha', 'zup').
                                                                     and_yield('not', 'down').
                                                                     and_yield(14, 65)
         c = []
-        @double.yield_back {|a,b| c << [a, b]}
-        expect(c).to eq [['wha', 'zup'], ['not', 'down'], [14, 65]]
+        @double.yield_back { |a, b| c << [a, b] }
+        expect(c).to eq [%w[wha zup], %w[not down], [14, 65]]
         verify @double
       end
 
       it "fails when calling yielding method with wrong arity" do
-        expect(@double).to receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
+        expect(@double).to receive(:yield_back).with(no_args).once.and_yield('wha', 'zup')
         expect {
-          @double.yield_back {|a|}
+          @double.yield_back { |_| }
         }.to fail_with "#<Double \"test double\"> yielded |\"wha\", \"zup\"| to block with arity of 1"
       end
 
@@ -534,17 +534,17 @@ module RSpec
       end
 
       it "fails when calling yielding method consecutively with wrong arity" do
-        expect(@double).to receive(:yield_back).once.with(no_args()).and_yield('wha', 'zup').
+        expect(@double).to receive(:yield_back).once.with(no_args).and_yield('wha', 'zup').
                                                                      and_yield('down').
                                                                      and_yield(14, 65)
         expect {
           c = []
-          @double.yield_back {|a,b| c << [a, b]}
+          @double.yield_back { |a, b| c << [a, b] }
         }.to fail_with "#<Double \"test double\"> yielded |\"down\"| to block with arity of 2"
       end
 
       it "fails when calling yielding method without block" do
-        expect(@double).to receive(:yield_back).with(no_args()).once.and_yield('wha', 'zup')
+        expect(@double).to receive(:yield_back).with(no_args).once.and_yield('wha', 'zup')
         expect {
           @double.yield_back
         }.to fail_with "#<Double \"test double\"> asked to yield |[\"wha\", \"zup\"]| but no block was passed"
@@ -560,7 +560,7 @@ module RSpec
         expect(@double).to receive(:yield_me).and_yield 44
 
         expect {
-          @double.yield_me do |x|
+          @double.yield_me do |_|
             raise "Bang"
           end
         }.to raise_error(StandardError, "Bang")
@@ -578,10 +578,10 @@ module RSpec
       end
 
       it "restores objects to their original state on rspec_reset" do
-        double = double("this is a double")
-        expect(double).to receive(:blah)
-        reset double
-        verify double #should throw if reset didn't work
+        dbl = double("this is a double")
+        expect(dbl).to receive(:blah)
+        reset dbl
+        verify dbl # should throw if reset didn't work
       end
 
       it "temporarily replaces a method stub on a double" do
@@ -635,8 +635,8 @@ module RSpec
       it "does not mess with the stub's yielded values when also doubleed" do
         allow(@double).to receive(:yield_back).and_yield(:stub_value)
         expect(@double).to receive(:yield_back).and_yield(:double_value)
-        @double.yield_back{|v| expect(v).to eq :double_value }
-        @double.yield_back{|v| expect(v).to eq :stub_value }
+        @double.yield_back { |v| expect(v).to eq :double_value }
+        @double.yield_back { |v| expect(v).to eq :stub_value }
         verify @double
       end
 
@@ -651,8 +651,8 @@ module RSpec
       end
 
       it "assigns stub return values" do
-        double = RSpec::Mocks::Double.new('name', :message => :response)
-        expect(double.message).to eq :response
+        dbl = RSpec::Mocks::Double.new('name', :message => :response)
+        expect(dbl.message).to eq :response
       end
 
       describe "a double message receiving a block" do
@@ -662,7 +662,7 @@ module RSpec
         end
 
         def add_call
-          @calls = @calls + 1
+          @calls += 1
         end
 
         it "supports a block passed to `receive` for `expect`" do
@@ -720,16 +720,16 @@ module RSpec
 
       describe 'string representation generated by #to_s' do
         it 'does not contain < because that might lead to invalid HTML in some situations' do
-          double = double("Dog")
-          valid_html_str = "#{double}"
+          dbl = double("Dog")
+          valid_html_str = "#{dbl}"
           expect(valid_html_str).not_to include('<')
         end
       end
 
       describe "#to_str", :unless => RUBY_VERSION == '1.9.2' do
         it "should not respond to #to_str to avoid being coerced to strings by the runtime" do
-          double = double("Foo")
-          expect { double.to_str }.to raise_error(
+          dbl = double("Foo")
+          expect { dbl.to_str }.to raise_error(
             RSpec::Mocks::MockExpectationError,
             '#<Double "Foo"> received unexpected message :to_str with (no args)')
         end
@@ -737,14 +737,14 @@ module RSpec
 
       describe "double created with no name" do
         it "does not use a name in a failure message" do
-          double = double()
-          expect {double.foo}.to raise_error.with_message(a_string_including("#<Double (anonymous)> received"))
+          dbl = double
+          expect { dbl.foo }.to raise_error.with_message(a_string_including("#<Double (anonymous)> received"))
         end
 
         it "does respond to initially stubbed methods" do
-          double = double(:foo => "woo", :bar => "car")
-          expect(double.foo).to eq "woo"
-          expect(double.bar).to eq "car"
+          dbl = double(:foo => "woo", :bar => "car")
+          expect(dbl.foo).to eq "woo"
+          expect(dbl.bar).to eq "car"
         end
       end
 

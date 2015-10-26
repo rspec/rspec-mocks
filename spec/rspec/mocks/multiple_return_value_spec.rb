@@ -16,8 +16,8 @@ module RSpec
     RSpec.describe "a message expectation with multiple return values and no specified count" do
       before(:each) do
         @double = double
-        @return_values = [1,2,3]
-        expect(@double).to receive(:do_something).and_return(@return_values[0],@return_values[1],@return_values[2])
+        @return_values = [1, 2, 3]
+        expect(@double).to receive(:do_something).and_return(@return_values[0], @return_values[1], @return_values[2])
       end
 
       it "returns values in order" do
@@ -53,7 +53,7 @@ module RSpec
     RSpec.describe "a message expectation with multiple return values with a specified count equal to the number of values" do
       before(:each) do
         @double = double
-        @return_values = [1,2,3]
+        @return_values = [1, 2, 3]
         expect(@double).to receive(:do_something).exactly(3).times.and_return(@return_values[0], @return_values[1], @return_values[2])
       end
 

@@ -84,7 +84,7 @@ module RSpec
           expect(dbl).to have_received(:foo) { |*args|
             yielded << args
           }
-          _expect(yielded).to include([:a,:b,:c])
+          _expect(yielded).to include([:a, :b, :c])
         end
 
         it "takes a do-end block and yields the arguments given to the stubbed method call" do
@@ -94,7 +94,7 @@ module RSpec
           expect(dbl).to have_received(:foo) do |*args|
             yielded << args
           end
-          _expect(yielded).to include([:a,:b,:c])
+          _expect(yielded).to include([:a, :b, :c])
         end
 
         it "passes if expectations against the yielded arguments pass" do
@@ -117,7 +117,7 @@ module RSpec
           }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
         end
 
-        it 'gives precedence to a `{ ... }` block when both forms are provided ' +
+        it 'gives precedence to a `{ ... }` block when both forms are provided ' \
            'since that form actually binds to `receive`' do
           dbl = double(:foo => nil)
           called = []
@@ -131,7 +131,7 @@ module RSpec
 
         it 'forwards any block passed during method invocation to the `have_received` block' do
           dbl = spy
-          block = lambda { }
+          block = lambda {}
           dbl.foo(&block)
 
           expect(dbl).to have_received(:foo) do |&passed_block|
@@ -242,7 +242,7 @@ module RSpec
                 _expect {
                   expect(dbl).to have_received(:expected_method).with(:four, :four).once
                 }.to fail_including("expected: (:four, :four)",
-                                    "got:","(:one, :four) (2 times)",
+                                    "got:", "(:one, :four) (2 times)",
                                     "(:two, :four) (1 time)",
                                     "(:three, :four) (3 times)")
               end
@@ -264,7 +264,7 @@ module RSpec
                 _expect {
                   expect(dbl).to have_received(:expected_method).with(:one, :four).once
                 }.to fail_including("expected: (:one, :four)",
-                                    "got:","([:one], :four)",
+                                    "got:", "([:one], :four)",
                                     "(:one, [:four])")
               end
 
@@ -274,7 +274,7 @@ module RSpec
 
                 _expect {
                   expect(dbl).to have_received(:expected_method).with(:one, :two, :three).once
-                }.to fail_including("expected: (:one, :two, :three)", "got:","(:one, :one, :two)")
+                }.to fail_including("expected: (:one, :two, :three)", "got:", "(:one, :one, :two)")
               end
             end
           end
@@ -601,7 +601,7 @@ module RSpec
           end
         end
 
-        %w(exactly at_least at_most times once twice).each do |constraint|
+        %w[exactly at_least at_most times once twice].each do |constraint|
           it "does not allow #{constraint} to be used because it creates confusion" do
             dbl = double_with_unmet_expectation(:expected_method)
             _expect {

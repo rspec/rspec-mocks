@@ -54,7 +54,7 @@ module VerifyAndResetHelpers
 end
 
 module VerificationHelpers
-  def prevents(msg = //, &block)
+  def prevents(msg=//, &block)
     expect(&block).to fail_with msg
   end
 end
@@ -67,14 +67,13 @@ module MatcherHelpers
   extend RSpec::Matchers::DSL
 
   matcher :fake_matcher do |expected|
-    match {|actual| actual == expected}
+    match { |actual| actual == expected }
 
     description do
       MatcherHelpers.fake_matcher_description
     end
   end
 end
-
 
 require 'rspec/support/spec'
 
@@ -133,7 +132,6 @@ RSpec.shared_context "with syntax" do |syntax|
     RSpec::Mocks.configuration.syntax = orig_syntax
   end
 end
-
 
 RSpec.shared_context "with isolated configuration" do
   orig_configuration = nil

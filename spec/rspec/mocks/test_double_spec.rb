@@ -10,7 +10,7 @@ module RSpec
         end
 
         it "gives the correct call site for the warning" do
-          expect_warning_with_call_site(__FILE__, __LINE__+1)
+          expect_warning_with_call_site(__FILE__, __LINE__ + 1)
           subject.freeze
         end
 

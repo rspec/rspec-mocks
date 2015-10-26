@@ -43,7 +43,7 @@ module RSpec
 
         context "failing" do
           it "fails when not all the entries in the expected are present" do
-            expect(array_including(1,2,3,4,5)).not_to be === [1,2]
+            expect(array_including(1, 2, 3, 4, 5)).not_to be === [1, 2]
           end
 
           it "fails when passed a composed matcher is pased and not satisfied" do

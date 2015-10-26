@@ -16,13 +16,13 @@ RSpec.describe "Using the legacy should syntax" do
     end
 
     it "answers true for received_message? when message received with correct args" do
-      dbl.message 1,2,3
-      expect(dbl.received_message?(:message, 1,2,3)).to be_truthy
+      dbl.message 1, 2, 3
+      expect(dbl.received_message?(:message, 1, 2, 3)).to be_truthy
     end
 
     it "answers false for received_message? when message received with incorrect args" do
-      dbl.message 1,2,3
-      expect(dbl.received_message?(:message, 1,2)).to be_falsey
+      dbl.message 1, 2, 3
+      expect(dbl.received_message?(:message, 1, 2)).to be_falsey
     end
   end
 
@@ -163,7 +163,7 @@ RSpec.describe "Using the legacy should syntax" do
           verify mock
         rescue Exception => e
         ensure
-          expect(e.backtrace.to_s).to match(/\/path\/to\/blah.ext:37/m)
+          expect(e.backtrace.to_s).to match(%r{/path/to/blah.ext:37}m)
         end
       end
 
@@ -215,9 +215,9 @@ RSpec.describe "Using the legacy should syntax" do
     let(:klass) do
       Class.new do
         def existing_method; :existing_method_return_value; end
-        def existing_method_with_arguments(arg_one, arg_two = nil); :existing_method_with_arguments_return_value; end
+        def existing_method_with_arguments(_a, _b=nil); :existing_method_with_arguments_return_value; end
         def another_existing_method; end
-        private
+      private
         def private_method; :private_method_return_value; end
       end
     end
@@ -466,7 +466,7 @@ RSpec.context "with default syntax configuration" do
   let(:expected_arguments) {
     [
       /Using.*without explicitly enabling/,
-      {:replacement=>"the new `:expect` syntax or explicitly enable `:should`"}
+      {:replacement => "the new `:expect` syntax or explicitly enable `:should`"}
     ]
   }
 
@@ -500,7 +500,7 @@ RSpec.context "with default syntax configuration" do
 
   it "warns about unstubbing once, regardless of how many times it is called" do
     expect(RSpec).to receive(:deprecate).with(/Using.*without explicitly enabling/,
-      {:replacement => "`allow(...).to receive(...).and_call_original` or explicitly enable `:should`"})
+      :replacement => "`allow(...).to receive(...).and_call_original` or explicitly enable `:should`")
     o = Object.new
     o2 = Object.new
 
@@ -510,7 +510,6 @@ RSpec.context "with default syntax configuration" do
     o.unstub(:faces)
     o2.unstub(:faces)
   end
-
 
   it "doesn't warn about stubbing after a reset and setting should" do
     expect(RSpec).not_to receive(:deprecate)

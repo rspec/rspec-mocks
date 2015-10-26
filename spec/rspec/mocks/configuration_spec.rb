@@ -5,7 +5,7 @@ module RSpec
       let(:mod_1)  { Module.new }
       let(:mod_2)  { Module.new }
 
-      def instance_methods_of(mod)
+      def instance_methods_of(_mod)
         mod_1.instance_methods.map(&:to_sym)
       end
 

@@ -57,7 +57,7 @@ RSpec.describe "and_wrap_original" do
       it "can be constrained by specific arguments" do
         allow_it.to receive(:results) { :all }
         allow_it.to receive(:results).with(5).and_wrap_original { |m, n| m.call.first(n) }
-        expect(instance.results 5).to eq [1,2,3,4,5]
+        expect(instance.results 5).to eq [1, 2, 3, 4, 5]
         expect(instance.results).to eq :all
       end
     end
