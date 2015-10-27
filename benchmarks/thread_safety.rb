@@ -7,7 +7,7 @@ Benchmark.bm do |bm|
   bm.report("fetching a proxy") do
     RSpec::Mocks.with_temporary_scope do
       o = Object.new
-      100000.times {
+      100_000.times {
         RSpec::Mocks.space.proxy_for(o)
       }
     end

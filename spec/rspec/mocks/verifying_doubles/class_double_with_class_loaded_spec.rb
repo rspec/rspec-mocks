@@ -141,7 +141,7 @@ module RSpec
         context "on a class that has redefined `new`" do
           it "uses the method signature of the redefined `new` for arg verification" do
             klass = Class.new(LoadedClass) do
-              def self.new(a); end
+              def self.new(_); end
             end
 
             o = class_double(klass)

@@ -26,7 +26,7 @@ end
 namespace :clobber do
   desc "remove generated rbc files"
   task :rbc do
-    Dir['**/*.rbc'].each {|f| File.delete(f)}
+    Dir['**/*.rbc'].each { |f| File.delete(f) }
   end
 end
 
@@ -40,7 +40,7 @@ with_changelog_in_features = lambda do |&block|
 end
 
 desc "Push docs/cukes to relishapp using the relish-client-gem"
-task :relish, :version do |t, args|
+task :relish, :version do |_t, args|
   raise "rake relish[VERSION]" unless args[:version]
 
   with_changelog_in_features.call do

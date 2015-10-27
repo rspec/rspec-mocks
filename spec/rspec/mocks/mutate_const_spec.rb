@@ -152,7 +152,6 @@ module RSpec
           it_behaves_like "loaded constant hiding", "TestClassThatDefinesSend::C"
         end
 
-
         context 'for a loaded nested constant' do
           it_behaves_like "loaded constant hiding", "TestClass::Nested"
         end
@@ -206,8 +205,8 @@ module RSpec
           hide_const("TOP_LEVEL_VALUE_CONST")
           expect(recursive_const_defined?("TOP_LEVEL_VALUE_CONST")).to be_falsey
 
-          stub_const("TOP_LEVEL_VALUE_CONST", 12345)
-          expect(TOP_LEVEL_VALUE_CONST).to eq 12345
+          stub_const("TOP_LEVEL_VALUE_CONST", 12_345)
+          expect(TOP_LEVEL_VALUE_CONST).to eq 12_345
 
           reset_rspec_mocks
           expect(TOP_LEVEL_VALUE_CONST).to eq orig_value

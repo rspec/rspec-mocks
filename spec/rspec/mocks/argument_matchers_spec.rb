@@ -283,14 +283,14 @@ module RSpec
         it "fails array_including when args aren't array", :reset => true do
           expect(a_double).to receive(:msg).with(array_including(1, 2, 3))
           expect {
-             a_double.msg(1, 2, 3)
+            a_double.msg(1, 2, 3)
           }.to fail_including "expected: (array_including(1, 2, 3))"
         end
 
         it "fails array_including when arg doesn't contain all elements", :reset => true do
           expect(a_double).to receive(:msg).with(array_including(1, 2, 3))
           expect {
-             a_double.msg([1, 2])
+            a_double.msg([1, 2])
           }.to fail_including "expected: (array_including(1, 2, 3))"
         end
       end
@@ -429,7 +429,7 @@ module RSpec
 
         it "fails with zero arguments", :reset => true do
           expect do
-            expect(a_double).to receive(:msg).with {|arg| expect(arg).to eq :received }
+            expect(a_double).to receive(:msg).with { |arg| expect(arg).to eq :received }
           end.to raise_error(ArgumentError, /must have at least one argument/)
         end
 

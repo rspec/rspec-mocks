@@ -3,18 +3,18 @@ require 'delegate'
 module RSpec
   module Mocks
     RSpec.describe "#any_instance" do
-      class CustomErrorForAnyInstanceSpec < StandardError;end
+      class CustomErrorForAnyInstanceSpec < StandardError; end
 
       let(:klass) do
         Class.new do
           def existing_method; :existing_method_return_value; end
-          def existing_method_with_arguments(arg_one, arg_two = nil); :existing_method_with_arguments_return_value; end
+          def existing_method_with_arguments(_a, _b=nil); :existing_method_with_arguments_return_value; end
           def another_existing_method; end
-          private
+        private
           def private_method; :private_method_return_value; end
         end
       end
-      let(:existing_method_return_value){ :existing_method_return_value }
+      let(:existing_method_return_value) { :existing_method_return_value }
 
       context "invocation order" do
         context "when stubbing" do
@@ -310,13 +310,13 @@ module RSpec
 
           it "works with the non-standard constructor module" do
             allow_any_instance_of(Module).to receive(:foo).and_return(1)
-            module RSpec::SampleRspecTestModule;end
+            module RSpec::SampleRspecTestModule; end
             expect(RSpec::SampleRspecTestModule.foo).to eq(1)
           end
 
           it "works with the non-standard constructor class" do
             allow_any_instance_of(Class).to receive(:foo).and_return(1)
-            class RSpec::SampleRspecTestClass;end
+            class RSpec::SampleRspecTestClass; end
             expect(RSpec::SampleRspecTestClass.foo).to eq(1)
           end
         end
@@ -1170,7 +1170,7 @@ module RSpec
 
         it "doesn't fail when dup accepts parameters" do
           klazz = Class.new do
-            def dup(funky_option)
+            def dup(_)
             end
           end
 

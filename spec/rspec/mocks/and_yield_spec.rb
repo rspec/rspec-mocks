@@ -20,7 +20,7 @@ RSpec.describe RSpec::Mocks::Double do
 
       it "evaluates the supplied block as it is read" do
         evaluated = false
-        allow(obj).to receive(:method_that_accepts_a_block).and_yield do |eval_context|
+        allow(obj).to receive(:method_that_accepts_a_block).and_yield do |_eval_context|
           evaluated = true
         end
         expect(evaluated).to be_truthy
@@ -145,17 +145,15 @@ RSpec.describe RSpec::Mocks::Double do
             expect(yielded_arg).to receive(:bar)
           end
 
-          obj.method_that_accepts_a_block do |obj|
-            # obj.bar is not called here
+          obj.method_that_accepts_a_block do |_obj|
+            # _obj.bar is not called here
             # foo is not called here
           end
 
           expect { verify configured_eval_context }.to fail
           expect { verify yielded_arg }.to fail
         end
-
       end
-
     end
   end
 end

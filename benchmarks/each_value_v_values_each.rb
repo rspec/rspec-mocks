@@ -1,8 +1,8 @@
 require 'benchmark'
 
-n = 10000
+n = 10_000
 
-m = 1.upto(1000).reduce({}) {|m, i| m[i] = i; m}
+m = 1.upto(1000).inject({}) { |m, i| m[i] = i; m }
 
 Benchmark.benchmark do |bm|
   puts "#{n} times - ruby #{RUBY_VERSION}"
@@ -13,7 +13,7 @@ Benchmark.benchmark do |bm|
   3.times do
     bm.report do
       n.times do
-        m.each_value {|v|}
+        m.each_value {}
       end
     end
   end
@@ -24,7 +24,7 @@ Benchmark.benchmark do |bm|
   3.times do
     bm.report do
       n.times do
-        m.values.each{|v|}
+        m.values.each {}
       end
     end
   end
@@ -42,7 +42,6 @@ end
 #    0.910000   0.000000   0.910000 (  0.917496)
 #    0.910000   0.010000   0.920000 (  0.909319)
 #    0.910000   0.000000   0.910000 (  0.911225)
-
 
 # $ ruby benchmarks/values_each_v_each_value.rb
 # 10000 times - ruby 2.0.0

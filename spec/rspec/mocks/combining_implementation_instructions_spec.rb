@@ -72,7 +72,7 @@ module RSpec
             expect(dbl).to receive(:foo).twice { @block_called = true }
           end
 
-          the_double.foo { |a| } # to ensure it is called twice
+          the_double.foo { |_| } # to ensure it is called twice
         end
 
         it 'works when passing a block to `ordered`' do
@@ -166,7 +166,7 @@ module RSpec
         expect(RSpec).not_to receive(:warning)
 
         obj = Object.new
-        stub = allow(obj).to receive(:foo) { }
+        stub = allow(obj).to receive(:foo) {}
         stub.with(1)
       end
 
@@ -191,7 +191,7 @@ module RSpec
         expect { stubbed.and_raise("a") }.to raise_error(msg_fragment)
         expect { stubbed.and_throw(:bar) }.to raise_error(msg_fragment)
 
-        expect { stubbed.once { } }.to raise_error(msg_fragment)
+        expect { stubbed.once {} }.to raise_error(msg_fragment)
 
         expect(dbl.size).to eq(3)
       end

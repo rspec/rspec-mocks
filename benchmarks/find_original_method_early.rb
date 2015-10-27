@@ -14,7 +14,7 @@ with the original method being found vs. not.
 
 require 'benchmark'
 
-n = 10000
+n = 10_000
 
 Foo = Class.new(Object) do
   n.times do |i|

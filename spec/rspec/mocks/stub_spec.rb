@@ -8,7 +8,8 @@ module RSpec
               existing_private_class_method
             end
 
-            private
+          private
+
             def existing_private_class_method
               :original_value
             end
@@ -18,7 +19,6 @@ module RSpec
             existing_private_instance_method
           end
 
-          private
           def existing_private_instance_method
             :original_value
           end
@@ -81,7 +81,7 @@ module RSpec
 
       it "is cleared when stubbed object when `dup`ed" do
         allow(@stub).to receive(:foobar).and_return(1)
-        expect{ @stub.dup.foobar }.to raise_error NoMethodError, /foobar/
+        expect { @stub.dup.foobar }.to raise_error NoMethodError, /foobar/
       end
 
       context "using `with`" do
@@ -205,7 +205,7 @@ module RSpec
             object.singleton_class.class_eval do
               def value; :original; end
               prepend ToBePrepended
-              prepend Module.new { }
+              prepend Module.new {}
             end
 
             expect(object.value).to eq :original_prepended
@@ -322,21 +322,21 @@ module RSpec
 
         it "correctly handles stubbing inherited mixed in class methods" do
           mod = Module.new do
-                  def method_a
-                    raise "should not execute method_a"
-                  end
+            def method_a
+              raise "should not execute method_a"
+            end
 
-                  def self.included(other)
-                    other.extend self
-                  end
-                end
+            def self.included(other)
+              other.extend self
+            end
+          end
 
           a = Class.new { include mod }
           b = Class.new(a) do
-                def self.method_b
-                  "executed method_b"
-                end
-              end
+            def self.method_b
+              "executed method_b"
+            end
+          end
 
           allow(a).to receive(:method_a)
           allow(b).to receive(:method_b).and_return("stubbed method_b")
@@ -414,14 +414,14 @@ module RSpec
       end
 
       it "returns values in order to consecutive calls" do
-        allow(@instance).to receive(:msg).and_return("1",2,:three)
+        allow(@instance).to receive(:msg).and_return("1", 2, :three)
         expect(@instance.msg).to eq("1")
         expect(@instance.msg).to eq(2)
         expect(@instance.msg).to eq(:three)
       end
 
       it "keeps returning last value in consecutive calls" do
-        allow(@instance).to receive(:msg).and_return("1",2,:three)
+        allow(@instance).to receive(:msg).and_return("1", 2, :three)
         expect(@instance.msg).to eq("1")
         expect(@instance.msg).to eq(2)
         expect(@instance.msg).to eq(:three)
@@ -432,7 +432,7 @@ module RSpec
       it "yields a specified object" do
         allow(@instance).to receive(:method_that_yields).and_yield(:yielded_obj)
         current_value = :value_before
-        @instance.method_that_yields {|val| current_value = val}
+        @instance.method_that_yields { |val| current_value = val }
         expect(current_value).to eq :yielded_obj
         verify @instance
       end
@@ -441,7 +441,7 @@ module RSpec
         allow(@instance).to receive(:method_that_yields_multiple_times).and_yield(:yielded_value).
                                                        and_yield(:another_value)
         current_value = []
-        @instance.method_that_yields_multiple_times {|val| current_value << val}
+        @instance.method_that_yields_multiple_times { |val| current_value << val }
         expect(current_value).to eq [:yielded_value, :another_value]
         verify @instance
       end
@@ -501,7 +501,7 @@ module RSpec
         }.to raise_error(/received :foo with unexpected arguments/)
       end
 
-      it "complains if called with other arg", :github_issue => [123,147] do
+      it "complains if called with other arg", :github_issue => [123, 147] do
         expect {
           @stub.foo("other")
         }.to raise_error(/received :foo with unexpected arguments.*Please stub a default value/m)
@@ -535,6 +535,5 @@ module RSpec
         expect(@stub.bar).to eq(15)
       end
     end
-
   end
 end

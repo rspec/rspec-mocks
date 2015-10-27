@@ -33,7 +33,7 @@ RSpec.describe "the spy family of methods" do
     end
 
     it "records called methods" do
-      expect(subject.tap { |s| s.foo}).to have_received(:foo)
+      expect(subject.tap { |s| s.foo }).to have_received(:foo)
     end
 
     it 'fails fast when `have_received` is passed an undefined method name' do

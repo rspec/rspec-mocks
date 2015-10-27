@@ -109,10 +109,10 @@ module RSpec
       it "uses reports nil in the error message" do
         allow_message_expectations_on_nil
 
-        _nil = nil
-        expect(_nil).to receive(:foobar)
+        nil_var = nil
+        expect(nil_var).to receive(:foobar)
         expect {
-          verify _nil
+          verify nil_var
         }.to raise_error(
           RSpec::Mocks::MockExpectationError,
           %Q|(nil).foobar(*(any args))\n    expected: 1 time with any arguments\n    received: 0 times with any arguments|
@@ -138,15 +138,15 @@ module RSpec
         expect(object).to receive(:foobar)
         twin = object.clone
         twin.foobar
-        expect{ verify twin }.not_to raise_error
-        expect{ verify object }.not_to raise_error
+        expect { verify twin }.not_to raise_error
+        expect { verify object }.not_to raise_error
       end
 
       it "clears message expectations when `dup`ed" do
         expect(object).to receive(:foobar)
         duplicate = object.dup
-        expect{ duplicate.foobar }.to raise_error(NoMethodError, /foobar/)
-        expect{ verify object }.to fail_with(/foobar/)
+        expect { duplicate.foobar }.to raise_error(NoMethodError, /foobar/)
+        expect { verify object }.to fail_with(/foobar/)
       end
     end
 
@@ -249,7 +249,6 @@ module RSpec
     end
 
     RSpec.describe "A partial class mock that has been subclassed" do
-
       let(:klass)  { Class.new }
       let(:subklass) { Class.new(klass) }
 
@@ -284,9 +283,9 @@ module RSpec
             private_method
             protected_method
           end
-          protected
+        protected
           def protected_method; end
-          private
+        private
           def private_method; end
         end
       end
@@ -310,7 +309,6 @@ module RSpec
         expect(object.protected_methods).to include_method(:protected_method)
         object.public_method
       end
-
     end
 
     RSpec.describe 'when verify_partial_doubles configuration option is set' do
@@ -322,7 +320,7 @@ module RSpec
             "works"
           end
 
-          def initialize(a, b)
+          def initialize(_a, _b)
           end
 
           def respond_to?(method_name, include_all=false)
@@ -337,7 +335,7 @@ module RSpec
             end
           end
 
-          private
+        private
 
           def defined_private_method
             "works"
@@ -384,7 +382,7 @@ module RSpec
       end
 
       it 'avoids deadlocks when a proxy is accessed from within a `before_verifying_doubles` callback' do
-        _klass = Class.new { def message; end; }
+        msg_klass = Class.new { def message; end; }
         called_for = []
 
         RSpec.configuration.mock_with(:rspec) do |config|
@@ -396,7 +394,7 @@ module RSpec
           end
         end
 
-        expect { allow(_klass.new).to receive(:message) }.to_not raise_error
+        expect { allow(msg_klass.new).to receive(:message) }.to_not raise_error
       end
 
       context "for a class" do
@@ -469,7 +467,6 @@ module RSpec
         }.to yield_with_args(have_attributes :target => klass)
       end
 
-
       it 'does not allow a non-existing method to be called on any_instance' do
         prevents(/does not implement/) {
           expect_any_instance_of(klass).to receive(:unimplemented)
@@ -519,7 +516,7 @@ module RSpec
         context "on a class that has redefined `new`" do
           it "uses the method signature of the redefined `new` for arg verification" do
             subclass = Class.new(klass) do
-              def self.new(a); end
+              def self.new(_); end
             end
 
             prevents(/arguments/) { allow(subclass).to receive(:new).with(1, 2) }

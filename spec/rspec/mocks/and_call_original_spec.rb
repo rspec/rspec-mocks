@@ -101,7 +101,7 @@ RSpec.describe "and_call_original" do
       expect(sub_sub_klass.foo).to eq(:bar)
     end
 
-    it "finds the method on the most direct ancestor even if the method " +
+    it "finds the method on the most direct ancestor even if the method " \
        "is available on more distant ancestors" do
       klass.extend Module.new { def foo; :klass_bar; end }
       sub_klass = Class.new(klass)
@@ -110,7 +110,7 @@ RSpec.describe "and_call_original" do
       expect(sub_klass.foo).to eq(:sub_klass_bar)
     end
 
-    it "finds the method on the most direct singleton class ancestors even if the method " +
+    it "finds the method on the most direct singleton class ancestors even if the method " \
        "is available on more distant ancestors" do
       klass.extend Module.new { def foo; :klass_bar; end }
       sub_klass = Class.new(klass) { def self.foo; :sub_klass_bar; end }

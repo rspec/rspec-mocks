@@ -34,7 +34,7 @@ RSpec.describe "Reraising eager raises during the verify step" do
 
           # Prepare a failing expectation for a different message
           expect(dbl).not_to receive(:bar)
-          RSpec::Support.with_failure_notifier(Proc.new { }) { dbl.bar }
+          RSpec::Support.with_failure_notifier(Proc.new {}) { dbl.bar }
         }.not_to notify_with_same_source_id_as_later_verification
       end
     end
@@ -95,7 +95,7 @@ RSpec.describe "Reraising eager raises during the verify step" do
   end
 
   context "when an expectation is called out of order",
-     :pending => "Says bar was called 0 times when it was, see: http://git.io/pjTq" do
+          :pending => "Says bar was called 0 times when it was, see: http://git.io/pjTq" do
     it "reraises during verification" do
       with_unfulfilled_double do |dbl|
         expect(dbl).to receive(:foo).ordered
@@ -150,7 +150,7 @@ RSpec.describe "Reraising eager raises during the verify step" do
 
     def capture_notified_source_id(&block)
       source_id = nil
-      notifier = Proc.new { |err, opt| source_id = opt.fetch(:source_id) }
+      notifier = Proc.new { |_err, opt| source_id = opt.fetch(:source_id) }
       RSpec::Support.with_failure_notifier(notifier, &block)
       source_id
     end

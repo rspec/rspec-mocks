@@ -3,7 +3,7 @@ module RSpec
     RSpec.describe "stub implementation" do
       describe "with no args" do
         it "execs the block when called" do
-          obj = double()
+          obj = double
           allow(obj).to receive(:foo) { :bar }
           expect(obj.foo).to eq :bar
         end
@@ -11,16 +11,16 @@ module RSpec
 
       describe "with one arg" do
         it "execs the block with that arg when called" do
-          obj = double()
-          allow(obj).to receive(:foo) {|given| given}
+          obj = double
+          allow(obj).to receive(:foo) { |given| given }
           expect(obj.foo(:bar)).to eq :bar
         end
       end
 
       describe "with variable args" do
         it "execs the block when called" do
-          obj = double()
-          allow(obj).to receive(:foo) {|*given| given.first}
+          obj = double
+          allow(obj).to receive(:foo) { |*given| given.first }
           expect(obj.foo(:bar)).to eq :bar
         end
       end

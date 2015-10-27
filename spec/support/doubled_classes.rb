@@ -5,12 +5,11 @@ class LoadedClass
   N = :n
   INSTANCE = LoadedClass.new
 
-  def initialize(a, b)
+  def initialize(_a, _b)
   end
 
   class << self
-
-    def respond_to?(method_name, include_all = false)
+    def respond_to?(method_name, include_all=false)
       return true if method_name == :dynamic_class_method
       super
     end
@@ -34,16 +33,15 @@ class LoadedClass
 
     def defined_private_class_method
     end
-
   end
 
   def defined_instance_method
   end
 
-  def instance_method_with_two_args(a, b)
+  def instance_method_with_two_args(_a, _b)
   end
 
-  def instance_method_with_only_defaults(a=1, b=2)
+  def instance_method_with_only_defaults(_a=1, _b=2)
   end
 
   def defined_instance_and_class_method
@@ -63,7 +61,7 @@ class LoadedClass
   def send(*)
   end
 
-  def respond_to?(method_name, include_all = false)
+  def respond_to?(method_name, include_all=false)
     return true if method_name == :dynamic_instance_method
     super
   end

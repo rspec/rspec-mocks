@@ -75,7 +75,7 @@ module RSpec
           expect(receiver.foo).to eq(5)
         end
 
-        it 'gives precedence to a `{ ... }` block when both forms are provided ' +
+        it 'gives precedence to a `{ ... }` block when both forms are provided ' \
            'since that form actually binds to `receive`' do
           wrapped.to receive(:foo) { :curly } do
             :do_end
@@ -198,7 +198,7 @@ module RSpec
 
         it 'allows the caller to constrain the received arguments' do
           wrapped.not_to receive(:foo).with(:a)
-          def receiver.method_missing(*a); end # a poor man's stub...
+          def receiver.method_missing(*); end # a poor man's stub...
 
           expect {
             receiver.foo(:b)
@@ -529,7 +529,7 @@ module RSpec
           Class.new do
             include RSpec::Mocks::ExampleMethods
 
-            def eq(value)
+            def eq(_)
               double("MyMatcher")
             end
           end

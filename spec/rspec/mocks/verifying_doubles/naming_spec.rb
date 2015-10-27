@@ -5,7 +5,7 @@ module RSpec
     RSpec::Matchers.define :fail_expectations_as do |expected|
       description { "include a meaningful name in the exception" }
 
-      def error_message_for(verifying_double)
+      def error_message_for(_)
         expect(actual).to have_received(:defined_instance_and_class_method)
       rescue MockExpectationError, Expectations::ExpectationNotMetError => e
         e.message
@@ -14,8 +14,8 @@ module RSpec
       end
 
       failure_message do |actual|
-        "expected #{actual.inspect} to fail expectations as:\n" +
-          "  #{expected.inspect}, but failed with:\n" +
+        "expected #{actual.inspect} to fail expectations as:\n" \
+          "  #{expected.inspect}, but failed with:\n" \
           "  #{@error_message.inspect}"
       end
 

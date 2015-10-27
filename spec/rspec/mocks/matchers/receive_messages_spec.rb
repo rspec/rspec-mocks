@@ -124,28 +124,28 @@ module RSpec
 
       example "allow(...).to_not receive_messages(:a => 1, :b => 2)" do
         expect { allow(obj).to_not receive_messages(:a => 1, :b => 2) }.to(
-          raise_error "`allow(...).to_not receive_messages` is not supported "+
+          raise_error "`allow(...).to_not receive_messages` is not supported " \
                       "since it doesn't really make sense. What would it even mean?"
         )
       end
 
       example "allow_any_instance_of(...).to_not receive_messages(:a => 1, :b => 2)" do
         expect { allow_any_instance_of(obj).to_not receive_messages(:a => 1, :b => 2) }.to(
-          raise_error "`allow_any_instance_of(...).to_not receive_messages` is not supported "+
+          raise_error "`allow_any_instance_of(...).to_not receive_messages` is not supported " \
                       "since it doesn't really make sense. What would it even mean?"
         )
       end
 
       example "expect(...).to_not receive_messages(:a => 1, :b => 2)" do
         expect { expect(obj).to_not receive_messages(:a => 1, :b => 2) }.to(
-          raise_error "`expect(...).to_not receive_messages` is not supported "+
+          raise_error "`expect(...).to_not receive_messages` is not supported " \
                       "since it doesn't really make sense. What would it even mean?"
         )
       end
 
       example "expect_any_instance_of(...).to_not receive_messages(:a => 1, :b => 2)" do
         expect { expect_any_instance_of(obj).to_not receive_messages(:a => 1, :b => 2) }.to(
-          raise_error "`expect_any_instance_of(...).to_not receive_messages` is not supported "+
+          raise_error "`expect_any_instance_of(...).to_not receive_messages` is not supported " \
                       "since it doesn't really make sense. What would it even mean?"
         )
       end
