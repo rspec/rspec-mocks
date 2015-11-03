@@ -3,7 +3,7 @@ Feature: Null object doubles
   [Test doubles](./test-doubles) are strict by default, raising errors when they receive messages that have not
   been allowed or expected. You can chain `as_null_object` off of `double` in order to make
   the double "loose". For any message that has not explicitly allowed or expected, the double
-  will return itself. It acts as a block-hole null object, allowing arbitrarily deep method chains.
+  will return itself. It acts as a black hole null object, allowing arbitrarily deep method chains.
 
   Scenario: `as_null_object` allows arbitrarily deep message chains and returns itself
     Given a file named "as_null_object_spec.rb" with:
