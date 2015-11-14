@@ -19,6 +19,7 @@ Feature: Expecting messages
       """
         1) An unfulfilled positive message expectation triggers a failure
            Failure/Error: expect(dbl).to receive(:foo)
+
              (Double "Some Collaborator").foo(*(any args))
                  expected: 1 time with any arguments
                  received: 0 times with any arguments
@@ -54,6 +55,7 @@ Feature: Expecting messages
       """
         1) A negative message expectation fails when the message is received
            Failure/Error: dbl.foo
+
              (Double "Some Collaborator").foo(no args)
                  expected: 0 times with any arguments
                  received: 1 time
