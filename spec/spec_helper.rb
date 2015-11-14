@@ -117,6 +117,13 @@ RSpec.configure do |config|
   # we do something that makes these specs pass, we are notified.
   config.filter_run_excluding :ordered_and_vague_counts_unsupported unless ENV['CI']
 
+  # We don't want rspec-core to look in our `lib` for failure snippets.
+  # When it does that, it inevitably finds this line:
+  # `RSpec::Support.notify_failure(*args)`
+  # ...which isn't very helpful. Far better for it to find the expectation
+  # call site in the spec.
+  config.project_source_dirs -= %w[ lib ]
+
   RSpec::Matchers.define_negated_matcher :a_string_excluding, :include
 end
 
