@@ -23,6 +23,7 @@ Feature: Raising an error
       """
         1) Making it raise an error raises the provided exception
            Failure/Error: dbl.foo
+
            RuntimeError:
              boom
       """

@@ -71,6 +71,7 @@ Feature: Spies
       """
         1) failure when the message has not been received for a spy
            Failure/Error: expect(invitation).to have_received(:deliver)
+
              (Double "invitation").deliver(*(any args))
                  expected: 1 time with any arguments
                  received: 0 times with any arguments
@@ -79,6 +80,7 @@ Feature: Spies
       """
         2) failure when the message has not been received for a partial double
            Failure/Error: expect(Invitation).to have_received(:deliver)
+
              (Invitation (class)).deliver(*(any args))
                  expected: 1 time with any arguments
                  received: 0 times with any arguments
