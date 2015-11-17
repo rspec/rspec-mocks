@@ -38,7 +38,7 @@ Feature: Message Chains
   implementation calls `foo.baz.bar`, the stub will not work.
 
 
-  Chaining with `recieve_message_chain` creates ambiguity in how the chains should
+  Chaining with `receive_message_chain` creates ambiguity in how the chains should
   be applied and applies design pressure on complex interactions in the implementation
   code. As such `receive_message_chain` is not a perfect replacement for `receive`. (see
   [Issue 921](https://github.com/rspec/rspec-mocks/issues/921) for a more detailed
