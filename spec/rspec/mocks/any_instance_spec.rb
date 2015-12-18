@@ -1,5 +1,22 @@
 require 'delegate'
 
+module AnyInstanceSpec
+  class GrandparentClass
+    def foo(_a)
+      'bar'
+    end
+  end
+
+  class ParentClass < GrandparentClass
+    def foo
+      super(:a)
+    end
+  end
+
+  class ChildClass < ParentClass
+  end
+end
+
 module RSpec
   module Mocks
     RSpec.describe "#any_instance" do
@@ -1223,6 +1240,14 @@ module RSpec
           verify_all
 
           expect(instance.existing_method).to eq :existing_method_return_value
+        end
+
+       it "does not restore a stubbed method not originally implemented in the class" do
+          allow_any_instance_of(::AnyInstanceSpec::ChildClass).to receive(:foo).and_return :result
+          expect(::AnyInstanceSpec::ChildClass.new.foo).to eq :result
+
+          reset_all
+          expect(::AnyInstanceSpec::ChildClass.new.foo).to eq 'bar'
         end
 
         it "restores the original behaviour, even if the expectation fails" do
