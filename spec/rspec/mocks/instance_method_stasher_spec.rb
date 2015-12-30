@@ -60,12 +60,19 @@ module RSpec
         def obj.hello; :hello_defined_on_singleton_class; end;
 
         stashed_method = stasher_for(obj, :hello)
-
-        expect {
-          stashed_method.stash
-        }.not_to change { obj.methods.count }
-
+        stashed_method.stash
         expect(obj.methods.grep(/rspec/)).to eq([])
+      end
+
+      it "undefines the original method", :if => (RUBY_VERSION.to_f > 1.8) do
+        obj = Object.new
+        def obj.hello; :hello_defined_on_singleton_class; end;
+
+        stashed_method = stasher_for(obj, :hello)
+        stashed_method.stash
+
+        expect(obj.methods).not_to include(:hello)
+        expect(obj).not_to respond_to(:hello)
       end
     end
   end
