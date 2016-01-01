@@ -54,6 +54,7 @@ module RSpec
         def stash
           return unless method_defined_directly_on_klass?
           @original_method ||= ::RSpec::Support.method_handle_for(@object, @method)
+          @klass.__send__(:undef_method, @method)
         end
 
         # @private
