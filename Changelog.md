@@ -1,3 +1,10 @@
+### 3.4.1 Development / 2015-11-11
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.4.0...3-4-maintenance)
+
+Bug Fixes:
+
+* Fix `any_instance` to work properly on Ruby 2.3. (Joe Rafaniello, #1043)
+
 ### 3.4.0 / 2015-11-11
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.3.2...v3.4.0)
 
