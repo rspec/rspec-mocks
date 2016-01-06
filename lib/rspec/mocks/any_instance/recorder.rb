@@ -18,6 +18,7 @@ module RSpec
           @stubs = Hash.new { |hash, key| hash[key] = [] }
           @observed_methods = []
           @played_methods = {}
+          @backed_up_method_owner = {}
           @klass = klass
           @expectation_set = false
         end
@@ -190,9 +191,9 @@ module RSpec
           return unless @klass.instance_method(method_name).owner == @klass
 
           alias_method_name = build_alias_method_name(method_name)
-          @klass.class_exec do
+          @klass.class_exec(@backed_up_method_owner) do |backed_up_method_owner|
             remove_method method_name
-            alias_method method_name, alias_method_name
+            alias_method method_name, alias_method_name if backed_up_method_owner[method_name.to_sym] == self
             remove_method alias_method_name
           end
         end
@@ -204,10 +205,13 @@ module RSpec
         end
 
         def backup_method!(method_name)
+          return unless public_protected_or_private_method_defined?(method_name)
+
           alias_method_name = build_alias_method_name(method_name)
+          @backed_up_method_owner[method_name.to_sym] ||= @klass.instance_method(method_name).owner
           @klass.class_exec do
             alias_method alias_method_name, method_name
-          end if public_protected_or_private_method_defined?(method_name)
+          end
         end
 
         def public_protected_or_private_method_defined?(method_name)
