@@ -1,5 +1,8 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.4.0...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.4.1...master)
+
+### 3.4.1 / 2016-01-10
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.4.0...v3.4.1)
 
 Bug Fixes:
 
