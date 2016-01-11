@@ -10,4 +10,4 @@ number of arguments.
 
 This dual approach allows you to move very quickly and test components in isolation, while
 giving you confidence that your doubles are not a complete fiction. Testing in isolation is
-optional but recommend for classes that do not depend on third-party components.
+optional but recommended for classes that do not depend on third-party components.
