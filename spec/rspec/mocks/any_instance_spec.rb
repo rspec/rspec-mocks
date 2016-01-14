@@ -33,6 +33,13 @@ module RSpec
       end
       let(:existing_method_return_value) { :existing_method_return_value }
 
+      context "chain" do
+        it "yields the value specified" do
+          allow_any_instance_of(klass).to receive(:foo).and_yield(1).and_yield(2)
+          expect { |b| klass.new.foo(&b) }.to yield_successive_args(1, 2)
+        end
+      end
+
       context "invocation order" do
         context "when stubbing" do
           it "raises an error if 'with' follows 'and_return'" do
@@ -45,6 +52,11 @@ module RSpec
 
           it "raises an error if 'with' follows 'and_yield'" do
             expect { allow_any_instance_of(klass).to receive(:foo).and_yield(1).with("1") }.to raise_error(NoMethodError)
+          end
+
+          it "allows chaining 'and_yield'" do
+            allow_any_instance_of(klass).to receive(:foo).and_yield(1).and_yield(2).and_yield(3)
+            expect { |b| klass.new.foo(&b) }.to yield_successive_args(1, 2, 3)
           end
         end
 
