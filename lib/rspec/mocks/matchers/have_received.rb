@@ -3,6 +3,8 @@ module RSpec
     module Matchers
       # @private
       class HaveReceived
+        include Matcher
+
         COUNT_CONSTRAINTS = %w[exactly at_least at_most times once twice thrice]
         ARGS_CONSTRAINTS = %w[with]
         CONSTRAINTS = COUNT_CONSTRAINTS + ARGS_CONSTRAINTS + %w[ordered]

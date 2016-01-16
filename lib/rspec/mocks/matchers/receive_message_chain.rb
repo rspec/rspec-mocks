@@ -5,6 +5,8 @@ module RSpec
     module Matchers
       # @private
       class ReceiveMessageChain
+        include Matcher
+
         def initialize(chain, &block)
           @chain = chain
           @block = block
