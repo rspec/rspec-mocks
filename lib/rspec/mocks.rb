@@ -117,6 +117,10 @@ module RSpec
 
     # Namespace for mock-related matchers.
     module Matchers
+      # @private
+      # just a "tag" for rspec-mock matchers detection
+      module Matcher; end
+
       autoload :HaveReceived,        "rspec/mocks/matchers/have_received"
       autoload :Receive,             "rspec/mocks/matchers/receive"
       autoload :ReceiveMessageChain, "rspec/mocks/matchers/receive_message_chain"
