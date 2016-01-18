@@ -38,7 +38,7 @@ module RSpec
     private
 
       def matcher_allowed?(matcher)
-        matcher.class.name.start_with?("RSpec::Mocks::Matchers".freeze)
+        Matchers::Matcher === matcher
       end
 
       def define_matcher(matcher, name, &block)

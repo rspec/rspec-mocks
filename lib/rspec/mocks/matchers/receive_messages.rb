@@ -3,6 +3,8 @@ module RSpec
     module Matchers
       # @private
       class ReceiveMessages
+        include Matcher
+
         def initialize(message_return_value_hash)
           @message_return_value_hash = message_return_value_hash
           @backtrace_line = CallerFilter.first_non_rspec_line

@@ -90,6 +90,12 @@ module RSpec
           }.to raise_error(UnsupportedMatcherError)
         end
 
+        it 'does support inherited matchers', :unless => options.include?(:allow_other_matchers) do
+          receive_foo = Class.new(RSpec::Mocks::Matchers::Receive).new(:foo, nil)
+          wrapped.to receive_foo
+          receiver.foo
+        end
+
         it 'does not get confused by messages being passed as strings and symbols' do
           wrapped.to receive(:foo).with(1) { :a }
           wrapped.to receive("foo").with(2) { :b }
