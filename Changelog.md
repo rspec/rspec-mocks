@@ -3,6 +3,8 @@
 
 Bug Fixes:
 
+* Allow `any_instance_of(...).to receive(...)` to use `and_yield` multiple
+  times. (Kilian Cirera Sant, #1054)
 * Allow matchers which inherit from `rspec-mocks` matchers to be used for
   `allow`. (Andrew Kozin, #1056)
 
