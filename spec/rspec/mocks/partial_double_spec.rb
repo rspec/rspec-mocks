@@ -54,8 +54,8 @@ module RSpec
 
         an_object = the_klass.new
 
-        expect(an_object).to receive(:respond_to?)
-                               .with(:my_method).at_least(:once) { true }
+        expect(an_object).to receive(:respond_to?).
+                               with(:my_method).at_least(:once) { true }
         expect(an_object).to receive(:my_method)
 
         an_object.call :my_method
