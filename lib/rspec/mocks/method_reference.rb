@@ -85,17 +85,25 @@ module RSpec
       end
 
       def self.method_visibility_for(object, method_name)
-        instance_method_visibility_for(class << object; self; end, method_name).tap do |vis|
-          # If the method is not defined on the class, `instance_method_visibility_for`
-          # returns `nil`. However, it may be handled dynamically by `method_missing`,
-          # so here we check `respond_to` (passing false to not check private methods).
-          #
-          # This only considers the public case, but I don't think it's possible to
-          # write `method_missing` in such a way that it handles a dynamic message
-          # with private or protected visibility. Ruby doesn't provide you with
-          # the caller info.
-          return :public if vis.nil? && object.respond_to?(method_name, false)
-        end
+        vis = instance_method_visibility_for(class << object; self; end, method_name)
+
+        # If the method is not defined on the class, `instance_method_visibility_for`
+        # returns `nil`. However, it may be handled dynamically by `method_missing`,
+        # so here we check `respond_to` (passing false to not check private methods).
+        #
+        # This only considers the public case, but I don't think it's possible to
+        # write `method_missing` in such a way that it handles a dynamic message
+        # with private or protected visibility. Ruby doesn't provide you with
+        # the caller info.
+        return vis unless vis.nil?
+
+        proxy = RSpec::Mocks.space.proxy_for(object)
+        respond_to = proxy.method_double_if_exists_for_message(:respond_to?)
+
+        visible = respond_to && respond_to.original_method.call(method_name) ||
+          object.respond_to?(method_name)
+
+        return :public if visible
       end
     end
 
