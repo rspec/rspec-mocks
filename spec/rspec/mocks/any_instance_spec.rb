@@ -5,12 +5,22 @@ module AnyInstanceSpec
     def foo(_a)
       'bar'
     end
+
+    def grandparent_method
+      1
+    end
   end
 
   class ParentClass < GrandparentClass
     def foo
       super(:a)
     end
+
+    def caller_of_parent_aliased_method
+      parent_aliased_method
+    end
+
+    alias parent_aliased_method grandparent_method
   end
 
   class ChildClass < ParentClass
@@ -171,6 +181,17 @@ module RSpec
             expect {
               allow_any_instance_of(klass).to receive_message_chain(:foo, :bar).and_return(45)
             }.to fail_with(/prepended module/)
+          end
+        end
+
+        context 'aliased methods' do
+          it 'tracks aliased method calls' do
+            instance = AnyInstanceSpec::ParentClass.new
+            expect_any_instance_of(AnyInstanceSpec::ParentClass).to receive(:parent_aliased_method).with(no_args).and_return(2)
+            expect(instance.caller_of_parent_aliased_method).to eq 2
+
+            reset_all
+            expect(instance.caller_of_parent_aliased_method).to eq 1
           end
         end
 
