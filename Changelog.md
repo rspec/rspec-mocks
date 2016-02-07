@@ -12,6 +12,8 @@ Bug Fixes:
   `allow`. (Andrew Kozin, #1056)
 * Prevent stubbing `respond_to?` on partial doubles from causing infinite
   recursion. (Jon Rowe, #1013)
+* Prevent aliased methods from disapearing after being mocked with
+  `any_instance` (regression from #1043). (Joe Rafaniello, #1060)
 
 ### 3.4.1 / 2016-01-10
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.4.0...v3.4.1)
