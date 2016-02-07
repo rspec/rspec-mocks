@@ -16,6 +16,7 @@ module RSpec
 
         def invocation_order
           @invocation_order ||= {
+            :with => [nil],
             :and_return => [nil],
             :and_raise => [nil],
             :and_yield => [nil]

@@ -112,6 +112,13 @@ module RSpec
               allow_any_instance_of(klass).to receive_message_chain('one.two.three').and_return(:four)
               expect(klass.new.one.two.three).to eq(:four)
             end
+
+            it "can constrain the return value by the argument to the last call" do
+              allow_any_instance_of(klass).to receive_message_chain(:one, :plus).with(1) { 2 }
+              allow_any_instance_of(klass).to receive_message_chain(:one, :plus).with(2) { 3 }
+              expect(klass.new.one.plus(1)).to eq(2)
+              expect(klass.new.one.plus(2)).to eq(3)
+            end
           end
         end
 
