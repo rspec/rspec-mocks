@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta1...master)
 
+Bug Fixes:
+
+* Fix issue that prevented `receive_message_chain(...).with(...)` working
+  correctly on "any instance" mocks. (Jon Rowe, #1061)
+
 ### 3.5.0.beta1 / 2016-02-06
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.4.1...v3.5.0.beta1)
 
