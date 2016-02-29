@@ -76,12 +76,18 @@ RSpec.describe "and_wrap_original" do
   end
 
   context "on a pure test double" do
-    let(:instance) { double }
+    let(:instance) { double :my_method => :my_value }
+
+    it 'raises an error' do
+      mock_expectation = allow(instance).to receive(:my_method)
+
+      expect {
+        mock_expectation.and_wrap_original
+      }.to raise_error(/pure test double.*and_wrap_original.*partial double/i)
+    end
 
     it 'raises an error even if the double object responds to the message' do
-      expect(instance.to_s).to be_a(String)
-      mock_expectation = expect(instance).to receive(:to_s)
-      instance.to_s # to satisfy the expectation
+      mock_expectation = allow(instance).to receive(:inspect)
 
       expect {
         mock_expectation.and_wrap_original

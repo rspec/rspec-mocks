@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta1...master)
 
+Enhancements:
+
+* Improve error message displayed when using `and_wrap_original` on pure test
+  doubles. (betesh, #1063)
+
 Bug Fixes:
 
 * Fix issue that prevented `receive_message_chain(...).with(...)` working
