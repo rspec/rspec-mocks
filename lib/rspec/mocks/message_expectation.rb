@@ -95,7 +95,7 @@ module RSpec
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
-        and_wrap_original do |original, *args, &block|
+        wrap_original(__method__) do |original, *args, &block|
           original.call(*args, &block)
         end
       end
@@ -113,15 +113,7 @@ module RSpec
       #     original_method.call(*args, &block).first(10)
       #   end
       def and_wrap_original(&block)
-        if RSpec::Mocks::TestDouble === @method_double.object
-          @error_generator.raise_only_valid_on_a_partial_double(:and_call_original)
-        else
-          warn_about_stub_override if implementation.inner_action
-          @implementation = AndWrapOriginalImplementation.new(@method_double.original_implementation_callable, block)
-          @yield_receiver_to_implementation_block = false
-        end
-
-        nil
+        wrap_original(__method__, &block)
       end
 
       # @overload and_raise
@@ -600,6 +592,18 @@ module RSpec
             "You're overriding a previous stub implementation of `#{@message}`. " \
             "Called from #{CallerFilter.first_non_rspec_line}."
           )
+        end
+
+        def wrap_original(method_name, &block)
+          if RSpec::Mocks::TestDouble === @method_double.object
+            @error_generator.raise_only_valid_on_a_partial_double(method_name)
+          else
+            warn_about_stub_override if implementation.inner_action
+            @implementation = AndWrapOriginalImplementation.new(@method_double.original_implementation_callable, block)
+            @yield_receiver_to_implementation_block = false
+          end
+
+          nil
         end
       end
 
