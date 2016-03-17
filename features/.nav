@@ -40,5 +40,6 @@
   - unstub.feature
 - outside_rspec:
   - minitest.feature
+  - any_test_framework.feature
   - standalone.feature
 - Changelog

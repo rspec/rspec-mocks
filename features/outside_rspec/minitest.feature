@@ -1,43 +1,12 @@
 Feature: Integrate with Minitest
 
-  rspec-mocks is a stand-alone gem that can be integrated with any test framework. The
-  example below demonstrates using rspec-mocks with [minitest](http://docs.seattlerb.org/minitest/), but these steps
-  would apply when integrating rspec-mocks with any library or framework:
+  To use rspec-mocks with minitest, simply require `rspec/mocks/minitest_integration`.
 
-    * Include `RSpec::Mocks::ExampleMethods` in your test context. This provides rspec-mocks' API.
-    * Call `RSpec::Mocks.setup` before a test begins.
-    * Call `RSpec::Mocks.verify` after a test completes to verify message expectations. Note
-      that this step is optional; rspec-core, for example, skips this when an example has already failed.
-    * Call `RSpec::Mocks.teardown` after a test completes (and after `verify`) to cleanup. This
-      _must_ be called, even if an error has occurred, so it generally goes in an `ensure` clause.
-
-  Scenario: Use rspec-mocks with Minitest
-    Given a file named "test/test_helper.rb" with:
+  Scenario: Use rspec-mocks with Minitest::Test
+    Given a file named "test/rspec_mocks_test.rb" with:
       """ruby
       require 'minitest/autorun'
-      require 'rspec/mocks'
-
-      module MinitestRSpecMocksIntegration
-        include ::RSpec::Mocks::ExampleMethods
-
-        def before_setup
-          ::RSpec::Mocks.setup
-          super
-        end
-
-        def after_teardown
-          super
-          ::RSpec::Mocks.verify
-        ensure
-          ::RSpec::Mocks.teardown
-        end
-      end
-
-      Minitest::Test.send(:include, MinitestRSpecMocksIntegration)
-      """
-    And a file named "test/rspec_mocks_test.rb" with:
-      """ruby
-      require 'test_helper'
+      require 'rspec/mocks/minitest_integration'
 
       class RSpecMocksTest < Minitest::Test
         def test_passing_positive_expectation
@@ -85,30 +54,183 @@ Feature: Integrate with Minitest
         end
       end
       """
-     When I run `ruby -Itest test/rspec_mocks_test.rb`
+     When I run `ruby test/rspec_mocks_test.rb --seed 0`
      Then it should fail with the following output:
-       |   1) Error:                                                                   |
-       | RSpecMocksTest#test_failing_negative_expectation:                             |
-       | RSpec::Mocks::MockExpectationError: (Double (anonymous)).message(no args)     |
-       |     expected: 0 times with any arguments                                      |
-       |     received: 1 time                                                          |
-       |                                                                               |
-       |   2) Error:                                                                   |
-       | RSpecMocksTest#test_failing_positive_expectation:                             |
-       | RSpec::Mocks::MockExpectationError: (Double (anonymous)).message(*(any args)) |
-       |     expected: 1 time with any arguments                                       |
-       |     received: 0 times with any arguments                                      |
-       |                                                                               |
-       |   3) Error:                                                                   |
-       | RSpecMocksTest#test_failing_positive_spy_expectation:                         |
-       | RSpec::Mocks::MockExpectationError: (Double (anonymous)).james(*(any args))   |
-       |     expected: 1 time with any arguments                                       |
-       |     received: 0 times with any arguments                                      |
-       |                                                                               |
-       |   4) Error:                                                                   |
-       | RSpecMocksTest#test_failing_negative_spy_expectation:                         |
-       | RSpec::Mocks::MockExpectationError: (Double (anonymous)).james(no args)       |
-       |     expected: 0 times with any arguments                                      |
-       |     received: 1 time                                                          |
-       |                                                                               |
-       |  8 runs, 0 assertions, 0 failures, 4 errors, 0 skips                          |
+       |   1) Failure:                                        |
+       | RSpecMocksTest#test_failing_positive_expectation     |
+       | (Double (anonymous)).message(*(any args))            |
+       |     expected: 1 time with any arguments              |
+       |     received: 0 times with any arguments             |
+       |                                                      |
+       |   2) Failure:                                        |
+       | RSpecMocksTest#test_failing_negative_expectation     |
+       | (Double (anonymous)).message(no args)                |
+       |     expected: 0 times with any arguments             |
+       |     received: 1 time                                 |
+       |                                                      |
+       |   3) Failure:                                        |
+       | RSpecMocksTest#test_failing_positive_spy_expectation |
+       | (Double (anonymous)).james(*(any args))              |
+       |     expected: 1 time with any arguments              |
+       |     received: 0 times with any arguments             |
+       |                                                      |
+       |   4) Failure:                                        |
+       | RSpecMocksTest#test_failing_negative_spy_expectation |
+       | (Double (anonymous)).james(no args)                  |
+       |     expected: 0 times with any arguments             |
+       |     received: 1 time                                 |
+       |                                                      |
+       |  8 runs, 0 assertions, 4 failures, 0 errors, 0 skips |
+
+  Scenario: Use rspec-mocks with Minitest::Spec
+    Given a file named "spec/rspec_mocks_spec.rb" with:
+      """ruby
+      require 'minitest/autorun'
+      require 'minitest/spec'
+      require 'rspec/mocks/minitest_integration'
+
+      describe "Minitest Spec integration" do
+        it 'passes a positive expectation' do
+          dbl = double
+          expect(dbl).to receive(:message)
+          dbl.message
+        end
+
+        it 'fails a positive expectation' do
+          dbl = double
+          expect(dbl).to receive(:message)
+        end
+
+        it 'passes a negative expectation (using to_not)' do
+          dbl = double
+          expect(dbl).to_not receive(:message)
+        end
+
+        it 'fails a negative expectation (using not_to)' do
+          dbl = double
+          expect(dbl).not_to receive(:message)
+          dbl.message
+        end
+      end
+      """
+     When I run `ruby spec/rspec_mocks_spec.rb --seed 0`
+     Then it should fail with the following output:
+       |   1) Failure:                                                                   |
+       | Minitest Spec integration#test_0002_fails a positive expectation                |
+       | (Double (anonymous)).message(*(any args))                                       |
+       |     expected: 1 time with any arguments                                         |
+       |     received: 0 times with any arguments                                        |
+       |                                                                                 |
+       |   2) Failure:                                                                   |
+       | Minitest Spec integration#test_0004_fails a negative expectation (using not_to) |
+       | (Double (anonymous)).message(no args)                                           |
+       |     expected: 0 times with any arguments                                        |
+       |     received: 1 time                                                            |
+       |                                                                                 |
+       |  4 runs, 4 assertions, 2 failures, 0 errors, 0 skips                            |
+
+  Scenario: Load rspec-mocks before rspec-expectations, with Minitest::Spec
+    Given a file named "spec/rspec_mocks_spec.rb" with:
+      """ruby
+      require 'minitest/autorun'
+      require 'minitest/spec'
+      require 'rspec/mocks/minitest_integration'
+      require 'rspec/expectations/minitest_integration'
+
+      describe "Minitest Spec integration" do
+        it 'passes a positive expectation' do
+          dbl = double
+          expect(dbl).to receive(:message)
+          dbl.message
+        end
+
+        it 'fails a positive expectation' do
+          dbl = double
+          expect(dbl).to receive(:message)
+        end
+
+        it 'passes a negative expectation (using to_not)' do
+          dbl = double
+          expect(dbl).to_not receive(:message)
+        end
+
+        it 'fails a negative expectation (using not_to)' do
+          dbl = double
+          expect(dbl).not_to receive(:message)
+          dbl.message
+        end
+
+        it 'can use both minitest and rspec expectations' do
+          expect(1 + 3).must_equal 4
+          expect(1 + 3).to eq 4
+        end
+      end
+      """
+     When I run `ruby spec/rspec_mocks_spec.rb --seed 0`
+     Then it should fail with the following output:
+       |   1) Failure:                                                                   |
+       | Minitest Spec integration#test_0002_fails a positive expectation                |
+       | (Double (anonymous)).message(*(any args))                                       |
+       |     expected: 1 time with any arguments                                         |
+       |     received: 0 times with any arguments                                        |
+       |                                                                                 |
+       |   2) Failure:                                                                   |
+       | Minitest Spec integration#test_0004_fails a negative expectation (using not_to) |
+       | (Double (anonymous)).message(no args)                                           |
+       |     expected: 0 times with any arguments                                        |
+       |     received: 1 time                                                            |
+       |                                                                                 |
+       |  5 runs, 6 assertions, 2 failures, 0 errors, 0 skips                            |
+
+  Scenario: Load rspec-mocks after rspec-expectations, with Minitest::Spec
+    Given a file named "spec/rspec_mocks_spec.rb" with:
+      """ruby
+      require 'minitest/autorun'
+      require 'minitest/spec'
+      require 'rspec/expectations/minitest_integration'
+      require 'rspec/mocks/minitest_integration'
+
+      describe "Minitest Spec integration" do
+        it 'passes a positive expectation' do
+          dbl = double
+          expect(dbl).to receive(:message)
+          dbl.message
+        end
+
+        it 'fails a positive expectation' do
+          dbl = double
+          expect(dbl).to receive(:message)
+        end
+
+        it 'passes a negative expectation (using to_not)' do
+          dbl = double
+          expect(dbl).to_not receive(:message)
+        end
+
+        it 'fails a negative expectation (using not_to)' do
+          dbl = double
+          expect(dbl).not_to receive(:message)
+          dbl.message
+        end
+
+        it 'can use both minitest and rspec expectations' do
+          expect(1 + 3).must_equal 4
+          expect(1 + 3).to eq 4
+        end
+      end
+      """
+     When I run `ruby spec/rspec_mocks_spec.rb --seed 0`
+     Then it should fail with the following output:
+       |   1) Failure:                                                                   |
+       | Minitest Spec integration#test_0002_fails a positive expectation                |
+       | (Double (anonymous)).message(*(any args))                                       |
+       |     expected: 1 time with any arguments                                         |
+       |     received: 0 times with any arguments                                        |
+       |                                                                                 |
+       |   2) Failure:                                                                   |
+       | Minitest Spec integration#test_0004_fails a negative expectation (using not_to) |
+       | (Double (anonymous)).message(no args)                                           |
+       |     expected: 0 times with any arguments                                        |
+       |     received: 1 time                                                            |
+       |                                                                                 |
+       |  5 runs, 6 assertions, 2 failures, 0 errors, 0 skips                            |
