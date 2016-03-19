@@ -48,13 +48,22 @@ RSpec.describe "a double declaration with a block handed to:" do
     end
   end
 
-  %w[once twice ordered].each do |method|
+  %w[once twice].each do |method|
     describe method do
       it "returns the value of executing the block" do
         obj = Object.new
         allow(obj).to receive(:foo).send(method) { 'bar' }
         expect(obj.foo).to eq('bar')
       end
+    end
+  end
+
+  describe 'ordered' do
+    it "returns the value of executing the block" do
+      obj = Object.new
+      expect_warning_with_call_site(__FILE__, __LINE__ + 1)
+      allow(obj).to receive(:foo).ordered { 'bar' }
+      expect(obj.foo).to eq('bar')
     end
   end
 

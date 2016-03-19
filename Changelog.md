@@ -5,6 +5,8 @@ Enhancements:
 
 * Improve error message displayed when using `and_wrap_original` on pure test
   doubles. (betesh, #1063)
+* Issue warning when attempting to use unsupported
+  `allow(...).to receive(...).ordered`. (Jon Rowe, #1000)
 
 Bug Fixes:
 

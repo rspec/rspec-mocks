@@ -274,6 +274,14 @@ module RSpec
           let(:target) { allow(object) }
         end
 
+        context 'ordered with receive counts' do
+          specify 'is not supported' do
+            a_dbl = double
+            expect_warning_with_call_site(__FILE__, __LINE__ + 1)
+            allow(a_dbl).to receive(:one).ordered
+          end
+        end
+
         context 'on a class method, from a class with subclasses' do
           let(:superclass)     { Class.new { def self.foo; "foo"; end }}
           let(:subclass_redef) { Class.new(superclass) { def self.foo; ".foo."; end }}
