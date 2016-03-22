@@ -7,6 +7,8 @@ Enhancements:
   doubles. (betesh, #1063)
 * Issue warning when attempting to use unsupported
   `allow(...).to receive(...).ordered`. (Jon Rowe, #1000)
+* Add `rspec/mocks/minitest_integration`, to properly integration rspec-mocks
+  with minitest. (Myron Marston, #1065)
 
 Bug Fixes:
 

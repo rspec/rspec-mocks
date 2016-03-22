@@ -2,6 +2,9 @@ require 'rspec/support/spec/library_wide_checks'
 
 RSpec.describe RSpec::Mocks do
   lib_preamble = [
+    # We define minitest constants because rspec/mocks/minitest_integration
+    # expects these constants to already be defined.
+    "module Minitest; class Assertion; end; module Test; end; end",
     'require "rspec/mocks"',
     # Must be required before other files due to how our autoloads are setup.
     # (Users won't hit this problem because they won't require all the files
