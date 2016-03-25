@@ -64,6 +64,10 @@ module RSpec
             expect { allow_any_instance_of(klass).to receive(:foo).and_yield(1).with("1") }.to raise_error(NoMethodError)
           end
 
+          it "raises an error if 'with' follows 'and_throw'" do
+            expect { allow_any_instance_of(klass).to receive(:foo).and_throw(:ball).with("football") }.to raise_error(NoMethodError)
+          end
+
           it "allows chaining 'and_yield'" do
             allow_any_instance_of(klass).to receive(:foo).and_yield(1).and_yield(2).and_yield(3)
             expect { |b| klass.new.foo(&b) }.to yield_successive_args(1, 2, 3)
@@ -306,6 +310,18 @@ module RSpec
           it "can stub a method that exists" do
             allow_any_instance_of(klass).to receive(:existing_method).and_raise(CustomErrorForAnyInstanceSpec)
             expect { klass.new.existing_method }.to raise_error(CustomErrorForAnyInstanceSpec)
+          end
+        end
+
+        context "with #and_throw" do
+          it "can stub a method that doesn't exist" do
+            allow_any_instance_of(klass).to receive(:foo).and_throw(:up)
+            expect { klass.new.foo }.to throw_symbol(:up)
+          end
+
+          it "can stub a method that exists" do
+            allow_any_instance_of(klass).to receive(:existing_method).and_throw(:up)
+            expect { klass.new.existing_method }.to throw_symbol(:up)
           end
         end
 
