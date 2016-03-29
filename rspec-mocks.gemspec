@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
   s.authors     = ["Steven Baker", "David Chelimsky", "Myron Marston"]
   s.email       = "rspec@googlegroups.com"
-  s.homepage    = "http://github.com/rspec/rspec-mocks"
+  s.homepage    = "https://github.com/rspec/rspec-mocks"
   s.summary     = "rspec-mocks-#{RSpec::Mocks::Version::STRING}"
   s.description = "RSpec's 'test double' framework, with support for stubbing and mocking"
 
