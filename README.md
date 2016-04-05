@@ -94,6 +94,12 @@ making the combined instantiation/stub declaration very terse:
 double(:foo => 'bar')
 ```
 
+So, the above examples can be written simply as:
+
+```ruby
+allow(book).to receive(:title).and_return(book)
+```
+
 This is particularly nice when providing a list of test doubles to a method
 that iterates through them:
 
