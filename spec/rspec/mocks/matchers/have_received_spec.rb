@@ -229,7 +229,7 @@ module RSpec
               end
             end
 
-            context "when contrained with grouped arguments `with`" do
+            context "when constrained with grouped arguments `with`" do
               it 'groups the "got" arguments based on the method call that included them' do
                 dbl = double(:expected_method => nil)
                 dbl.expected_method(:one, :four)
