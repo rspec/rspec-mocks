@@ -161,6 +161,23 @@ module RSpec
             allow_any_instance_of(sub_class).to receive(:foo).and_call_original
             expect(sub_class.new.foo).to eq("bar")
           end
+
+          it "allows an expectation to be set on a subclass when an allowance already exists on a superclass" do
+            class A
+              def foo
+                true
+              end
+            end
+
+            class B < A
+              def foo
+                super
+              end
+            end
+            allow_any_instance_of(A).to receive(:foo)
+            expect_any_instance_of(B).to receive(:foo).with(:bar)
+            B.new.foo(:bar)
+          end
         end
 
         context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
