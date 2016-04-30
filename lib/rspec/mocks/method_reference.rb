@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support 'comparable_version'
+
 module RSpec
   module Mocks
     # Represents a method on an object that may or may not be defined.
@@ -128,7 +130,7 @@ module RSpec
       #
       # This is necessary due to a bug in JRuby prior to 1.7.5 fixed in:
       # https://github.com/jruby/jruby/commit/99a0613fe29935150d76a9a1ee4cf2b4f63f4a27
-      if RUBY_PLATFORM == 'java' && JRUBY_VERSION.split('.')[-1].to_i < 5
+      if RUBY_PLATFORM == 'java' && RSpec::Support::ComparableVersion.new(JRUBY_VERSION) < '1.7.5'
         def find_method(mod)
           mod.dup.instance_method(@method_name)
         end
