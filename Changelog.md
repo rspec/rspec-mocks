@@ -1,15 +1,27 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta1...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta3...master)
+
+Enhancements:
+
+* Add `and_throw` to any instance handling. (Tobias Bühlmann, #1068)
+
+### 3.5.0.beta3 / 2016-04-02
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta2...v3.5.0.beta3)
+
+Enhancements:
+
+* Issue warning when attempting to use unsupported
+  `allow(...).to receive(...).ordered`. (Jon Rowe, #1000)
+* Add `rspec/mocks/minitest_integration`, to properly integrate rspec-mocks
+  with minitest. (Myron Marston, #1065)
+
+### 3.5.0.beta2 / 2016-03-10
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta1...v3.5.0.beta2)
 
 Enhancements:
 
 * Improve error message displayed when using `and_wrap_original` on pure test
   doubles. (betesh, #1063)
-* Issue warning when attempting to use unsupported
-  `allow(...).to receive(...).ordered`. (Jon Rowe, #1000)
-* Add `rspec/mocks/minitest_integration`, to properly integration rspec-mocks
-  with minitest. (Myron Marston, #1065)
-* Add `and_throw` to any instance handling. (Tobias Bühlmann, #1068)
 
 Bug Fixes:
 
