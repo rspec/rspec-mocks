@@ -343,6 +343,14 @@ module RSpec
         self
       end
 
+      # @return [String] a nice representation of the message expectation
+      def to_s
+        args_description = error_generator.method_call_args_description(@argument_list_matcher.expected_args, "", "") { true }
+        args_description = "(#{args_description})" unless args_description.start_with?("(")
+        "#<#{self.class} #{error_generator.intro}.#{message}#{args_description}>"
+      end
+      alias inspect to_s
+
       # @private
       # Contains the parts of `MessageExpectation` that aren't part of
       # rspec-mocks' public API. The class is very big and could really use

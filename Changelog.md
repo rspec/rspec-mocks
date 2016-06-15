@@ -1,6 +1,11 @@
 ### 3.5 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta4...master)
 
+Enhancements:
+
+* Provides a nice string representation of
+  `RSpec::Mocks::MessageExpectation` (Myron Marston, #1095)
+
 ### 3.5.0.beta4 / 2016-06-05
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta3...v3.5.0.beta4)
 
