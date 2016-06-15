@@ -218,6 +218,33 @@ module RSpec
         "To disallow expectations on `nil`, set `config.allow_message_expectations_on_nil` to `false`"
       end
 
+      # @private
+      def intro(unwrapped=false)
+        case @target
+        when TestDouble then TestDoubleFormatter.format(@target, unwrapped)
+        when Class then
+          formatted = "#{@target.inspect} (class)"
+          return formatted if unwrapped
+          "#<#{formatted}>"
+        when NilClass then "nil"
+        else @target.inspect
+        end
+      end
+
+      # @private
+      def method_call_args_description(args, generic_prefix=" with arguments: ", matcher_prefix=" with ")
+        case args.first
+        when ArgumentMatchers::AnyArgsMatcher then "#{matcher_prefix}any arguments"
+        when ArgumentMatchers::NoArgsMatcher  then "#{matcher_prefix}no arguments"
+        else
+          if yield
+            "#{generic_prefix}#{format_args(args)}"
+          else
+            ""
+          end
+        end
+      end
+
     private
 
       def received_part_of_expectation_error(actual_received_count, args)
@@ -232,19 +259,6 @@ module RSpec
           method_call_args_description(argument_list_matcher.expected_args) do
             argument_list_matcher.expected_args.length > 0
           end
-      end
-
-      def method_call_args_description(args)
-        case args.first
-        when ArgumentMatchers::AnyArgsMatcher then " with any arguments"
-        when ArgumentMatchers::NoArgsMatcher  then " with no arguments"
-        else
-          if yield
-            " with arguments: #{format_args(args)}"
-          else
-            ""
-          end
-        end
       end
 
       def unexpected_arguments_message(expected_args_string, actual_args_string)
@@ -288,18 +302,6 @@ module RSpec
 
       def differ
         RSpec::Support::Differ.new(:color => RSpec::Mocks.configuration.color?)
-      end
-
-      def intro(unwrapped=false)
-        case @target
-        when TestDouble then TestDoubleFormatter.format(@target, unwrapped)
-        when Class then
-          formatted = "#{@target.inspect} (class)"
-          return formatted if unwrapped
-          "#<#{formatted}>"
-        when NilClass then "nil"
-        else @target
-        end
       end
 
       def __raise(message, backtrace_line=nil, source_id=nil)
