@@ -1,21 +1,3 @@
-# Add temporary monkey patch to see if this fixes the 1.8.7 travis build
-# before we merge the rspec-expectations PR with this fix.
-RSpec::Matchers::EnglishPhrasing.class_eval do
-  if RUBY_VERSION == '1.8.7'
-    # Not sure why, but on travis on 1.8.7 we have gotten these warnings:
-    # lib/rspec/matchers/english_phrasing.rb:28: warning: default `to_a' will be obsolete
-    # So it appears that `Array` can trigger that (e.g. by calling `to_a` on the passed object?)
-    # So here we replace `Kernel#Array` with our own warning-free implementation for 1.8.7.
-    # @private
-    def self.Array(obj)
-      case obj
-      when Array then obj
-      else [obj]
-      end
-    end
-  end
-end
-
 module RSpec
   module Mocks
     RSpec.describe MessageExpectation, "has a nice string representation" do
