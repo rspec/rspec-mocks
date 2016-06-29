@@ -121,6 +121,28 @@ module RSpec
 
           expect(receiver.foo(1)).to eq(:curly)
         end
+
+        if Support::RubyFeatures.module_refinement_supported?
+          module MyRefinedString
+            refine String do
+              def to_s
+                'to_s'
+              end
+            end
+          end
+          class ARefinedString < String
+            using MyRefinedString
+          end
+
+          context 'when refined' do
+            let(:receiver) { ARefinedString.new }
+
+            it 'allows overriding methods' do
+              wrapped.to receive(:to_s) { 'mocked#to_s' }
+              expect(receiver.to_s).to eq 'mocked#to_s'
+            end
+          end
+        end
       end
 
       shared_examples "an expect syntax allowance" do |*options|
