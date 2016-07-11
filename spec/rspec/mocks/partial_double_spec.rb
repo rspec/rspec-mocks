@@ -377,6 +377,17 @@ module RSpec
         expect(object.send(:defined_private_method)).to eq("works")
       end
 
+      it 'can be temporarily supressed' do
+        without_verifying_partial_doubles do
+          expect(object).to receive(:fictitious_method) { 'works' }
+        end
+        expect(object.fictitious_method).to eq 'works'
+
+        expect {
+          expect(object).to receive(:another_fictitious_method) { 'works' }
+        }.to raise_error RSpec::Mocks::MockExpectationError
+      end
+
       it 'runs the before_verifying_double callbacks before verifying an expectation' do
         expect { |probe|
           RSpec.configuration.mock_with(:rspec) do |config|
@@ -416,9 +427,9 @@ module RSpec
       end
 
       context "for a class" do
-        it "only runs the `before_verifying_doubles` callback for the class (not for superclasses)" do
-          subclass = Class.new(klass)
+        let(:subclass) { Class.new(klass) }
 
+        it "only runs the `before_verifying_doubles` callback for the class (not for superclasses)" do
           expect { |probe|
             RSpec.configuration.mock_with(:rspec) do |config|
               config.before_verifying_doubles(&probe)
@@ -429,6 +440,18 @@ module RSpec
             an_object_having_attributes(:target => subclass)
           )
         end
+
+        it 'can be temporarily supressed' do
+          without_verifying_partial_doubles do
+            expect(subclass).to receive(:fictitious_method) { 'works' }
+          end
+          expect(subclass.fictitious_method).to eq 'works'
+
+          expect {
+            expect(subclass).to receive(:another_fictitious_method) { 'works' }
+          }.to raise_error RSpec::Mocks::MockExpectationError
+        end
+
       end
 
       it 'does not allow a non-existing method to be expected' do
