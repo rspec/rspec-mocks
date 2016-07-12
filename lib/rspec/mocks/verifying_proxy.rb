@@ -195,6 +195,8 @@ module RSpec
       def self.for(object, method_name, proxy)
         if ClassNewMethodReference.applies_to?(method_name) { object }
           VerifyingExistingClassNewMethodDouble
+        elsif Mocks.configuration.temporarily_suppressing_verification
+          MethodDouble
         else
           self
         end.new(object, method_name, proxy)
