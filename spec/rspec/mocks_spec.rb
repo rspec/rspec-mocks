@@ -132,7 +132,7 @@ RSpec.describe RSpec::Mocks do
         expect(defined?(ValueY)).to be_falsey
       end
 
-      it 'does not allow the stubbed constants to be used after the scope in before(:all)' do
+      it 'does not allow the stubbed constants to be used after the scope in before(:all)', :pending => RSpec::Support::Ruby.jruby_9000? do
         expect(@error).to be_a(NameError)
         expect(@error.message).to include("ValueX")
       end
