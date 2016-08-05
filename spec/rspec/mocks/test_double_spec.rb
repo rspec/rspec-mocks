@@ -23,6 +23,11 @@ module RSpec
             subject.hi
           }.not_to raise_error
         end
+
+        it "returns the instance of the test double" do
+          allow(RSpec).to receive(:warn_with).with(/freeze a test double/)
+          expect(subject.freeze).to eq subject
+        end
       end
 
       RSpec.shared_examples_for "a copy method" do |method|
