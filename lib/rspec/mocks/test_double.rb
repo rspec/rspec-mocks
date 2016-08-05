@@ -66,6 +66,7 @@ module RSpec
       # doubles.
       def freeze
         RSpec.warn_with("WARNING: you attempted to freeze a test double. This is explicitly a no-op as freezing doubles can lead to undesired behaviour when resetting tests.")
+        self
       end
 
     private
