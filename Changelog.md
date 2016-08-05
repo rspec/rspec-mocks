@@ -3,8 +3,7 @@
 
 Bug Fixes:
 
-* Return the instance of the test double from
-  `double.freeze` (Alessandro Berardi, #1109)
+* Return the test double instance form `#freeze` (Alessandro Berardi, #1109)
 
 ### 3.5.0 / 2016-07-01
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0.beta4...v3.5.0)
