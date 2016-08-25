@@ -439,11 +439,6 @@ module RSpec
         super
       end
 
-      def add_negative_message_expectation(location, method_name, &implementation)
-        warn_or_raise!(method_name)
-        super
-      end
-
       def add_stub(method_name, opts={}, &implementation)
         warn_or_raise!(method_name)
         super
