@@ -8,7 +8,7 @@ module RSpec
         @verify_doubled_constant_names = false
         @transfer_nested_constants = false
         @verify_partial_doubles = false
-        @temporarily_suppressing_verification = false
+        @temporarily_suppressing_partial_double_verification = false
       end
 
       # Sets whether RSpec will warn, ignore, or fail a test when
@@ -155,9 +155,9 @@ module RSpec
       end
 
       # @private
-      # Used to track wether we are temporarily suppressing verifying doubles
-      # with `without_verifying_partial_doubles { ... }`
-      attr_accessor :temporarily_suppressing_verification
+      # Used to track wether we are temporarily suppressing verifying partial
+      # doubles with `without_verifying_partial_doubles { ... }`
+      attr_accessor :temporarily_suppressing_partial_double_verification
 
       if ::RSpec.respond_to?(:configuration)
         def color?
