@@ -189,7 +189,7 @@ module RSpec
 
         # We only want to apply our special logic to normal `new` methods.
         # Methods that the user has monkeyed with should be left as-is.
-        klass.method(:new).owner == ::Class
+        ::RSpec::Support.method_handle_for(klass, :new).owner == ::Class
       end
 
       def with_signature

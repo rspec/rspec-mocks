@@ -566,6 +566,16 @@ module RSpec
             allow(subclass).to receive(:new).with(1, 2)
           end
         end
+
+        context 'on a class that has redefined `self.method`' do
+          it 'allows the stubbing of :new' do
+            subclass = Class.new(klass) do
+              def self.method(*); end
+            end
+
+            allow(subclass).to receive(:new)
+          end
+        end
       end
     end
   end
