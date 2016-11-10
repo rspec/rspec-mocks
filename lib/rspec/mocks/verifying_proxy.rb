@@ -36,7 +36,7 @@ module RSpec
       end
 
       def ensure_implemented(method_name)
-        return if Mocks.configuration.temporarily_suppressing_partial_double_verification
+        return if Mocks.configuration.temporarily_suppress_partial_double_verification
         return unless method_reference[method_name].unimplemented?
 
         @error_generator.raise_unimplemented_error(
@@ -47,7 +47,7 @@ module RSpec
       end
 
       def ensure_publicly_implemented(method_name, _object)
-        return if Mocks.configuration.temporarily_suppressing_partial_double_verification
+        return if Mocks.configuration.temporarily_suppress_partial_double_verification
         ensure_implemented(method_name)
         visibility = method_reference[method_name].visibility
 
@@ -195,7 +195,7 @@ module RSpec
       def self.for(object, method_name, proxy)
         if ClassNewMethodReference.applies_to?(method_name) { object }
           VerifyingExistingClassNewMethodDouble
-        elsif Mocks.configuration.temporarily_suppressing_partial_double_verification
+        elsif Mocks.configuration.temporarily_suppress_partial_double_verification
           MethodDouble
         else
           self
