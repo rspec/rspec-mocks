@@ -388,6 +388,16 @@ module RSpec
         }.to raise_error RSpec::Mocks::MockExpectationError
       end
 
+      specify 'temporarily supressing partial doubles does not affect normal verifying doubles' do
+        klass = Class.new
+        object = nil
+        without_verifying_partial_doubles do
+          expect {
+            object = instance_double(klass, :fictitious_method => 'works')
+          }.to raise_error RSpec::Mocks::MockExpectationError
+        end
+      end
+
       it 'runs the before_verifying_double callbacks before verifying an expectation' do
         expect { |probe|
           RSpec.configuration.mock_with(:rspec) do |config|

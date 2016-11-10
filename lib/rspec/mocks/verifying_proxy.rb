@@ -36,7 +36,6 @@ module RSpec
       end
 
       def ensure_implemented(method_name)
-        return if Mocks.configuration.temporarily_suppress_partial_double_verification
         return unless method_reference[method_name].unimplemented?
 
         @error_generator.raise_unimplemented_error(
@@ -47,7 +46,6 @@ module RSpec
       end
 
       def ensure_publicly_implemented(method_name, _object)
-        return if Mocks.configuration.temporarily_suppress_partial_double_verification
         ensure_implemented(method_name)
         visibility = method_reference[method_name].visibility
 
@@ -120,6 +118,11 @@ module RSpec
         end
 
         optional_callback_invocation_strategy.call(@doubled_module)
+      end
+
+      def ensure_implemented(_method_name)
+        return if Mocks.configuration.temporarily_suppress_partial_double_verification
+        super
       end
 
       def method_reference
