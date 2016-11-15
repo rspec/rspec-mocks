@@ -388,6 +388,21 @@ module RSpec
         }.to raise_error RSpec::Mocks::MockExpectationError
       end
 
+      it 'can be temporarily supressed and nested' do
+        without_partial_double_verification do
+          without_partial_double_verification do
+            expect(object).to receive(:fictitious_method) { 'works' }
+          end
+          expect(object).to receive(:other_fictitious_method) { 'works' }
+        end
+        expect(object.fictitious_method).to eq 'works'
+        expect(object.other_fictitious_method).to eq 'works'
+
+        expect {
+          expect(object).to receive(:another_fictitious_method) { 'works' }
+        }.to raise_error RSpec::Mocks::MockExpectationError
+      end
+
       specify 'temporarily supressing partial doubles does not affect normal verifying doubles' do
         klass = Class.new
         object = nil
