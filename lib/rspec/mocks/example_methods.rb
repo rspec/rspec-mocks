@@ -282,6 +282,18 @@ module RSpec
         Matchers::HaveReceived.new(method_name, &block)
       end
 
+      # Turns off the verifying of partial doubles for the duration of the
+      # block, this is useful in situations where methods are defined at run
+      # time and you wish to define stubs for them but not turn off partial
+      # doubles for the entire run suite. (e.g. view specs in rspec-rails).
+      def without_partial_double_verification
+        original_state = Mocks.configuration.temporarily_suppress_partial_double_verification
+        Mocks.configuration.temporarily_suppress_partial_double_verification = true
+        yield
+      ensure
+        Mocks.configuration.temporarily_suppress_partial_double_verification = original_state
+      end
+
       # @method expect
       # Used to wrap an object in preparation for setting a mock expectation
       # on it.

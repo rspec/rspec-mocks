@@ -120,6 +120,11 @@ module RSpec
         optional_callback_invocation_strategy.call(@doubled_module)
       end
 
+      def ensure_implemented(_method_name)
+        return if Mocks.configuration.temporarily_suppress_partial_double_verification
+        super
+      end
+
       def method_reference
         @method_doubles
       end
@@ -193,6 +198,8 @@ module RSpec
       def self.for(object, method_name, proxy)
         if ClassNewMethodReference.applies_to?(method_name) { object }
           VerifyingExistingClassNewMethodDouble
+        elsif Mocks.configuration.temporarily_suppress_partial_double_verification
+          MethodDouble
         else
           self
         end.new(object, method_name, proxy)
