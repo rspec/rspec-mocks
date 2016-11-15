@@ -378,7 +378,7 @@ module RSpec
       end
 
       it 'can be temporarily supressed' do
-        without_verifying_partial_doubles do
+        without_partial_double_verification do
           expect(object).to receive(:fictitious_method) { 'works' }
         end
         expect(object.fictitious_method).to eq 'works'
@@ -391,7 +391,7 @@ module RSpec
       specify 'temporarily supressing partial doubles does not affect normal verifying doubles' do
         klass = Class.new
         object = nil
-        without_verifying_partial_doubles do
+        without_partial_double_verification do
           expect {
             object = instance_double(klass, :fictitious_method => 'works')
           }.to raise_error RSpec::Mocks::MockExpectationError
@@ -452,7 +452,7 @@ module RSpec
         end
 
         it 'can be temporarily supressed' do
-          without_verifying_partial_doubles do
+          without_partial_double_verification do
             expect(subclass).to receive(:fictitious_method) { 'works' }
           end
           expect(subclass.fictitious_method).to eq 'works'
