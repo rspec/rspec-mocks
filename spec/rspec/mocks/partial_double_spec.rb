@@ -404,11 +404,9 @@ module RSpec
       end
 
       specify 'temporarily supressing partial doubles does not affect normal verifying doubles' do
-        klass = Class.new
-        object = nil
         without_partial_double_verification do
           expect {
-            object = instance_double(klass, :fictitious_method => 'works')
+            instance_double(Class.new, :fictitious_method => 'works')
           }.to raise_error RSpec::Mocks::MockExpectationError
         end
       end
