@@ -330,7 +330,7 @@ module RSpec
       def ordered(&block)
         if type == :stub
           RSpec.warning(
-            "`allow(...).to receive(..).ordered` is not supported and will" \
+            "`allow(...).to receive(..).ordered` is not supported and will " \
             "have no effect, use `and_return(*ordered_values)` instead."
           )
         end
