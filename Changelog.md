@@ -1,3 +1,12 @@
+### 3.6.0.beta2 / 2016-12-12
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.6.0.beta1...v3.6.0.beta2)
+
+Enhancements:
+
+* Add new `without_partial_double_verification { }` API that lets you
+  temporarily turn off partial double verification for an example.
+  (Jon Rowe, #1104)
+
 ### 3.6.0.beta1 / 2016-10-09
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.5.0...v3.6.0.beta1)
 
