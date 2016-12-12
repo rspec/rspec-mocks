@@ -120,11 +120,35 @@ module RSpec
           a_double.random_call(1)
         end
 
+        it "matches duck type with method returning the given value" do
+          expect(a_double).to receive(:random_call).with(duck_type(:div, :abs => 1))
+          a_double.random_call(-1)
+        end
+
+        it "matches duck type with two methods returning the given values" do
+          expect(a_double).to receive(:random_call).with(duck_type(:div, :abs => 1, :to_s => "-1"))
+          a_double.random_call(-1)
+        end
+
         it "rejects goose when expecting a duck", :reset => true do
           expect(a_double).to receive(:random_call).with(duck_type(:abs, :div))
           expect {
             a_double.random_call("I don't respond to :abs or :div")
           }.to fail_including "expected: (duck_type(:abs, :div))"
+        end
+
+        it "rejects duck type with method returning a different value", :reset => true do
+          expect(a_double).to receive(:random_call).with(duck_type(:div, :abs => 1))
+          expect {
+            a_double.random_call(2)
+          }.to fail_including "expected: (duck_type(:div, :abs => 1))"
+        end
+
+        it "rejects duck type with two methods returning different values", :reset => true do
+          expect(a_double).to receive(:random_call).with(duck_type(:div, :abs => 1, :to_s => "1"))
+          expect {
+            a_double.random_call(2)
+          }.to fail_including "expected: (duck_type(:div, :abs => 1, :to_s => \"1\"))"
         end
       end
 

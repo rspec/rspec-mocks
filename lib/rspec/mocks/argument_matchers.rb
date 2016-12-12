@@ -260,14 +260,24 @@ module RSpec
       class DuckTypeMatcher
         def initialize(*methods_to_respond_to)
           @methods_to_respond_to = methods_to_respond_to
+          @methods_with_expected_values = if @methods_to_respond_to.last.is_a?(Hash)
+                                            @methods_to_respond_to.pop
+                                          else
+                                            {}
+                                          end
         end
 
         def ===(value)
-          @methods_to_respond_to.all? { |message| value.respond_to?(message) }
+          return false unless @methods_to_respond_to.all? { |message| value.respond_to?(message) }
+          @methods_with_expected_values.all? do |message, val|
+            value.respond_to?(message) && value.send(message) === val
+          end
         end
 
         def description
-          "duck_type(#{@methods_to_respond_to.map(&:inspect).join(', ')})"
+          parts = @methods_to_respond_to.map(&:inspect) +
+            @methods_with_expected_values.map { |k, v| "#{k.inspect} => #{v.inspect}" }
+          "duck_type(#{parts.join(', ')})"
         end
       end
 
