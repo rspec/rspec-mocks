@@ -17,7 +17,7 @@ Feature: Matching arguments
   | A subset of a hash                                  | `with(hash_including(:a => 1))` | `foo(:a => 1, :b => 2)`               |
   | An excluded subset of a hash                        | `with(hash_excluding(:a => 1))` | `foo(:b => 2)`                        |
   | A subset of an array                                | `with(array_including(:a, :b))` | `foo([:a, :b, :c])`                   |
-  | An instance of a specific class                     | `with(instance_of(Fixnum))`     | `foo(3)`                              |
+  | An instance of a specific class                     | `with(instance_of(Integer))`    | `foo(3)`                              |
   | An object with a given module in its ancestors list | `with(kind_of(Numeric))`        | `foo(3)`                              |
   | Any RSpec matcher                                   | `with(<matcher>)`               | `foo(<object that matches>)`          |
 
