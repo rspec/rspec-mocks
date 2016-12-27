@@ -47,11 +47,11 @@ module RSpec
         end
 
         it 'allows the caller to constrain the received arguments by matcher' do
-          wrapped.to receive(:foo).with an_instance_of Fixnum
+          wrapped.to receive(:foo).with an_instance_of Float
           expect {
-            receiver.foo(1.1)
-          }.to raise_error(/expected.*\(an instance of Fixnum\)/)
-          receiver.foo(1)
+            receiver.foo(1)
+          }.to raise_error(/expected.*\(an instance of Float\)/)
+          receiver.foo(1.1)
         end
 
         it 'allows a `do...end` block implementation to be provided' do
@@ -352,9 +352,9 @@ module RSpec
 
           context "when a message is not received" do
             it 'sets up a message expectation that formats argument matchers correctly' do
-              wrapped.to receive(:foo).with an_instance_of Fixnum
+              wrapped.to receive(:foo).with an_instance_of Float
               expect { verify_all }.to(
-                raise_error(/expected: 1 time with arguments: \(an instance of Fixnum\)\n\s+received: 0 times$/)
+                raise_error(/expected: 1 time with arguments: \(an instance of Float\)\n\s+received: 0 times$/)
               )
             end
           end
@@ -467,7 +467,7 @@ module RSpec
           let(:receiver) { klass.new }
 
           it 'sets up a message expectation that formats argument matchers correctly' do
-            wrapped.to receive(:foo).with an_instance_of Fixnum
+            wrapped.to receive(:foo).with an_instance_of Float
             expect { verify_all }.to raise_error(/should have received the following message\(s\) but didn't/)
           end
         end

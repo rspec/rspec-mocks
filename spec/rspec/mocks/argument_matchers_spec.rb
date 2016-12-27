@@ -59,19 +59,19 @@ module RSpec
       end
 
       describe "instance_of" do
-        it "accepts fixnum as instance_of(Fixnum)" do
-          expect(a_double).to receive(:random_call).with(instance_of(Fixnum))
-          a_double.random_call(1)
-        end
-
-        it "does NOT accept fixnum as instance_of(Numeric)" do
-          expect(a_double).not_to receive(:random_call).with(instance_of(Numeric))
-          a_double.random_call(1)
+        it "accepts float as instance_of(Float)" do
+          expect(a_double).to receive(:random_call).with(instance_of(Float))
+          a_double.random_call(1.1)
         end
 
         it "does NOT accept float as instance_of(Numeric)" do
           expect(a_double).not_to receive(:random_call).with(instance_of(Numeric))
-          a_double.random_call(1.5)
+          a_double.random_call(1.1)
+        end
+
+        it "does NOT accept integer as instance_of(Numeric)" do
+          expect(a_double).not_to receive(:random_call).with(instance_of(Numeric))
+          a_double.random_call(1)
         end
 
         it "rejects non numeric", :reset => true do
@@ -408,23 +408,23 @@ module RSpec
         end
 
         it "matches a class against itself" do
-          expect(a_double).to receive(:foo).with(Fixnum)
-          a_double.foo(Fixnum)
+          expect(a_double).to receive(:foo).with(Float)
+          a_double.foo(Float)
         end
 
         it "fails a class against an unrelated class", :reset => true do
-          expect(a_double).to receive(:foo).with(Fixnum)
+          expect(a_double).to receive(:foo).with(Float)
           expect { a_double.foo(Hash) }.to fail
         end
 
         it "matches a class against an instance of itself" do
-          expect(a_double).to receive(:foo).with(Fixnum)
-          a_double.foo(3)
+          expect(a_double).to receive(:foo).with(Float)
+          a_double.foo(3.3)
         end
 
         it "fails a class against an object of a different type", :reset => true do
-          expect(a_double).to receive(:foo).with(Fixnum)
-          expect { a_double.foo(3.2) }.to fail
+          expect(a_double).to receive(:foo).with(Float)
+          expect { a_double.foo(3) }.to fail
         end
 
         it "fails with zero arguments", :reset => true do
