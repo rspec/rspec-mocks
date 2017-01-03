@@ -101,6 +101,22 @@ that iterates through them:
 order.calculate_total_price(double(:price => 1.99), double(:price => 2.99))
 ```
 
+### Stubbing a chain of methods
+
+You can use `receive_message_chain` in place of `receive` in certain circumstances to stub a chain of messages:
+
+```ruby
+allow(double).to receive_message_chain("foo.bar") { :baz }
+allow(double).to receive_message_chain(:foo, :bar => :baz)
+allow(double).to receive_message_chain(:foo, :bar) { :baz }
+```
+
+Given any of these three forms:
+
+```ruby
+double.foo.bar # => :baz
+```
+
 ## Consecutive return values
 
 When a stub might be invoked more than once, you can provide additional
