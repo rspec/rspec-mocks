@@ -106,10 +106,11 @@ order.calculate_total_price(double(:price => 1.99), double(:price => 2.99))
 You can use `receive_message_chain` in place of `receive` to stub a chain of messages:
 
 ```ruby
+allow(double).to receive_message_chain("foo.bar") { :baz }
+allow(double).to receive_message_chain(:foo, :bar => :baz)
 allow(double).to receive_message_chain(:foo, :bar) { :baz }
-```
 
-```ruby
+# Given any of the above forms:
 double.foo.bar # => :baz
 ```
 
