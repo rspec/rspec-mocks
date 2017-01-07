@@ -14,7 +14,8 @@ end
 
 gem 'yard', '~> 0.8.7', :require => false
 
-if RUBY_VERSION >= '1.9' && RUBY_VERSION <= '2.1'
+if RUBY_VERSION >= '2' && RUBY_VERSION <= '2.1'
+  # todo upgrade rubocop and run on a recent version e.g. 2.3 or 2.4
   gem 'rubocop', "~> 0.23.0"
 end
 
