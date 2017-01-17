@@ -19,6 +19,10 @@ if RUBY_VERSION >= '2' && RUBY_VERSION <= '2.1'
   gem 'rubocop', "~> 0.23.0"
 end
 
+if RUBY_VERSION < '2.0.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
+  gem 'ffi', '< 1.9.15' # allow ffi to be installed on older rubies on windows
+end
+
 ### deps for rdoc.info
 group :documentation do
   gem 'redcarpet',     '2.1.1' unless RUBY_PLATFORM == 'java'
