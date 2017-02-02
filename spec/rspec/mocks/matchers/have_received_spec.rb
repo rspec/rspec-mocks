@@ -612,7 +612,7 @@ module RSpec
       end
 
       describe "allow(...).to have_received" do
-        it "fails because its nonsensical" do
+        it "fails because it's nonsensical" do
           _expect {
             allow(double).to have_received(:some_method)
           }.to fail_with("Using allow(...) with the `have_received` matcher is not supported as it would have no effect.")
@@ -620,7 +620,7 @@ module RSpec
       end
 
       describe "allow_any_instance_of(...).to have_received" do
-        it "fails because its nonsensical" do
+        it "fails because it's nonsensical" do
           _expect {
             allow_any_instance_of(double).to have_received(:some_method)
           }.to fail_with("Using allow_any_instance_of(...) with the `have_received` matcher is not supported.")
