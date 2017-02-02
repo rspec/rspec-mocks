@@ -138,7 +138,7 @@ RSpec.describe RSpec::Mocks do
       end
     end
 
-    context "in a before(:all) with a unmet mock expectation" do
+    context "in a before(:all) with an unmet mock expectation" do
       before(:all) do
         capture_error do
           RSpec::Mocks.with_temporary_scope do

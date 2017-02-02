@@ -228,7 +228,7 @@ RSpec.describe "Using the legacy should syntax" do
       end
     end
 
-    it "adds an class to the current space" do
+    it "adds a class to the current space" do
       expect {
         klass.any_instance
       }.to change { RSpec::Mocks.space.any_instance_recorders.size }.by(1)
