@@ -1,7 +1,7 @@
 Feature: Wrapping the original implementation
 
   Use `and_wrap_original` to modify a partial double's original response. This can be useful
-  when you want to utilise an external object but mutate it's response. For example if an
+  when you want to utilise an external object but mutate its response. For example if an
   API returns a large amount of data and for test purposes you'd like to trim it down. You can
   also use it to configure the default response for most arguments, and then override that for
   specific arguments using `with`.

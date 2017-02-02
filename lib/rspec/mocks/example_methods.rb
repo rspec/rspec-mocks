@@ -392,7 +392,7 @@ module RSpec
       def self.included(klass)
         klass.class_exec do
           # This gets mixed in so that if `RSpec::Matchers` is included in
-          # `klass` later, it's definition of `expect` will take precedence.
+          # `klass` later, its definition of `expect` will take precedence.
           include ExpectHost unless method_defined?(:expect)
         end
       end
@@ -400,7 +400,7 @@ module RSpec
       # @private
       def self.extended(object)
         # This gets extended in so that if `RSpec::Matchers` is included in
-        # `klass` later, it's definition of `expect` will take precedence.
+        # `klass` later, its definition of `expect` will take precedence.
         object.extend ExpectHost unless object.respond_to?(:expect)
       end
 

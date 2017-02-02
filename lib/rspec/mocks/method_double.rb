@@ -207,8 +207,8 @@ module RSpec
 
       # In Ruby 2.0.0 and above prepend will alter the method lookup chain.
       # We use an object's singleton class to define method doubles upon,
-      # however if the object has had it's singleton class (as opposed to
-      # it's actual class) prepended too then the the method lookup chain
+      # however if the object has had its singleton class (as opposed to
+      # its actual class) prepended too then the the method lookup chain
       # will look in the prepended module first, **before** the singleton
       # class.
       #
