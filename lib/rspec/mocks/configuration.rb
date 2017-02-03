@@ -9,6 +9,7 @@ module RSpec
         @transfer_nested_constants = false
         @verify_partial_doubles = false
         @temporarily_suppress_partial_double_verification = false
+        @color = false
       end
 
       # Sets whether RSpec will warn, ignore, or fail a test when
