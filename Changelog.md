@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.6.0.beta2...master)
+
+Bug Fixes:
+
+* Fix "instance variable @color not initialized" warning when using
+  rspec-mocks without rspec-core. (Myron Marston, #1142)
+
 ### 3.6.0.beta2 / 2016-12-12
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.6.0.beta1...v3.6.0.beta2)
 
