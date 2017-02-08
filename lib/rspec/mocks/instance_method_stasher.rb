@@ -128,6 +128,17 @@ module RSpec
         # Hence, we verify that the owner actually has the method defined.
         # If the given owner does not have the method defined, we assume
         # that the method is actually owned by @klass.
+        #
+        # On 1.8, aliased methods can also report the wrong owner. Example:
+        # module M
+        #   def a; end
+        #   module_function :a
+        #   alias b a
+        #   module_function :b
+        # end
+        # The owner of M.b is the raw Module object, instead of the expected
+        # singleton class of the module
+        return true if RUBY_VERSION < '1.9' && owner == @object
         owner == @klass || !(method_defined_on_klass?(owner))
       end
     end
