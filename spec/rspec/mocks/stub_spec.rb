@@ -285,6 +285,25 @@ module RSpec
           expect(@class.existing_class_method).to eq(:original_value)
         end
 
+        it "restores existing aliased module_function methods" do
+          m = Module.new do
+            def mkdir_p
+              :mkdir_p
+            end
+            module_function :mkdir_p
+
+            alias mkpath mkdir_p
+
+            module_function :mkpath
+          end
+
+          allow(m).to receive(:mkpath) { :stub_value }
+          allow(m).to receive(:mkdir_p) { :stub_value }
+          reset m
+          expect(m.mkpath).to eq(:mkdir_p)
+          expect(m.mkdir_p).to eq(:mkdir_p)
+        end
+
         it "restores existing private class methods" do
           # See bug reports 8302 and 7805
           allow(@class).to receive(:existing_private_class_method) { :stub_value }
