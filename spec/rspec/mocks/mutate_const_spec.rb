@@ -170,11 +170,17 @@ module RSpec
             expect(::Hash).to equal(top_level_hash)
           end
 
-          it 'does not affect the ability to access the top-level constant from nested contexts', :silence_warnings do
-            top_level_hash = ::Hash
+          # In Ruby 2.5, top-level constant look-up through a qualified constant
+          # is not permitted.
+          #
+          # see: https://github.com/ruby/ruby/commit/44a2576f798b07139adde2d279e48fdbe71a0148
+          if RUBY_VERSION.to_f < 2.5
+            it 'does not affect the ability to access the top-level constant from nested contexts', :silence_warnings do
+              top_level_hash = ::Hash
 
-            hide_const("TestClass::Hash")
-            expect(TestClass::Hash).to equal(top_level_hash)
+              hide_const("TestClass::Hash")
+              expect(TestClass::Hash).to equal(top_level_hash)
+            end
           end
         end
 
