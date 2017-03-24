@@ -105,9 +105,9 @@ module RSpec
       #  so you can stub constants in other contexts (e.g. helper
       #  classes).
       def self.stub(constant_name, value, options={})
-        raise ArgumentError,
-              "Please provide a string as constant name" \
-              " You provided a #{constant_name.class.name}" unless constant_name.is_a?(String)
+        unless String === constant_name
+          raise ArgumentError, "`stub_const` requires a String, but you provided a #{constant_name.class.name}"
+        end
 
         mutator = if recursive_const_defined?(constant_name, &raise_on_invalid_const)
                     DefinedConstantReplacer
