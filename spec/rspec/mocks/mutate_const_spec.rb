@@ -218,6 +218,10 @@ module RSpec
           it_behaves_like "loaded constant stubbing", "TestClassThatDefinesSend::C"
         end
 
+        it "requires a string argument" do
+          expect { stub_const(10, 1) }.to raise_error(ArgumentError, /requires a String/i)
+        end
+
         context 'for a loaded unnested constant' do
           it_behaves_like "loaded constant stubbing", "TestClass"
 
