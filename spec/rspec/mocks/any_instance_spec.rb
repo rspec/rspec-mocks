@@ -123,6 +123,11 @@ module RSpec
               expect(klass.new.one.plus(1)).to eq(2)
               expect(klass.new.one.plus(2)).to eq(3)
             end
+
+            it 'can use a chain of methods to perform an expectation' do
+              expect_any_instance_of(klass).to receive_message_chain('message1.message2').with('some args')
+              klass.new.message1.message2('some args')
+            end
           end
         end
 
