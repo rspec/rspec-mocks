@@ -37,9 +37,8 @@ module RSpec
 
         def invocation_order
           @invocation_order ||= {
-            :with => [nil],
             :and_return => [:with, nil],
-            :and_raise => [:with, nil]
+            :and_raise => [:with, nil],
           }
         end
       end
