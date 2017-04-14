@@ -35,11 +35,14 @@ module RSpec
           me
         end
 
-        def invocation_order
-          @invocation_order ||= {
+        ExpectationInvocationOrder =
+          {
             :and_return => [:with, nil],
             :and_raise => [:with, nil],
-          }
+          }.freeze
+
+        def invocation_order
+          ExpectationInvocationOrder
         end
       end
     end

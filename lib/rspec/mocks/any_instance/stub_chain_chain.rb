@@ -15,7 +15,7 @@ module RSpec
         end
 
         def invocation_order
-          @invocation_order ||= {}
+          EmptyInvocationOrder
         end
       end
     end
