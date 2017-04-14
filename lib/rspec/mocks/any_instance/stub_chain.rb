@@ -25,20 +25,24 @@ module RSpec
           stub
         end
 
-        def invocation_order
-          @invocation_order ||= {
-            :with => [nil],
+        InovcationOrder =
+          {
             :and_return => [:with, nil],
             :and_raise => [:with, nil],
             :and_yield => [:with, :and_yield, nil],
             :and_throw => [:with, nil],
             :and_call_original => [:with, nil],
             :and_wrap_original => [:with, nil]
-          }
+          }.freeze
+
+        EmptyInvocationOrder = {}.freeze
+
+        def invocation_order
+          InovcationOrder
         end
 
         def verify_invocation_order(rspec_method_name, *_args, &_block)
-          return if invocation_order[rspec_method_name].include?(last_message)
+          return if invocation_order.fetch(rspec_method_name, [nil]).include?(last_message)
           raise NoMethodError, "Undefined method #{rspec_method_name}"
         end
       end

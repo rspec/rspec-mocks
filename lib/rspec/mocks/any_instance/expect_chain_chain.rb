@@ -23,11 +23,7 @@ module RSpec
         end
 
         def invocation_order
-          @invocation_order ||= {
-            :and_return => [nil],
-            :and_raise => [nil],
-            :and_yield => [nil]
-          }
+          EmptyInvocationOrder
         end
       end
     end
