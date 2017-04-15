@@ -82,6 +82,26 @@ Feature: `any_instance`
     When I run `rspec spec/example_spec.rb`
     Then the examples should all pass
 
+  Scenario: Block implementation supports delegating to the original implementation
+    Given a file named "spec/any_instance_delegate_to_original_spec.rb" with:
+      """ruby
+      RSpec.describe "Stubbing any instance of a class" do
+        it 'supports delegating to the original instance method within the block implementation' do
+          original_instance_method = String.instance_method(:slice)
+          String.any_instance.stub(:slice) do |instance, start, length|
+            expect(start).to be_a Fixnum
+            expect(length).to be_a Fixnum
+
+            original_instance_method.bind(instance).call(start, length)
+          end
+
+          expect('string'.slice(2, 3)).to eq('rin')
+        end
+      end
+      """
+    When I run `rspec spec/any_instance_delegate_to_original_spec.rb`
+    Then the examples should all pass
+
   Scenario: Expect a message on any instance of a class
     Given a file named "spec/example_spec.rb" with:
       """ruby
