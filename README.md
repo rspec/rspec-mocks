@@ -440,6 +440,31 @@ general we discourage its use for a number of reasons:
   which doesn't help.)
 
 
+## Settings mocks or stubs on any instance of a class
+
+Occasionally the desire to stub or mock any instance of a class will arise.
+This desire should be considered design feedback from your tests. It may be
+that your test is trying to do too much or that the object under test is too
+complex. If the latter is the case, then you should refactor in such a way
+that the dependency can be easily replaced.
+
+That said, rspec-mocks provides two methods, `allow_any_instance_of` and
+`expect_any_instance_of`, that will allow you to stub or mock any instance
+of a class. They are used in place for `allow` or `expect`:
+
+```ruby
+allow_any_instance_of(Widget).to receive(:name).and_return("Wibble")
+expect_any_instance_of(Widget).to receive(:name).and_return("Wobble")
+```
+These methods add the appropriate stub or expectation to all instances of
+`Widget`.
+
+The use of these methods is strongly discouraged. `rspec-mocks` was designed
+to work on specific instances rather than entire classes of objects. This
+shift is semantics can lead to some confusion or ambiguity in the rspec-mocks
+API. As a result of this complexity this feature has historically had more
+bugs than the single instance API.
+
 ## Further Reading
 
 There are many different viewpoints about the meaning of mocks and stubs. If
