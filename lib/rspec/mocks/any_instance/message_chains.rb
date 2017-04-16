@@ -49,7 +49,7 @@ module RSpec
         # @private
         def unfulfilled_expectations
           @chains_by_method_name.map do |method_name, chains|
-            method_name.to_s if ExpectationChain === chains.last unless chains.last.expectation_fulfilled?
+            method_name.to_s if ExpectationChain === chains.last && !chains.last.expectation_fulfilled?
           end.compact
         end
 
