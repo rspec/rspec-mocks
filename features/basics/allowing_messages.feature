@@ -19,6 +19,20 @@ Feature: Allowing messages
      When I run `rspec allow_message_spec.rb`
      Then the examples should all pass
 
+  Scenario: Allowed messages can return values using `and_return`
+    Given a file named "allow_message_and_return_value_spec.rb" with:
+      """ruby
+      RSpec.describe "and_return" do
+        it "returns the specified return value" do
+          dbl = double("Some Collaborator")
+          allow(dbl).to receive(:foo).and_return(2)
+          expect(dbl.foo).to eq(2)
+        end
+      end
+      """
+     When I run `rspec allow_message_and_return_value_spec.rb`
+     Then the examples should all pass
+
   Scenario: Messages can be allowed in bulk using `receive_messages`
     Given a file named "receive_messages_spec.rb" with:
       """ruby
