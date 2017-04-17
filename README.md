@@ -185,6 +185,12 @@ expect(invitation).to have_received(:accept).with(mailer)
 expect(invitation.accept).to eq(true)
 ```
 
+Note that `have_received(...)` is unable to work properly unless also using
+the `RSpec::Matchers` from rspec-expectations.  In order to use
+`have_recevied(...)`, you will need to `require 'rspec-expectations'`
+and `include RSpec::Matchers` in the class/module where you are using
+`have_received(...)`.
+
 Note that `have_received(...).with(...)` is unable to work properly when
 passed arguments are mutated after the spy records the received message.
 For example, this does not work properly:

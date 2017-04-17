@@ -68,6 +68,10 @@ module RSpec
           disallow("allow", " as it would have no effect")
         end
 
+        def setup_expectation(_subject, &_block)
+          disallow("expect", " when using rspec-mocks without rspec-expectations")
+        end
+
         def setup_any_instance_allowance(_subject, &_block)
           disallow("allow_any_instance_of")
         end
