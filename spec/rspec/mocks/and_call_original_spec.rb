@@ -88,6 +88,31 @@ RSpec.describe "and_call_original" do
       end
     end
 
+    context "for extended self modules" do
+      module InceptionModule
+        extend self
+        def do_something
+          "Done!"
+        end
+      end
+
+      it 'works normally' do
+        expect(InceptionModule).to receive(:do_something).and_call_original
+        expect(InceptionModule.do_something).to eq 'Done!'
+      end
+
+      context "for JRuby", :if => RSpec::Support::Ruby.jruby?, :order => :defined do
+        it 'works on the first attempt' do
+          expect(InceptionModule).to receive(:do_something).and_call_original
+          expect(InceptionModule.do_something).to eq 'Done!'
+        end
+        it 'works after repeated attempts' do
+          expect(InceptionModule).to receive(:do_something).and_call_original
+          expect(InceptionModule.do_something).to eq 'Done!'
+        end
+      end
+    end
+
     it 'works for methods added through an extended module' do
       instance.extend Module.new { def foo; :bar; end }
       expect(instance).to receive(:foo).and_call_original
