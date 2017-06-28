@@ -45,7 +45,7 @@ RSpec.describe RSpec::Mocks do
 
   describe ".teardown" do
     it "resets method stubs" do
-      string = "foo"
+      string = "foo".dup
       allow(string).to receive(:bar)
       RSpec::Mocks.teardown
       expect { string.bar }.to raise_error(NoMethodError)
@@ -56,7 +56,7 @@ RSpec.describe RSpec::Mocks do
       RSpec::Mocks.teardown
       RSpec::Mocks.teardown
 
-      string = "foo"
+      string = "foo".dup
       expect { allow(string).to receive(:bar) }.to raise_error(RSpec::Mocks::OutsideOfExampleError)
 
       RSpec::Mocks.setup
@@ -157,10 +157,10 @@ RSpec.describe RSpec::Mocks do
       before(:all) do
         RSpec::Mocks.with_temporary_scope do
           allow_any_instance_of(String).to receive(:sum_with) { |val, x| val + x }
-          @sum = "foo".sum_with("bar")
+          @sum = "foo".dup.sum_with("bar")
         end
 
-        capture_error { "you".sum_with("me") }
+        capture_error { "you".dup.sum_with("me") }
       end
 
       it 'allows the stub to be used' do

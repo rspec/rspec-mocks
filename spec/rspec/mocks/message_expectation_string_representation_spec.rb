@@ -10,7 +10,7 @@ module RSpec
       end
 
       example "for a raw message expectation on a partial double" do
-        expect(allow("partial double").to receive(:foo)).to have_string_representation(
+        expect(allow("partial double".dup).to receive(:foo)).to have_string_representation(
           '#<RSpec::Mocks::MessageExpectation "partial double".foo(any arguments)>'
         )
       end

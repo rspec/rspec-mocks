@@ -57,10 +57,10 @@ module RSpec
 
       # @private
       def raise_missing_default_stub_error(expectation, args_for_multiple_calls)
-        message = error_message(expectation, args_for_multiple_calls)
-        message << "\n Please stub a default value first if message might be received with other args as well. \n"
-
-        __raise message
+        __raise(
+          error_message(expectation, args_for_multiple_calls) +
+          "\n Please stub a default value first if message might be received with other args as well. \n"
+        )
       end
 
       # @private
@@ -69,7 +69,7 @@ module RSpec
       end
 
       def default_error_message(expectation, expected_args, actual_args)
-        "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}"
+        "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}".dup
       end
 
       # rubocop:disable Style/ParameterLists
@@ -87,14 +87,14 @@ module RSpec
       def raise_unimplemented_error(doubled_module, method_name, object)
         message = case object
                   when InstanceVerifyingDouble
-                    "the %s class does not implement the instance method: %s" <<
+                    "the %s class does not implement the instance method: %s".dup <<
                       if ObjectMethodReference.for(doubled_module, method_name).implemented?
                         ". Perhaps you meant to use `class_double` instead?"
                       else
                         ""
                       end
                   when ClassVerifyingDouble
-                    "the %s class does not implement the class method: %s" <<
+                    "the %s class does not implement the class method: %s".dup <<
                       if InstanceMethodReference.for(doubled_module, method_name).implemented?
                         ". Perhaps you meant to use `instance_double` instead?"
                       else

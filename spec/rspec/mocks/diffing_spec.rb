@@ -157,7 +157,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
           expect(RSpec::Support.is_a_matcher?(collab)).to be true
 
           collab_inspect = collab.inspect
-          collab_pp = PP.pp(collab, "").strip
+          collab_pp = PP.pp(collab, "".dup).strip
 
           expect(d).to receive(:foo).with(collab)
           expect {
