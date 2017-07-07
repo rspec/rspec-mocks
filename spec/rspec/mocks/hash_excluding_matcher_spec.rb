@@ -28,6 +28,9 @@ module RSpec
             expect(hash_not_including(:a, :b, :c)).to be === { :d => 7 }
           end
 
+          it "matches against classes inheriting from Hash" do
+            expect(hash_not_including(Class.new(Hash)[:c, 1])).not_to be === {:c => 1}
+          end
         end
 
         describe "failing" do

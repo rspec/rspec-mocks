@@ -116,7 +116,7 @@ module RSpec
 
       # @private
       def self.anythingize_lonely_keys(*args)
-        hash = args.last.class == Hash ? args.delete_at(-1) : {}
+        hash = Hash === args.last ? args.delete_at(-1) : {}
         args.each { | arg | hash[arg] = AnyArgMatcher::INSTANCE }
         hash
       end
