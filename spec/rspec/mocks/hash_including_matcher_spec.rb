@@ -22,6 +22,10 @@ module RSpec
             expect(hash_including(:a => 1)).to be === {:a => 1, :b => 2}
           end
 
+          it "matches against classes inheriting from Hash" do
+            expect(hash_including(Class.new(Hash)[:a, 1])).to be === {:a => 1}
+          end
+
           describe "when matching against other matchers" do
             it "matches an int against anything()" do
               expect(hash_including(:a => anything, :b => 2)).to be === {:a => 1, :b => 2}
