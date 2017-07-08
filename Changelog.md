@@ -6,6 +6,11 @@ Enhancements:
 * Improve compatibility with `--enable-frozen-string-literal` option
   on Ruby 2.3+. (Pat Allan, #1165)
 
+Bug Fixes:
+
+* Fix `hash_including` and `hash_excluding` so that they work against
+  subclasses of `Hash`. (Aaron Rosenberg, #1167)
+
 ### 3.6.0 / 2017-05-04
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.6.0.beta2...v3.6.0)
 
