@@ -257,7 +257,7 @@ expect(double).to receive(:msg).with("B", 2, 4)
 ## Argument Matchers
 
 Arguments that are passed to `with` are compared with actual arguments
-received using ==. In cases in which you want to specify things about the
+received using ===. In cases in which you want to specify things about the
 arguments rather than the arguments themselves, you can use any of the
 matchers that ship with rspec-expectations. They don't all make syntactic
 sense (they were primarily designed for use with RSpec::Expectations), but
