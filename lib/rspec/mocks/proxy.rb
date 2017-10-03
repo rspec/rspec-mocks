@@ -161,7 +161,7 @@ module RSpec
       # @private
       def record_message_received(message, *args, &block)
         @order_group.invoked SpecificMessage.new(object, message, args)
-        @messages_received << [message, args, block]
+        @messages_received << [message, args.map(&:dup), block]
       end
 
       # @private

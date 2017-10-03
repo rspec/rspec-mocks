@@ -110,15 +110,17 @@ module RSpec
             end
 
             def method_missing(name, *)
-              called_methods << name
+              called_methods << name.to_s
               self
             end
           end.new
 
+
           allow(@stub).to receive(:foo)
           expect {
             @stub.foo(recorder)
-          }.not_to change(recorder, :called_methods)
+            # dup is allowed as it prevents later mutation leaking
+          }.to change(recorder, :called_methods).to(["dup"])
         end
       end
 
