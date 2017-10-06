@@ -161,7 +161,19 @@ module RSpec
       # @private
       def record_message_received(message, *args, &block)
         @order_group.invoked SpecificMessage.new(object, message, args)
-        @messages_received << [message, args.map(&:dup), block]
+        @messages_received << [message, args.map { |arg| dup_if_mutable(arg) }, block]
+      end
+
+      # @private
+      def dup_if_mutable(arg)
+        case arg
+        when IO, StringIO # enumerable, but we don't want to dup it.
+          arg
+        when Enumerable, String
+          arg.dup
+        else
+          arg
+        end
       end
 
       # @private
