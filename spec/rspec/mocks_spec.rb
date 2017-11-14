@@ -24,6 +24,13 @@ RSpec.describe RSpec::Mocks do
       /rbconfig/ # loaded by rspec-support
     ] do
 
+      if RSpec::Support::Ruby.jruby? && JRUBY_VERSION =~ /9\.1\.7\.0/
+        before(:example, :description => /spec files/) do
+          pending "JRuby 9.1.7.0 currently generates a circular warning which" \
+                  " is unrelated to our suite."
+        end
+      end
+
     if RUBY_VERSION == '1.9.2'
       before(:example, :description => /spec files/) do
         pending "Loading psych and syck on 1.9.2 (as our test suite does) triggers warnings"
