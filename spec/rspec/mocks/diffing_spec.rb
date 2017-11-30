@@ -59,7 +59,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
       end
     end
 
-    let(:expected_hash) { {:foo => :bar, :baz => :quz} }
+    let(:expected_hash) { {:baz => :quz, :foo => :bar } }
 
     let(:actual_hash) { {:bad => :hash} }
 
