@@ -167,9 +167,9 @@ module RSpec
         end
       end
 
-      context "when given a class that has an overriden `#name` method" do
+      context "when given a class that has an overridden `#name` method" do
         it "properly verifies" do
-          o = instance_double(LoadedClassWithOverridenName)
+          o = instance_double(LoadedClassWithOverriddenName)
           allow(o).to receive(:defined_instance_method)
           prevents { allow(o).to receive(:undefined_method) }
         end

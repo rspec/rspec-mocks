@@ -33,13 +33,13 @@ Feature: Calling the original implementation
     When I run `rspec spec/and_call_original_spec.rb`
     Then the examples should all pass
 
-  Scenario: `and_call_original` can configure a default response that can be overriden for specific args
+  Scenario: `and_call_original` can configure a default response that can be overridden for specific args
     Given a file named "spec/and_call_original_spec.rb" with:
       """ruby
       require 'calculator'
 
       RSpec.describe "and_call_original" do
-        it "can be overriden for specific arguments using #with" do
+        it "can be overridden for specific arguments using #with" do
           allow(Calculator).to receive(:add).and_call_original
           allow(Calculator).to receive(:add).with(2, 3).and_return(-5)
 

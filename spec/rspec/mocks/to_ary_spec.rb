@@ -5,7 +5,7 @@ RSpec.describe "a double receiving to_ary" do
       expect(obj.to_ary).to be(:non_nil_value)
     end
 
-    it "responds when overriden" do
+    it "responds when overridden" do
       allow(obj).to receive(:to_ary) { :non_nil_value }
       expect(obj).to respond_to(:to_ary)
     end
