@@ -129,17 +129,17 @@ module RSpec
         let(:stubbed_double) { allow(the_dbl).to receive(:foo) }
         before { stubbed_double.and_return(1) }
 
-        it 'allows the terminal action to be overriden to `and_return(y)`' do
+        it 'allows the terminal action to be overridden to `and_return(y)`' do
           stubbed_double.and_return(3)
           expect(the_dbl.foo).to eq(3)
         end
 
-        it 'allows the terminal action to be overriden to `and_raise(y)`' do
+        it 'allows the terminal action to be overridden to `and_raise(y)`' do
           stubbed_double.and_raise("boom")
           expect { the_dbl.foo }.to raise_error("boom")
         end
 
-        it 'allows the terminal action to be overriden to `and_throw(y)`' do
+        it 'allows the terminal action to be overridden to `and_throw(y)`' do
           stubbed_double.and_throw(:bar)
           expect { the_dbl.foo }.to throw_symbol(:bar)
         end
@@ -157,7 +157,7 @@ module RSpec
         end
       end
 
-      it 'warns when the inner implementation block is overriden' do
+      it 'warns when the inner implementation block is overridden' do
         expect(RSpec).to receive(:warning).with(/overriding a previous stub implementation of `foo`.*#{__FILE__}:#{__LINE__ + 1}/)
         allow(double).to receive(:foo).with(:arg) { :with_block }.at_least(:once) { :at_least_block }
       end

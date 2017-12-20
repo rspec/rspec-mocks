@@ -187,14 +187,14 @@ module RSpec
         end
       end
 
-      context "when given a class that has an overriden `#name` method" do
+      context "when given a class that has an overridden `#name` method" do
         it "properly verifies" do
-          check_verification class_double(LoadedClassWithOverridenName)
+          check_verification class_double(LoadedClassWithOverriddenName)
         end
 
         it "can still stub the const" do
-          class_double(LoadedClassWithOverridenName).as_stubbed_const
-          check_verification LoadedClassWithOverridenName
+          class_double(LoadedClassWithOverriddenName).as_stubbed_const
+          check_verification LoadedClassWithOverriddenName
         end
 
         def check_verification(o)

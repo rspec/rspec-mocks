@@ -80,7 +80,7 @@ private
   end
 end
 
-class LoadedClassWithOverridenName < LoadedClass
+class LoadedClassWithOverriddenName < LoadedClass
   def self.name
     "Overriding name is not a good idea but we can't count on users not doing this"
   end
