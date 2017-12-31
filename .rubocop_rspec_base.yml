@@ -227,3 +227,8 @@ Layout/SpaceAroundOperators:
 
 Layout/SpaceBeforeComma:
   Enabled: false
+
+# This could likely be enabled, but it had a false positive on rspec-mocks
+# (suggested change was not behaviour preserving) so I don't trust it.
+Performance/HashEachMethods:
+  Enabled: false

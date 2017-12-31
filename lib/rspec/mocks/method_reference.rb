@@ -64,14 +64,6 @@ module RSpec
         :public
       end
 
-    private
-
-      def original_method
-        @object_reference.when_loaded do |m|
-          self.defined? && find_method(m)
-        end
-      end
-
       def self.instance_method_visibility_for(klass, method_name)
         if klass.public_method_defined?(method_name)
           :public
@@ -106,6 +98,14 @@ module RSpec
           object.respond_to?(method_name)
 
         return :public if visible
+      end
+
+    private
+
+      def original_method
+        @object_reference.when_loaded do |m|
+          self.defined? && find_method(m)
+        end
       end
     end
 
