@@ -2,6 +2,7 @@ module RSpec
   module Mocks
     # @private
     class Proxy
+      # @private
       SpecificMessage = Struct.new(:object, :message, :args) do
         def ==(expectation)
           expectation.orig_object == object && expectation.matches?(message, *args)
