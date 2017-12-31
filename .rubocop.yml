@@ -1,17 +1,28 @@
-inherit_from: .rubocop_rspec_base.yml
+inherit_from:
+  - .rubocop_rspec_base.yml
 
-# This should go down over time.
-Style/ClassLength:
+# All these metrics should go down over time.
+
+Metrics/ClassLength:
   Max: 279
 
-# This should go down over time.
-Style/CyclomaticComplexity:
+Metrics/CyclomaticComplexity:
   Max: 18
 
-# This should go down over time.
-Style/LineLength:
+Metrics/LineLength:
   Max: 193
 
-# This should go down over time.
-Style/MethodLength:
+Metrics/MethodLength:
   Max: 49
+
+Metrics/AbcSize:
+  Max: 45
+
+Metrics/BlockLength:
+  Max: 45
+
+Metrics/ModuleLength:
+  Max: 209
+
+Metrics/PerceivedComplexity:
+  Max: 19

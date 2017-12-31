@@ -14,9 +14,9 @@ end
 
 gem 'yard', '~> 0.9.12', :require => false
 
-if RUBY_VERSION >= '2' && RUBY_VERSION <= '2.1'
-  # todo upgrade rubocop and run on a recent version e.g. 2.3 or 2.4
-  gem 'rubocop', "~> 0.23.0"
+# No need to run rubocop on earlier versions
+if RUBY_VERSION >= '2.4' && RUBY_ENGINE == 'ruby'
+  gem 'rubocop', "~> 0.52.1"
 end
 
 if RUBY_VERSION < '2.0.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
