@@ -44,7 +44,7 @@ module RSpec
 
       # @private
       def to_s
-        inspect.gsub('<', '[').gsub('>', ']')
+        inspect.tr('<', '[').tr('>', ']')
       end
 
       # @private
