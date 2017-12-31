@@ -26,12 +26,13 @@ RSpec.describe "and_wrap_original" do
         }.to raise_error NameError
       end
 
-      it "passes in the original method" do
-        value = nil
+      it "passes along the original method" do
+        passed_method = nil
         original_method = instance.method(:results)
-        allow_it.to receive(:results).and_wrap_original { |m| value = m }
+        allow_it.to receive(:results).and_wrap_original { |m| passed_method = m }
         instance.results
-        expect(value).to eq original_method
+
+        expect(passed_method.call).to eq(original_method.call)
       end
 
       it "passes along the message arguments" do
