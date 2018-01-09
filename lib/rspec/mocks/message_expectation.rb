@@ -367,7 +367,7 @@ module RSpec
         # @private
         attr_reader :type
 
-        # rubocop:disable Style/ParameterLists
+        # rubocop:disable Metrics/ParameterLists
         def initialize(error_generator, expectation_ordering, expected_from, method_double,
                        type=:expectation, opts={}, &implementation_block)
           @type = type
@@ -395,7 +395,7 @@ module RSpec
           @implementation = Implementation.new
           self.inner_implementation_action = implementation_block
         end
-        # rubocop:enable Style/ParameterLists
+        # rubocop:enable Metrics/ParameterLists
 
         def expected_args
           @argument_list_matcher.expected_args
@@ -650,7 +650,7 @@ module RSpec
             @error_generator.raise_wrong_arity_error(args, block_signature)
           end
 
-          value = @eval_context ? @eval_context.instance_exec(*args, &block) : block.call(*args)
+          value = @eval_context ? @eval_context.instance_exec(*args, &block) : yield(*args)
         end
         value
       end

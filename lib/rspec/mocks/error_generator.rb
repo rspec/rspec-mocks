@@ -72,7 +72,7 @@ module RSpec
         "#{intro} received #{expectation.message.inspect} #{unexpected_arguments_message(expected_args, actual_args)}".dup
       end
 
-      # rubocop:disable Style/ParameterLists
+      # rubocop:disable Metrics/ParameterLists
       # @private
       def raise_expectation_error(message, expected_received_count, argument_list_matcher,
                                   actual_received_count, expectation_count_type, args,
@@ -81,7 +81,7 @@ module RSpec
         received_part = received_part_of_expectation_error(actual_received_count, args)
         __raise "(#{intro(:unwrapped)}).#{message}#{format_args(args)}\n    #{expected_part}\n    #{received_part}", backtrace_line, source_id
       end
-      # rubocop:enable Style/ParameterLists
+      # rubocop:enable Metrics/ParameterLists
 
       # @private
       def raise_unimplemented_error(doubled_module, method_name, object)
