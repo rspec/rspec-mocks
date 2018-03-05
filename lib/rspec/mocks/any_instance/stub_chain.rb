@@ -25,7 +25,7 @@ module RSpec
           stub
         end
 
-        InovcationOrder =
+        InvocationOrder =
           {
             :and_return => [:with, nil],
             :and_raise => [:with, nil],
@@ -38,7 +38,7 @@ module RSpec
         EmptyInvocationOrder = {}.freeze
 
         def invocation_order
-          InovcationOrder
+          InvocationOrder
         end
 
         def verify_invocation_order(rspec_method_name, *_args, &_block)
