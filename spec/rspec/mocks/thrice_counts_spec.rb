@@ -25,6 +25,10 @@ module RSpec
         verify @double
       end
 
+      it "passes when called with negative expectation" do
+        expect(@double).not_to receive(:do_something).thrice
+      end
+
       it "fails fast when call count is higher than expected" do
         expect(@double).to receive(:do_something).thrice
         3.times { @double.do_something }

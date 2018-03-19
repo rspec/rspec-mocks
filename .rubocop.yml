@@ -22,7 +22,7 @@ Metrics/BlockLength:
   Max: 45
 
 Metrics/ModuleLength:
-  Max: 209
+  Max: 210
 
 Metrics/PerceivedComplexity:
   Max: 19

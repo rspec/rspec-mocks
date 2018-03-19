@@ -23,6 +23,10 @@ module RSpec
         verify @double
       end
 
+      it "passes when called with negative expectation" do
+        expect(@double).not_to receive(:do_something).once
+      end
+
       it "fails when called with wrong args" do
         expect(@double).to receive(:do_something).once.with("a", "b", "c")
         expect {

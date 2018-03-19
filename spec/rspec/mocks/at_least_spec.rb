@@ -115,6 +115,10 @@ module RSpec
         verify @double
       end
 
+      it "passes when at least thrice method is called with negative expectation" do
+        expect(@double).not_to receive(:do_something).at_least(:thrice)
+      end
+
       it "returns the value given by a block when the at least once method is called" do
         expect(@double).to receive(:to_s).at_least(:once) { "testing" }
         expect(@double.to_s).to eq "testing"
