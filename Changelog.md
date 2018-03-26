@@ -1,5 +1,10 @@
-### 3.8 Development
+### 3.7.1 Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.7.0...master)
+
+Bug Fixes:
+
+* Issue error when encountering invalid "counted" negative message expectations.
+  (Sergiy Yarinovskiy, #1212)
 
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.6.0...v3.7.0)
