@@ -68,6 +68,14 @@ module RSpec
           }.to fail_with(a_string_including("expected: 1 time", "received: 2 times"))
         end
       end
+
+      context "when called with negative expectation" do
+        it "raises an error" do
+          expect {
+            expect(@double).not_to receive(:do_something).once
+          }.to raise_error(/`count` is not supported with negative message expectations/)
+        end
+      end
     end
   end
 end

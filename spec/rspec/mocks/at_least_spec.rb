@@ -142,6 +142,14 @@ module RSpec
         expect(@double.do_something).to eq 'bar'
         expect(@double.do_something).to eq 'bar'
       end
+
+      context "when called with negative expectation" do
+        it "raises an error" do
+          expect {
+            expect(@double).not_to receive(:do_something).at_least(:thrice)
+          }.to raise_error(/`count` is not supported with negative message expectations/)
+        end
+      end
     end
   end
 end

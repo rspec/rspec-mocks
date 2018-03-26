@@ -67,6 +67,14 @@ module RSpec
         }.to fail
         reset @double
       end
+
+      context "when called with negative expectation" do
+        it "raises an error" do
+          expect {
+            expect(@double).not_to receive(:do_something).thrice
+          }.to raise_error(/`count` is not supported with negative message expectations/)
+        end
+      end
     end
   end
 end
