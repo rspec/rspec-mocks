@@ -15,3 +15,15 @@ Style/LineLength:
 # This should go down over time.
 Style/MethodLength:
   Max: 49
+
+Metrics/AbcSize:
+  Max: 45
+
+Metrics/BlockLength:
+  Max: 45
+
+Metrics/ModuleLength:
+  Max: 210
+
+Metrics/PerceivedComplexity:
+  Max: 19
