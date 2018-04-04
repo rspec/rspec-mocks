@@ -25,7 +25,7 @@ Feature: Partial doubles
       RSpec.describe '#save_user' do
         it 'renders message on success' do
           user = User.new
-          expect(user).to receive(:saave).and_return(true) # Typo in name
+          expect(user).to receive(:save).and_return(true) # Typo in name
           expect(save_user(user)).to eq("saved!")
         end
       end
