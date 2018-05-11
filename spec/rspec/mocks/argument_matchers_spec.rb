@@ -129,6 +129,7 @@ module RSpec
       end
 
       describe "duck_type_including" do
+        before(:all) { require 'ostruct' }
         it "matches duck type with one method and matching value" do
           expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred'))
 
