@@ -154,7 +154,7 @@ module RSpec
             a_double.random_call(OpenStruct.new(:name => 'Bob'))
           }.to fail_including "expected: (duck_type_including(:name => 'Fred'))"
         end
-        
+
         it "fails when both methods exist, but only 1 value matches", :reset => true do
           expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred', :last_name => 'Jones'))
 
