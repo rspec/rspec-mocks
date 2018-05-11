@@ -55,8 +55,8 @@ module RSpec
       # Matches if the actual argument responds to the specified messages, and the values match.
       #
       # @example
-      #   expect(object).to receive(:message).with(duck_type_including(name: 'Fred'))
-      #   expect(object).to receive(:message).with(duck_type_including(name: 'Fred', last_name: 'Flintstone'))
+      #   expect(object).to receive(:message).with(duck_type_including(:name => 'Fred'))
+      #   expect(object).to receive(:message).with(duck_type_including(:name => 'Fred', :last_name => 'Flintstone'))
       def duck_type_including(args)
         DuckTypeIncludingMatcher.new(args)
       end
@@ -293,7 +293,7 @@ module RSpec
         end
 
         def description
-          hash_as_string = @methods_to_respond_to_with_values.collect { |k, v| "#{k}: '#{v}'" }.join(', ')
+          hash_as_string = @methods_to_respond_to_with_values.collect { |k, v| ":#{k} => '#{v}'" }.join(', ')
           "duck_type_including(#{hash_as_string})"
         end
       end
