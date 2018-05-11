@@ -282,7 +282,7 @@ module RSpec
 
       # @private
       class DuckTypeIncludingMatcher
-        def initialize(**methods_to_respond_to_with_values)
+        def initialize(methods_to_respond_to_with_values)
           @methods_to_respond_to_with_values = methods_to_respond_to_with_values
         end
 
