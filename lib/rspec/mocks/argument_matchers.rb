@@ -57,8 +57,8 @@ module RSpec
       # @example
       #   expect(object).to receive(:message).with(duck_type_including(name: 'Fred'))
       #   expect(object).to receive(:message).with(duck_type_including(name: 'Fred', last_name: 'Flintstone'))
-      def duck_type_including(**args)
-        DuckTypeIncludingMatcher.new(**args)
+      def duck_type_including(args)
+        DuckTypeIncludingMatcher.new(args)
       end
 
       # Matches a boolean value.
