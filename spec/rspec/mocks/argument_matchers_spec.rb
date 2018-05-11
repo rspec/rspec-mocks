@@ -128,6 +128,51 @@ module RSpec
         end
       end
 
+      describe "duck_type_including" do
+        before(:all) { require 'ostruct' }
+        it "matches duck type with one method and matching value" do
+          expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred'))
+
+          a_double.random_call(OpenStruct.new(:name => 'Fred'))
+        end
+
+        it "matches duck type with two methods and two matching values" do
+          expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred', :last_name => 'Flintstone'))
+
+          a_double.random_call(OpenStruct.new(:name => 'Fred', :last_name => 'Flintstone'))
+        end
+
+        it "matches duck type where additional methods exist" do
+          expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred', :last_name => 'Flintstone'))
+
+          a_double.random_call(OpenStruct.new(:name => 'Fred', :last_name => 'Flintstone', :age => 20))
+        end
+
+        it "fails when the method exists, but the value doesn't match", :reset => true do
+          expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred'))
+
+          expect {
+            a_double.random_call(OpenStruct.new(:name => 'Bob'))
+          }.to fail_including "expected: (duck_type_including(:name => 'Fred'))"
+        end
+
+        it "fails when both methods exist, but only 1 value matches", :reset => true do
+          expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred', :last_name => 'Jones'))
+
+          expect {
+            a_double.random_call(OpenStruct.new(:name => 'Fred', :last_name => 'Flintstone'))
+          }.to fail_including "expected: (duck_type_including(:name => 'Fred', :last_name => 'Jones'))"
+        end
+
+        it "fails when the method doesn't exist", :reset => true do
+          expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred'))
+
+          expect {
+            a_double.random_call(OpenStruct.new(:age => 18))
+          }.to fail_including "expected: (duck_type_including(:name => 'Fred'))"
+        end
+      end
+
       describe "any_args" do
         context "as the only arg passed to `with`" do
           before { expect(a_double).to receive(:random_call).with(any_args) }
