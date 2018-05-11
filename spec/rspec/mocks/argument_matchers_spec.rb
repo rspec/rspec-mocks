@@ -155,7 +155,7 @@ module RSpec
           }.to fail_including "expected: (duck_type_including(:name => 'Fred'))"
         end
         
-        it "fails when both methods exist, but only 1 value matches", reset: true do
+        it "fails when both methods exist, but only 1 value matches", :reset => true do
           expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred', :last_name => 'Jones'))
 
           expect {
@@ -163,11 +163,11 @@ module RSpec
           }.to fail_including "expected: (duck_type_including(:name => 'Fred', :last_name => 'Jones'))"
         end
 
-        it "fails when the method doesn't exist", reset: true do
+        it "fails when the method doesn't exist", :reset => true do
           expect(a_double).to receive(:random_call).with(duck_type_including(:name => 'Fred'))
 
           expect {
-            a_double.random_call(OpenStruct.new(age: 18))
+            a_double.random_call(OpenStruct.new(:age => 18))
           }.to fail_including "expected: (duck_type_including(:name => 'Fred'))"
         end
       end
