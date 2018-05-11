@@ -141,6 +141,12 @@ module RSpec
           a_double.random_call(OpenStruct.new(name: 'Fred', last_name: 'Flintstone'))
         end
 
+        it "matches duck type where additional methods exist" do
+          expect(a_double).to receive(:random_call).with(duck_type_including(name: 'Fred', last_name: 'Flintstone'))
+
+          a_double.random_call(OpenStruct.new(name: 'Fred', last_name: 'Flintstone', age: 20))
+        end
+
         it "fails when the method exists, but the value doesn't match", reset: true do
           expect(a_double).to receive(:random_call).with(duck_type_including(name: 'Fred'))
 
