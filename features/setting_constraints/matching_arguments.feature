@@ -19,8 +19,8 @@ Feature: Matching arguments
   | A subset of an array                                | `with(array_including(:a, :b))`    | `foo([:a, :b, :c])`                   |
   | An instance of a specific class                     | `with(instance_of(Integer))`       |  `foo(3)`                             |
   | An object with a given module in its ancestors list | `with(kind_of(Numeric))`           | `foo(3)`                              |
-  | Any RSpec matcher                                   | `with(<matcher>)`                  | `foo(<object that matches>)`          |
   | An object with matching attributes                  | `with(having_attributes(:a => 1))` | `foo(:a => 1, :b => 2)`               |
+  | Any RSpec matcher                                   | `with(<matcher>)`                  | `foo(<object that matches>)`          |
   Scenario: Basic example
     Given a file named "basic_example_spec.rb" with:
       """ruby
