@@ -4,22 +4,23 @@ Feature: Matching arguments
   will only be satisfied when called with matching arguments. A canned response for an
   [allowed message](../basics/allowing-messages) will only be used when the arguments match.
 
-  | To match...                                         | ...use an expression like:      | ...which matches calls like:          |
-  | --------------------------------------------------- | ------------------------------- | ------------------------------------- |
-  | Literal arguments                                   | `with(1, true)`                 | `foo(1, true)`                        |
-  | Anything that supports case equality (`===`)        | `with(/bar/)`                   | `foo("barn")`                         |
-  | Any list of args                                    | `with(any_args)`                | `foo()`<br>`foo(1)`<br>`foo(:bar, 2)` |
-  | Any sublist of args (like an arg splat)             | `with(1, any_args)`             | `foo(1)`<br>`foo(1, :bar, :bazz)`     |
-  | An empty list of args                               | `with(no_args)`                 | `foo()`                               |
-  | Anything for a given positional arg                 | `with(3, anything)`             | `foo(3, nil)`<br>`foo(3, :bar)`       |
-  | Against an interface                                | `with(duck_type(:each))`        | `foo([])`                             |
-  | A boolean                                           | `with(3, boolean)`              | `foo(3, true)`<br>`foo(3, false)`     |
-  | A subset of a hash                                  | `with(hash_including(:a => 1))` | `foo(:a => 1, :b => 2)`               |
-  | An excluded subset of a hash                        | `with(hash_excluding(:a => 1))` | `foo(:b => 2)`                        |
-  | A subset of an array                                | `with(array_including(:a, :b))` | `foo([:a, :b, :c])`                   |
-  | An instance of a specific class                     | `with(instance_of(Integer))`    | `foo(3)`                              |
-  | An object with a given module in its ancestors list | `with(kind_of(Numeric))`        | `foo(3)`                              |
-  | Any RSpec matcher                                   | `with(<matcher>)`               | `foo(<object that matches>)`          |
+  | To match...                                         | ...use an expression like:         | ...which matches calls like:          |
+  | --------------------------------------------------- | ---------------------------------  | ------------------------------------- |
+  | Literal arguments                                   | `with(1, true)`                    | `foo(1, true)`                        |
+  | Anything that supports case equality (`===`)        | `with(/bar/)`                      | `foo("barn")`                         |
+  | Any list of args                                    | `with(any_args)`                   | `foo()`<br>`foo(1)`<br>`foo(:bar, 2)` |
+  | Any sublist of args (like an arg splat)             | `with(1, any_args)`                | `foo(1)`<br>`foo(1, :bar, :bazz)`     |
+  | An empty list of args                               | `with(no_args)`                    | `foo()`                               |
+  | Anything for a given positional arg                 | `with(3, anything)`                | `foo(3, nil)`<br>`foo(3, :bar)`       |
+  | Against an interface                                | `with(duck_type(:each))`           | `foo([])`                             |
+  | A boolean                                           | `with(3, boolean)`                 | `foo(3, true)`<br>`foo(3, false)`     |
+  | A subset of a hash                                  | `with(hash_including(:a => 1))`    | `foo(:a => 1, :b => 2)`               |
+  | An excluded subset of a hash                        | `with(hash_excluding(:a => 1))`    | `foo(:b => 2)`                        |
+  | A subset of an array                                | `with(array_including(:a, :b))`    | `foo([:a, :b, :c])`                   |
+  | An instance of a specific class                     | `with(instance_of(Integer))`       |  `foo(3)`                             |
+  | An object with a given module in its ancestors list | `with(kind_of(Numeric))`           | `foo(3)`                              |
+  | An object with matching attributes                  | `with(having_attributes(:a => 1))` | `foo(:a => 1, :b => 2)`               |
+  | Any RSpec matcher                                   | `with(<matcher>)`                  | `foo(<object that matches>)`          |
 
   Scenario: Basic example
     Given a file named "basic_example_spec.rb" with:
