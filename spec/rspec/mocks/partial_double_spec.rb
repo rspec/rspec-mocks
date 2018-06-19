@@ -380,8 +380,10 @@ module RSpec
       it 'can be temporarily supressed' do
         without_partial_double_verification do
           expect(object).to receive(:fictitious_method) { 'works' }
+          expect_any_instance_of(klass).to receive(:other_fictitious_method) { 'works' }
         end
         expect(object.fictitious_method).to eq 'works'
+        expect(object.other_fictitious_method).to eq 'works'
 
         expect {
           expect(object).to receive(:another_fictitious_method) { 'works' }
