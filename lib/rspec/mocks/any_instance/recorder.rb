@@ -242,7 +242,7 @@ module RSpec
         def observe!(method_name)
           allow_no_prepended_module_definition_of(method_name)
 
-          if RSpec::Mocks.configuration.verify_partial_doubles?
+          if RSpec::Mocks.configuration.verify_partial_doubles? && !Mocks.configuration.temporarily_suppress_partial_double_verification
             unless public_protected_or_private_method_defined?(method_name)
               AnyInstance.error_generator.raise_does_not_implement_error(@klass, method_name)
             end
