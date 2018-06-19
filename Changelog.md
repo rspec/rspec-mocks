@@ -5,6 +5,8 @@ Bug Fixes:
 
 * Issue error when encountering invalid "counted" negative message expectations.
   (Sergiy Yarinovskiy, #1212)
+* Ensure `allow_any_instance_of` and `expect_any_instance_of` can be temporarily
+  supressed. (Jon Rowe, #1228)
 
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.6.0...v3.7.0)
