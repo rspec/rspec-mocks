@@ -635,6 +635,14 @@ module RSpec
         end
       end
 
+      describe "expect_any_instance_of(...).not_to have_received" do
+        it "fails because we dont want to support it" do
+          _expect {
+            expect_any_instance_of(double).to have_received(:some_method)
+          }.to fail_with("Using expect_any_instance_of(...) with the `have_received` matcher is not supported.")
+        end
+      end
+
       def double_with_met_expectation(method_name, *args)
         double = double_with_unmet_expectation(method_name)
         meet_expectation(double, method_name, *args)
