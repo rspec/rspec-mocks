@@ -76,6 +76,10 @@ module RSpec
           disallow("expect_any_instance_of")
         end
 
+        def setup_any_instance_negative_expectation(_subject, &_block)
+          disallow("expect_any_instance_of")
+        end
+
       private
 
         def disallow(type, reason="")
