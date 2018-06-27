@@ -296,14 +296,6 @@ module RSpec
             expect(klass.new('org').a_method).to eq 'org'
             expect(klass.new.a_method(:arg)).to  eq 'value'
           end
-
-          it 'can combine and_call_original, with, and_return (old syntax)' do
-            allow_any_instance_of(klass).to receive(:a_method).and_call_original
-            allow_any_instance_of(klass).to receive(:a_method).with(:arg).and_return('value')
-
-            expect(klass.new('org').a_method).to eq 'org'
-            expect(klass.new.a_method(:arg)).to  eq 'value'
-          end
         end
 
         context "with #and_raise" do

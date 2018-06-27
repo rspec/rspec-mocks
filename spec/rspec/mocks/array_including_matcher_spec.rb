@@ -14,6 +14,10 @@ module RSpec
 
         context "passing" do
           it "matches the same array" do
+            expect(array_including([1, 2, 3])).to be === [1, 2, 3]
+          end
+
+          it "matches the same array, specified without square brackets" do
             expect(array_including(1, 2, 3)).to be === [1, 2, 3]
           end
 

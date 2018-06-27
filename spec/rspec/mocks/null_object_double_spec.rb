@@ -76,7 +76,7 @@ module RSpec
         expect(val).to equal(@double)
       end
 
-      it 'allows unexpected message sends using `send`' do
+      it 'allows unexpected message sends using `__send__`' do
         val = @double.__send__(:foo).__send__(:bar)
         expect(val).to equal(@double)
       end
