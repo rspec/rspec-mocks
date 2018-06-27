@@ -126,7 +126,7 @@ module RSpec
           allow(o).to receive(:undefined_method)
         end
 
-        it "treats it as being unloaded for `object_double('ConstName')`" do
+        it "treats it as being unloaded for `object_double(ConstName)`" do
           o = object_double(LoadedClass::NOINSTANCE)
           allow(o).to receive(:undefined_method)
         end
