@@ -638,7 +638,7 @@ module RSpec
       describe "expect_any_instance_of(...).not_to have_received" do
         it "fails because we dont want to support it" do
           _expect {
-            expect_any_instance_of(double).to have_received(:some_method)
+            expect_any_instance_of(double).not_to have_received(:some_method)
           }.to fail_with("Using expect_any_instance_of(...) with the `have_received` matcher is not supported.")
         end
       end
