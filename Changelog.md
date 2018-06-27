@@ -7,6 +7,9 @@ Bug Fixes:
   (Sergiy Yarinovskiy, #1212)
 * Ensure `allow_any_instance_of` and `expect_any_instance_of` can be temporarily
   supressed. (Jon Rowe, #1228)
+* Ensure `expect_any_instance_of(double).to_not have_received(:some_method)`
+  fails gracefully (as its not supported) rather than issuing a `NoMethodError`.
+  (Maxim Krizhanovsky, #1231)
 
 ### 3.7.0 / 2017-10-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.6.0...v3.7.0)
