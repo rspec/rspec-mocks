@@ -160,6 +160,39 @@ module RSpec
             expect(sub_class.new.foo).to eq('baz')
           end
 
+          it 'handles stubbing on super and subclasses using blocks' do
+            super_class =
+              Class.new do
+                def initialize
+                  @stack = []
+                end
+                attr_reader :stack
+
+                def foo(&block)
+                  @stack << :super_foo
+                  block.call
+                end
+              end
+
+            sub_class =
+              Class.new(super_class) do
+                def foo(&block)
+                  @stack << :sub_foo
+                  super(&block)
+                end
+              end
+
+            unstubbed = sub_class.new
+            unstubbed.foo { unstubbed.foo { unstubbed.stack << :no_foo } }
+            expect(unstubbed.stack).to eq [:sub_foo, :super_foo, :sub_foo, :super_foo, :no_foo]
+
+            allow_any_instance_of(super_class).to receive(:foo) { |&block| block.call }
+
+            stubbed = sub_class.new
+            stubbed.foo { stubbed.foo { stubbed.stack << :no_foo } }
+            expect(stubbed.stack).to eq [:sub_foo, :sub_foo, :no_foo]
+          end
+
           it 'handles method restoration on subclasses' do
             allow_any_instance_of(super_class).to receive(:foo)
             allow_any_instance_of(sub_class).to receive(:foo)
