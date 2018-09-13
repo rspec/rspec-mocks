@@ -24,8 +24,6 @@ RSpec.describe "expection set on previously stubbed method" do
   end
 
   it 'handles concurrent validation of expectations' do
-    pending('support for concurrent validation of message expectations')
-
     dbl = double('double', :foo => true)
     concurrency = 4
     repetition = 10
