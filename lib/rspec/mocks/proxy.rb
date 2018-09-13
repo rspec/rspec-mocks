@@ -9,6 +9,11 @@ module RSpec
         end
       end
 
+      unless defined?(Mutex)
+        Support.require_rspec_support 'mutex'
+        Mutex = Support::Mutex
+      end
+
       # @private
       def ensure_implemented(*_args)
         # noop for basic proxies, see VerifyingProxy for behaviour.
@@ -20,6 +25,7 @@ module RSpec
         @order_group = order_group
         @error_generator = ErrorGenerator.new(object)
         @messages_received = []
+        @messages_received_mutex = Mutex.new
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
@@ -90,27 +96,31 @@ module RSpec
           @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
         end
 
-        @messages_received.each do |(actual_method_name, args, received_block)|
-          next unless expectation.matches?(actual_method_name, *args)
+        @messages_received_mutex.synchronize do
+          @messages_received.each do |(actual_method_name, args, received_block)|
+            next unless expectation.matches?(actual_method_name, *args)
 
-          expectation.safe_invoke(nil)
-          block.call(*args, &received_block) if block
+            expectation.safe_invoke(nil)
+            block.call(*args, &received_block) if block
+          end
         end
       end
 
       # @private
       def check_for_unexpected_arguments(expectation)
-        return if @messages_received.empty?
+        @messages_received_mutex.synchronize do
+          return if @messages_received.empty?
 
-        return if @messages_received.any? { |method_name, args, _| expectation.matches?(method_name, *args) }
+          return if @messages_received.any? { |method_name, args, _| expectation.matches?(method_name, *args) }
 
-        name_but_not_args, others = @messages_received.partition do |(method_name, args, _)|
-          expectation.matches_name_but_not_args(method_name, *args)
+          name_but_not_args, others = @messages_received.partition do |(method_name, args, _)|
+            expectation.matches_name_but_not_args(method_name, *args)
+          end
+
+          return if name_but_not_args.empty? && !others.empty?
+
+          expectation.raise_unexpected_message_args_error(name_but_not_args.map { |args| args[1] })
         end
-
-        return if name_but_not_args.empty? && !others.empty?
-
-        expectation.raise_unexpected_message_args_error(name_but_not_args.map { |args| args[1] })
       end
 
       # @private
@@ -141,17 +151,23 @@ module RSpec
 
       # @private
       def reset
-        @messages_received.clear
+        @messages_received_mutex.synchronize do
+          @messages_received.clear
+        end
       end
 
       # @private
       def received_message?(method_name, *args, &block)
-        @messages_received.any? { |array| array == [method_name, args, block] }
+        @messages_received_mutex.synchronize do
+          @messages_received.any? { |array| array == [method_name, args, block] }
+        end
       end
 
       # @private
       def messages_arg_list
-        @messages_received.map { |_, args, _| args }
+        @messages_received_mutex.synchronize do
+          @messages_received.map { |_, args, _| args }
+        end
       end
 
       # @private
@@ -162,7 +178,9 @@ module RSpec
       # @private
       def record_message_received(message, *args, &block)
         @order_group.invoked SpecificMessage.new(object, message, args)
-        @messages_received << [message, args, block]
+        @messages_received_mutex.synchronize do
+          @messages_received << [message, args, block]
+        end
       end
 
       # @private
