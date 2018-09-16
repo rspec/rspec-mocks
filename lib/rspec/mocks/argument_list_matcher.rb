@@ -54,8 +54,13 @@ module RSpec
       # position of the arguments passed to `new`.
       #
       # @see #initialize
-      def args_match?(*args)
-        Support::FuzzyMatcher.values_match?(resolve_expected_args_based_on(args), args)
+      def args_match?(*args, &block)
+        expected_args = resolve_expected_args_based_on(args)
+        if [ArgumentMatchers::BlockMatcher::INSTANCE] == expected_args
+          ArgumentMatchers::BlockMatcher::INSTANCE === block
+        else
+          Support::FuzzyMatcher.values_match?(expected_args, args)
+        end
       end
 
       # @private

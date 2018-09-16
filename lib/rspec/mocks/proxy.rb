@@ -187,7 +187,7 @@ module RSpec
       def message_received(message, *args, &block)
         record_message_received message, *args, &block
 
-        expectation = find_matching_expectation(message, *args)
+        expectation = find_matching_expectation(message, *args, &block)
         stub = find_matching_method_stub(message, *args)
 
         if (stub && expectation && expectation.called_max_times?) || (stub && !expectation)
@@ -258,9 +258,9 @@ module RSpec
         @method_doubles[message.to_sym]
       end
 
-      def find_matching_expectation(method_name, *args)
+      def find_matching_expectation(method_name, *args, &block)
         find_best_matching_expectation_for(method_name) do |expectation|
-          expectation.matches?(method_name, *args)
+          expectation.matches?(method_name, *args, &block)
         end
       end
 
