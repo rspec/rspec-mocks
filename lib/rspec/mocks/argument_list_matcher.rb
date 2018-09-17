@@ -56,8 +56,8 @@ module RSpec
       # @see #initialize
       def args_match?(*args, &block)
         expected_args = resolve_expected_args_based_on(args)
-        if [ArgumentMatchers::BlockMatcher::INSTANCE] == expected_args
-          ArgumentMatchers::BlockMatcher::INSTANCE === block
+        if ArgumentMatchers::BlockMatcher::INSTANCE == expected_args.last
+          Support::FuzzyMatcher.values_match?(expected_args, args + [block])
         else
           Support::FuzzyMatcher.values_match?(expected_args, args)
         end
