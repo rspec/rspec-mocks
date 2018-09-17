@@ -456,14 +456,34 @@ module RSpec
       end
 
       describe "a_block" do
-        before { expect(a_double).to receive(:random_call).with(a_block) }
-
         it "matches a method call with a block" do
-          a_double.random_call { :a_dummy_block }
+          expect(a_double).to receive(:msg).with(a_block)
+          a_double.msg { :a_dummy_block }
         end
 
-        pending "fails if the method call has no block" do
-          expect { a_double.random_call }.to fail_including "(a block)"
+        it "matches a method call with arguments and a block" do
+          expect(a_double).to receive(:msg).with(1, 2, anything, a_block)
+          a_double.msg(1,2,3) { :and_a_block }
+        end
+
+        it "matches a method call with a block and still allows and_yield" do
+          expect(a_double).to receive(:msg).with(a_block).and_yield(1)
+          a_double.msg { |a| expect(a).to eq(1) }
+        end
+
+        it "fails if the method call has no block", :reset => true do
+          expect(a_double).to receive(:msg).with(a_block)
+          expect { a_double.msg }.to fail_including "expected: (a block)"
+        end
+
+        it "fails if the method call omits a block when matching arguments", :reset => true do
+          expect(a_double).to receive(:msg).with(1, 2, anything, a_block)
+          expect { a_double.msg(1,2,3) }.to fail_including "expected: (1, 2, anything, a block)"
+        end
+
+        it "fails if supplying an incorrect arity block when using and_yield", :reset => true do
+          expect(a_double).to receive(:msg).with(a_block).and_yield(1)
+          expect { a_double.msg { :a_bad_block } }.to fail_including " yielded |1| to block with"
         end
       end
     end
