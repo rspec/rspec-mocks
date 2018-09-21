@@ -23,6 +23,23 @@ RSpec.describe "expection set on previously stubbed method" do
     reset dbl
   end
 
+  it 'handles concurrent validation of expectations' do
+    dbl = double('double', :foo => true)
+    concurrency = 4
+    repetition = 10
+    expect(dbl).to receive(:foo).with(anything).exactly(concurrency * repetition).times
+
+    concurrency.times.map do |thread|
+      Thread.new do
+        repetition.times do |index|
+          dbl.foo("#{thread}-#{index}")
+        end
+      end
+    end.map(&:join)
+
+    verify dbl
+  end
+
   it 'indicates the site of expectation in the stacktrace when outputing arguments of similar calls' do
     dbl = double('double', :foo => true)
     expect(dbl).to receive(:foo).with('first'); line = __LINE__
