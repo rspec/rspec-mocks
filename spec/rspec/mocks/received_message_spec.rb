@@ -11,7 +11,7 @@ RSpec.describe RSpec::Mocks::ReceivedMessage do
   end
 
   context "when a method has been stubbed" do
-    let (:matching_received_message) { proxy.build_received_message(:foo, [1, 2]) }
+    let (:matching_received_message) { proxy.build_received_message(:foo, 1, 2) }
     let (:partial_match_recieved_message) { proxy.build_received_message(:foo) }
 
     before (:each) { allow(fake).to receive(:foo).with(1, 2) }
@@ -26,7 +26,7 @@ RSpec.describe RSpec::Mocks::ReceivedMessage do
     end
 
     it "will not find a stub matching a message when its arguments don't match" do
-      received_message_foo = proxy.build_received_message(:foo, [1])
+      received_message_foo = proxy.build_received_message(:foo, 1)
       expect(received_message_foo.find_matching_stub).to eq(nil)
     end
 
@@ -37,7 +37,7 @@ RSpec.describe RSpec::Mocks::ReceivedMessage do
   end
 
   context "when a method has been mocked" do
-    let (:matching_received_message) { proxy.build_received_message(:foo, [1, 2]) }
+    let (:matching_received_message) { proxy.build_received_message(:foo, 1, 2) }
     let (:partial_match_recieved_message) { proxy.build_received_message(:foo) }
 
     before (:each) do
@@ -55,7 +55,7 @@ RSpec.describe RSpec::Mocks::ReceivedMessage do
     end
 
     it "will not find a stub matching a message when its arguments don't match" do
-      received_message_foo = proxy.build_received_message(:foo, [1])
+      received_message_foo = proxy.build_received_message(:foo, 1)
       expect(received_message_foo.find_matching_expectation).to eq(nil)
     end
 

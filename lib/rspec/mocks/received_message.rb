@@ -2,21 +2,19 @@ module RSpec
   module Mocks
     # @private
     class ReceivedMessage
-      def initialize(message_name, method_double, args = [], block = -> {})
+      def initialize(message_name, method_double, *args, &block)
         @message_name = message_name
         @method_double = method_double
-        @args = args || []
-        @block = block || -> {}
-        @matching_stub = nil
-        @matching_expectation = nil
+        @args = args
+        @block = block
       end
 
       def find_matching_stub
-        @matching_stub ||= @method_double.stubs.find { |stub| stub.matches?(@message_name, *@args) }
+        @method_double.stubs.find { |stub| stub.matches?(@message_name, *@args) }
       end
 
       def find_matching_expectation
-        @matching_expectation ||= find_best_matching_expectation do |expectation|
+        find_best_matching_expectation do |expectation|
           expectation.matches?(@message_name, *@args)
         end
       end

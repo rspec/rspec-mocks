@@ -170,7 +170,7 @@ module RSpec
       def message_received(message, *args, &block)
         record_message_received message, *args, &block
 
-        received_message = build_received_message(message, args, block)
+        received_message = build_received_message(message, *args, &block)
 
         expectation = received_message.find_matching_expectation
         stub = received_message.find_matching_stub
@@ -181,7 +181,7 @@ module RSpec
             expectation.advise(*args) unless expectation.expected_messages_received?
           end
           stub.invoke(nil, *args, &block)
-        elsif expectation = received_message.find_matching_expectation
+        elsif expectation
           expectation.unadvise(messages_arg_list)
           expectation.invoke(stub, *args, &block)
         elsif (expectation = find_almost_matching_expectation(message, *args))
@@ -201,8 +201,8 @@ module RSpec
       end
 
       # @private
-      def build_received_message(message_name, args = [], block = -> {})
-        ReceivedMessage.new(message_name, method_double_for(message_name), args, block)
+      def build_received_message(message_name, *args, &block)
+        ReceivedMessage.new(message_name, method_double_for(message_name), *args, &block)
       end
 
       # @private
@@ -250,13 +250,13 @@ module RSpec
 
       def find_matching_expectation(method_name, *args, &block)
         build_received_message(
-            method_name, args, block
+            method_name, *args, &block
         ).find_matching_expectation
       end
 
       def find_almost_matching_expectation(method_name, *args, &block)
         build_received_message(
-            method_name, args, block
+            method_name, *args, &block
         ).find_almost_matching_expectation
       end
 
