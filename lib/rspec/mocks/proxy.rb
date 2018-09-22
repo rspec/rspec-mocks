@@ -166,19 +166,22 @@ module RSpec
       end
 
       # @private
+      # @see RSpec::Mocks::ReceivedMessage
       def message_received(message, *args, &block)
         record_message_received message, *args, &block
 
-        expectation = find_matching_expectation(message, *args)
-        stub = find_matching_method_stub(message, *args)
+        received_message = build_received_message(message, args, block)
 
-        if (stub && expectation && expectation.called_max_times?) || (stub && !expectation)
+        expectation = received_message.find_matching_expectation
+        stub = received_message.find_matching_stub
+
+        if received_message.matching_stub_and_matching_expectation_and_expectation_maxxed? || received_message.only_matching_stub?
           expectation.increase_actual_received_count! if expectation && expectation.actual_received_count_matters?
           if (expectation = find_almost_matching_expectation(message, *args))
             expectation.advise(*args) unless expectation.expected_messages_received?
           end
           stub.invoke(nil, *args, &block)
-        elsif expectation
+        elsif expectation = received_message.find_matching_expectation
           expectation.unadvise(messages_arg_list)
           expectation.invoke(stub, *args, &block)
         elsif (expectation = find_almost_matching_expectation(message, *args))
@@ -195,6 +198,11 @@ module RSpec
         else
           @object.__send__(:method_missing, message, *args, &block)
         end
+      end
+
+      # @private
+      def build_received_message(message_name, args = [], block = -> {})
+        ReceivedMessage.new(message_name, method_double_for(message_name), args, block)
       end
 
       # @private
@@ -240,28 +248,16 @@ module RSpec
         @method_doubles[message.to_sym]
       end
 
-      def find_matching_expectation(method_name, *args)
-        find_best_matching_expectation_for(method_name) do |expectation|
-          expectation.matches?(method_name, *args)
-        end
+      def find_matching_expectation(method_name, *args, &block)
+        build_received_message(
+            method_name, args, block
+        ).find_matching_expectation
       end
 
-      def find_almost_matching_expectation(method_name, *args)
-        find_best_matching_expectation_for(method_name) do |expectation|
-          expectation.matches_name_but_not_args(method_name, *args)
-        end
-      end
-
-      def find_best_matching_expectation_for(method_name)
-        first_match = nil
-
-        method_double_for(method_name).expectations.each do |expectation|
-          next unless yield expectation
-          return expectation unless expectation.called_max_times?
-          first_match ||= expectation
-        end
-
-        first_match
+      def find_almost_matching_expectation(method_name, *args, &block)
+        build_received_message(
+            method_name, args, block
+        ).find_almost_matching_expectation
       end
 
       def find_matching_method_stub(method_name, *args)
