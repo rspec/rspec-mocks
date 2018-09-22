@@ -172,32 +172,13 @@ module RSpec
 
         received_message = build_received_message(message, *args, &block)
 
-        expectation = received_message.find_matching_expectation
-        stub = received_message.find_matching_stub
-
-        if received_message.matching_stub_and_matching_expectation_and_expectation_maxxed? || received_message.only_matching_stub?
-          expectation.increase_actual_received_count! if expectation && expectation.actual_received_count_matters?
-          if (expectation = find_almost_matching_expectation(message, *args))
-            expectation.advise(*args) unless expectation.expected_messages_received?
-          end
-          stub.invoke(nil, *args, &block)
-        elsif expectation
-          expectation.unadvise(messages_arg_list)
-          expectation.invoke(stub, *args, &block)
-        elsif (expectation = find_almost_matching_expectation(message, *args))
-          expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
-
-          if null_object? || !has_negative_expectation?(message)
-            expectation.raise_unexpected_message_args_error([args])
-          end
-        elsif (stub = find_almost_matching_stub(message, *args))
-          stub.advise(*args)
-          raise_missing_default_stub_error(stub, [args])
-        elsif Class === @object
-          @object.superclass.__send__(message, *args, &block)
-        else
-          @object.__send__(:method_missing, message, *args, &block)
-        end
+        received_message.process!(
+                            @object,
+                            @error_generator,
+                            null_object?,
+                            -> { has_negative_expectation?(message) },
+                            messages_arg_list
+        )
       end
 
       # @private
@@ -248,15 +229,15 @@ module RSpec
         @method_doubles[message.to_sym]
       end
 
-      def find_matching_expectation(method_name, *args, &block)
+      def find_matching_expectation(method_name, *args)
         build_received_message(
-            method_name, *args, &block
+            method_name, *args
         ).find_matching_expectation
       end
 
-      def find_almost_matching_expectation(method_name, *args, &block)
+      def find_almost_matching_expectation(method_name, *args)
         build_received_message(
-            method_name, *args, &block
+            method_name, *args
         ).find_almost_matching_expectation
       end
 

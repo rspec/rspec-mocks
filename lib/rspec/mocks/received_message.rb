@@ -9,6 +9,39 @@ module RSpec
         @block = block
       end
 
+      def process!(receiving_object, error_generator, is_null_object, has_negative_expectation, messages_arg_list)
+        message = @message_name
+        received_message = self
+        args = @args
+        block = @block
+        expectation = received_message.find_matching_expectation
+        stub = received_message.find_matching_stub
+
+        if received_message.matching_stub_and_matching_expectation_and_expectation_maxxed? || received_message.only_matching_stub?
+          expectation.increase_actual_received_count! if expectation && expectation.actual_received_count_matters?
+          if (expectation = find_almost_matching_expectation)
+            expectation.advise(*args) unless expectation.expected_messages_received?
+          end
+          stub.invoke(nil, *args, &block)
+        elsif expectation
+          expectation.unadvise(messages_arg_list)
+          expectation.invoke(stub, *args, &block)
+        elsif (expectation = find_almost_matching_expectation)
+          expectation.advise(*args) if is_null_object unless expectation.expected_messages_received?
+
+          if is_null_object || !has_negative_expectation.call
+            expectation.raise_unexpected_message_args_error([args])
+          end
+        elsif (stub = find_almost_matching_stub)
+          stub.advise(*args)
+          error_generator.raise_missing_default_stub_error(stub, [args])
+        elsif Class === receiving_object
+          receiving_object.superclass.__send__(message, *args, &block)
+        else
+          receiving_object.__send__(:method_missing, message, *args, &block)
+        end
+      end
+
       def find_matching_stub
         @method_double.stubs.find { |stub| stub.matches?(@message_name, *@args) }
       end
