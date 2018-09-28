@@ -115,10 +115,11 @@ module RSpec
             end
           end.new
 
+
           allow(@stub).to receive(:foo)
           expect {
             @stub.foo(recorder)
-          }.not_to change(recorder, :called_methods)
+          }.to_not change(recorder, :called_methods)
         end
       end
 

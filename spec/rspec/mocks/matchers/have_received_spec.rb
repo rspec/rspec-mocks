@@ -157,6 +157,18 @@ module RSpec
             expect(dbl).to have_received(:expected_method).with(:expected, :args)
           end
 
+          it 'passes when the given args match the args used with the message but are not dupable' do
+            dbl = double_with_met_expectation(:expected_method, 1, 2, 3)
+            expect(dbl).to have_received(:expected_method).with(1, 2, 3)
+          end
+
+          it 'passes when the given args match the args used with the message but later mutated' do
+            args = [:expected, :args]
+            dbl = double_with_met_expectation(:expected_method, args)
+            args.clear
+            expect(dbl).to have_received(:expected_method).with([:expected, :args])
+          end
+
           it 'fails when the given args do not match the args used with the message' do
             dbl = double_with_met_expectation(:expected_method, :expected, :args)
 
