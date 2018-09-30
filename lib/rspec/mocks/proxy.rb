@@ -103,7 +103,7 @@ module RSpec
 
         return if name_but_not_args.empty? && !others.empty?
 
-        expectation.raise_unexpected_message_args_error(name_but_not_args.map {|message| message.args})
+        expectation.raise_unexpected_message_args_error(name_but_not_args.all_args)
       end
 
 

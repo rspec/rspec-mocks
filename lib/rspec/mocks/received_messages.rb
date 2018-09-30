@@ -42,9 +42,11 @@ module RSpec
       end
 
       def partition_by_matches_name_not_args_for(expectation)
-        @messages.partition do |message|
+        name_but_not_args, others = @messages.partition do |message|
           expectation.matches_name_but_not_args(message.name, *message.args)
         end
+        [ReceivedMessages.new(name_but_not_args),
+        ReceivedMessages.new(others)]
       end
 
       def all_args
