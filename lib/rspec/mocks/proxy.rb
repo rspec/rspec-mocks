@@ -165,6 +165,7 @@ module RSpec
       # @see RSpec::Mocks::ReceivedMessage
       def message_received(message, *args, &block)
         received_message = record_message_received(message, *args, &block)
+        # TODO: Why does `has_negative_expectation?` need to be delayed?
         received_message.process!(
                             @object,
                             @error_generator,
