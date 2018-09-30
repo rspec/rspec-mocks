@@ -19,7 +19,7 @@ module RSpec
         @object = object
         @order_group = order_group
         @error_generator = ErrorGenerator.new(object)
-        @messages_received = []
+        @received_messages = ReceivedMessages.new
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
@@ -90,28 +90,22 @@ module RSpec
           @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
         end
 
-        @messages_received.each do |(actual_method_name, args, received_block)|
-          next unless expectation.matches?(actual_method_name, *args)
-
-          expectation.safe_invoke(nil)
-          block.call(*args, &received_block) if block
-        end
+        @received_messages.replay_on(expectation,  &block)
       end
 
       # @private
       def check_for_unexpected_arguments(expectation)
-        return if @messages_received.empty?
+        return if @received_messages.empty?
 
-        return if @messages_received.any? { |method_name, args, _| expectation.matches?(method_name, *args) }
+        return if @received_messages.any_matching_message_for?(expectation)
 
-        name_but_not_args, others = @messages_received.partition do |(method_name, args, _)|
-          expectation.matches_name_but_not_args(method_name, *args)
-        end
+        name_but_not_args, others = @received_messages.partition_by_matches_name_not_args_for(expectation)
 
         return if name_but_not_args.empty? && !others.empty?
 
-        expectation.raise_unexpected_message_args_error(name_but_not_args.map { |args| args[1] })
+        expectation.raise_unexpected_message_args_error(name_but_not_args.map {|message| message.args})
       end
+
 
       # @private
       def add_stub(method_name, opts={}, &implementation)
@@ -141,17 +135,17 @@ module RSpec
 
       # @private
       def reset
-        @messages_received.clear
+        @received_messages.clear
       end
 
       # @private
       def received_message?(method_name, *args, &block)
-        @messages_received.any? { |array| array == [method_name, args, block] }
+        @received_messages.received?(method_name, *args, &block)
       end
 
       # @private
       def messages_arg_list
-        @messages_received.map { |_, args, _| args }
+        @received_messages.all_args
       end
 
       # @private
@@ -162,16 +156,15 @@ module RSpec
       # @private
       def record_message_received(message, *args, &block)
         @order_group.invoked SpecificMessage.new(object, message, args)
-        @messages_received << [message, args, block]
+        received_message = build_received_message(message, *args, &block)
+        @received_messages << received_message
+        received_message
       end
 
       # @private
       # @see RSpec::Mocks::ReceivedMessage
       def message_received(message, *args, &block)
-        record_message_received message, *args, &block
-
-        received_message = build_received_message(message, *args, &block)
-
+        received_message = record_message_received(message, *args, &block)
         received_message.process!(
                             @object,
                             @error_generator,

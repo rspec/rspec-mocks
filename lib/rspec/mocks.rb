@@ -11,6 +11,7 @@ RSpec::Support.define_optimized_require_for_rspec(:mocks) { |f| require_relative
   argument_matchers
   example_methods
   received_message
+  received_messages
   proxy
   test_double
   argument_list_matcher

@@ -1,16 +1,19 @@
 module RSpec
   module Mocks
     # @private
+    # @see RSpec::Mocks::Proxy
     class ReceivedMessage
+      attr_reader :name, :args, :block
+
       def initialize(message_name, method_double, *args, &block)
-        @message_name = message_name
+        @name = message_name
         @method_double = method_double
         @args = args
         @block = block
       end
 
       def process!(receiving_object, error_generator, is_null_object, has_negative_expectation, messages_arg_list)
-        message = @message_name
+        message = @name
         received_message = self
         args = @args
         block = @block
@@ -43,22 +46,22 @@ module RSpec
       end
 
       def find_matching_stub
-        @method_double.stubs.find { |stub| stub.matches?(@message_name, *@args) }
+        @method_double.stubs.find { |stub| stub.matches?(@name, *@args) }
       end
 
       def find_matching_expectation
         find_best_matching_expectation do |expectation|
-          expectation.matches?(@message_name, *@args)
+          expectation.matches?(@name, *@args)
         end
       end
 
       def find_almost_matching_stub
-        @method_double.stubs.find { |stub| stub.matches_name_but_not_args(@message_name, *@args) }
+        @method_double.stubs.find { |stub| stub.matches_name_but_not_args(@name, *@args) }
       end
 
       def find_almost_matching_expectation
         find_best_matching_expectation do |expectation|
-          expectation.matches_name_but_not_args(@message_name, *@args)
+          expectation.matches_name_but_not_args(@name, *@args)
         end
       end
 
