@@ -46,12 +46,12 @@ module RSpec
       end
 
       def find_matching_stub
-        @method_double.stubs.find { |stub| stub.matches?(@name, *@args) }
+        @method_double.stubs.find { |stub| stub.matches?(@name, *@args, &@block) }
       end
 
       def find_matching_expectation
         find_best_matching_expectation do |expectation|
-          expectation.matches?(@name, *@args)
+          expectation.matches?(@name, *@args, &@block)
         end
       end
 
