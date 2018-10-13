@@ -461,12 +461,36 @@ module RSpec
             allow(a_double).to receive(:msg).with(a_block).and_return(:foo)
             expect(a_double.msg { :a_dummy_block }).to eq(:foo)
           end
+
+          it "matches a method call with a &lambda" do
+            allow(a_double).to receive(:msg).with(a_block).and_return(:foo)
+            a_dummy_block = -> { :a_dummy_block }
+            expect(a_double.msg(&a_dummy_block)).to eq(:foo)
+          end
+
+          it "matches a method call with a &Proc" do
+            allow(a_double).to receive(:msg).with(a_block).and_return(:foo)
+            a_dummy_block = Proc.new { :a_dummy_block }
+            expect(a_double.msg(&a_dummy_block)).to eq(:foo)
+          end
         end
 
         context "when mocking" do
           it "matches a method call with a block" do
             expect(a_double).to receive(:msg).with(a_block)
             a_double.msg { :a_dummy_block }
+          end
+
+          it "matches a method call with a &lambda" do
+            expect(a_double).to receive(:msg).with(a_block)
+            a_dummy_block = -> { :a_dummy_block }
+            a_double.msg(&a_dummy_block)
+          end
+
+          it "matches a method call with a &Proc" do
+            expect(a_double).to receive(:msg).with(a_block)
+            a_dummy_block = Proc.new { :a_dummy_block }
+            a_double.msg(&a_dummy_block)
           end
 
           it "matches a method call with arguments and a block" do
