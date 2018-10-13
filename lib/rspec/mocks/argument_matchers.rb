@@ -114,6 +114,18 @@ module RSpec
 
       alias_method :a_kind_of, :kind_of
 
+      # Matches if a block is passed implicitly i.e is invoked
+      # using `yield` in the receiving method
+      #
+      # @example
+      #   expect(object).to receive(:message).with(a_block)
+      #
+      #   # matches any of these:
+      #   object.message { }
+      #   empty_lambda = lambda { }
+      #   object.message(&empty_lambda)
+      #   empty_proc = Proc.new { }
+      #   object.message(&empty_proc)
       def a_block
         BlockMatcher::INSTANCE
       end
