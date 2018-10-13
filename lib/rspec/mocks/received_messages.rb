@@ -4,7 +4,7 @@ module RSpec
     # @see RSpec::Mocks::Proxy
     # @see RSpec::Mocks::ReceivedMessage
     class ReceivedMessages
-      def initialize(messages = [])
+      def initialize(messages=[])
         @messages = messages
       end
 
@@ -45,8 +45,7 @@ module RSpec
         name_but_not_args, others = @messages.partition do |message|
           expectation.matches_name_but_not_args(message.name, *message.args)
         end
-        [ReceivedMessages.new(name_but_not_args),
-        ReceivedMessages.new(others)]
+        [ReceivedMessages.new(name_but_not_args), ReceivedMessages.new(others)]
       end
 
       def all_args

@@ -106,7 +106,6 @@ module RSpec
         expectation.raise_unexpected_message_args_error(name_but_not_args.all_args)
       end
 
-
       # @private
       def add_stub(method_name, opts={}, &implementation)
         location = opts.fetch(:expected_from) { CallerFilter.first_non_rspec_line }
