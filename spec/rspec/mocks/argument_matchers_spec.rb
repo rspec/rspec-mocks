@@ -464,7 +464,7 @@ module RSpec
 
           it "matches a method call with a &lambda" do
             allow(a_double).to receive(:msg).with(a_block).and_return(:foo)
-            a_dummy_block = -> { :a_dummy_block }
+            a_dummy_block = lambda { :a_dummy_block }
             expect(a_double.msg(&a_dummy_block)).to eq(:foo)
           end
 
@@ -483,7 +483,7 @@ module RSpec
 
           it "matches a method call with a &lambda" do
             expect(a_double).to receive(:msg).with(a_block)
-            a_dummy_block = -> { :a_dummy_block }
+            a_dummy_block = lambda { :a_dummy_block }
             a_double.msg(&a_dummy_block)
           end
 
