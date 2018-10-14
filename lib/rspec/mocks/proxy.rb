@@ -169,7 +169,7 @@ module RSpec
                             @object,
                             @error_generator,
                             null_object?,
-                            -> { has_negative_expectation?(message) },
+                            lambda { has_negative_expectation?(message) },
                             messages_arg_list
         )
       end
