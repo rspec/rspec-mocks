@@ -40,7 +40,7 @@ RSpec.describe RSpec::Mocks::ReceivedMessage do
     let (:matching_received_message) { proxy.build_received_message(:foo, 1, 2) }
     let (:partial_match_recieved_message) { proxy.build_received_message(:foo) }
 
-    before (:each) do
+    before(:each) do
       expect(fake).to receive(:foo).with(1, 2)
       fake.foo(1, 2)
     end
