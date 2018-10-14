@@ -19,7 +19,7 @@ module RSpec
         @object = object
         @order_group = order_group
         @error_generator = ErrorGenerator.new(object)
-        @messages_received = []
+        @received_messages = ReceivedMessages.new
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
@@ -90,27 +90,20 @@ module RSpec
           @error_generator.raise_expectation_on_unstubbed_method(expected_method_name)
         end
 
-        @messages_received.each do |(actual_method_name, args, received_block)|
-          next unless expectation.matches?(actual_method_name, *args)
-
-          expectation.safe_invoke(nil)
-          block.call(*args, &received_block) if block
-        end
+        @received_messages.replay_on(expectation,  &block)
       end
 
       # @private
       def check_for_unexpected_arguments(expectation)
-        return if @messages_received.empty?
+        return if @received_messages.empty?
 
-        return if @messages_received.any? { |method_name, args, _| expectation.matches?(method_name, *args) }
+        return if @received_messages.any_matching_message_for?(expectation)
 
-        name_but_not_args, others = @messages_received.partition do |(method_name, args, _)|
-          expectation.matches_name_but_not_args(method_name, *args)
-        end
+        name_but_not_args, others = @received_messages.partition_by_matches_name_not_args_for(expectation)
 
         return if name_but_not_args.empty? && !others.empty?
 
-        expectation.raise_unexpected_message_args_error(name_but_not_args.map { |args| args[1] })
+        expectation.raise_unexpected_message_args_error(name_but_not_args.all_args)
       end
 
       # @private
@@ -141,17 +134,17 @@ module RSpec
 
       # @private
       def reset
-        @messages_received.clear
+        @received_messages.clear
       end
 
       # @private
       def received_message?(method_name, *args, &block)
-        @messages_received.any? { |array| array == [method_name, args, block] }
+        @received_messages.received?(method_name, *args, &block)
       end
 
       # @private
       def messages_arg_list
-        @messages_received.map { |_, args, _| args }
+        @received_messages.all_args
       end
 
       # @private
@@ -162,39 +155,28 @@ module RSpec
       # @private
       def record_message_received(message, *args, &block)
         @order_group.invoked SpecificMessage.new(object, message, args)
-        @messages_received << [message, args, block]
+        received_message = build_received_message(message, *args, &block)
+        @received_messages << received_message
+        received_message
       end
 
       # @private
+      # @see RSpec::Mocks::ReceivedMessage
       def message_received(message, *args, &block)
-        record_message_received message, *args, &block
+        received_message = record_message_received(message, *args, &block)
+        # TODO: Why does `has_negative_expectation?` need to be delayed?
+        received_message.process!(
+                            @object,
+                            @error_generator,
+                            null_object?,
+                            lambda { has_negative_expectation?(message) },
+                            messages_arg_list
+        )
+      end
 
-        expectation = find_matching_expectation(message, *args)
-        stub = find_matching_method_stub(message, *args)
-
-        if (stub && expectation && expectation.called_max_times?) || (stub && !expectation)
-          expectation.increase_actual_received_count! if expectation && expectation.actual_received_count_matters?
-          if (expectation = find_almost_matching_expectation(message, *args))
-            expectation.advise(*args) unless expectation.expected_messages_received?
-          end
-          stub.invoke(nil, *args, &block)
-        elsif expectation
-          expectation.unadvise(messages_arg_list)
-          expectation.invoke(stub, *args, &block)
-        elsif (expectation = find_almost_matching_expectation(message, *args))
-          expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
-
-          if null_object? || !has_negative_expectation?(message)
-            expectation.raise_unexpected_message_args_error([args])
-          end
-        elsif (stub = find_almost_matching_stub(message, *args))
-          stub.advise(*args)
-          raise_missing_default_stub_error(stub, [args])
-        elsif Class === @object
-          @object.superclass.__send__(message, *args, &block)
-        else
-          @object.__send__(:method_missing, message, *args, &block)
-        end
+      # @private
+      def build_received_message(message_name, *args, &block)
+        ReceivedMessage.new(message_name, method_double_for(message_name), *args, &block)
       end
 
       # @private
@@ -241,27 +223,15 @@ module RSpec
       end
 
       def find_matching_expectation(method_name, *args)
-        find_best_matching_expectation_for(method_name) do |expectation|
-          expectation.matches?(method_name, *args)
-        end
+        build_received_message(
+            method_name, *args
+        ).find_matching_expectation
       end
 
       def find_almost_matching_expectation(method_name, *args)
-        find_best_matching_expectation_for(method_name) do |expectation|
-          expectation.matches_name_but_not_args(method_name, *args)
-        end
-      end
-
-      def find_best_matching_expectation_for(method_name)
-        first_match = nil
-
-        method_double_for(method_name).expectations.each do |expectation|
-          next unless yield expectation
-          return expectation unless expectation.called_max_times?
-          first_match ||= expectation
-        end
-
-        first_match
+        build_received_message(
+            method_name, *args
+        ).find_almost_matching_expectation
       end
 
       def find_matching_method_stub(method_name, *args)

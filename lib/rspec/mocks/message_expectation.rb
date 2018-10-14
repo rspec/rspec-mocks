@@ -410,8 +410,8 @@ module RSpec
           @yield_receiver_to_implementation_block
         end
 
-        def matches?(message, *args)
-          @message == message && @argument_list_matcher.args_match?(*args)
+        def matches?(message, *args, &block)
+          @message == message && @argument_list_matcher.args_match?(*args, &block)
         end
 
         def safe_invoke(parent_stub, *args, &block)
