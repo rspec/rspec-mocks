@@ -123,7 +123,7 @@ Feature: Matching arguments
     When I run `rspec responding_differently_spec.rb`
     Then the examples should all pass
 
-  Scenario: Expecting a method invocatin with a block
+  Scenario: Expecting a method invocation with a block
     Given a file named "expect_method_with_block.rb" with:
     """ruby
     RSpec.describe "Expecting a message with a block" do
