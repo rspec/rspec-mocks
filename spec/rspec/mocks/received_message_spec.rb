@@ -11,10 +11,10 @@ RSpec.describe RSpec::Mocks::ReceivedMessage do
   end
 
   context "when a method has been stubbed" do
-    let (:matching_received_message) { proxy.build_received_message(:foo, 1, 2) }
-    let (:partial_match_recieved_message) { proxy.build_received_message(:foo) }
+    let(:matching_received_message) { proxy.build_received_message(:foo, 1, 2) }
+    let(:partial_match_recieved_message) { proxy.build_received_message(:foo) }
 
-    before (:each) { allow(fake).to receive(:foo).with(1, 2) }
+    before(:each) { allow(fake).to receive(:foo).with(1, 2) }
 
     it "can find a stub matching a message name and its arguments" do
       message_expectation = matching_received_message.find_matching_stub
@@ -37,8 +37,8 @@ RSpec.describe RSpec::Mocks::ReceivedMessage do
   end
 
   context "when a method has been mocked" do
-    let (:matching_received_message) { proxy.build_received_message(:foo, 1, 2) }
-    let (:partial_match_recieved_message) { proxy.build_received_message(:foo) }
+    let(:matching_received_message) { proxy.build_received_message(:foo, 1, 2) }
+    let(:partial_match_recieved_message) { proxy.build_received_message(:foo) }
 
     before(:each) do
       expect(fake).to receive(:foo).with(1, 2)
