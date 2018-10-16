@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.0...master)
+
+Enhancements:
+
+* Improve thread safety of message expectations by using Mutex to prevent
+  deadlocking errors. (Ry Biesemeyer, #1236)
+
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.7.0...v3.8.0)
 
