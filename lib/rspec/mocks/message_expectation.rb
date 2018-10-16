@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support 'mutex'
+
 module RSpec
   module Mocks
     # A message expectation that only allows concrete return values to be set
@@ -368,11 +370,6 @@ module RSpec
         # @private
         attr_reader :type
 
-        unless defined?(Mutex)
-          Support.require_rspec_support 'mutex'
-          Mutex = Support::Mutex
-        end
-
         # rubocop:disable Metrics/ParameterLists
         def initialize(error_generator, expectation_ordering, expected_from, method_double,
                        type=:expectation, opts={}, &implementation_block)
@@ -384,7 +381,7 @@ module RSpec
           @orig_object = @method_double.object
           @message = @method_double.method_name
           @actual_received_count = 0
-          @actual_received_count_write_mutex = Mutex.new
+          @actual_received_count_write_mutex = Support::Mutex.new
           @expected_received_count = type == :expectation ? 1 : :any
           @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
           @order_group = expectation_ordering
