@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support 'mutex'
+
 module RSpec
   module Mocks
     # A message expectation that only allows concrete return values to be set
@@ -357,6 +359,7 @@ module RSpec
       # some collaborators it delegates to for this stuff but for now this was
       # the simplest way to split the public from private stuff to make it
       # easier to publish the docs for the APIs we want published.
+      # rubocop:disable Metrics/ModuleLength
       module ImplementationDetails
         attr_accessor :error_generator, :implementation
         attr_reader :message
@@ -378,6 +381,7 @@ module RSpec
           @orig_object = @method_double.object
           @message = @method_double.method_name
           @actual_received_count = 0
+          @actual_received_count_write_mutex = Support::Mutex.new
           @expected_received_count = type == :expectation ? 1 : :any
           @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
           @order_group = expectation_ordering
@@ -536,7 +540,9 @@ module RSpec
         end
 
         def increase_actual_received_count!
-          @actual_received_count += 1
+          @actual_received_count_write_mutex.synchronize do
+            @actual_received_count += 1
+          end
         end
 
       private
@@ -567,7 +573,9 @@ module RSpec
             parent_stub.invoke(nil, *args, &block)
           end
         ensure
-          @actual_received_count += increment
+          @actual_received_count_write_mutex.synchronize do
+            @actual_received_count += increment
+          end
         end
 
         def has_been_invoked?
@@ -626,6 +634,7 @@ module RSpec
           nil
         end
       end
+      # rubocop:enable Metrics/ModuleLength
 
       include ImplementationDetails
     end
