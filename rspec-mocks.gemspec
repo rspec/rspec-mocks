@@ -13,6 +13,14 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-mocks-#{RSpec::Mocks::Version::STRING}"
   s.description = "RSpec's 'test double' framework, with support for stubbing and mocking"
 
+  s.metadata = {
+    'bug_tracker_uri'   => 'https://github.com/rspec/rspec-mocks/issues',
+    'changelog_uri'     => "https://github.com/rspec/rspec-mocks/blob/v#{s.version}/Changelog.md",
+    'documentation_uri' => 'https://rspec.info/documentation/',
+    'mailing_list_uri'  => 'https://groups.google.com/forum/#!forum/rspec',
+    'source_code_uri'   => 'https://github.com/rspec/rspec-mocks',
+  }
+
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.files           += %w[README.md LICENSE.md Changelog.md .yardopts .document]
   s.test_files       = []
