@@ -13,6 +13,7 @@ RSpec::Support.define_optimized_require_for_rspec(:mocks) { |f| require_relative
   proxy
   test_double
   argument_list_matcher
+  received_count
   message_expectation
   order_group
   error_generator
