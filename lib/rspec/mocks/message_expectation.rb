@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_support 'mutex'
-
 module RSpec
   module Mocks
     # A message expectation that only allows concrete return values to be set
@@ -324,17 +322,6 @@ module RSpec
           invoke_incrementing_actual_calls_by(0, true, parent_stub, *args, &block)
         end
 
-        def negative?
-          @expected_received_count == 0 && !@at_least
-        end
-
-        def called_max_times?
-          @expected_received_count != :any &&
-            !@at_least &&
-            @expected_received_count > 0 &&
-            @actual_received_count >= @expected_received_count
-        end
-
         def matches_name_but_not_args(message, *args)
           @message == message && !@argument_list_matcher.args_match?(*args)
         end
@@ -345,28 +332,12 @@ module RSpec
         end
 
         def expected_messages_received?
-          ignoring_args? || matches_exact_count? || matches_at_least_count? || matches_at_most_count?
+          ignoring_args? || matches_count?
         end
 
         def ensure_expected_ordering_received!
           @order_group.verify_invocation_order(self) if @ordered
           true
-        end
-
-        def ignoring_args?
-          @expected_received_count == :any
-        end
-
-        def matches_at_least_count?
-          @at_least && @actual_received_count >= @expected_received_count
-        end
-
-        def matches_at_most_count?
-          @at_most && @actual_received_count <= @expected_received_count
-        end
-
-        def matches_exact_count?
-          @expected_received_count == @actual_received_count
         end
 
         def similar_messages
@@ -384,8 +355,8 @@ module RSpec
         def generate_error
           if similar_messages.empty?
             @error_generator.raise_expectation_error(
-              @message, @expected_received_count, @argument_list_matcher,
-              @actual_received_count, expectation_count_type, expected_args,
+              @message, expected_received_count, @argument_list_matcher,
+              actual_received_count, expectation_count_type, expected_args,
               @expected_from, exception_source_id
             )
           else
@@ -399,16 +370,10 @@ module RSpec
           @error_generator.raise_unexpected_message_args_error(self, args_for_multiple_calls, exception_source_id)
         end
 
-        def expectation_count_type
-          return :at_least if @at_least
-          return :at_most if @at_most
-          nil
-        end
-
         def description_for(verb)
           @error_generator.describe_expectation(
-            verb, @message, @expected_received_count,
-            @actual_received_count, expected_args
+            verb, @message, expected_received_count,
+            actual_received_count, expected_args
           )
         end
 
@@ -417,8 +382,9 @@ module RSpec
         end
 
         def additional_expected_calls
+          # FIXME: !@exactly
           return 0 if @expectation_type == :stub || !@exactly
-          @expected_received_count - 1
+          expected_received_count - 1
         end
 
         def ordered?
@@ -427,10 +393,6 @@ module RSpec
 
         def negative_expectation_for?(message)
           @message == message && negative?
-        end
-
-        def actual_received_count_matters?
-          @at_least || @at_most || @exactly
         end
 
       private
@@ -442,13 +404,13 @@ module RSpec
         def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
-          if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
+          if negative? || (allowed_to_fail && exactly_or_at_most? && (actual_received_count == expected_received_count))
             # args are the args we actually received, @argument_list_matcher is the
             # list of args we were expecting
             @error_generator.raise_expectation_error(
-              @message, @expected_received_count,
+              @message, expected_received_count,
               @argument_list_matcher,
-              @actual_received_count + increment,
+              actual_received_count + increment,
               expectation_count_type, args, nil, exception_source_id
             )
           end
@@ -465,7 +427,7 @@ module RSpec
         end
 
         def has_been_invoked?
-          @actual_received_count > 0
+          actual_received_count > 0
         end
 
         def raise_already_invoked_error_if_necessary(calling_customization)

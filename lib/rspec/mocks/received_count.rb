@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support 'mutex'
+
 module RSpec
   module Mocks
     module ReceivedCount
@@ -111,6 +113,45 @@ module RSpec
         set_expected_received_count :exactly, 3
         self
       end
+
+      # TODO: docs
+
+      def matches_count?
+        matches_exact_count? || matches_at_least_count? || matches_at_most_count?
+      end
+
+      def expectation_count_type
+        return :at_least if @at_least
+        return :at_most if @at_most
+        nil
+      end
+
+      def negative?
+        @expected_received_count == 0 && !@at_least
+      end
+
+      def called_max_times?
+        @expected_received_count != :any &&
+          !@at_least &&
+          @expected_received_count > 0 &&
+          @actual_received_count >= @expected_received_count
+      end
+
+      # FIXME: confusing name (for generic application)
+      def ignoring_args?
+        @expected_received_count == :any
+      end
+
+      def actual_received_count_matters?
+        @at_least || @at_most || @exactly
+      end
+
+      def exactly_or_at_most?
+        @exactly || @at_most
+      end
+
+      attr_reader :expected_received_count, :actual_received_count
+
       # @!endgroup
 
       def increase_actual_received_count!(increment = 1)
@@ -134,6 +175,17 @@ module RSpec
                                    end
       end
 
+      def matches_at_least_count?
+        @at_least && @actual_received_count >= @expected_received_count
+      end
+
+      def matches_at_most_count?
+        @at_most && @actual_received_count <= @expected_received_count
+      end
+
+      def matches_exact_count?
+        @expected_received_count == @actual_received_count
+      end
     end
   end
 end
