@@ -55,7 +55,7 @@ module RSpec
           setup_any_instance_method_substitute(subject, :stub, block)
         end
 
-        MessageExpectation.public_instance_methods(false).each do |method|
+        (MessageExpectation.public_instance_methods(false) + ReceivedCount.public_instance_methods(false)).each do |method|
           next if method_defined?(method)
 
           define_method(method) do |*args, &block|

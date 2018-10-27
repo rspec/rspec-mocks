@@ -38,147 +38,12 @@ module RSpec
       end
     end
 
-    # Represents an individual method stub or message expectation. The methods
-    # defined here can be used to configure how it behaves. The methods return
-    # `self` so that they can be chained together to form a fluent interface.
-    class MessageExpectation
-      # @!group Configuring Responses
-
-      # @overload and_return(value)
-      # @overload and_return(first_value, second_value)
-      #
-      # Tells the object to return a value when it receives the message.  Given
-      # more than one value, the first value is returned the first time the
-      # message is received, the second value is returned the next time, etc,
-      # etc.
-      #
-      # If the message is received more times than there are values, the last
-      # value is received for every subsequent call.
-      #
-      # @return [nil] No further chaining is supported after this.
-      # @example
-      #   allow(counter).to receive(:count).and_return(1)
-      #   counter.count # => 1
-      #   counter.count # => 1
-      #
-      #   allow(counter).to receive(:count).and_return(1,2,3)
-      #   counter.count # => 1
-      #   counter.count # => 2
-      #   counter.count # => 3
-      #   counter.count # => 3
-      #   counter.count # => 3
-      #   # etc
-      def and_return(first_value, *values)
-        raise_already_invoked_error_if_necessary(__method__)
-        if negative?
-          raise "`and_return` is not supported with negative message expectations"
-        end
-
-        if block_given?
-          raise ArgumentError, "Implementation blocks aren't supported with `and_return`"
-        end
-
-        values.unshift(first_value)
-        @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
-        self.terminal_implementation_action = AndReturnImplementation.new(values)
-
-        nil
-      end
-
-      # Tells the object to delegate to the original unmodified method
-      # when it receives the message.
-      #
-      # @note This is only available on partial doubles.
-      #
-      # @return [nil] No further chaining is supported after this.
-      # @example
-      #   expect(counter).to receive(:increment).and_call_original
-      #   original_count = counter.count
-      #   counter.increment
-      #   expect(counter.count).to eq(original_count + 1)
-      def and_call_original
-        wrap_original(__method__) do |original, *args, &block|
-          original.call(*args, &block)
-        end
-      end
-
-      # Decorates the stubbed method with the supplied block. The original
-      # unmodified method is passed to the block along with any method call
-      # arguments so you can delegate to it, whilst still being able to
-      # change what args are passed to it and/or change the return value.
-      #
-      # @note This is only available on partial doubles.
-      #
-      # @return [nil] No further chaining is supported after this.
-      # @example
-      #   expect(api).to receive(:large_list).and_wrap_original do |original_method, *args, &block|
-      #     original_method.call(*args, &block).first(10)
-      #   end
-      def and_wrap_original(&block)
-        wrap_original(__method__, &block)
-      end
-
-      # @overload and_raise
-      # @overload and_raise(ExceptionClass)
-      # @overload and_raise(ExceptionClass, message)
-      # @overload and_raise(exception_instance)
-      #
-      # Tells the object to raise an exception when the message is received.
-      #
-      # @return [nil] No further chaining is supported after this.
-      # @note
-      #   When you pass an exception class, the MessageExpectation will raise
-      #   an instance of it, creating it with `exception` and passing `message`
-      #   if specified.  If the exception class initializer requires more than
-      #   one parameters, you must pass in an instance and not the class,
-      #   otherwise this method will raise an ArgumentError exception.
-      #
-      # @example
-      #   allow(car).to receive(:go).and_raise
-      #   allow(car).to receive(:go).and_raise(OutOfGas)
-      #   allow(car).to receive(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
-      #   allow(car).to receive(:go).and_raise(OutOfGas.new(2, :oz))
-      def and_raise(*args)
-        raise_already_invoked_error_if_necessary(__method__)
-        self.terminal_implementation_action = Proc.new { raise(*args) }
-        nil
-      end
-
-      # @overload and_throw(symbol)
-      # @overload and_throw(symbol, object)
-      #
-      # Tells the object to throw a symbol (with the object if that form is
-      # used) when the message is received.
-      #
-      # @return [nil] No further chaining is supported after this.
-      # @example
-      #   allow(car).to receive(:go).and_throw(:out_of_gas)
-      #   allow(car).to receive(:go).and_throw(:out_of_gas, :level => 0.1)
-      def and_throw(*args)
-        raise_already_invoked_error_if_necessary(__method__)
-        self.terminal_implementation_action = Proc.new { throw(*args) }
-        nil
-      end
-
-      # Tells the object to yield one or more args to a block when the message
-      # is received.
-      #
-      # @return [MessageExpectation] self, to support further chaining.
-      # @example
-      #   stream.stub(:open).and_yield(StringIO.new)
-      def and_yield(*args, &block)
-        raise_already_invoked_error_if_necessary(__method__)
-        yield @eval_context = Object.new if block
-
-        # Initialize args to yield now that it's being used, see also: comment
-        # in constructor.
-        @args_to_yield ||= []
-
-        @args_to_yield << args
-        self.initial_implementation_action = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
-        self
-      end
-      # @!endgroup
+    # TODO: :times, :exactly, :never, :at_least, :at_most, :twice, :thrice, :once
+    module ReceivedCount
+      # FIXME: self.included do?
+      # FIXME: do we need expectation_count_type= at all?
+      # attr_writer :expected_received_count
+      # protected :expected_received_count=
 
       # @!group Constraining Receive Counts
 
@@ -284,6 +149,166 @@ module RSpec
       end
       # @!endgroup
 
+    private
+
+      def set_expected_received_count(relativity, n)
+        raise "`count` is not supported with negative message expectations" if negative?
+        @at_least = (relativity == :at_least)
+        @at_most  = (relativity == :at_most)
+        @exactly  = (relativity == :exactly)
+        @expected_received_count = case n
+                                   when Numeric then n
+                                   when :once   then 1
+                                   when :twice  then 2
+                                   when :thrice then 3
+                                   end
+      end
+    end
+
+    # Represents an individual method stub or message expectation. The methods
+    # defined here can be used to configure how it behaves. The methods return
+    # `self` so that they can be chained together to form a fluent interface.
+    class MessageExpectation
+      include ReceivedCount
+      # @!group Configuring Responses
+
+      # @overload and_return(value)
+      # @overload and_return(first_value, second_value)
+      #
+      # Tells the object to return a value when it receives the message.  Given
+      # more than one value, the first value is returned the first time the
+      # message is received, the second value is returned the next time, etc,
+      # etc.
+      #
+      # If the message is received more times than there are values, the last
+      # value is received for every subsequent call.
+      #
+      # @return [nil] No further chaining is supported after this.
+      # @example
+      #   allow(counter).to receive(:count).and_return(1)
+      #   counter.count # => 1
+      #   counter.count # => 1
+      #
+      #   allow(counter).to receive(:count).and_return(1,2,3)
+      #   counter.count # => 1
+      #   counter.count # => 2
+      #   counter.count # => 3
+      #   counter.count # => 3
+      #   counter.count # => 3
+      #   # etc
+      def and_return(first_value, *values)
+        raise_already_invoked_error_if_necessary(__method__)
+        if negative?
+          raise "`and_return` is not supported with negative message expectations"
+        end
+
+        if block_given?
+          raise ArgumentError, "Implementation blocks aren't supported with `and_return`"
+        end
+
+        values.unshift(first_value)
+        # FIXME: extract
+        @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
+        self.terminal_implementation_action = AndReturnImplementation.new(values)
+
+        nil
+      end
+
+      # Tells the object to delegate to the original unmodified method
+      # when it receives the message.
+      #
+      # @note This is only available on partial doubles.
+      #
+      # @return [nil] No further chaining is supported after this.
+      # @example
+      #   expect(counter).to receive(:increment).and_call_original
+      #   original_count = counter.count
+      #   counter.increment
+      #   expect(counter.count).to eq(original_count + 1)
+      def and_call_original
+        wrap_original(__method__) do |original, *args, &block|
+          original.call(*args, &block)
+        end
+      end
+
+      # Decorates the stubbed method with the supplied block. The original
+      # unmodified method is passed to the block along with any method call
+      # arguments so you can delegate to it, whilst still being able to
+      # change what args are passed to it and/or change the return value.
+      #
+      # @note This is only available on partial doubles.
+      #
+      # @return [nil] No further chaining is supported after this.
+      # @example
+      #   expect(api).to receive(:large_list).and_wrap_original do |original_method, *args, &block|
+      #     original_method.call(*args, &block).first(10)
+      #   end
+      def and_wrap_original(&block)
+        wrap_original(__method__, &block)
+      end
+
+      # @overload and_raise
+      # @overload and_raise(ExceptionClass)
+      # @overload and_raise(ExceptionClass, message)
+      # @overload and_raise(exception_instance)
+      #
+      # Tells the object to raise an exception when the message is received.
+      #
+      # @return [nil] No further chaining is supported after this.
+      # @note
+      #   When you pass an exception class, the MessageExpectation will raise
+      #   an instance of it, creating it with `exception` and passing `message`
+      #   if specified.  If the exception class initializer requires more than
+      #   one parameters, you must pass in an instance and not the class,
+      #   otherwise this method will raise an ArgumentError exception.
+      #
+      # @example
+      #   allow(car).to receive(:go).and_raise
+      #   allow(car).to receive(:go).and_raise(OutOfGas)
+      #   allow(car).to receive(:go).and_raise(OutOfGas, "At least 2 oz of gas needed to drive")
+      #   allow(car).to receive(:go).and_raise(OutOfGas.new(2, :oz))
+      def and_raise(*args)
+        raise_already_invoked_error_if_necessary(__method__)
+        self.terminal_implementation_action = Proc.new { raise(*args) }
+        nil
+      end
+
+      # @overload and_throw(symbol)
+      # @overload and_throw(symbol, object)
+      #
+      # Tells the object to throw a symbol (with the object if that form is
+      # used) when the message is received.
+      #
+      # @return [nil] No further chaining is supported after this.
+      # @example
+      #   allow(car).to receive(:go).and_throw(:out_of_gas)
+      #   allow(car).to receive(:go).and_throw(:out_of_gas, :level => 0.1)
+      def and_throw(*args)
+        raise_already_invoked_error_if_necessary(__method__)
+        self.terminal_implementation_action = Proc.new { throw(*args) }
+        nil
+      end
+
+      # Tells the object to yield one or more args to a block when the message
+      # is received.
+      #
+      # @return [MessageExpectation] self, to support further chaining.
+      # @example
+      #   stream.stub(:open).and_yield(StringIO.new)
+      def and_yield(*args, &block)
+        raise_already_invoked_error_if_necessary(__method__)
+        yield @eval_context = Object.new if block
+
+        # Initialize args to yield now that it's being used, see also: comment
+        # in constructor.
+        @args_to_yield ||= []
+
+        @args_to_yield << args
+        self.initial_implementation_action = AndYieldImplementation.new(@args_to_yield, @eval_context, @error_generator)
+        self
+      end
+      # @!endgroup
+
       # @!group Other Constraints
 
       # Constrains a stub or message expectation to invocations with specific
@@ -364,6 +389,7 @@ module RSpec
         attr_accessor :error_generator, :implementation
         attr_reader :message
         attr_reader :orig_object
+        #FIXME: remove expected_received_count
         attr_writer :expected_received_count, :expected_from, :argument_list_matcher
         protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
 
@@ -380,15 +406,18 @@ module RSpec
           @method_double = method_double
           @orig_object = @method_double.object
           @message = @method_double.method_name
+
+          # FIXME: extract
           @actual_received_count = 0
           @actual_received_count_write_mutex = Support::Mutex.new
           @expected_received_count = type == :expectation ? 1 : :any
+          @at_least = @at_most = @exactly = nil
+
           @argument_list_matcher = ArgumentListMatcher::MATCH_ALL
           @order_group = expectation_ordering
           @order_group.register(self) unless type == :stub
           @expectation_type = type
           @ordered = false
-          @at_least = @at_most = @exactly = nil
 
           # Initialized to nil so that we don't allocate an array for every
           # mock or stub. See also comment in `and_yield`.
@@ -586,19 +615,6 @@ module RSpec
           return unless has_been_invoked?
 
           error_generator.raise_already_invoked_error(message, calling_customization)
-        end
-
-        def set_expected_received_count(relativity, n)
-          raise "`count` is not supported with negative message expectations" if negative?
-          @at_least = (relativity == :at_least)
-          @at_most  = (relativity == :at_most)
-          @exactly  = (relativity == :exactly)
-          @expected_received_count = case n
-                                     when Numeric then n
-                                     when :once   then 1
-                                     when :twice  then 2
-                                     when :thrice then 3
-                                     end
         end
 
         def initial_implementation_action=(action)
