@@ -4,15 +4,21 @@ module RSpec
   module Mocks
     module ReceivedCount
       # @!group Constraining Receive Counts
+      # fixme: are all those needed?
       def initialize(error_generator, expectation_ordering, expected_from, method_double,
                      type=:expectation, opts={}, &implementation_block)
         @actual_received_count = 0
         @actual_received_count_write_mutex = Support::Mutex.new
         @expected_received_count = type == :expectation ? 1 : :any
+
+        # fixme: seems odd. can be a strategy?
         @at_least = @at_most = @exactly = nil
         super
       end
 
+      # FIXME: change return type to including class
+
+      # FIXME: mutually exclusive with never, at least, at most and direct exact counters
       # Constrain a message expectation to be received a specific number of
       # times.
       #
@@ -36,6 +42,7 @@ module RSpec
         raise_already_invoked_error_if_necessary(__method__)
         set_expected_received_count :at_least, n
 
+        # fixme: not necessarily receive
         if n == 0
           raise "at_least(0) has been removed, use allow(...).to receive(:message) instead"
         end
@@ -116,10 +123,15 @@ module RSpec
 
       # TODO: docs
 
+      # fixme: are all those `receive` specific?
+      # what is actually needed for general usage?
+      # public: exactly at_least at_most once twice thrice never times
+      # internal: max_times? expected actual
       def matches_count?
         matches_exact_count? || matches_at_least_count? || matches_at_most_count?
       end
 
+      # fixme: extract the logic behind the consumers of this method here
       def expectation_count_type
         return :at_least if @at_least
         return :at_most if @at_most

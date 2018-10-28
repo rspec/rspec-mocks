@@ -404,6 +404,7 @@ module RSpec
         def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
+          # fixme: does this belong here?
           if negative? || (allowed_to_fail && exactly_or_at_most? && (actual_received_count == expected_received_count))
             # args are the args we actually received, @argument_list_matcher is the
             # list of args we were expecting
