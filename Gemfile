@@ -47,7 +47,12 @@ if RUBY_VERSION < '2.0.0' || RUBY_ENGINE == 'java'
 end
 
 platforms :jruby do
-  gem "jruby-openssl"
+  if RUBY_VERSION < '1.9.0'
+    # Pin jruby-openssl on older Rubies
+    gem "jruby-openssl", "< 0.10.0"
+  else
+    gem "jruby-openssl"
+  end
 end
 
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')
