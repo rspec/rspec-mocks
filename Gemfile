@@ -48,8 +48,10 @@ end
 
 platforms :jruby do
   if RUBY_VERSION < '1.9.0'
-    # Pin jruby-openssl on older Rubies
+    # Pin jruby-openssl on older J Ruby
     gem "jruby-openssl", "< 0.10.0"
+    # Pin child-process on older J Ruby
+    gem "childprocess", "< 1.0.0"
   else
     gem "jruby-openssl"
   end
