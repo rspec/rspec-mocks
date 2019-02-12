@@ -9,6 +9,7 @@ module RSpec
                      type=:expectation, opts={}, &implementation_block)
         @actual_received_count = 0
         @actual_received_count_write_mutex = Support::Mutex.new
+        # fixme: this is specifically confusing, could this be two separate strategies?
         @expected_received_count = type == :expectation ? 1 : :any
 
         # fixme: seems odd. can be a strategy?

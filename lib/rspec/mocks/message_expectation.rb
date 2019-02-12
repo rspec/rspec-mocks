@@ -77,6 +77,9 @@ module RSpec
         end
 
         values.unshift(first_value)
+        # FIXME: this is implicit
+        # raise @expected_received_count.to_s if @expected_received_count != :any && @expected_received_count > 1 && @expected_received_count < values.size
+
         # FIXME: extract
         @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
         self.terminal_implementation_action = AndReturnImplementation.new(values)
