@@ -327,10 +327,8 @@ expect(double).to receive(:msg).and_return(value)
 expect(double).to receive(:msg).exactly(3).times.and_return(value1, value2, value3)
   # returns value1 the first time, value2 the second, etc
 expect(double).to receive(:msg).and_raise(error)
-  # error can be an instantiated object or a class
+  # `error` can be an instantiated object (e.g. `StandardError.new(some_arg)`) or a class (e.g. `StandardError`)
   # if it is a class, it must be instantiable with no args
-expect(double).to receive(:msg).and_raise(StandardError.new(some_arg))
-  # instantiated error object for class which requires args
 expect(double).to receive(:msg).and_throw(:msg)
 expect(double).to receive(:msg).and_yield(values, to, yield)
 expect(double).to receive(:msg).and_yield(values, to, yield).and_yield(some, other, values, this, time)
