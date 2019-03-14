@@ -1,7 +1,7 @@
 Feature: Spies
 
   [Message expectations](./expecting-messages) put an example's expectation at the start, before you've invoked the
-  code-under-test. Many developers prefer using an act-arrange-assert (or given-when-then)
+  code-under-test. Many developers prefer using an arrange-act-assert (or given-when-then)
   pattern for structuring tests. Spies are an alternate type of test double that support this
   pattern by allowing you to expect that a message has been received after the fact, using
   `have_received`.
