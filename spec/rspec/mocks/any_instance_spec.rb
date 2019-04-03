@@ -905,6 +905,22 @@ module RSpec
           end
 
           context "the 'exactly(n)' constraint" do
+            describe "time alias" do
+              it "passes for 1 invocation" do
+                expect_any_instance_of(klass).to receive(:foo).exactly(1).time
+                instance = klass.new
+                instance.foo
+              end
+
+              it "fails for 2 invocations" do
+                expect_any_instance_of(klass).to receive(:foo).exactly(1).time
+                expect_fast_failure_from(klass.new) do |instance|
+                  2.times { instance.foo }
+                  verify instance
+                end
+              end
+            end
+
             it "passes for n invocations where n = 3" do
               expect_any_instance_of(klass).to receive(:foo).exactly(3).times
               instance = klass.new

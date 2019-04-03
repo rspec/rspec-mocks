@@ -285,12 +285,15 @@ expect(double).to receive(:msg).with(hash_excluding(:a => 5)) # first arg is a h
 ```ruby
 expect(double).to receive(:msg).once
 expect(double).to receive(:msg).twice
+expect(double).to receive(:msg).exactly(n).time
 expect(double).to receive(:msg).exactly(n).times
 expect(double).to receive(:msg).at_least(:once)
 expect(double).to receive(:msg).at_least(:twice)
+expect(double).to receive(:msg).at_least(n).time
 expect(double).to receive(:msg).at_least(n).times
 expect(double).to receive(:msg).at_most(:once)
 expect(double).to receive(:msg).at_most(:twice)
+expect(double).to receive(:msg).at_most(n).time
 expect(double).to receive(:msg).at_most(n).times
 ```
 

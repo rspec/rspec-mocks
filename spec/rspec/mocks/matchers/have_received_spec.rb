@@ -286,7 +286,7 @@ module RSpec
 
             it 'fails when the message was received more times than expected' do
               _expect {
-                expect(the_dbl).to have_received(:expected_method).exactly(1).times
+                expect(the_dbl).to have_received(:expected_method).exactly(1).time
               }.to raise_error(/expected: 1 time.*received: 3 times/m)
               _expect {
                 expect(the_dbl).to have_received(:expected_method).exactly(2).times
@@ -463,7 +463,7 @@ module RSpec
             the_dbl.one
             the_dbl.two
 
-            expect(the_dbl).to have_received(:one).at_least(1).times.ordered
+            expect(the_dbl).to have_received(:one).at_least(1).time.ordered
             expect(the_dbl).to have_received(:two).once.ordered
           end
 
@@ -495,7 +495,7 @@ module RSpec
             the_dbl.one
 
             _expect {
-              expect(the_dbl).to have_received(:one).at_least(1).times.ordered
+              expect(the_dbl).to have_received(:one).at_least(1).time.ordered
               expect(the_dbl).to have_received(:two).once.ordered
             }.to raise_error(/received :two out of order/m)
           end

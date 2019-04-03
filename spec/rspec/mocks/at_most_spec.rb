@@ -5,6 +5,12 @@ module RSpec
         @double = double
       end
 
+      it "passes when at_most(n) is called exactly 1 time" do
+        expect(@double).to receive(:do_something).at_most(1).time
+        @double.do_something
+        verify @double
+      end
+
       it "passes when at_most(n) is called exactly n times" do
         expect(@double).to receive(:do_something).at_most(2).times
         @double.do_something
@@ -78,6 +84,15 @@ module RSpec
         @double.do_something
 
         expect_fast_failure_from(@double, /expected: at most 2 times.*received: 3 times/m) do
+          @double.do_something
+        end
+      end
+
+      it "fails fast when at_most(n) times method is called n plus 1 time" do
+        expect(@double).to receive(:do_something).at_most(1).time
+        @double.do_something
+
+        expect_fast_failure_from(@double, /expected: at most 1 time.*received: 2 times/m) do
           @double.do_something
         end
       end

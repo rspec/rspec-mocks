@@ -41,6 +41,7 @@ module RSpec
           record :thrice
           record :exactly
           record :times
+          record :time
           record :never
           record :at_least
           record :at_most

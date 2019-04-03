@@ -54,7 +54,7 @@ module RSpec
 
         it 'works when passing a block to `times`' do
           verify_combined_implementation do |dbl|
-            expect(dbl).to receive(:foo).exactly(1).times { @block_called = true }
+            expect(dbl).to receive(:foo).exactly(1).time { @block_called = true }
           end
         end
 

@@ -5,12 +5,15 @@ Feature: Receive Counts
 
     * `expect(...).to receive(...).once`
     * `expect(...).to receive(...).twice`
+    * `expect(...).to receive(...).exactly(n).time`
     * `expect(...).to receive(...).exactly(n).times`
     * `expect(...).to receive(...).at_least(:once)`
     * `expect(...).to receive(...).at_least(:twice)`
+    * `expect(...).to receive(...).at_least(n).time`
     * `expect(...).to receive(...).at_least(n).times`
     * `expect(...).to receive(...).at_most(:once)`
     * `expect(...).to receive(...).at_most(:twice)`
+    * `expect(...).to receive(...).at_most(n).time`
     * `expect(...).to receive(...).at_most(n).times`
 
   If you don't specify an expected receive count, it defaults to `once`.
@@ -49,6 +52,11 @@ Feature: Receive Counts
           account.open
         end
 
+        example "exactly(n).time" do
+          expect(logger).to receive(:account_opened).exactly(1).time
+          account.open
+        end
+
         example "exactly(n).times" do
           expect(logger).to receive(:account_opened).exactly(3).times
           account.open
@@ -69,6 +77,11 @@ Feature: Receive Counts
           account.open
         end
 
+        example "at_least(n).time" do
+          expect(logger).to receive(:account_opened).at_least(1).time
+          account.open
+        end
+
         example "at_least(n).times" do
           expect(logger).to receive(:account_opened).at_least(3).times
           account.open
@@ -83,6 +96,11 @@ Feature: Receive Counts
 
         example "at_most(:twice)" do
           expect(logger).to receive(:account_opened).at_most(:twice)
+          account.open
+        end
+
+        example "at_most(n).time" do
+          expect(logger).to receive(:account_opened).at_most(1).time
           account.open
         end
 
