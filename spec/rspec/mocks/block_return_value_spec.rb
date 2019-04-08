@@ -70,7 +70,7 @@ RSpec.describe "a double declaration with a block handed to:" do
   describe "times" do
     it "returns the value of executing the block" do
       obj = Object.new
-      allow(obj).to receive(:foo).at_least(1).times { 'bar' }
+      allow(obj).to receive(:foo).at_least(1).time { 'bar' }
       expect(obj.foo('baz')).to eq('bar')
     end
   end

@@ -238,6 +238,7 @@ module RSpec
         self.inner_implementation_action = block
         self
       end
+      alias time times
 
       # Expect a message not to be received at all.
       #
