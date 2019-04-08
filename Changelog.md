@@ -5,7 +5,7 @@ Enhancements:
 
 * Improve thread safety of message expectations by using Mutex to prevent
   deadlocking errors. (Ry Biesemeyer, #1236)
-* Add the ability to use `time` as `times` alias. For example:
+* Add the ability to use `time` as an alias for `times`. For example:
   `expect(Class).to receive(:method).exactly(1).time`.
   (Pistos, Benoit Tigeot, #1271)
 
