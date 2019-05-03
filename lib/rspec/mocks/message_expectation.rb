@@ -390,7 +390,7 @@ module RSpec
           @expectation_type = type
           @ordered = false
           @at_least = @at_most = @exactly = nil
-          @raised = false
+          @failed = false
 
           # Initialized to nil so that we don't allocate an array for every
           # mock or stub. See also comment in `and_yield`.
@@ -425,7 +425,7 @@ module RSpec
         end
 
         def invoke(parent_stub, *args, &block)
-          if @raised
+          if @failed
             invoke_incrementing_actual_calls_by(0, false, parent_stub, *args, &block)
           else
             invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
@@ -561,7 +561,7 @@ module RSpec
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
           if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
-            @raised = true
+            @failed = true
             # args are the args we actually received, @argument_list_matcher is the
             # list of args we were expecting
             @error_generator.raise_expectation_error(

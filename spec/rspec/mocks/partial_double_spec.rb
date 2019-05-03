@@ -160,22 +160,17 @@ module RSpec
         end
 
         object = klass.new('foo')
-
         expect(object).to receive(:name).once.and_return('bar')
-
         object.name
 
-        expect do
+        expect {
           object.name
-        end.to raise_error(
-          RSpec::Mocks::MockExpectationError,
+        }.to fail_with(
           %|(<Inspector(bar)>).name(no args)\n    expected: 1 time with any arguments\n    received: 2 times|
         )
-
-        expect do
+        expect {
           verify object
-        end.to raise_error(
-          RSpec::Mocks::MockExpectationError,
+        }.to fail_with(
           %|(<Inspector(bar)>).name(*(any args))\n    expected: 1 time with any arguments\n    received: 2 times with any arguments|
         )
       end
