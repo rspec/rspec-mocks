@@ -3,7 +3,8 @@
 
 Bug Fixes:
 
-* Do not change the visibility of stubbed private class methods. (Kevin Boschert)
+* Ensure stubbing methods does not change their visibility.
+  (Kevin Boschert, #1277)
 
 ### 3.8.0 / 2018-08-04
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.7.0...v3.8.0)
