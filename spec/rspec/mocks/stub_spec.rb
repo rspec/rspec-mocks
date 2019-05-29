@@ -19,6 +19,7 @@ module RSpec
             existing_private_instance_method
           end
 
+        private
           def existing_private_instance_method
             :original_value
           end
@@ -82,6 +83,16 @@ module RSpec
       it "is cleared when stubbed object when `dup`ed" do
         allow(@stub).to receive(:foobar).and_return(1)
         expect { @stub.dup.foobar }.to raise_error NoMethodError, /foobar/
+      end
+
+      it "remains private when it stubs a private instance method" do
+        allow(@instance).to receive(:existing_private_instance_method).and_return(1)
+        expect { @instance.existing_private_instance_method }.to raise_error NoMethodError, /private method `existing_private_instance_method/
+      end
+
+      it "remains private when it stubs a private class method" do
+        allow(@class).to receive(:existing_private_class_method).and_return(1)
+        expect { @class.existing_private_class_method }.to raise_error NoMethodError, /private method `existing_private_class_method/
       end
 
       context "using `with`" do

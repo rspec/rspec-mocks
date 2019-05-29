@@ -59,7 +59,7 @@ module RSpec
         return if @method_is_proxied
 
         save_original_implementation_callable!
-        definition_target.class_exec(self, method_name, visibility) do |method_double, method_name, visibility|
+        definition_target.class_exec(self, method_name, @original_visibility || visibility) do |method_double, method_name, visibility|
           define_method(method_name) do |*args, &block|
             method_double.proxy_method_invoked(self, *args, &block)
           end
