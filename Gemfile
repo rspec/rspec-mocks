@@ -34,6 +34,10 @@ if RUBY_VERSION < '2.2.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|min
   gem "childprocess", "< 1.0.0"
 end
 
+if RUBY_VERSION < '1.9.2'
+  gem 'contracts', '~> 0.15.0' # is a dependency of aruba
+end
+
 ### deps for rdoc.info
 group :documentation do
   gem 'redcarpet',     '2.1.1' unless RUBY_PLATFORM == 'java'
