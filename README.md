@@ -1,3 +1,10 @@
+> It’s worth noting that you can’t combine the at_least and at_most constraints.
+-- Effective Testing with RSpec 3 book
+WHY?
+
+at_least(2).at_most(5).times is pretty valid
+at_least(5).at_most(4).times is not, but that can be resolved in the module being extracted
+
 # RSpec Mocks [![Build Status](https://secure.travis-ci.org/rspec/rspec-mocks.svg?branch=master)](http://travis-ci.org/rspec/rspec-mocks) [![Code Climate](https://codeclimate.com/github/rspec/rspec-mocks.svg)](https://codeclimate.com/github/rspec/rspec-mocks)
 rspec-mocks is a test-double framework for rspec with support for method stubs,
 fakes, and message expectations on generated test-doubles and real objects
