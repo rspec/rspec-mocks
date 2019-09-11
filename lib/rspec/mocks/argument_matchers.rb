@@ -241,6 +241,8 @@ module RSpec
               RSpec::Support::FuzzyMatcher.values_match?(expected_element, actual_element)
             end
           end
+        rescue NoMethodError
+          false
         end
 
         def description

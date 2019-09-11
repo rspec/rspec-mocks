@@ -21,11 +21,11 @@ module RSpec
             expect(array_including(1, 2, 3)).to be === [1, 2, 3]
           end
 
-          it "matches the same array,  specified without square brackets" do
+          it "matches the same array, specified without square brackets" do
             expect(array_including(1, 2, 3)).to be === [1, 2, 3]
           end
 
-          it "matches the same array,  which includes nested arrays" do
+          it "matches the same array, which includes nested arrays" do
             expect(array_including([1, 2], 3, 4)).to be === [[1, 2], 3, 4]
           end
 
@@ -42,6 +42,13 @@ module RSpec
             dbl = double
             expect(dbl).to receive(:a_message).with(3, array_including(instance_of(klass)))
             dbl.a_message(3, [1, klass.new, 4])
+          end
+
+          # regression check
+          it "is composable when nested" do
+            expect(array_including(1, array_including(2, 3), 4)).to be === [1, [2, 3], 4]
+            expect([[1, 2], 3, 4]).to match array_including(array_including(1, 2), 3, 4)
+            expect([1,[1,2]]).to match array_including(1, array_including(1,2))
           end
         end
 
