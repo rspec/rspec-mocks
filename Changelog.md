@@ -1,3 +1,9 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.1...master)
+
+* Allow `array_including` argument matchers to be nested.
+  (Emmanuel Delmas, #1291)
+
 ### 3.8.1 / 2019-06-13
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.0...v3.8.1)
 
