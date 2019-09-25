@@ -38,6 +38,11 @@ if RUBY_VERSION < '1.9.2'
   gem 'contracts', '~> 0.15.0' # is a dependency of aruba
 end
 
+# Version 5.12 of minitest requires Ruby 2.4
+if RUBY_VERSION < '2.4.0'
+  gem 'minitest', '< 5.12.0'
+end
+
 ### deps for rdoc.info
 group :documentation do
   gem 'redcarpet',     '2.1.1' unless RUBY_PLATFORM == 'java'
