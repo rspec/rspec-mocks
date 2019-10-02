@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.1...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.2...master)
 
 Enhancements:
 
@@ -9,7 +9,8 @@ Enhancements:
   `expect(Class).to receive(:method).exactly(1).time`.
   (Pistos, Benoit Tigeot, #1271)
 
-Bug Fixes:
+### 3.8.2 / 2019-10-02
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.1...v3.8.2)
 
 * Allow `array_including` argument matchers to be nested.
   (Emmanuel Delmas, #1291)
