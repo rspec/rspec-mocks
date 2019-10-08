@@ -1,5 +1,5 @@
-### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.2...master)
+### 3.9.0 / 2019-10-07
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.2...v3.9.0)
 
 Enhancements:
 
