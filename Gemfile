@@ -32,6 +32,8 @@ end
 
 if RUBY_VERSION < '2.2.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
   gem "childprocess", "< 1.0.0"
+elsif RUBY_VERSION < '2.3.0'
+  gem "childprocess", "< 2.0.0"
 end
 
 if RUBY_VERSION < '1.9.2'
