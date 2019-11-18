@@ -4,6 +4,9 @@ module RSpec
       # @private
       class HaveReceived
         include Matcher
+        if defined? RSpec::Matchers::Composable
+          include RSpec::Matchers::Composable
+        end
 
         COUNT_CONSTRAINTS = %w[exactly at_least at_most times time once twice thrice]
         ARGS_CONSTRAINTS = %w[with]

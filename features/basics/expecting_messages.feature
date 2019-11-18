@@ -4,6 +4,8 @@ Feature: Expecting messages
   message expectations trigger failures when the example completes. You can also use
   `expect(...).not_to receive(...)` to set a negative message expectation.
 
+  Note: Composing expectations as shown here will only work if you are using rspec-expectations.
+
   Scenario: Failing positive message expectation
     Given a file named "unfulfilled_message_expectation_spec.rb" with:
       """ruby
@@ -73,3 +75,81 @@ Feature: Expecting messages
       """
      When I run `rspec negative_message_expectation_spec.rb`
      Then the examples should all pass
+
+  Scenario: Composing expectations with `.and`
+    Given a file named "and_expectations_spec.rb" with:
+      """ruby
+      RSpec.describe "Composed expectations with `.and`" do
+        let(:dbl) { double("Some Collaborator") }
+
+        before do
+          allow(dbl).to receive_messages(foo: nil, bar: nil)
+          expect(dbl).to receive(:foo)
+                     .and receive(:bar)
+        end
+
+        it "passes if both messages received" do
+          dbl.foo
+          dbl.bar
+        end
+
+        it "fails if only first message received" do
+          dbl.foo
+        end
+
+        it "fails if only second message received" do
+          dbl.bar
+        end
+      end
+      """
+    When I run `rspec and_expectations_spec.rb`
+    Then it should fail with the following output:
+      | 3 examples, 2 failures                                                                              |
+      |                                                                                                     |
+      |  1) Composed expectations with `.and` fails if only first message received                          |
+      |     Failure/Error:                                                                                  |
+      |       expect(dbl).to receive(:foo)                                                                  |
+      |                  .and receive(:bar)                                                                 |
+      |                                                                                                     |
+      |       (Double "Some Collaborator").bar(*(any args))                                                 |
+      |           expected: 1 time with any arguments                                                       |
+      |           received: 0 times with any arguments                                                      |
+      |                                                                                                     |
+      |  2) Composed expectations with `.and` fails if only second message received                         |
+      |     Failure/Error:                                                                                  |
+      |       expect(dbl).to receive(:foo)                                                                  |
+      |                  .and receive(:bar)                                                                 |
+      |                                                                                                     |
+      |       (Double "Some Collaborator").foo(*(any args))                                                 |
+      |           expected: 1 time with any arguments                                                       |
+      |           received: 0 times with any arguments                                                      |
+      |                                                                                                     |
+
+  Scenario: Composing expectations with `.or`
+    Given a file named "or_expectations_spec.rb" with:
+      """ruby
+      RSpec.describe "Composed expectations with `.or`" do
+        let(:dbl) { double("Some Collaborator") }
+
+        before do
+          allow(dbl).to receive_messages(foo: nil, bar: nil)
+          expect(dbl).to receive(:foo)
+                     .or receive(:bar)
+        end
+
+        it "passes if both messages received" do
+          dbl.foo
+          dbl.bar
+        end
+
+        it "passes if only first message received" do
+          dbl.foo
+        end
+
+        it "passes if only second message received" do
+          dbl.bar
+        end
+      end
+      """
+    When I run `rspec or_expectations_spec.rb`
+    Then the examples should all pass
