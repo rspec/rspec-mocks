@@ -101,6 +101,14 @@ module RSpec
 
     # @private
     class AnyInstanceAllowanceTarget < TargetBase
+      def initialize(klass)
+        super
+        return unless RSpec::Mocks.configuration.verify_partial_doubles?
+        RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|
+          block.call(ObjectReference.for(klass))
+        end
+      end
+
       def expression
         :allow_any_instance_of
       end
@@ -112,6 +120,14 @@ module RSpec
 
     # @private
     class AnyInstanceExpectationTarget < TargetBase
+      def initialize(klass)
+        super
+        return unless RSpec::Mocks.configuration.verify_partial_doubles?
+        RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|
+          block.call(ObjectReference.for(klass))
+        end
+      end
+
       def expression
         :expect_any_instance_of
       end
