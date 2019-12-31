@@ -21,6 +21,11 @@ module RSpec
           @backed_up_method_owner = {}
           @klass = klass
           @expectation_set = false
+
+          return unless RSpec::Mocks.configuration.verify_partial_doubles?
+          RSpec::Mocks.configuration.verifying_double_callbacks.each do |block|
+            block.call(ObjectReference.for(klass))
+          end
         end
 
         # Initializes the recording a stub to be played back against any
