@@ -7,9 +7,7 @@ module RSpec
 
       class ClassThatDynamicallyDefinesMethods
         def self.define_attribute_methods!
-          unless method_defined?(:some_method_defined_dynamically)
-            define_method(:some_method_defined_dynamically) { true }
-          end
+          define_method(:some_method_defined_dynamically) { true }
         end
       end
 
@@ -65,28 +63,30 @@ module RSpec
 
         describe 'any_instance' do
           let(:test_class) { Class.new(ClassThatDynamicallyDefinesMethods) }
+          let(:not_implemented_error) { "#{test_class} does not implement #some_invalid_method" }
+
           before(:each) do
             RSpec.configuration.mock_with(:rspec) do |config|
               config.verify_partial_doubles = true
               config.when_declaring_verifying_double do |reference|
-                reference.target.define_attribute_methods! if reference.target.is_a?(Class)
+                reference.target.define_attribute_methods! if reference.target == test_class
               end
             end
           end
 
           it 'calls the callback for expect_any_instance_of' do
             expect_any_instance_of(test_class).to receive(:some_method_defined_dynamically)
-            expect { expect_any_instance_of(test_class).to receive(:some_invalid_method) }.
-              to raise_error(RSpec::Mocks::MockExpectationError,
-                             "#{test_class.to_s} does not implement #some_invalid_method")
+            expect {
+              expect_any_instance_of(test_class).to receive(:some_invalid_method)
+            }.to raise_error(RSpec::Mocks::MockExpectationError, not_implemented_error)
             expect(test_class.new.some_method_defined_dynamically).to eq(nil)
           end
 
           it 'calls the callback for allow_any_instance_of' do
             allow_any_instance_of(test_class).to receive(:some_method_defined_dynamically)
-            expect { allow_any_instance_of(test_class).to receive(:some_invalid_method) }.
-              to raise_error(RSpec::Mocks::MockExpectationError,
-                             "#{test_class.to_s} does not implement #some_invalid_method")
+            expect {
+              allow_any_instance_of(test_class).to receive(:some_invalid_method)
+            }.to raise_error(RSpec::Mocks::MockExpectationError, not_implemented_error)
             expect(test_class.new.some_method_defined_dynamically).to eq(nil)
           end
 
@@ -98,7 +98,6 @@ module RSpec
             expect(test_class.method_defined?(:some_method_defined_dynamically)).to be_falsey
           end
         end
-
       end
 
       describe 'class doubles' do
