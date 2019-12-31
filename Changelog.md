@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.0...3-9-maintenance)
+
+Bug Fixes:
+
+* Trigger `RSpec::Mocks.configuration.verifying_double_callbacks` when using
+  `allow_any_instance_of` or `expect_any_instance_of` (Daniel Orner, #1309)
+
 ### 3.9.0 / 2019-10-07
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.8.2...v3.9.0)
 
