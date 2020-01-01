@@ -12,7 +12,7 @@ branch = File.read(File.expand_path("../maintenance-branch", __FILE__)).chomp
   end
 end
 
-gem 'yard', '~> 0.9.12', :require => false
+gem 'yard', '~> 0.9.22', :require => false
 
 # No need to run rubocop on earlier versions
 if RUBY_VERSION >= '2.4' && RUBY_ENGINE == 'ruby'
