@@ -12,7 +12,7 @@ branch = File.read(File.expand_path("../maintenance-branch", __FILE__)).chomp
   end
 end
 
-gem 'yard', '~> 0.9.12', :require => false
+gem 'yard', '~> 0.9.24', :require => false
 
 # No need to run rubocop on earlier versions
 if RUBY_VERSION >= '2.4' && RUBY_ENGINE == 'ruby'
@@ -45,8 +45,8 @@ end
 
 ### deps for rdoc.info
 group :documentation do
-  gem 'redcarpet',     '2.1.1' unless RUBY_PLATFORM == 'java'
-  gem 'github-markup', '0.7.2'
+  gem 'redcarpet', :platform => :mri
+  gem 'github-markup', :platform => :mri
 end
 
 gem 'simplecov', '~> 0.8'
