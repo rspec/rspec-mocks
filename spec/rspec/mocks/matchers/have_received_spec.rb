@@ -1,3 +1,5 @@
+require 'rspec/mocks/matchers/shared_examples'
+
 module RSpec
   module Mocks
     # This shared example group is highly unusual as it is used to test how
@@ -669,6 +671,15 @@ module RSpec
         def fail_including(*snippets)
           raise_error(RSpec::Expectations::ExpectationNotMetError, a_string_including(*snippets))
         end
+      end
+
+      it_behaves_like "supports compound expectations" do
+        def verify
+          set_expectation
+        end
+
+        let(:left_expectation) { have_received(:foo) }
+        let(:right_expectation) { have_received(:bar) }
       end
     end
 

@@ -1,3 +1,5 @@
+require 'rspec/mocks/matchers/shared_examples'
+
 module RSpec
   module Mocks
     RSpec.describe Matchers::Receive do
@@ -570,6 +572,19 @@ module RSpec
         after { RSpec::Mocks.configuration.syntax = :expect }
       end
 
+      shared_examples 'supports compound expectations with rspec-expectations' do
+        it_behaves_like 'supports compound expectations' do
+          def verify
+            verify_all
+          end
+
+          let(:left_expectation) { receive(:foo) }
+          let(:right_expectation) { receive(:bar) }
+
+          before { set_expectation }
+        end
+      end
+
       context "when rspec-expectations is included in the test framework first" do
         before do
           # the examples here assume `expect` is define in RSpec::Matchers...
@@ -590,6 +605,8 @@ module RSpec
             expect(3).to eq(3)
           end
         end
+
+        include_examples "supports compound expectations with rspec-expectations"
       end
 
       context "when rspec-expectations is included in the test framework last" do
@@ -612,6 +629,8 @@ module RSpec
             expect(3).to eq(3)
           end
         end
+
+        include_examples "supports compound expectations with rspec-expectations"
       end
     end
   end
