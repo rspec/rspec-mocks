@@ -366,7 +366,7 @@ module RSpec
         attr_reader :message
         attr_reader :orig_object
         attr_writer :expected_received_count, :expected_from, :argument_list_matcher
-        protected :expected_received_count=, :expected_from=, :error_generator, :error_generator=, :implementation=
+        protected :expected_received_count=, :expected_from=, :error_generator=, :implementation=
 
         # @private
         attr_reader :type
@@ -376,7 +376,7 @@ module RSpec
                        type=:expectation, opts={}, &implementation_block)
           @type = type
           @error_generator = error_generator
-          @error_generator.opts = opts
+          @error_generator.opts = error_generator.opts.merge(opts)
           @expected_from = expected_from
           @method_double = method_double
           @orig_object = @method_double.object
