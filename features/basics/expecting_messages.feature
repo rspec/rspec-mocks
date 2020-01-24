@@ -73,3 +73,40 @@ Feature: Expecting messages
       """
      When I run `rspec negative_message_expectation_spec.rb`
      Then the examples should all pass
+
+  Scenario: Failing positive message expectation with a custom failure message
+    Given a file named "example_spec.rb" with:
+    """ruby
+    RSpec.describe "An unfulfilled positive message expectation" do
+      it "triggers a failure" do
+        dbl = double
+        expect(dbl).to receive(:foo), "dbl never call :foo"
+      end
+    end
+    """
+    When I run `rspec example_spec.rb --format documentation`
+    Then the output should contain:
+    """
+      1) An unfulfilled positive message expectation triggers a failure
+         Failure/Error: expect(dbl).to receive(:foo), "dbl never call :foo"
+           dbl never call :foo
+    """
+
+  Scenario: Failing negative message expectation with a custom failure message
+    Given a file named "example_spec.rb" with:
+    """ruby
+    RSpec.describe "A negative message expectation" do
+      it "fails when the message is received" do
+        dbl = double
+        expect(dbl).not_to receive(:foo), "dbl called :foo but is not supposed to"
+        dbl.foo
+      end
+    end
+    """
+    When I run `rspec example_spec.rb --format documentation`
+    Then the output should contain:
+    """
+      1) A negative message expectation fails when the message is received
+         Failure/Error: dbl.foo
+           dbl called :foo but is not supposed to
+    """
