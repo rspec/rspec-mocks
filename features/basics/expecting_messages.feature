@@ -80,7 +80,7 @@ Feature: Expecting messages
     RSpec.describe "An unfulfilled positive message expectation" do
       it "triggers a failure" do
         dbl = double
-        expect(dbl).to receive(:foo), "dbl never call :foo"
+        expect(dbl).to receive(:foo), "dbl never calls :foo"
       end
     end
     """
@@ -88,8 +88,8 @@ Feature: Expecting messages
     Then the output should contain:
     """
       1) An unfulfilled positive message expectation triggers a failure
-         Failure/Error: expect(dbl).to receive(:foo), "dbl never call :foo"
-           dbl never call :foo
+         Failure/Error: expect(dbl).to receive(:foo), "dbl never calls :foo"
+           dbl never calls :foo
     """
 
   Scenario: Failing negative message expectation with a custom failure message
