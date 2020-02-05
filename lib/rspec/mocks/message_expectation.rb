@@ -97,8 +97,8 @@ module RSpec
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
-        wrap_original(__method__) do |original, *args, &block|
-          original.call(*args, &block)
+        wrap_original(__method__) do |original, *args, **opts, &block|
+          original.call(*args, **opts, &block)
         end
       end
 
@@ -423,8 +423,8 @@ module RSpec
           invoke_incrementing_actual_calls_by(1, false, parent_stub, *args, &block)
         end
 
-        def invoke(parent_stub, *args, &block)
-          invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
+        def invoke(parent_stub, *args, **opts, &block)
+          invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, **opts, &block)
         end
 
         def invoke_without_incrementing_received_count(parent_stub, *args, &block)
@@ -552,7 +552,7 @@ module RSpec
           @exception_source_id ||= "#{self.class.name} #{__id__}"
         end
 
-        def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
+        def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, **opts, &block)
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
           if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
@@ -562,6 +562,7 @@ module RSpec
               @message, @expected_received_count,
               @argument_list_matcher,
               @actual_received_count + increment,
+              # TODO handle opts
               expectation_count_type, args, nil, exception_source_id
             )
           end
@@ -569,9 +570,9 @@ module RSpec
           @order_group.handle_order_constraint self
 
           if implementation.present?
-            implementation.call(*args, &block)
+            implementation.call(*args, **opts, &block)
           elsif parent_stub
-            parent_stub.invoke(nil, *args, &block)
+            parent_stub.invoke(nil, *args, **opts, &block)
           end
         ensure
           @actual_received_count_write_mutex.synchronize do
@@ -736,8 +737,8 @@ module RSpec
         true
       end
 
-      def call(*args, &block)
-        @block.call(@method, *args, &block)
+      def call(*args, **opts, &block)
+        @block.call(@method, *args, **opts, &block)
       end
 
     private

@@ -60,8 +60,8 @@ module RSpec
 
         save_original_implementation_callable!
         definition_target.class_exec(self, method_name, @original_visibility || visibility) do |method_double, method_name, visibility|
-          define_method(method_name) do |*args, &block|
-            method_double.proxy_method_invoked(self, *args, &block)
+          define_method(method_name) do |*args, **opts, &block|
+            method_double.proxy_method_invoked(self, *args, **opts, &block)
           end
           __send__(visibility, method_name)
         end
@@ -73,8 +73,8 @@ module RSpec
       # method to perform additional operations.
       #
       # @private
-      def proxy_method_invoked(_obj, *args, &block)
-        @proxy.message_received method_name, *args, &block
+      def proxy_method_invoked(_obj, *args, **opts, &block)
+        @proxy.message_received method_name, *args, **opts, &block
       end
 
       # @private

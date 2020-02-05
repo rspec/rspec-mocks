@@ -129,10 +129,10 @@ module RSpec
         end
 
         # @private
-        def notify_received_message(_object, message, args, _blk)
+        def notify_received_message(_object, message, args, opts, _blk)
           has_expectation = false
 
-          message_chains.each_unfulfilled_expectation_matching(message, *args) do |expectation|
+          message_chains.each_unfulfilled_expectation_matching(message, *args, **opts) do |expectation|
             has_expectation = true
             expectation.expectation_fulfilled!
           end
@@ -257,9 +257,9 @@ module RSpec
           @observed_methods << method_name
           backup_method!(method_name)
           recorder = self
-          @klass.__send__(:define_method, method_name) do |*args, &blk|
+          @klass.__send__(:define_method, method_name) do |*args, **opts, &blk|
             recorder.playback!(self, method_name)
-            __send__(method_name, *args, &blk)
+            __send__(method_name, *args, **opts, &blk)
           end
         end
 

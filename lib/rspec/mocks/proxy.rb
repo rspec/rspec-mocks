@@ -184,34 +184,37 @@ module RSpec
       end
 
       # @private
-      def message_received(message, *args, &block)
-        record_message_received message, *args, &block
+      def message_received(message, *args, **opts, &block)
+      Byebug.byebug
+        record_message_received message, *args, **opts, &block
 
-        expectation = find_matching_expectation(message, *args)
-        stub = find_matching_method_stub(message, *args)
+        expectation = find_matching_expectation(message, *args, **opts)
+        stub = find_matching_method_stub(message, *args, **opts)
 
         if (stub && expectation && expectation.called_max_times?) || (stub && !expectation)
           expectation.increase_actual_received_count! if expectation && expectation.actual_received_count_matters?
-          if (expectation = find_almost_matching_expectation(message, *args))
-            expectation.advise(*args) unless expectation.expected_messages_received?
+          if (expectation = find_almost_matching_expectation(message, *args, **opts))
+            expectation.advise(*args, **opts) unless expectation.expected_messages_received?
           end
-          stub.invoke(nil, *args, &block)
+          stub.invoke(nil, *args, **opts, &block)
         elsif expectation
           expectation.unadvise(messages_arg_list)
-          expectation.invoke(stub, *args, &block)
-        elsif (expectation = find_almost_matching_expectation(message, *args))
-          expectation.advise(*args) if null_object? unless expectation.expected_messages_received?
+          expectation.invoke(stub, *args, **opts, &block)
+        elsif (expectation = find_almost_matching_expectation(message, *args, **opts))
+          expectation.advise(*args, **opts) if null_object? unless expectation.expected_messages_received?
 
           if null_object? || !has_negative_expectation?(message)
+            # TODO handle opts
             expectation.raise_unexpected_message_args_error([args])
           end
-        elsif (stub = find_almost_matching_stub(message, *args))
-          stub.advise(*args)
+        elsif (stub = find_almost_matching_stub(message, *args, **opts))
+          stub.advise(*args, **opts)
+          # TODO handle opts
           raise_missing_default_stub_error(stub, [args])
         elsif Class === @object
-          @object.superclass.__send__(message, *args, &block)
+          @object.superclass.__send__(message, *args, **opts, &block)
         else
-          @object.__send__(:method_missing, message, *args, &block)
+          @object.__send__(:method_missing, message, *args, **opts, &block)
         end
       end
 
@@ -338,9 +341,9 @@ module RSpec
         super
       end
 
-      def message_received(message, *args, &block)
+      def message_received(message, *args, **opts, &block)
         RSpec::Mocks.space.any_instance_recorders_from_ancestry_of(object).each do |subscriber|
-          subscriber.notify_received_message(object, message, args, block)
+          subscriber.notify_received_message(object, message, args, opts, block)
         end
         super
       end
