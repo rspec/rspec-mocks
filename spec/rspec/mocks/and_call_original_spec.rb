@@ -12,6 +12,14 @@ RSpec.describe "and_call_original" do
           yield x, :additional_yielded_arg
         end
 
+        if RSpec::Support::RubyFeatures.kw_args_supported?
+          binding.eval(<<-CODE, __FILE__, __LINE__)
+          def meth_3(keyword_arg: nil)
+            keyword_arg
+          end
+          CODE
+        end
+
         def self.new_instance
           new
         end
@@ -57,6 +65,15 @@ RSpec.describe "and_call_original" do
       expect(instance).to receive(:meth_2).and_call_original
       value = instance.meth_2(:submitted_arg) { |a, b| [a, b] }
       expect(value).to eq([:submitted_arg, :additional_yielded_arg])
+    end
+
+    if RSpec::Support::RubyFeatures.kw_args_supported?
+      it 'works with keyword arguments' do
+        expect(instance).to receive(:meth_3).and_call_original
+        binding.eval(<<-CODE, __FILE__, __LINE__)
+        expect(instance.meth_3(keyword_arg: :original_arg)).to eq :original_arg
+        CODE
+      end
     end
 
     it 'errors when you pass through the wrong number of args' do

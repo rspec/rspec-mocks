@@ -98,7 +98,7 @@ module RSpec
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
         wrap_original(__method__) do |original, *args, &block|
-          original.call(*args, &block)
+          __call_original(original, *args, &block)
         end
       end
 
@@ -353,6 +353,25 @@ module RSpec
         "#<#{self.class} #{error_generator.intro}.#{message}#{args_description}>"
       end
       alias inspect to_s
+
+      private
+
+      if RSpec::Support::RubyFeatures.kw_args_supported?
+        def __call_original(original, *args, &block)
+          if RSpec::Support::MethodSignature.new(original).has_kw_args_in?(args)
+            binding.eval(<<-CODE, __FILE__, __LINE__)
+            kwargs = args.pop
+            original.call(*args, **kwargs, &block)
+            CODE
+          else
+            original.call(*args, &block)
+          end
+        end
+      else
+        def __call_original(original, *args, &block)
+          original.call(*args, &block)
+        end
+      end
 
       # @private
       # Contains the parts of `MessageExpectation` that aren't part of
