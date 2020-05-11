@@ -87,15 +87,19 @@ module RSpec
 
     # Call the passed block and verify mocks after it has executed. This allows
     # mock usage in arbitrary places, such as a `before(:all)` hook.
+    # Returns the result of the passed block.
     def self.with_temporary_scope
       setup
 
+      result = nil
       begin
-        yield
+        result = yield
         verify
       ensure
         teardown
       end
+
+      result
     end
 
     class << self
