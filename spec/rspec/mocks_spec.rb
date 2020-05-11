@@ -209,6 +209,10 @@ RSpec.describe RSpec::Mocks do
       }.to raise_error("boom") # rather than MockExpectationError
     end
 
+    it 'returns the result of the passed block' do
+      expect(RSpec::Mocks.with_temporary_scope { 5 }).to eq 5
+    end
+
     def capture_error
       yield
     rescue Exception => @error
