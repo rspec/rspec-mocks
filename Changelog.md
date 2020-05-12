@@ -5,6 +5,8 @@ Enhancements:
 * Add the ability to set a custom error generator in `MessageExpectation`.
   This will allow rspec-expectations to inject a custom failure message.
   (Benoit Tigeot and Nicolas Zermati, #1312)
+* Return the result of the block passed to `RSpec::Mocks.with_temporary_scope`
+  when block run. (@expeehaa, #1329)
 
 ### 3.9.1 / 2019-12-31
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.0...v3.9.1)
