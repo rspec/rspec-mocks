@@ -91,15 +91,13 @@ module RSpec
     def self.with_temporary_scope
       setup
 
-      result = nil
       begin
         result = yield
         verify
+        result
       ensure
         teardown
       end
-
-      result
     end
 
     class << self
