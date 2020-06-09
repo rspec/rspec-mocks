@@ -17,6 +17,11 @@ RSpec.describe "and_call_original" do
           def meth_3(keyword_arg: nil)
             keyword_arg
           end
+
+          def initialize(initialize_arg: nil)
+            @initialize_arg = initialize_arg
+          end
+          attr_reader :initialize_arg
           CODE
         end
 
@@ -72,6 +77,15 @@ RSpec.describe "and_call_original" do
         expect(instance).to receive(:meth_3).and_call_original
         binding.eval(<<-CODE, __FILE__, __LINE__)
         expect(instance.meth_3(keyword_arg: :original_arg)).to eq :original_arg
+        CODE
+      end
+
+      it 'works with keyword arguments for .initialize' do
+        expect(klass).to receive(:new).with(initialize_arg: :initialize_arg)
+          .and_call_original
+        binding.eval(<<-CODE, __FILE__, __LINE__)
+        instance = klass.new(initialize_arg: :initialize_arg)
+        expect(instance.initialize_arg).to eq :initialize_arg
         CODE
       end
     end
