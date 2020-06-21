@@ -1,4 +1,4 @@
-# This file was generated on 2019-12-26T17:20:33+00:00 from the rspec-dev repo.
+# This file was generated on 2020-06-21T22:22:12+01:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -6,7 +6,7 @@ source $SCRIPT_DIR/travis_functions.sh
 source $SCRIPT_DIR/predicate_functions.sh
 
 # If JRUBY_OPTS isn't set, use these.
-# see http://docs.travis-ci.com/user/ci-environment/
+# see https://docs.travis-ci.com/user/ci-environment/
 export JRUBY_OPTS=${JRUBY_OPTS:-"--server -Xcompile.invokedynamic=false"}
 SPECS_HAVE_RUN_FILE=specs.out
 MAINTENANCE_BRANCH=`cat maintenance-branch`
@@ -19,7 +19,13 @@ fi
 
 function clone_repo {
   if [ ! -d $1 ]; then # don't clone if the dir is already there
-    travis_retry eval "git clone https://github.com/rspec/$1 --depth 1 --branch $MAINTENANCE_BRANCH"
+    if [ -z "$2" ]; then
+      BRANCH_TO_CLONE="${MAINTENANCE_BRANCH?}";
+    else
+      BRANCH_TO_CLONE="$2";
+    fi;
+
+    travis_retry eval "git clone https://github.com/rspec/$1 --depth 1 --branch ${BRANCH_TO_CLONE?}"
   fi;
 }
 
@@ -187,7 +193,9 @@ function run_all_spec_suites {
   fold "rspec-core specs" run_spec_suite_for "rspec-core"
   fold "rspec-expectations specs" run_spec_suite_for "rspec-expectations"
   fold "rspec-mocks specs" run_spec_suite_for "rspec-mocks"
-  fold "rspec-rails specs" run_spec_suite_for "rspec-rails"
+  if rspec_rails_compatible; then
+    fold "rspec-rails specs" run_spec_suite_for "rspec-rails"
+  fi
 
   if rspec_support_compatible; then
     fold "rspec-support specs" run_spec_suite_for "rspec-support"
