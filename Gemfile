@@ -12,6 +12,20 @@ branch = File.read(File.expand_path("../maintenance-branch", __FILE__)).chomp
   end
 end
 
+if RUBY_VERSION < '1.9.3'
+  gem 'rake', '< 11.0.0' # rake 11 requires Ruby 1.9.3 or later
+elsif RUBY_VERSION < '2.0.0'
+  gem 'rake', '< 12.0.0' # rake 12 requires Ruby 2.0.0 or later
+else
+  gem 'rake', '> 12.3.2'
+end
+
+if ENV['DIFF_LCS_VERSION']
+  gem 'diff-lcs', ENV['DIFF_LCS_VERSION']
+else
+  gem 'diff-lcs', '~> 1.4', '>= 1.4.3'
+end
+
 gem 'yard', '~> 0.9.24', :require => false
 
 # No need to run rubocop on earlier versions
