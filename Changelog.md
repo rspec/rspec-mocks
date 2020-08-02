@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.1...master)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.1...main)
 
 Enhancements:
 * Add the ability to set a custom error generator in `MessageExpectation`.
