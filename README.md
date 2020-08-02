@@ -1,4 +1,4 @@
-# RSpec Mocks [![Build Status](https://secure.travis-ci.org/rspec/rspec-mocks.svg?branch=master)](http://travis-ci.org/rspec/rspec-mocks) [![Code Climate](https://codeclimate.com/github/rspec/rspec-mocks.svg)](https://codeclimate.com/github/rspec/rspec-mocks)
+# RSpec Mocks [![Build Status](https://secure.travis-ci.org/rspec/rspec-mocks.svg?branch=main)](http://travis-ci.org/rspec/rspec-mocks) [![Code Climate](https://codeclimate.com/github/rspec/rspec-mocks.svg)](https://codeclimate.com/github/rspec/rspec-mocks)
 rspec-mocks is a test-double framework for rspec with support for method stubs,
 fakes, and message expectations on generated test-doubles and real objects
 alike.
@@ -8,12 +8,12 @@ alike.
     gem install rspec       # for rspec-core, rspec-expectations, rspec-mocks
     gem install rspec-mocks # for rspec-mocks only
 
-Want to run against the `master` branch? You'll need to include the dependent
+Want to run against the `main` branch? You'll need to include the dependent
 RSpec repos as well. Add the following to your `Gemfile`:
 
 ```ruby
 %w[rspec-core rspec-expectations rspec-mocks rspec-support].each do |lib|
-  gem lib, :git => "https://github.com/rspec/#{lib}.git", :branch => 'master'
+  gem lib, :git => "https://github.com/rspec/#{lib}.git", :branch => 'main'
 end
 ```
 ## Contributing
@@ -53,7 +53,7 @@ book = instance_double("Book", :pages => 250)
 Verifying doubles have some clever tricks to enable you to both test in
 isolation without your dependencies loaded while still being able to validate
 them against real objects. More detail is available in [their
-documentation](https://github.com/rspec/rspec-mocks/blob/master/features/verifying_doubles).
+documentation](https://github.com/rspec/rspec-mocks/blob/main/features/verifying_doubles).
 
 Verifying doubles can also accept custom identifiers, just like double(), e.g.:
 
@@ -403,7 +403,7 @@ your code.
 ## Stubbing and Hiding Constants
 
 See the [mutating constants
-README](https://github.com/rspec/rspec-mocks/blob/master/features/mutating_constants/README.md)
+README](https://github.com/rspec/rspec-mocks/blob/main/features/mutating_constants/README.md)
 for info on this feature.
 
 ## Use `before(:example)`, not `before(:context)`
