@@ -67,6 +67,8 @@ gem 'simplecov', '~> 0.8'
 
 if RUBY_VERSION < '2.0.0' || RUBY_ENGINE == 'java'
   gem 'json', '< 2.0.0' # this is a dependency of simplecov
+else
+  gem 'json', '> 2.3.0'
 end
 
 platforms :jruby do
