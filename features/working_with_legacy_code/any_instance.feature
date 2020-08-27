@@ -83,8 +83,8 @@ Feature: Any Instance
       """ruby
       RSpec.describe "allow_any_instance_of" do
         it 'yields the receiver to the block implementation' do
-          allow_any_instance_of(String).to receive(:slice) do |value, start, length|
-            value[start, length]
+          allow_any_instance_of(String).to receive(:slice) do |instance, start, length|
+            instance[start, length]
           end
 
           expect('string'.slice(2, 3)).to eq('rin')
