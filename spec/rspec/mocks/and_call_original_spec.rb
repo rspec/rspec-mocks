@@ -8,8 +8,8 @@ RSpec.describe "and_call_original" do
           :original
         end
 
-        def meth_2(x)
-          yield x, :additional_yielded_arg
+        def meth_2(x, y:)
+          yield x, y, :additional_yielded_arg
         end
 
         def self.new_instance
@@ -53,10 +53,10 @@ RSpec.describe "and_call_original" do
       expect(instance.meth_1).to eq(:original)
     end
 
-    it 'passes args and blocks through to the original method' do
+    it 'passes args, kwargs and blocks through to the original method' do
       expect(instance).to receive(:meth_2).and_call_original
-      value = instance.meth_2(:submitted_arg) { |a, b| [a, b] }
-      expect(value).to eq([:submitted_arg, :additional_yielded_arg])
+      value = instance.meth_2(:arg, y: :kwarg) { |a, b, c| [a, b, c] }
+      expect(value).to eq([:arg, :kwarg, :additional_yielded_arg])
     end
 
     it 'errors when you pass through the wrong number of args' do
@@ -64,7 +64,7 @@ RSpec.describe "and_call_original" do
       expect(instance).to receive(:meth_2).twice.and_call_original
       expect { instance.meth_1 :a }.to raise_error ArgumentError
       expect { instance.meth_2 {} }.to raise_error ArgumentError
-      expect { instance.meth_2(:a, :b) {}  }.to raise_error ArgumentError
+      expect { instance.meth_2(:a, :b) {} }.to raise_error ArgumentError
     end
 
     it 'warns when you override an existing implementation' do
