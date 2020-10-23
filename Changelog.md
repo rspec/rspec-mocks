@@ -1,5 +1,5 @@
-### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.1...main)
+### 3.10.0 / 2020-10-30
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.1...v3.10.0)
 
 Enhancements:
 * Add the ability to set a custom error generator in `MessageExpectation`.
