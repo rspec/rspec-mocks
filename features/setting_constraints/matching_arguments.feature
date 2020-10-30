@@ -122,3 +122,28 @@ Feature: Matching arguments
       """
     When I run `rspec responding_differently_spec.rb`
     Then the examples should all pass
+
+  Scenario: Expecting a method invocatin with a block
+    Given a file named "expect_method_with_block.rb" with:
+    """ruby
+    RSpec.describe "Expecting a message with a block" do
+      let(:dbl) { double }
+      before { expect(dbl).to receive(:foo).with(a_block) }
+
+      it "passes when the method is invoked with a block" do
+        dbl.foo { |a| :block }
+      end
+
+      it "fails when the method is invoked without a block" do
+        dbl.foo
+      end
+    end
+    """
+  When I run `rspec expect_method_with_block.rb`
+  Then it should fail with the following output:
+    | 2 examples, 1 failure                                           |
+    |                                                                 |
+    | Failure/Error: dbl.foo                                          |
+    |   #<Double (anonymous)> received :foo with unexpected arguments |
+    |     expected: (a block)                                         |
+    |          got: (no args)                                         |
