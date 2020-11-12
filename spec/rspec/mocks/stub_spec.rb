@@ -133,7 +133,7 @@ module RSpec
         end
       end
 
-      context "stubbing with prepend", :if => Support::RubyFeatures.module_prepends_supported? do
+      context "stubbing with prepend" do
         module ToBePrepended
           def value
             "#{super}_prepended".to_sym
@@ -374,71 +374,69 @@ module RSpec
           expect(b.method_b).to eql("stubbed method_b")
         end
 
-        if Support::RubyFeatures.module_prepends_supported?
-          context "with a prepended module (ruby 2.0.0+)" do
-            module ToBePrepended
+        context "with a prepended module" do
+          module ToBePrepended
+            def existing_method
+              "#{super}_prepended".to_sym
+            end
+          end
+
+          before do
+            @prepended_class = Class.new do
+              prepend ToBePrepended
+
               def existing_method
-                "#{super}_prepended".to_sym
+                :original_value
+              end
+
+              def non_prepended_method
+                :not_prepended
+              end
+            end
+            @prepended_instance = @prepended_class.new
+          end
+
+          it "restores prepended instance methods" do
+            allow(@prepended_instance).to receive(:existing_method) { :stubbed }
+            expect(@prepended_instance.existing_method).to eq :stubbed
+
+            reset @prepended_instance
+            expect(@prepended_instance.existing_method).to eq :original_value_prepended
+          end
+
+          it "restores non-prepended instance methods" do
+            allow(@prepended_instance).to receive(:non_prepended_method) { :stubbed }
+            expect(@prepended_instance.non_prepended_method).to eq :stubbed
+
+            reset @prepended_instance
+            expect(@prepended_instance.non_prepended_method).to eq :not_prepended
+          end
+
+          it "restores prepended class methods" do
+            klass = Class.new do
+              class << self; prepend ToBePrepended; end
+              def self.existing_method
+                :original_value
               end
             end
 
-            before do
-              @prepended_class = Class.new do
-                prepend ToBePrepended
+            allow(klass).to receive(:existing_method) { :stubbed }
+            expect(klass.existing_method).to eq :stubbed
 
-                def existing_method
-                  :original_value
-                end
+            reset klass
+            expect(klass.existing_method).to eq :original_value_prepended
+          end
 
-                def non_prepended_method
-                  :not_prepended
-                end
-              end
-              @prepended_instance = @prepended_class.new
-            end
+          it "restores prepended object singleton methods" do
+            object = Object.new
+            def object.existing_method; :original_value; end
+            object.singleton_class.send(:prepend, ToBePrepended)
 
-            it "restores prepended instance methods" do
-              allow(@prepended_instance).to receive(:existing_method) { :stubbed }
-              expect(@prepended_instance.existing_method).to eq :stubbed
+            allow(object).to receive(:existing_method) { :stubbed }
+            expect(object.existing_method).to eq :stubbed
 
-              reset @prepended_instance
-              expect(@prepended_instance.existing_method).to eq :original_value_prepended
-            end
-
-            it "restores non-prepended instance methods" do
-              allow(@prepended_instance).to receive(:non_prepended_method) { :stubbed }
-              expect(@prepended_instance.non_prepended_method).to eq :stubbed
-
-              reset @prepended_instance
-              expect(@prepended_instance.non_prepended_method).to eq :not_prepended
-            end
-
-            it "restores prepended class methods" do
-              klass = Class.new do
-                class << self; prepend ToBePrepended; end
-                def self.existing_method
-                  :original_value
-                end
-              end
-
-              allow(klass).to receive(:existing_method) { :stubbed }
-              expect(klass.existing_method).to eq :stubbed
-
-              reset klass
-              expect(klass.existing_method).to eq :original_value_prepended
-            end
-
-            it "restores prepended object singleton methods" do
-              object = Object.new
-              def object.existing_method; :original_value; end
-              object.singleton_class.send(:prepend, ToBePrepended)
-
-              allow(object).to receive(:existing_method) { :stubbed }
-              expect(object.existing_method).to eq :stubbed
-
-              reset object
-              expect(object.existing_method).to eq :original_value_prepended
-            end
+            reset object
+            expect(object.existing_method).to eq :original_value_prepended
           end
         end
       end

@@ -168,7 +168,7 @@ module RSpec
           end
         end
 
-        context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
+        context "when the class has a prepended module" do
           it 'allows stubbing a method that is not defined on the prepended module' do
             klass.class_eval { prepend Module.new { def other; end } }
             allow_any_instance_of(klass).to receive(:foo).and_return(45)
@@ -582,7 +582,7 @@ module RSpec
           expect(object.foo).to eq(3)
         end
 
-        context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
+        context "when the class has a prepended module" do
           it 'allows mocking a method that is not defined on the prepended module' do
             klass.class_eval { prepend Module.new { def other; end } }
             expect_any_instance_of(klass).to receive(:foo).and_return(45)

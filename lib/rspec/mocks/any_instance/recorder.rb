@@ -275,18 +275,12 @@ module RSpec
           end
         end
 
-        if Support::RubyFeatures.module_prepends_supported?
-          def allow_no_prepended_module_definition_of(method_name)
-            prepended_modules = RSpec::Mocks::Proxy.prepended_modules_of(@klass)
-            problem_mod = prepended_modules.find { |mod| mod.method_defined?(method_name) }
-            return unless problem_mod
+        def allow_no_prepended_module_definition_of(method_name)
+          prepended_modules = RSpec::Mocks::Proxy.prepended_modules_of(@klass)
+          problem_mod = prepended_modules.find { |mod| mod.method_defined?(method_name) }
+          return unless problem_mod
 
-            AnyInstance.error_generator.raise_not_supported_with_prepend_error(method_name, problem_mod)
-          end
-        else
-          def allow_no_prepended_module_definition_of(_method_name)
-            # nothing to do; prepends aren't supported on this version of ruby
-          end
+          AnyInstance.error_generator.raise_not_supported_with_prepend_error(method_name, problem_mod)
         end
       end
     end

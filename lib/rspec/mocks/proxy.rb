@@ -231,20 +231,18 @@ module RSpec
         :public
       end
 
-      if Support::RubyFeatures.module_prepends_supported?
-        def self.prepended_modules_of(klass)
-          ancestors = klass.ancestors
+      def self.prepended_modules_of(klass)
+        ancestors = klass.ancestors
 
-          # `|| 0` is necessary for Ruby 2.0, where the singleton class
-          # is only in the ancestor list when there are prepended modules.
-          singleton_index = ancestors.index(klass) || 0
+        # `|| 0` is necessary for Ruby 2.0, where the singleton class
+        # is only in the ancestor list when there are prepended modules.
+        singleton_index = ancestors.index(klass) || 0
 
-          ancestors[0, singleton_index]
-        end
+        ancestors[0, singleton_index]
+      end
 
-        def prepended_modules_of_singleton_class
-          @prepended_modules_of_singleton_class ||= RSpec::Mocks::Proxy.prepended_modules_of(@object.singleton_class)
-        end
+      def prepended_modules_of_singleton_class
+        @prepended_modules_of_singleton_class ||= RSpec::Mocks::Proxy.prepended_modules_of(@object.singleton_class)
       end
 
       # @private
