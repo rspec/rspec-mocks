@@ -5,6 +5,8 @@ module RSpec
       def initialize(object, method)
         @object = object
         @method = method
+        # We don't want to create singleton class if it doesn't exist,
+        # so we don't use `object.singleton_class`.
         @klass = (class << object; self; end)
 
         @original_method = nil
@@ -21,6 +23,7 @@ module RSpec
       def stash
         return unless method_defined_directly_on_klass?
         @original_method ||= ::RSpec::Support.method_handle_for(@object, @method)
+        # In Ruby 2.4 and earlier, `undef_method` is private
         @klass.__send__(:undef_method, @method)
       end
 
@@ -28,11 +31,13 @@ module RSpec
       def restore
         return unless @original_method
 
-        if @klass.__send__(:method_defined?, @method)
+        if @klass.method_defined?(@method)
+          # In Ruby 2.4 and earlier, `undef_method` is private
           @klass.__send__(:undef_method, @method)
         end
 
         handle_restoration_failures do
+          # In Ruby 2.4 and earlier, `define_method` is private
           @klass.__send__(:define_method, @method, @original_method)
         end
 

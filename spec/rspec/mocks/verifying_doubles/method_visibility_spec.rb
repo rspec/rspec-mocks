@@ -111,8 +111,7 @@ module RSpec
         unless double.null_object?
           # Null object doubles use `method_missing` and so the singleton class
           # doesn't know what methods are defined.
-          singleton_class = class << double; self; end
-          expect(singleton_class.send("#{visibility}_method_defined?", method_name)).to be true
+          expect(double.singleton_class.send("#{visibility}_method_defined?", method_name)).to be true
         end
       end
 

@@ -150,6 +150,8 @@ module RSpec
       end
 
       def method_defined?(object)
+        # We don't want to create singleton class if it doesn't exist,
+        # so we don't use `object.singleton_class`.
         (class << object; self; end).method_defined?(@method_name)
       end
 

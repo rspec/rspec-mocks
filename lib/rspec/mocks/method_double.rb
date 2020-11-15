@@ -21,8 +21,7 @@ module RSpec
       def original_implementation_callable
         # If original method is not present, uses the `method_missing`
         # handler of the object. This accounts for cases where the user has not
-        # correctly defined `respond_to?`, and also 1.8 which does not provide
-        # method handles for missing methods even if `respond_to?` is correct.
+        # correctly defined `respond_to?`.
         @original_implementation_callable ||= original_method ||
           Proc.new do |*args, &block|
             @object.__send__(:method_missing, @method_name, *args, &block)
@@ -44,6 +43,8 @@ module RSpec
 
       # @private
       def object_singleton_class
+        # We can't use @object.singleton_class because this method
+        # creates a new singleton class if the object doesn't have one.
         class << @object; self; end
       end
 
@@ -244,11 +245,12 @@ module RSpec
 
       def new_rspec_prepended_module
         RSpecPrependedModule.new.tap do |mod|
-          object_singleton_class.__send__ :prepend, mod
+          @object.singleton_class.prepend mod
         end
       end
 
       def remove_method_from_definition_target
+        # In Ruby 2.4 and earlier, `remove_method` is private
         definition_target.__send__(:remove_method, @method_name)
       rescue NameError
         # This can happen when the method has been monkeyed with by
