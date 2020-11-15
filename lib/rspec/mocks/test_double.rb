@@ -97,8 +97,7 @@ module RSpec
           )
         end
 
-        # Required wrapping doubles in an Array on Ruby 1.9.2
-        raise NoMethodError if [:to_a, :to_ary].include? message
+        raise NoMethodError if message == :to_ary || message == :to_a
         proxy.raise_unexpected_message_error(message, args)
       end
 
