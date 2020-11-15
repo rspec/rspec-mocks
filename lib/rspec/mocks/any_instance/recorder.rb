@@ -257,6 +257,7 @@ module RSpec
           @observed_methods << method_name
           backup_method!(method_name)
           recorder = self
+          # In Ruby 2.4 and earlier, `define_method` is private
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             recorder.playback!(self, method_name)
             __send__(method_name, *args, &blk)

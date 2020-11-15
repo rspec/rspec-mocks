@@ -1,4 +1,3 @@
-
 module RSpec::Mocks
   RSpec.describe Space do
     let(:space) { Space.new }
@@ -19,7 +18,7 @@ module RSpec::Mocks
 
       def define_singleton_method_on_recorder_for(klass, name, &block)
         recorder = space.any_instance_recorder_for(klass)
-        (class << recorder; self; end).send(:define_method, name, &block)
+        recorder.singleton_class.send(:define_method, name, &block)
       end
 
       it 'verifies all any_instance recorders within' do
@@ -39,7 +38,7 @@ module RSpec::Mocks
       it 'does not reset the proxies (as that should be delayed until reset_all)' do
         proxy = space.proxy_for(dbl_1)
         reset = false
-        (class << proxy; self; end).__send__(:define_method, :reset) { reset = true }
+        proxy.singleton_class.__send__(:define_method, :reset) { reset = true }
 
         space.verify_all
         expect(reset).to eq(false)

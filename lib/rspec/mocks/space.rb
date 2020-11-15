@@ -137,6 +137,8 @@ module RSpec
 
         # We access the ancestors through the singleton class, to avoid calling
         # `class` in case `class` has been stubbed.
+        # We can't use `object.singleton_class` here, as this method creates
+        # a new singleton class for the object if the object doesn't have one.
         (class << object; ancestors; end).map do |klass|
           any_instance_recorders[klass.__id__]
         end.compact
