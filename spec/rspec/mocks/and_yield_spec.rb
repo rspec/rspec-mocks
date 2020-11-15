@@ -99,7 +99,7 @@ RSpec.describe RSpec::Mocks::Double do
           verify yielded_arg
         end
 
-        context "that are optional", :if => RSpec::Support::RubyFeatures.optional_and_splat_args_supported? do
+        context "that are optional" do
           it "yields the default argument when the argument is not given" do
             pending "Not sure how to achieve this yet. See rspec/rspec-mocks#714 and rspec/rspec-support#85."
             default_arg = Object.new

@@ -75,30 +75,26 @@ module RSpec
             }.to fail_with("Wrong number of arguments. Expected 2, got 0.")
           end
 
-          if RSpec::Support::RubyFeatures.required_kw_args_supported?
-            context "for a method with required keyword args" do
-              it 'covers the required args when `any_args` is last' do
-                expect {
-                  expect(dbl).to receive(:kw_args_method).with(1, any_args)
-                }.not_to raise_error
-              end
+          context "for a method with required keyword args" do
+            it 'covers the required args when `any_args` is last' do
+              expect {
+                expect(dbl).to receive(:kw_args_method).with(1, any_args)
+              }.not_to raise_error
+            end
 
-              it 'does not cover the required args when there are args after `any_args`' do
-                expect {
-                  # Use eval to avoid syntax error on 1.8 and 1.9
-                  eval("expect(dbl).to receive(:kw_args_method).with(any_args, optional_arg: 3)")
-                }.to fail_with("Missing required keyword arguments: required_arg")
-              end
+            it 'does not cover the required args when there are args after `any_args`' do
+              expect {
+                # Use eval to avoid syntax error on 1.8 and 1.9
+                eval("expect(dbl).to receive(:kw_args_method).with(any_args, optional_arg: 3)")
+              }.to fail_with("Missing required keyword arguments: required_arg")
             end
           end
         end
 
-        if RSpec::Support::RubyFeatures.required_kw_args_supported?
-          it 'does not cover required args when `any_args` is not used' do
-            expect {
-              expect(dbl).to receive(:kw_args_method).with(anything)
-            }.to fail_with("Missing required keyword arguments: required_arg")
-          end
+        it 'does not cover required args when `any_args` is not used' do
+          expect {
+            expect(dbl).to receive(:kw_args_method).with(anything)
+          }.to fail_with("Missing required keyword arguments: required_arg")
         end
 
         context "when a list of args is provided" do

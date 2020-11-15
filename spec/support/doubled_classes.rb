@@ -1,6 +1,4 @@
 class LoadedClass
-  extend RSpec::Support::RubyFeatures
-
   M = :m
   N = :n
   INSTANCE = LoadedClass.new
@@ -47,15 +45,10 @@ class LoadedClass
   def defined_instance_and_class_method
   end
 
-  if required_kw_args_supported?
-    # Need to eval this since it is invalid syntax on earlier rubies.
-    eval <<-RUBY
-      def kw_args_method(foo, optional_arg:'hello', required_arg:)
-      end
+  def kw_args_method(foo, optional_arg:'hello', required_arg:)
+  end
 
-      def mixed_args_method(foo, bar, optional_arg_1:1, optional_arg_2:2)
-      end
-    RUBY
+  def mixed_args_method(foo, bar, optional_arg_1:1, optional_arg_2:2)
   end
 
   def send(*)
