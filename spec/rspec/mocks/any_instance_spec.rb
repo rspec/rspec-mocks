@@ -780,7 +780,7 @@ module RSpec
           klazz.new.foo
         end
 
-        it 'works with a SimpleDelegator subclass', :if => (RUBY_VERSION.to_f > 1.8) do
+        it 'works with a SimpleDelegator subclass' do
           klazz = Class.new(SimpleDelegator) do
             def foo; end
           end

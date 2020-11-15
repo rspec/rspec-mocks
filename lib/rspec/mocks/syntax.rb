@@ -179,20 +179,6 @@ module RSpec
       # @api private
       # Determines where the methods like `should_receive`, and `stub` are added.
       def self.default_should_syntax_host
-        # JRuby 1.7.4 introduces a regression whereby `defined?(::BasicObject) => nil`
-        # yet `BasicObject` still exists and patching onto ::Object breaks things
-        # e.g. SimpleDelegator expectations won't work
-        #
-        # See: https://github.com/jruby/jruby/issues/814
-        if defined?(JRUBY_VERSION) && JRUBY_VERSION == '1.7.4' && RUBY_VERSION.to_f > 1.8
-          return ::BasicObject
-        end
-
-        # On 1.8.7, Object.ancestors.last == Kernel but
-        # things blow up if we include `RSpec::Mocks::Methods`
-        # into Kernel...not sure why.
-        return Object unless defined?(::BasicObject)
-
         # MacRuby has BasicObject but it's not the root class.
         return Object unless Object.ancestors.last == ::BasicObject
 

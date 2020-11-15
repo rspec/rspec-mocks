@@ -304,13 +304,7 @@ module RSpec
       end
 
       it "responds to to_a as a null object" do
-        if RUBY_VERSION.to_f > 1.8
-          expect(@double.as_null_object.to_a).to eq nil
-        else
-          with_isolated_stderr do
-            expect(@double.as_null_object.to_a).to eq [@double]
-          end
-        end
+        expect(@double.as_null_object.to_a).to eq nil
       end
 
       it "passes proc to expectation block without an argument" do
@@ -724,7 +718,7 @@ module RSpec
         end
       end
 
-      describe "#to_str", :unless => RUBY_VERSION == '1.9.2' do
+      describe "#to_str" do
         it "should not respond to #to_str to avoid being coerced to strings by the runtime" do
           dbl = double("Foo")
           expect { dbl.to_str }.to raise_error(

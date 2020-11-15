@@ -245,7 +245,7 @@ RSpec.describe "Using the legacy should syntax" do
       expect { verify_all }.to fail
     end
 
-    it 'can get method objects for the fluent interface', :if => RUBY_VERSION.to_f > 1.8 do
+    it 'can get method objects for the fluent interface' do
       and_return = klass.any_instance.stub(:foo).method(:and_return)
       and_return.call(23)
 

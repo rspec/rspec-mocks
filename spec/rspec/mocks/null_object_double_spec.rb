@@ -15,13 +15,7 @@ module RSpec
       end
 
       it "raises an error when interpolated in a string as an integer" do
-        # Not sure why, but 1.9.2 (but not JRuby --1.9) raises a different
-        # error than 1.8.7 and 1.9.3...
-        expected_error = (RUBY_VERSION == '1.9.2' && RUBY_PLATFORM !~ /java/) ?
-                         RSpec::Mocks::MockExpectationError :
-                         TypeError
-
-        expect { "%i" % @double }.to raise_error(expected_error)
+        expect { "%i" % @double }.to raise_error(TypeError)
       end
     end
 

@@ -124,20 +124,8 @@ module RSpec
       # definition of "implemented". However, it's the best we can do.
       alias method_defined? method_implemented?
 
-      # works around the fact that repeated calls for method parameters will
-      # falsely return empty arrays on JRuby in certain circumstances, this
-      # is necessary here because we can't dup/clone UnboundMethods.
-      #
-      # This is necessary due to a bug in JRuby prior to 1.7.5 fixed in:
-      # https://github.com/jruby/jruby/commit/99a0613fe29935150d76a9a1ee4cf2b4f63f4a27
-      if RUBY_PLATFORM == 'java' && RSpec::Support::ComparableVersion.new(JRUBY_VERSION) < '1.7.5'
-        def find_method(mod)
-          mod.dup.instance_method(@method_name)
-        end
-      else
-        def find_method(mod)
-          mod.instance_method(@method_name)
-        end
+      def find_method(mod)
+        mod.instance_method(@method_name)
       end
 
       def visibility_from(mod)

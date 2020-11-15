@@ -93,7 +93,6 @@ module RSpec
       end
 
       it 'allows a class and a subclass to both be stubbed' do
-        pending "Does not work on 1.8.7 due to singleton method restrictions" if RUBY_VERSION == "1.8.7" && RSpec::Support::Ruby.mri?
         the_klass = Class.new
         the_subklass = Class.new(the_klass)
 
@@ -182,13 +181,7 @@ module RSpec
       end
 
       def expect_output_warning_on_ruby_lt_2
-        if RUBY_VERSION >= '2.0'
-          yield
-        else
-          expect { yield }.to output(a_string_including(
-            "RSpec could not fully restore", file_1.inspect, "write"
-          )).to_stderr
-        end
+        yield
       end
 
       it "allows `write` to be stubbed and reset", :unless => Support::Ruby.jruby? do

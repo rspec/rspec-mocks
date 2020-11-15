@@ -258,11 +258,7 @@ module RSpec
         #
         # Note: we could avoid rescuing this by checking
         # `definition_target.instance_method(@method_name).owner == definition_target`,
-        # saving us from the cost of the expensive exception, but this error is
-        # extremely rare (it was discovered on 2014-12-30, only happens on
-        # RUBY_VERSION < 2.0 and our spec suite only hits this condition once),
-        # so we'd rather avoid the cost of that check for every method double,
-        # and risk the rare situation where this exception will get raised.
+        # but this error is extremely rare, so we'd rather rescue this exception.
         RSpec.warn_with(
           "WARNING: RSpec could not fully restore #{@object.inspect}." \
           "#{@method_name}, possibly because the method has been redefined " \

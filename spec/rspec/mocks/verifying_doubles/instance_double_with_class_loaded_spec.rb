@@ -211,18 +211,10 @@ module RSpec
           expect(obj.respond_to?(:defined_private_method, false)).to be false
         end
 
-        if RUBY_VERSION.to_f < 2.0 # respond_to?(:protected_method) changed behavior in Ruby 2.0.
-          it 'reports that it responds to protected methods' do
-            expect(obj.respond_to?(:defined_protected_method)).to be true
-            expect(obj.respond_to?(:defined_protected_method, true)).to be true
-            expect(obj.respond_to?(:defined_protected_method, false)).to be true
-          end
-        else
-          it 'reports that it responds to protected methods when the appropriate arg is passed' do
-            expect(obj.respond_to?(:defined_protected_method)).to be false
-            expect(obj.respond_to?(:defined_protected_method, true)).to be true
-            expect(obj.respond_to?(:defined_protected_method, false)).to be false
-          end
+        it 'reports that it responds to protected methods when the appropriate arg is passed' do
+          expect(obj.respond_to?(:defined_protected_method)).to be false
+          expect(obj.respond_to?(:defined_protected_method, true)).to be true
+          expect(obj.respond_to?(:defined_protected_method, false)).to be false
         end
       end
     end
