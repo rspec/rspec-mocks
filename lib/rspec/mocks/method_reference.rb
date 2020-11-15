@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_support 'comparable_version'
-
 module RSpec
   module Mocks
     # Represents a method on an object that may or may not be defined.
