@@ -306,9 +306,7 @@ module RSpec
 
         it "matches against a Matcher", :reset => true do
           expect(a_double).to receive(:msg).with(equal(3))
-          # This spec is generating warnings on 1.8.7, not sure why so
-          # this does with_isolated_stderr to kill them. @samphippen 3rd Jan 2013.
-          expect { with_isolated_stderr { a_double.msg(37) } }.to fail_including "expected: (equal 3)"
+          expect { a_double.msg(37) }.to fail_including "expected: (equal 3)"
         end
 
         it "fails when given an arbitrary object that returns false from #===", :reset => true do

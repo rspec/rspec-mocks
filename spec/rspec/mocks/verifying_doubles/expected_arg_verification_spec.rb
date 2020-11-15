@@ -84,8 +84,7 @@ module RSpec
 
             it 'does not cover the required args when there are args after `any_args`' do
               expect {
-                # Use eval to avoid syntax error on 1.8 and 1.9
-                eval("expect(dbl).to receive(:kw_args_method).with(any_args, optional_arg: 3)")
+                expect(dbl).to receive(:kw_args_method).with(any_args, optional_arg: 3)
               }.to fail_with("Missing required keyword arguments: required_arg")
             end
           end
