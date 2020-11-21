@@ -29,7 +29,7 @@ jobs:
           - ruby-head
         env:
           -
-            BUNDLER_ARGS: "--binstubs --standalone"
+            DIFF_LCS_VERSION: "> 1.4.3"
         include:
           - ruby: jruby-9.2.13.0
             env:
@@ -60,6 +60,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: ${{ matrix.cache == null || matrix.cache }}
       - run: script/clone_all_rspec_repos
+      - run: bundle install --binstubs --standalone
       - run: script/run_build
 
   windows:
