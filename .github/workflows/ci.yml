@@ -60,7 +60,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: ${{ matrix.cache == null || matrix.cache }}
       - run: script/clone_all_rspec_repos
-      - run: bundle binstubs rspec-core rake cucumber
+      - run: bundle binstubs rspec-core rake cucumber bundler
       - run: script/run_build
 
   windows:
