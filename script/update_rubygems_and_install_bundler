@@ -13,3 +13,5 @@ else
   gem update --system '2.7.8'
   gem install bundler -v '1.17.3'
 fi
+
+bundle update diff-lcs

@@ -62,7 +62,7 @@ jobs:
         env: ${{ matrix.env }}
       - run: script/clone_all_rspec_repos
         env: ${{ matrix.env }}
-      - run: bundle install --binstubs --standalone
+      - run: bundle binstubs
         env: ${{ matrix.env }}
       - run: script/run_build
         env: ${{ matrix.env }}
