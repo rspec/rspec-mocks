@@ -51,6 +51,7 @@ jobs:
               DIFF_LCS_VERSION: "1.4.3"
       fail-fast: false
     continue-on-error: ${{ matrix.allow_failure || endsWith(matrix.ruby, 'head') }}
+    env: ${{ matrix.env }}
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
@@ -58,14 +59,9 @@ jobs:
           bundler: ${{ matrix.bundler || 2 }}
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: ${{ matrix.cache == null || matrix.cache }}
-      - run: bundle update diff-lcs
-        env: ${{ matrix.env }}
       - run: script/clone_all_rspec_repos
-        env: ${{ matrix.env }}
       - run: bundle binstubs rspec-core rake cucumber
-        env: ${{ matrix.env }}
       - run: script/run_build
-        env: ${{ matrix.env }}
 
   windows:
     name: Ruby ${{ matrix.ruby }} (Windows)
