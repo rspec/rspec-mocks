@@ -59,6 +59,7 @@ jobs:
           bundler: ${{ matrix.bundler || 2 }}
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: ${{ matrix.cache == null || matrix.cache }}
+      - run: script/update_rubygems_and_install_bundler
       - run: script/clone_all_rspec_repos
       - run: bundle install --binstubs --standalone
       - run: script/run_build
