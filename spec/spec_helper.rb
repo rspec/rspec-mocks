@@ -2,7 +2,7 @@ require 'rspec/support/spec'
 require 'rspec/support/ruby_features'
 
 RSpec::Support::Spec.setup_simplecov do
-  minimum_coverage 95
+  minimum_coverage 93
 end
 
 require 'yaml'
