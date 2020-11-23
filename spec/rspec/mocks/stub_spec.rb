@@ -115,7 +115,7 @@ module RSpec
 
       context "when the stubbed method is called" do
         it "does not call any methods on the passed args, since that could mutate them", :issue => 892 do
-          recorder = Class.new(defined?(::BasicObject) ? ::BasicObject : ::Object) do
+          recorder = Class.new(::BasicObject) do
             def called_methods
               @called_methods ||= []
             end

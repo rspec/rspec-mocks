@@ -770,7 +770,7 @@ module RSpec
           end
         end
 
-        it 'works with a BasicObject subclass that mixes in Kernel', :if => defined?(BasicObject) do
+        it 'works with a BasicObject subclass that mixes in Kernel' do
           klazz = Class.new(BasicObject) do
             include ::Kernel
             def foo; end
