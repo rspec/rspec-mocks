@@ -1239,8 +1239,6 @@ module RSpec
 
       context 'when used in conjunction with a `dup`' do
         it "doesn't cause an infinite loop" do
-          skip "This intermittently fails on JRuby" if RUBY_PLATFORM == 'java'
-
           allow_any_instance_of(Object).to receive(:some_method)
           o = Object.new
           o.some_method
