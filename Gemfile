@@ -27,10 +27,6 @@ if RUBY_VERSION >= '2.4' && RUBY_ENGINE == 'ruby'
   gem 'rubocop', "~> 0.52.1"
 end
 
-if RUBY_VERSION <= '2.3.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
-  gem "childprocess", "< 1.0.0"
-end
-
 # Version 5.12 of minitest requires Ruby 2.4
 if RUBY_VERSION < '2.4.0'
   gem 'minitest', '< 5.12.0'
