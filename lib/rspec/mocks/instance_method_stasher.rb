@@ -36,17 +36,10 @@ module RSpec
           @klass.__send__(:undef_method, @method)
         end
 
-        handle_restoration_failures do
-          # In Ruby 2.4 and earlier, `define_method` is private
-          @klass.__send__(:define_method, @method, @original_method)
-        end
+        # In Ruby 2.4 and earlier, `define_method` is private
+        @klass.__send__(:define_method, @method, @original_method)
 
         @original_method = nil
-      end
-
-      def handle_restoration_failures
-        # No known reasons for restoration to fail on other rubies.
-        yield
       end
 
     private
