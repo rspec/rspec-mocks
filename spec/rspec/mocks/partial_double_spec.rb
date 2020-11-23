@@ -180,14 +180,10 @@ module RSpec
         file_2.close
       end
 
-      def expect_output_warning_on_ruby_lt_2
-        yield
-      end
-
       it "allows `write` to be stubbed and reset" do
         allow(file_1).to receive(:write)
         file_1.reopen(file_2)
-        expect_output_warning_on_ruby_lt_2 { reset file_1 }
+        reset file_1
 
         expect {
           # Writing to a file that's been reopened to a 2nd file writes to both files.
