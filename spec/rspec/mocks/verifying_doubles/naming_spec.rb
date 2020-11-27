@@ -45,37 +45,37 @@ module RSpec
 
       describe "instance_double" do
         it_behaves_like "a named verifying double", "InstanceDouble" do
-          alias :create_double :instance_double
+          alias_method :create_double, :instance_double
         end
       end
 
       describe "instance_spy" do
         it_behaves_like "a named verifying double", "InstanceDouble" do
-          alias :create_double :instance_spy
+          alias_method :create_double, :instance_spy
         end
       end
 
       describe "class_double" do
         it_behaves_like "a named verifying double", "ClassDouble" do
-          alias :create_double :class_double
+          alias_method :create_double, :class_double
         end
       end
 
       describe "class_spy" do
         it_behaves_like "a named verifying double", "ClassDouble" do
-          alias :create_double :class_spy
+          alias_method :create_double, :class_spy
         end
       end
 
       describe "object_double" do
         it_behaves_like "a named verifying double", "ObjectDouble" do
-          alias :create_double :object_double
+          alias_method :create_double, :object_double
         end
       end
 
       describe "object_spy" do
         it_behaves_like "a named verifying double", "ObjectDouble" do
-          alias :create_double :object_spy
+          alias_method :create_double, :object_spy
         end
       end
     end
