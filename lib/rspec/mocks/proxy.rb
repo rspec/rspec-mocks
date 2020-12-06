@@ -21,6 +21,8 @@ module RSpec
 
       # @private
       def initialize(object, order_group, options={})
+        ensure_can_be_proxied!(object)
+
         @object = object
         @order_group = order_group
         @error_generator = ErrorGenerator.new(object)
@@ -29,6 +31,15 @@ module RSpec
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
+      end
+
+      # @private
+      def ensure_can_be_proxied!(object)
+        return unless object.frozen?
+        return if object.nil?
+
+        raise ArgumentError, 'Cannot proxy frozen object.' \
+          ' Seems like you passed symbol but object expected'
       end
 
       # @private

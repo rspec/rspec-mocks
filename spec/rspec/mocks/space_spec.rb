@@ -232,6 +232,13 @@ module RSpec::Mocks
       }.to raise_error(RSpec::Expectations::ExpectationNotMetError, /Diff/)
     end
 
+    it 'raises ArgumentError if object cannot be proxied' do
+      space1 = Space.new
+
+      expect { space1.proxy_for(:subject) }.to raise_error(ArgumentError)
+      expect { space1.proxy_for("subject".freeze) }.to raise_error(ArgumentError)
+    end
+
     def in_new_space_scope
       RSpec::Mocks.setup
       yield

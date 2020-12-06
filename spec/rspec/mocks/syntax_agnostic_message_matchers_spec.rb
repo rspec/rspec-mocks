@@ -42,6 +42,14 @@ module RSpec
 
         reset subject
       end
+
+      context 'when subject cannot be proxied' do
+        let(:subject) { :subject }
+
+        it 'raises ArgumentError with message' do
+          expect { ::RSpec::Mocks.allow_message(subject, :foo) { :a } }.to raise_error(ArgumentError)
+        end
+      end
     end
 
     RSpec.describe ".expect_message" do
@@ -90,6 +98,14 @@ module RSpec
         subject.foo(2)
 
         verify subject
+      end
+
+      context 'when subject cannot be proxied' do
+        let(:subject) { :subject }
+
+        it 'raises ArgumentError with message' do
+          expect { ::RSpec::Mocks.expect_message(subject, :foo) { :a } }.to raise_error(ArgumentError)
+        end
       end
     end
   end
