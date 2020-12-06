@@ -38,8 +38,13 @@ module RSpec
         return unless object.frozen?
         return if object.nil?
 
-        raise ArgumentError, 'Cannot proxy frozen object.' \
-          ' Seems like you passed symbol but object expected'
+        msg = "Cannot proxy frozen objects"
+        if Symbol === object
+          msg << ". Symbols such as #{object} cannot be mocked or stubbed."
+        else
+          msg << ", rspec-mocks relies on proxies for method stubbing and expectations."
+        end
+        raise ArgumentError, msg
       end
 
       # @private
