@@ -1,7 +1,7 @@
 require 'rspec/support/spec'
 
 RSpec::Support::Spec.setup_simplecov do
-  minimum_coverage 93
+  minimum_coverage 90
 end
 
 require 'yaml'
