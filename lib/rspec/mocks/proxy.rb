@@ -35,12 +35,7 @@ module RSpec
 
       # @private
       def ensure_can_be_proxied!(object)
-        if RUBY_VERSION.to_f < 2.0
-          return if !object.is_a?(Symbol) && !object.frozen?
-        else
-          return unless object.frozen?
-        end
-
+        return unless object.is_a?(Symbol) || object.frozen?
         return if object.nil?
 
         msg = "Cannot proxy frozen objects"
