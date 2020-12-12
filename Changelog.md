@@ -1,8 +1,13 @@
-### Development (unreleased)
+### Development
 
 Breaking Changes:
 
 * Ruby < 2.3 is no longer supported. (Phil Pirozhkov, #1349)
+
+Bug Fixes:
+
+* Issue `ArgumentError` rather than `TypeError` when unsupported methods on
+  unsupported objects are attempted to be stubbed. (@zhisme, #1357)
 
 ### 3.10.0 / 2020-10-30
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.1...v3.10.0)
