@@ -21,6 +21,8 @@ module RSpec
 
       # @private
       def initialize(object, order_group, options={})
+        ensure_can_be_proxied!(object)
+
         @object = object
         @order_group = order_group
         @error_generator = ErrorGenerator.new(object)
@@ -29,6 +31,20 @@ module RSpec
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
+      end
+
+      # @private
+      def ensure_can_be_proxied!(object)
+        return unless object.is_a?(Symbol) || object.frozen?
+        return if object.nil?
+
+        msg = "Cannot proxy frozen objects"
+        if Symbol === object
+          msg << ". Symbols such as #{object} cannot be mocked or stubbed."
+        else
+          msg << ", rspec-mocks relies on proxies for method stubbing and expectations."
+        end
+        raise ArgumentError, msg
       end
 
       # @private
