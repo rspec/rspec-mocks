@@ -22,8 +22,6 @@ RSpec.describe "a double declaration with a block handed to:" do
       expect(obj.foo).to eq('bar')
     end
 
-    # The "receives a block" part is important: 1.8.7 has a bug that reports the
-    # wrong arity when a block receives a block.
     it 'forwards all given args to the block, even when it receives a block' do
       obj = Object.new
       yielded_args = []

@@ -28,7 +28,7 @@ module RSpec
   end
 end
 
-Minitest::Test.send(:include, RSpec::Mocks::MinitestIntegration)
+Minitest::Test.include(RSpec::Mocks::MinitestIntegration)
 
 if defined?(::Minitest::Expectation)
   if defined?(::RSpec::Expectations) && ::Minitest::Expectation.method_defined?(:to)

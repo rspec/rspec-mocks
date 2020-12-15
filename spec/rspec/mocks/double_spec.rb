@@ -304,13 +304,7 @@ module RSpec
       end
 
       it "responds to to_a as a null object" do
-        if RUBY_VERSION.to_f > 1.8
-          expect(@double.as_null_object.to_a).to eq nil
-        else
-          with_isolated_stderr do
-            expect(@double.as_null_object.to_a).to eq [@double]
-          end
-        end
+        expect(@double.as_null_object.to_a).to eq nil
       end
 
       it "passes proc to expectation block without an argument" do
@@ -524,13 +518,11 @@ module RSpec
         }.to fail_with "#<Double \"test double\"> yielded |\"wha\", \"zup\"| to block with arity of 1"
       end
 
-      if kw_args_supported?
-        it 'fails when calling yielding method with invalid kw args' do
-          expect(@double).to receive(:yield_back).and_yield(:x => 1, :y => 2)
-          expect {
-            eval("@double.yield_back { |x: 1| }")
-          }.to fail_with '#<Double "test double"> yielded |{:x=>1, :y=>2}| to block with optional keyword args (:x)'
-        end
+      it 'fails when calling yielding method with invalid kw args' do
+        expect(@double).to receive(:yield_back).and_yield(:x => 1, :y => 2)
+        expect {
+          eval("@double.yield_back { |x: 1| }")
+        }.to fail_with '#<Double "test double"> yielded |{:x=>1, :y=>2}| to block with optional keyword args (:x)'
       end
 
       it "fails when calling yielding method consecutively with wrong arity" do
@@ -726,7 +718,7 @@ module RSpec
         end
       end
 
-      describe "#to_str", :unless => RUBY_VERSION == '1.9.2' do
+      describe "#to_str" do
         it "should not respond to #to_str to avoid being coerced to strings by the runtime" do
           dbl = double("Foo")
           expect { dbl.to_str }.to raise_error(

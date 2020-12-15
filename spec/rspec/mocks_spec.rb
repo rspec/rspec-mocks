@@ -12,31 +12,11 @@ RSpec.describe RSpec::Mocks do
     'require "rspec/mocks/any_instance"'
   ]
 
-  # On 1.9.2 we load securerandom to get around the lack of `BasicObject#__id__.
-  # Loading securerandom loads many other stdlibs it depends on. Rather than
-  # declaring it (and all the stdlibs it loads) as allowed, it's easier just
-  # to prevent the loading of securerandom by faking out `BasicObject#__id__
-  lib_preamble.unshift "class BasicObject; def __id__; end; end" if RUBY_VERSION == '1.9.2'
-
   it_behaves_like 'library wide checks', 'rspec-mocks',
     :preamble_for_lib => lib_preamble,
     :allowed_loaded_feature_regexps => [
       /rbconfig/ # loaded by rspec-support
-    ] do
-
-      if RSpec::Support::Ruby.jruby? && JRUBY_VERSION =~ /9\.1\.7\.0/
-        before(:example, :description => /spec files/) do
-          pending "JRuby 9.1.7.0 currently generates a circular warning which" \
-                  " is unrelated to our suite."
-        end
-      end
-
-    if RUBY_VERSION == '1.9.2'
-      before(:example, :description => /spec files/) do
-        pending "Loading psych and syck on 1.9.2 (as our test suite does) triggers warnings"
-      end
-    end
-  end
+    ]
 
   describe ".verify" do
     it "delegates to the space" do

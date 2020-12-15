@@ -22,7 +22,7 @@ module RSpec
         expect(o.undefined_instance_method(:arg)).to eq(1)
       end
 
-      specify "trying to raise a class_double raises a TypeError", :unless => RUBY_VERSION == '1.9.2' do
+      specify "trying to raise a class_double raises a TypeError" do
         subject = Object.new
         class_double("StubbedError").as_stubbed_const
         allow(subject).to receive(:some_method).and_raise(StubbedError)

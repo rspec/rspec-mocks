@@ -64,7 +64,7 @@ module RSpec
           end
 
           it 'is a no-op when configured a second time' do
-            expect(Syntax.default_should_syntax_host).not_to receive(:method_undefined)
+            expect(::BasicObject).not_to receive(:method_undefined)
             expect(::RSpec::Mocks::ExampleMethods).not_to receive(:method_added)
             configure_syntax :expect
           end
@@ -95,7 +95,7 @@ module RSpec
           end
 
           it 'is a no-op when configured a second time' do
-            Syntax.default_should_syntax_host.should_not_receive(:method_added)
+            ::BasicObject.should_not_receive(:method_added)
             ::RSpec::Mocks::ExampleMethods.should_not_receive(:method_undefined)
             configure_syntax :should
           end

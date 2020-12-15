@@ -80,7 +80,7 @@ RSpec.describe "and_call_original" do
         expect(instance.foo).to eq(:bar)
       end
 
-      it 'works for SimpleDelegator subclasses', :if => (RUBY_VERSION.to_f > 1.8) do
+      it 'works for SimpleDelegator subclasses' do
         inst = Class.new(SimpleDelegator).new(1)
         def inst.foo; :bar; end
         expect(inst).to receive(:foo).and_call_original

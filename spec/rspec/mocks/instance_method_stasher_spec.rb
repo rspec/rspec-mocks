@@ -55,7 +55,7 @@ module RSpec
         expect(obj.hello).to eql :overridden_hello
       end
 
-      it "does not unnecessarily create obfuscated aliased methods", :if => (RUBY_VERSION.to_f > 1.8) do
+      it "does not unnecessarily create obfuscated aliased methods" do
         obj = Object.new
         def obj.hello; :hello_defined_on_singleton_class; end;
 
@@ -64,7 +64,7 @@ module RSpec
         expect(obj.methods.grep(/rspec/)).to eq([])
       end
 
-      it "undefines the original method", :if => (RUBY_VERSION.to_f > 1.8) do
+      it "undefines the original method" do
         obj = Object.new
         def obj.hello; :hello_defined_on_singleton_class; end;
 

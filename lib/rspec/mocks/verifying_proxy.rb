@@ -147,13 +147,11 @@ module RSpec
       end
 
       def add_expectation(*args, &block)
-        # explict params necessary for 1.8.7 see #626
-        super(*args, &block).tap { |x| x.method_reference = @method_reference }
+        super.tap { |x| x.method_reference = @method_reference }
       end
 
       def add_stub(*args, &block)
-        # explict params necessary for 1.8.7 see #626
-        super(*args, &block).tap { |x| x.method_reference = @method_reference }
+        super.tap { |x| x.method_reference = @method_reference }
       end
 
       def proxy_method_invoked(obj, *args, &block)

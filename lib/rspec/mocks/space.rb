@@ -137,6 +137,8 @@ module RSpec
 
         # We access the ancestors through the singleton class, to avoid calling
         # `class` in case `class` has been stubbed.
+        # We can't use `object.singleton_class` here, as this method creates
+        # a new singleton class for the object if the object doesn't have one.
         (class << object; ancestors; end).map do |klass|
           any_instance_recorders[klass.__id__]
         end.compact
@@ -185,23 +187,8 @@ module RSpec
         any_instance_recorders[id] = AnyInstance::Recorder.new(klass)
       end
 
-      if defined?(::BasicObject) && !::BasicObject.method_defined?(:__id__) # for 1.9.2
-        require 'securerandom'
-
-        def id_for(object)
-          id = object.__id__
-
-          return id if object.equal?(::ObjectSpace._id2ref(id))
-          # this suggests that object.__id__ is proxying through to some wrapped object
-
-          object.instance_exec do
-            @__id_for_rspec_mocks_space ||= ::SecureRandom.uuid
-          end
-        end
-      else
-        def id_for(object)
-          object.__id__
-        end
+      def id_for(object)
+        object.__id__
       end
     end
 

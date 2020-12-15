@@ -96,14 +96,8 @@ module RSpec
           @targets = targets
         end
 
-        if RUBY_VERSION.to_f > 1.8
-          def respond_to_missing?(method_name, include_private=false)
-            super || @targets.first.respond_to?(method_name, include_private)
-          end
-        else
-          def respond_to?(method_name, include_private=false)
-            super || @targets.first.respond_to?(method_name, include_private)
-          end
+        def respond_to_missing?(method_name, include_private=false)
+          super || @targets.first.respond_to?(method_name, include_private)
         end
 
         def method_missing(*args, &block)

@@ -200,24 +200,17 @@ module RSpec
             remove_method method_name
 
             # A @klass can have methods implemented (see Method#owner) in @klass
-            # or inherited from a superclass. In ruby 2.2 and earlier, we can copy
-            # a method regardless of the 'owner' and restore it to @klass after
-            # because a call to 'super' from @klass's copied method would end up
-            # calling the original class's superclass's method.
+            # or inherited from a superclass.
             #
-            # With the commit below, available starting in 2.3.0, ruby changed
-            # this behavior and a call to 'super' from the method copied to @klass
+            # A call to 'super' from the method copied to @klass
             # will call @klass's superclass method, which is the original
             # implementer of this method!  This leads to very strange errors
             # if @klass's copied method calls 'super', since it would end up
             # calling itself, the original method implemented in @klass's
             # superclass.
             #
-            # For ruby 2.3 and above, we need to only restore methods that
-            # @klass originally owned.
-            #
-            # https://github.com/ruby/ruby/commit/c8854d2ca4be9ee6946e6d17b0e17d9ef130ee81
-            if RUBY_VERSION < "2.3" || backed_up_method_owner[method_name.to_sym] == self
+            # We need to only restore methods that @klass originally owned.
+            if backed_up_method_owner[method_name.to_sym] == self
               alias_method method_name, alias_method_name
             end
             remove_method alias_method_name
@@ -257,6 +250,7 @@ module RSpec
           @observed_methods << method_name
           backup_method!(method_name)
           recorder = self
+          # In Ruby 2.4 and earlier, `define_method` is private
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             recorder.playback!(self, method_name)
             __send__(method_name, *args, &blk)
@@ -266,6 +260,7 @@ module RSpec
         def mark_invoked!(method_name)
           backup_method!(method_name)
           recorder = self
+          # In Ruby 2.4 and earlier, `define_method` is private
           @klass.__send__(:define_method, method_name) do |*_args, &_blk|
             invoked_instance = recorder.instance_that_received(method_name)
             inspect = "#<#{self.class}:#{object_id} #{instance_variables.map { |name| "#{name}=#{instance_variable_get name}" }.join(', ')}>"
@@ -275,18 +270,12 @@ module RSpec
           end
         end
 
-        if Support::RubyFeatures.module_prepends_supported?
-          def allow_no_prepended_module_definition_of(method_name)
-            prepended_modules = RSpec::Mocks::Proxy.prepended_modules_of(@klass)
-            problem_mod = prepended_modules.find { |mod| mod.method_defined?(method_name) }
-            return unless problem_mod
+        def allow_no_prepended_module_definition_of(method_name)
+          prepended_modules = RSpec::Mocks::Proxy.prepended_modules_of(@klass)
+          problem_mod = prepended_modules.find { |mod| mod.method_defined?(method_name) }
+          return unless problem_mod
 
-            AnyInstance.error_generator.raise_not_supported_with_prepend_error(method_name, problem_mod)
-          end
-        else
-          def allow_no_prepended_module_definition_of(_method_name)
-            # nothing to do; prepends aren't supported on this version of ruby
-          end
+          AnyInstance.error_generator.raise_not_supported_with_prepend_error(method_name, problem_mod)
         end
       end
     end

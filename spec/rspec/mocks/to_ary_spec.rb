@@ -41,7 +41,7 @@ RSpec.describe "a double receiving to_ary" do
       expect(obj).not_to respond_to(:to_ary)
     end
 
-    it "doesn't respond to to_a", :if => (RUBY_VERSION.to_f > 1.8) do
+    it "doesn't respond to to_a" do
       expect(obj).not_to respond_to(:to_a)
     end
 

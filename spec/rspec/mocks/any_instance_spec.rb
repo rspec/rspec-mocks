@@ -168,7 +168,7 @@ module RSpec
           end
         end
 
-        context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
+        context "when the class has a prepended module" do
           it 'allows stubbing a method that is not defined on the prepended module' do
             klass.class_eval { prepend Module.new { def other; end } }
             allow_any_instance_of(klass).to receive(:foo).and_return(45)
@@ -582,7 +582,7 @@ module RSpec
           expect(object.foo).to eq(3)
         end
 
-        context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
+        context "when the class has a prepended module" do
           it 'allows mocking a method that is not defined on the prepended module' do
             klass.class_eval { prepend Module.new { def other; end } }
             expect_any_instance_of(klass).to receive(:foo).and_return(45)
@@ -770,7 +770,7 @@ module RSpec
           end
         end
 
-        it 'works with a BasicObject subclass that mixes in Kernel', :if => defined?(BasicObject) do
+        it 'works with a BasicObject subclass that mixes in Kernel' do
           klazz = Class.new(BasicObject) do
             include ::Kernel
             def foo; end
@@ -780,7 +780,7 @@ module RSpec
           klazz.new.foo
         end
 
-        it 'works with a SimpleDelegator subclass', :if => (RUBY_VERSION.to_f > 1.8) do
+        it 'works with a SimpleDelegator subclass' do
           klazz = Class.new(SimpleDelegator) do
             def foo; end
           end
@@ -1239,8 +1239,6 @@ module RSpec
 
       context 'when used in conjunction with a `dup`' do
         it "doesn't cause an infinite loop" do
-          skip "This intermittently fails on JRuby" if RUBY_PLATFORM == 'java'
-
           allow_any_instance_of(Object).to receive(:some_method)
           o = Object.new
           o.some_method

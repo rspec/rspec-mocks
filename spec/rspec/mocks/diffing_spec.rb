@@ -83,19 +83,8 @@ RSpec.describe "Diffs printed when arguments don't match" do
       end
     end
 
-    if RUBY_VERSION.to_f < 1.9
-      # Ruby 1.8 hashes are not ordered, but `#inspect` on a particular unchanged
-      # hash instance should return consistent output. However, on Travis that does
-      # not always seem to be true and we have no idea why. Somehow, the travis build
-      # has occasionally failed due to the output ordering varying between `inspect`
-      # calls to the same hash. This regex allows us to work around that.
-      def hash_regex_inspect(hash)
-        "\\{(#{hash.map { |key, value| "#{key.inspect}=>#{value.inspect}.*" }.join "|"}){#{hash.size}}\\}"
-      end
-    else
-      def hash_regex_inspect(hash)
-        Regexp.escape(hash.inspect)
-      end
+    def hash_regex_inspect(hash)
+      Regexp.escape(hash.inspect)
     end
 
     it "prints a diff with array args" do

@@ -27,14 +27,8 @@ module RSpec
         end
       end
 
-      if Module.new.name.nil?
-        def self.anonymous_module?(mod)
-          !name_of(mod)
-        end
-      else # 1.8.7
-        def self.anonymous_module?(mod)
-          name_of(mod) == ""
-        end
+      def self.anonymous_module?(mod)
+        !name_of(mod)
       end
       private_class_method :anonymous_module?
 

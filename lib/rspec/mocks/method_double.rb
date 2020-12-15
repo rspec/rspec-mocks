@@ -21,8 +21,7 @@ module RSpec
       def original_implementation_callable
         # If original method is not present, uses the `method_missing`
         # handler of the object. This accounts for cases where the user has not
-        # correctly defined `respond_to?`, and also 1.8 which does not provide
-        # method handles for missing methods even if `respond_to?` is correct.
+        # correctly defined `respond_to?`.
         @original_implementation_callable ||= original_method ||
           Proc.new do |*args, &block|
             @object.__send__(:method_missing, @method_name, *args, &block)
@@ -44,6 +43,8 @@ module RSpec
 
       # @private
       def object_singleton_class
+        # We can't use @object.singleton_class because this method
+        # creates a new singleton class if the object doesn't have one.
         class << @object; self; end
       end
 
@@ -205,7 +206,9 @@ module RSpec
         RSpec::Mocks.error_generator.raise_method_not_stubbed_error(method_name)
       end
 
-      # In Ruby 2.0.0 and above prepend will alter the method lookup chain.
+      private
+
+      # Prepend alters the method lookup chain.
       # We use an object's singleton class to define method doubles upon,
       # however if the object has had its singleton class (as opposed to
       # its actual class) prepended too then the the method lookup chain
@@ -215,53 +218,38 @@ module RSpec
       # This code works around that by providing a mock definition target
       # that is either the singleton class, or if necessary, a prepended module
       # of our own.
-      #
-      if Support::RubyFeatures.module_prepends_supported?
 
-        private
+      # We subclass `Module` in order to be able to easily detect our prepended module.
+      RSpecPrependedModule = Class.new(Module)
 
-        # We subclass `Module` in order to be able to easily detect our prepended module.
-        RSpecPrependedModule = Class.new(Module)
-
-        def definition_target
-          @definition_target ||= usable_rspec_prepended_module || object_singleton_class
-        end
-
-        def usable_rspec_prepended_module
-          @proxy.prepended_modules_of_singleton_class.each do |mod|
-            # If we have one of our modules prepended before one of the user's
-            # modules that defines the method, use that, since our module's
-            # definition will take precedence.
-            return mod if RSpecPrependedModule === mod
-
-            # If we hit a user module with the method defined first,
-            # we must create a new prepend module, even if one exists later,
-            # because ours will only take precedence if it comes first.
-            return new_rspec_prepended_module if mod.method_defined?(method_name)
-          end
-
-          nil
-        end
-
-        def new_rspec_prepended_module
-          RSpecPrependedModule.new.tap do |mod|
-            object_singleton_class.__send__ :prepend, mod
-          end
-        end
-
-      else
-
-        private
-
-        def definition_target
-          object_singleton_class
-        end
-
+      def definition_target
+        @definition_target ||= usable_rspec_prepended_module || object_singleton_class
       end
 
-    private
+      def usable_rspec_prepended_module
+        @proxy.prepended_modules_of_singleton_class.each do |mod|
+          # If we have one of our modules prepended before one of the user's
+          # modules that defines the method, use that, since our module's
+          # definition will take precedence.
+          return mod if RSpecPrependedModule === mod
+
+          # If we hit a user module with the method defined first,
+          # we must create a new prepend module, even if one exists later,
+          # because ours will only take precedence if it comes first.
+          return new_rspec_prepended_module if mod.method_defined?(method_name)
+        end
+
+        nil
+      end
+
+      def new_rspec_prepended_module
+        RSpecPrependedModule.new.tap do |mod|
+          @object.singleton_class.prepend mod
+        end
+      end
 
       def remove_method_from_definition_target
+        # In Ruby 2.4 and earlier, `remove_method` is private
         definition_target.__send__(:remove_method, @method_name)
       rescue NameError
         # This can happen when the method has been monkeyed with by
@@ -272,10 +260,11 @@ module RSpec
         # Note: we could avoid rescuing this by checking
         # `definition_target.instance_method(@method_name).owner == definition_target`,
         # saving us from the cost of the expensive exception, but this error is
-        # extremely rare (it was discovered on 2014-12-30, only happens on
-        # RUBY_VERSION < 2.0 and our spec suite only hits this condition once),
-        # so we'd rather avoid the cost of that check for every method double,
-        # and risk the rare situation where this exception will get raised.
+        # extremely rare so we'd rather avoid the cost of that check for every
+        # method double, and risk the rare situation where this exception will
+        # get raised. This was originally discovered in the core library of older
+        # unsupported Rubies, (< 2.0) but could happen in code under test
+        # during meta-programming.
         RSpec.warn_with(
           "WARNING: RSpec could not fully restore #{@object.inspect}." \
           "#{@method_name}, possibly because the method has been redefined " \

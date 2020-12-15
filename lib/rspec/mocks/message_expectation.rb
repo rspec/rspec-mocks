@@ -1,4 +1,4 @@
-RSpec::Support.require_rspec_support 'mutex'
+RSpec::Support.require_rspec_support 'reentrant_mutex'
 
 module RSpec
   module Mocks

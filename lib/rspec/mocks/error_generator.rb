@@ -1,4 +1,5 @@
 RSpec::Support.require_rspec_support "object_formatter"
+RSpec::Support.require_rspec_support 'ruby_features'
 
 module RSpec
   module Mocks

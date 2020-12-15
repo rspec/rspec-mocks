@@ -23,8 +23,8 @@ module RSpec
 
       # @api private
       # Enables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
-      def self.enable_should(syntax_host=default_should_syntax_host)
-        @warn_about_should = false if syntax_host == default_should_syntax_host
+      def self.enable_should(syntax_host=::BasicObject)
+        @warn_about_should = false if syntax_host == ::BasicObject
         return if should_enabled?(syntax_host)
 
         syntax_host.class_exec do
@@ -86,7 +86,7 @@ module RSpec
 
       # @api private
       # Disables the should syntax (`dbl.stub`, `dbl.should_receive`, etc).
-      def self.disable_should(syntax_host=default_should_syntax_host)
+      def self.disable_should(syntax_host=::BasicObject)
         return unless should_enabled?(syntax_host)
 
         syntax_host.class_exec do
@@ -166,7 +166,7 @@ module RSpec
 
       # @api private
       # Indicates whether or not the should syntax is enabled.
-      def self.should_enabled?(syntax_host=default_should_syntax_host)
+      def self.should_enabled?(syntax_host=::BasicObject)
         syntax_host.method_defined?(:should_receive)
       end
 
@@ -175,123 +175,98 @@ module RSpec
       def self.expect_enabled?(syntax_host=::RSpec::Mocks::ExampleMethods)
         syntax_host.method_defined?(:allow)
       end
-
-      # @api private
-      # Determines where the methods like `should_receive`, and `stub` are added.
-      def self.default_should_syntax_host
-        # JRuby 1.7.4 introduces a regression whereby `defined?(::BasicObject) => nil`
-        # yet `BasicObject` still exists and patching onto ::Object breaks things
-        # e.g. SimpleDelegator expectations won't work
-        #
-        # See: https://github.com/jruby/jruby/issues/814
-        if defined?(JRUBY_VERSION) && JRUBY_VERSION == '1.7.4' && RUBY_VERSION.to_f > 1.8
-          return ::BasicObject
-        end
-
-        # On 1.8.7, Object.ancestors.last == Kernel but
-        # things blow up if we include `RSpec::Mocks::Methods`
-        # into Kernel...not sure why.
-        return Object unless defined?(::BasicObject)
-
-        # MacRuby has BasicObject but it's not the root class.
-        return Object unless Object.ancestors.last == ::BasicObject
-
-        ::BasicObject
-      end
     end
   end
 end
 
-if defined?(BasicObject)
-  # The legacy `:should` syntax adds the following methods directly to
-  # `BasicObject` so that they are available off of any object. Note, however,
-  # that this syntax does not always play nice with delegate/proxy objects.
-  # We recommend you use the non-monkeypatching `:expect` syntax instead.
-  # @see Class
-  class BasicObject
-    # @method should_receive
-    # Sets an expectation that this object should receive a message before
-    # the end of the example.
-    #
-    # @example
-    #   logger = double('logger')
-    #   thing_that_logs = ThingThatLogs.new(logger)
-    #   logger.should_receive(:log)
-    #   thing_that_logs.do_something_that_logs_a_message
-    #
-    # @note This is only available when you have enabled the `should` syntax.
-    # @see RSpec::Mocks::ExampleMethods#expect
+# The legacy `:should` syntax adds the following methods directly to
+# `BasicObject` so that they are available off of any object. Note, however,
+# that this syntax does not always play nice with delegate/proxy objects.
+# We recommend you use the non-monkeypatching `:expect` syntax instead.
+# @see Class
+class BasicObject
+  # @method should_receive
+  # Sets an expectation that this object should receive a message before
+  # the end of the example.
+  #
+  # @example
+  #   logger = double('logger')
+  #   thing_that_logs = ThingThatLogs.new(logger)
+  #   logger.should_receive(:log)
+  #   thing_that_logs.do_something_that_logs_a_message
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+  # @see RSpec::Mocks::ExampleMethods#expect
 
-    # @method should_not_receive
-    # Sets and expectation that this object should _not_ receive a message
-    # during this example.
-    # @see RSpec::Mocks::ExampleMethods#expect
+  # @method should_not_receive
+  # Sets and expectation that this object should _not_ receive a message
+  # during this example.
+  # @see RSpec::Mocks::ExampleMethods#expect
 
-    # @method stub
-    # Tells the object to respond to the message with the specified value.
-    #
-    # @example
-    #   counter.stub(:count).and_return(37)
-    #   counter.stub(:count => 37)
-    #   counter.stub(:count) { 37 }
-    #
-    # @note This is only available when you have enabled the `should` syntax.
-    # @see RSpec::Mocks::ExampleMethods#allow
+  # @method stub
+  # Tells the object to respond to the message with the specified value.
+  #
+  # @example
+  #   counter.stub(:count).and_return(37)
+  #   counter.stub(:count => 37)
+  #   counter.stub(:count) { 37 }
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+  # @see RSpec::Mocks::ExampleMethods#allow
 
-    # @method unstub
-    # Removes a stub. On a double, the object will no longer respond to
-    # `message`. On a real object, the original method (if it exists) is
-    # restored.
-    #
-    # This is rarely used, but can be useful when a stub is set up during a
-    # shared `before` hook for the common case, but you want to replace it
-    # for a special case.
-    #
-    # @note This is only available when you have enabled the `should` syntax.
+  # @method unstub
+  # Removes a stub. On a double, the object will no longer respond to
+  # `message`. On a real object, the original method (if it exists) is
+  # restored.
+  #
+  # This is rarely used, but can be useful when a stub is set up during a
+  # shared `before` hook for the common case, but you want to replace it
+  # for a special case.
+  #
+  # @note This is only available when you have enabled the `should` syntax.
 
-    # @method stub_chain
-    # @overload stub_chain(method1, method2)
-    # @overload stub_chain("method1.method2")
-    # @overload stub_chain(method1, method_to_value_hash)
-    #
-    # Stubs a chain of methods.
-    #
-    # ## Warning:
-    #
-    # Chains can be arbitrarily long, which makes it quite painless to
-    # violate the Law of Demeter in violent ways, so you should consider any
-    # use of `stub_chain` a code smell. Even though not all code smells
-    # indicate real problems (think fluent interfaces), `stub_chain` still
-    # results in brittle examples.  For example, if you write
-    # `foo.stub_chain(:bar, :baz => 37)` in a spec and then the
-    # implementation calls `foo.baz.bar`, the stub will not work.
-    #
-    # @example
-    #   double.stub_chain("foo.bar") { :baz }
-    #   double.stub_chain(:foo, :bar => :baz)
-    #   double.stub_chain(:foo, :bar) { :baz }
-    #
-    #     # Given any of ^^ these three forms ^^:
-    #     double.foo.bar # => :baz
-    #
-    #     # Common use in Rails/ActiveRecord:
-    #     Article.stub_chain("recent.published") { [Article.new] }
-    #
-    # @note This is only available when you have enabled the `should` syntax.
-    # @see RSpec::Mocks::ExampleMethods#receive_message_chain
+  # @method stub_chain
+  # @overload stub_chain(method1, method2)
+  # @overload stub_chain("method1.method2")
+  # @overload stub_chain(method1, method_to_value_hash)
+  #
+  # Stubs a chain of methods.
+  #
+  # ## Warning:
+  #
+  # Chains can be arbitrarily long, which makes it quite painless to
+  # violate the Law of Demeter in violent ways, so you should consider any
+  # use of `stub_chain` a code smell. Even though not all code smells
+  # indicate real problems (think fluent interfaces), `stub_chain` still
+  # results in brittle examples.  For example, if you write
+  # `foo.stub_chain(:bar, :baz => 37)` in a spec and then the
+  # implementation calls `foo.baz.bar`, the stub will not work.
+  #
+  # @example
+  #   double.stub_chain("foo.bar") { :baz }
+  #   double.stub_chain(:foo, :bar => :baz)
+  #   double.stub_chain(:foo, :bar) { :baz }
+  #
+  #     # Given any of ^^ these three forms ^^:
+  #     double.foo.bar # => :baz
+  #
+  #     # Common use in Rails/ActiveRecord:
+  #     Article.stub_chain("recent.published") { [Article.new] }
+  #
+  # @note This is only available when you have enabled the `should` syntax.
+  # @see RSpec::Mocks::ExampleMethods#receive_message_chain
 
-    # @method as_null_object
-    # Tells the object to respond to all messages. If specific stub values
-    # are declared, they'll work as expected. If not, the receiver is
-    # returned.
-    #
-    # @note This is only available when you have enabled the `should` syntax.
+  # @method as_null_object
+  # Tells the object to respond to all messages. If specific stub values
+  # are declared, they'll work as expected. If not, the receiver is
+  # returned.
+  #
+  # @note This is only available when you have enabled the `should` syntax.
 
-    # @method null_object?
-    # Returns true if this object has received `as_null_object`
-    #
-    # @note This is only available when you have enabled the `should` syntax.
-  end
+  # @method null_object?
+  # Returns true if this object has received `as_null_object`
+  #
+  # @note This is only available when you have enabled the `should` syntax.
 end
 
 # The legacy `:should` syntax adds the `any_instance` to `Class`.

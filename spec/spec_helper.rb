@@ -1,8 +1,7 @@
 require 'rspec/support/spec'
-require 'rspec/support/ruby_features'
 
 RSpec::Support::Spec.setup_simplecov do
-  minimum_coverage 93
+  minimum_coverage 90
 end
 
 require 'yaml'
@@ -105,8 +104,6 @@ RSpec.configure do |config|
   config.include VerifyAndResetHelpers
   config.include MatcherHelpers
   config.include VerificationHelpers
-  config.extend RSpec::Support::RubyFeatures
-  config.include RSpec::Support::RubyFeatures
 
   config.define_derived_metadata :ordered_and_vague_counts_unsupported do |meta|
     meta[:pending] = "`.ordered` combined with a vague count (e.g. `at_least` or `at_most`) is not yet supported (see #713)"

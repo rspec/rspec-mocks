@@ -84,21 +84,23 @@ module RSpec
           end
         end
 
+        visibility = proxy.visibility_for(message)
+
         # Defined private and protected methods will still trigger `method_missing`
         # when called publicly. We want ruby's method visibility error to get raised,
         # so we simply delegate to `super` in that case.
+        #   return super if visibility == :private || visibility == :protected
         # ...well, we would delegate to `super`, but there's a JRuby
         # bug, so we raise our own visibility error instead:
         # https://github.com/jruby/jruby/issues/1398
-        visibility = proxy.visibility_for(message)
+        # Only works without this workaround with JRuby 9.2
         if visibility == :private || visibility == :protected
           ErrorGenerator.new(self).raise_non_public_error(
             message, visibility
           )
         end
 
-        # Required wrapping doubles in an Array on Ruby 1.9.2
-        raise NoMethodError if [:to_a, :to_ary].include? message
+        raise NoMethodError if message == :to_ary || message == :to_a
         proxy.raise_unexpected_message_error(message, args)
       end
 

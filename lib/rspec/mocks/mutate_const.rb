@@ -248,7 +248,6 @@ module RSpec
           end
 
           if Array === @transfer_nested_constants
-            @transfer_nested_constants = @transfer_nested_constants.map(&:to_s) if RUBY_VERSION == '1.8.7'
             undefined_constants = @transfer_nested_constants - constants_defined_on(@original_value)
 
             if undefined_constants.any?
