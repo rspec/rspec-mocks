@@ -18,7 +18,6 @@ RSpec::Support.define_optimized_require_for_rspec(:mocks) { |f| require_relative
   space
   mutate_const
   targets
-  syntax
   configuration
   verifying_double
   version
