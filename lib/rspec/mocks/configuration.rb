@@ -45,69 +45,6 @@ module RSpec
       #   end
       attr_writer :yield_receiver_to_any_instance_implementation_blocks
 
-      # Adds `stub` and `should_receive` to the given
-      # modules or classes. This is usually only necessary
-      # if you application uses some proxy classes that
-      # "strip themselves down" to a bare minimum set of
-      # methods and remove `stub` and `should_receive` in
-      # the process.
-      #
-      # @example
-      #   RSpec.configure do |rspec|
-      #     rspec.mock_with :rspec do |mocks|
-      #       mocks.add_stub_and_should_receive_to Delegator
-      #     end
-      #   end
-      #
-      def add_stub_and_should_receive_to(*modules)
-        modules.each do |mod|
-          Syntax.enable_should(mod)
-        end
-      end
-
-      # Provides the ability to set either `expect`,
-      # `should` or both syntaxes. RSpec uses `expect`
-      # syntax by default. This is needed if you want to
-      # explicitly enable `should` syntax and/or explicitly
-      # disable `expect` syntax.
-      #
-      # @example
-      #   RSpec.configure do |rspec|
-      #     rspec.mock_with :rspec do |mocks|
-      #       mocks.syntax = [:expect, :should]
-      #     end
-      #  end
-      #
-      def syntax=(*values)
-        syntaxes = values.flatten
-        if syntaxes.include?(:expect)
-          Syntax.enable_expect
-        else
-          Syntax.disable_expect
-        end
-
-        if syntaxes.include?(:should)
-          Syntax.enable_should
-        else
-          Syntax.disable_should
-        end
-      end
-
-      # Returns an array with a list of syntaxes
-      # that are enabled.
-      #
-      # @example
-      #   unless RSpec::Mocks.configuration.syntax.include?(:expect)
-      #     raise "this RSpec extension gem requires the rspec-mocks `:expect` syntax"
-      #   end
-      #
-      def syntax
-        syntaxes = []
-        syntaxes << :should  if Syntax.should_enabled?
-        syntaxes << :expect if Syntax.expect_enabled?
-        syntaxes
-      end
-
       def verify_doubled_constant_names?
         !!@verify_doubled_constant_names
       end
@@ -192,13 +129,6 @@ module RSpec
           RSpec::Mocks::MarshalExtension.unpatch!
         end
       end
-
-      # @api private
-      # Resets the configured syntax to the default.
-      def reset_syntaxes_to_default
-        self.syntax = [:should, :expect]
-        RSpec::Mocks::Syntax.warn_about_should!
-      end
     end
 
     # Mocks specific configuration, as distinct from `RSpec.configuration`
@@ -206,7 +136,5 @@ module RSpec
     def self.configuration
       @configuration ||= Configuration.new
     end
-
-    configuration.reset_syntaxes_to_default
   end
 end

@@ -77,19 +77,9 @@ end
 require 'rspec/support/spec'
 
 RSpec.configure do |config|
-  config.expose_dsl_globally = false
   config.mock_with :rspec
   config.color = true
   config.order = :random
-
-  config.expect_with :rspec do |expectations|
-    expectations.syntax = :expect
-  end
-
-  config.mock_with :rspec do |mocks|
-    $default_rspec_mocks_syntax = mocks.syntax
-    mocks.syntax = :expect
-  end
 
   old_verbose = nil
   config.before(:each, :silence_warnings) do
@@ -124,19 +114,6 @@ RSpec.configure do |config|
   RSpec::Matchers.define_negated_matcher :a_string_excluding, :include
 end
 
-RSpec.shared_context "with syntax" do |syntax|
-  orig_syntax = nil
-
-  before(:all) do
-    orig_syntax = RSpec::Mocks.configuration.syntax
-    RSpec::Mocks.configuration.syntax = syntax
-  end
-
-  after(:all) do
-    RSpec::Mocks.configuration.syntax = orig_syntax
-  end
-end
-
 RSpec.shared_context "with isolated configuration" do
   orig_configuration = nil
   before do
@@ -156,18 +133,5 @@ RSpec.shared_context "with monkey-patched marshal" do
 
   after do
     RSpec::Mocks.configuration.patch_marshal_to_support_partial_doubles = false
-  end
-end
-
-RSpec.shared_context "with the default mocks syntax" do
-  orig_syntax = nil
-
-  before(:all) do
-    orig_syntax = RSpec::Mocks.configuration.syntax
-    RSpec::Mocks.configuration.reset_syntaxes_to_default
-  end
-
-  after(:all) do
-    RSpec::Mocks.configuration.syntax = orig_syntax
   end
 end

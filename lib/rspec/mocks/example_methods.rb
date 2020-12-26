@@ -303,8 +303,7 @@ module RSpec
       #
       # @note This method is usually provided by rspec-expectations. However,
       #   if you use rspec-mocks without rspec-expectations, there's a definition
-      #   of it that is made available here. If you disable the `:expect` syntax
-      #   this method will be undefined.
+      #   of it that is made available here.
 
       # @method allow
       # Used to wrap an object in preparation for stubbing a method
@@ -312,28 +311,30 @@ module RSpec
       #
       # @example
       #   allow(dbl).to receive(:foo).with(5).and_return(:return_value)
-      #
-      # @note If you disable the `:expect` syntax this method will be undefined.
+      def allow(target)
+        AllowanceTarget.new(target)
+      end
 
-      # @method expect_any_instance_of
       # Used to wrap a class in preparation for setting a mock expectation
       # on instances of it.
       #
       # @example
       #   expect_any_instance_of(MyClass).to receive(:foo)
       #
-      # @note If you disable the `:expect` syntax this method will be undefined.
+      def expect_any_instance_of(klass)
+        AnyInstanceExpectationTarget.new(klass)
+      end
 
-      # @method allow_any_instance_of
       # Used to wrap a class in preparation for stubbing a method
       # on instances of it.
       #
       # @example
       #   allow_any_instance_of(MyClass).to receive(:foo)
       #
-      # @note This is only available when you have enabled the `expect` syntax.
+      def allow_any_instance_of(klass)
+        AnyInstanceAllowanceTarget.new(klass)
+      end
 
-      # @method receive
       # Used to specify a message that you expect or allow an object
       # to receive. The object returned by `receive` supports the same
       # fluent interface that `should_receive` and `stub` have always
@@ -343,9 +344,10 @@ module RSpec
       # @example
       #   expect(obj).to receive(:hello).with("world").exactly(3).times
       #
-      # @note If you disable the `:expect` syntax this method will be undefined.
+      def receive(method_name, &block)
+        Matchers::Receive.new(method_name, block)
+      end
 
-      # @method receive_messages
       # Shorthand syntax used to setup message(s), and their return value(s),
       # that you expect or allow an object to receive. The method takes a hash
       # of messages and their respective return values. Unlike with `receive`,
@@ -356,9 +358,12 @@ module RSpec
       #   allow(obj).to receive_messages(:speak => "Hello World")
       #   allow(obj).to receive_messages(:speak => "Hello", :meow => "Meow")
       #
-      # @note If you disable the `:expect` syntax this method will be undefined.
+      def receive_messages(message_return_value_hash)
+        matcher = Matchers::ReceiveMessages.new(message_return_value_hash)
+        matcher.warn_about_block if block_given?
+        matcher
+      end
 
-      # @method receive_message_chain
       # @overload receive_message_chain(method1, method2)
       # @overload receive_message_chain("method1.method2")
       # @overload receive_message_chain(method1, method_to_value_hash)
@@ -386,7 +391,9 @@ module RSpec
       #   # Common use in Rails/ActiveRecord:
       #   allow(Article).to receive_message_chain("recent.published") { [Article.new] }
       #
-      # @note If you disable the `:expect` syntax this method will be undefined.
+      def receive_message_chain(*messages, &block)
+        Matchers::ReceiveMessageChain.new(messages, &block)
+      end
 
       # @private
       def self.included(klass)
@@ -425,9 +432,13 @@ module RSpec
         type.new(*args)
       end
 
-      # This module exists to host the `expect` method for cases where
+      # This module exists to provide the `expect` method for cases where
       # rspec-mocks is used w/o rspec-expectations.
       module ExpectHost
+        # @private
+        def expect(target)
+          ExpectationTarget.new(target)
+        end
       end
     end
   end

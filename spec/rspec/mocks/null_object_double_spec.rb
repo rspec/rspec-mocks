@@ -108,21 +108,17 @@ module RSpec
         obj = double('anything').as_null_object
         expect(obj).to be_null_object
       end
+
+      it 'supports chainable calls' do
+        obj = double("foo").as_null_object
+        expect(obj.foo.bar.bazz).to be(obj)
+      end
     end
 
     RSpec.describe "#null_object?" do
       it "defaults to false" do
         obj = double('anything')
         expect(obj).not_to be_null_object
-      end
-    end
-
-    RSpec.describe "when using the :expect syntax" do
-      include_context "with syntax", :expect
-
-      it 'still supports null object doubles' do
-        obj = double("foo").as_null_object
-        expect(obj.foo.bar.bazz).to be(obj)
       end
     end
   end

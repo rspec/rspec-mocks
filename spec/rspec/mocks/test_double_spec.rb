@@ -30,7 +30,7 @@ module RSpec
         end
       end
 
-      RSpec.shared_examples_for "a copy method" do |method|
+      shared_examples_for "a copy method" do |method|
         it "copies the `as_null_object` state when #{method}'d" do
           dbl = double.as_null_object
           copy = dbl.__send__(method)
@@ -38,20 +38,11 @@ module RSpec
         end
       end
 
-      include_examples "a copy method", :dup
-      include_examples "a copy method", :clone
+      it 'stubs the methods passed in the stubs hash' do
+        dbl = double("MyDouble", :a => 5, :b => 10)
 
-      [[:should, :expect], [:expect], [:should]].each do |syntax|
-        context "with syntax #{syntax.inspect}" do
-          include_context "with syntax", syntax
-
-          it 'stubs the methods passed in the stubs hash' do
-            dbl = double("MyDouble", :a => 5, :b => 10)
-
-            expect(dbl.a).to eq(5)
-            expect(dbl.b).to eq(10)
-          end
-        end
+        expect(dbl.a).to eq(5)
+        expect(dbl.b).to eq(10)
       end
     end
   end
