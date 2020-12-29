@@ -3,7 +3,6 @@ require 'support/doubled_classes'
 
 RSpec.describe "Test doubles format well in failure messages" do
   include RSpec::Matchers::FailMatchers
-  include RSpec::Support::Spec::DiffHelpers
 
   RSpec::Matchers.define :format_in_failures_as do |expected|
     match do |dbl|
@@ -102,7 +101,7 @@ RSpec.describe "Test doubles format well in failure messages" do
     }.to fail_with(<<-EOS.gsub(/^\s+\|/, ''))
       |expected [#<Double "Foo">] to include #<Double "Bar">
       |Diff:
-      |@@ #{one_line_header} @@
+      |@@ -1 +1 @@
       |-[#<Double "Bar">]
       |+[#<Double "Foo">]
     EOS

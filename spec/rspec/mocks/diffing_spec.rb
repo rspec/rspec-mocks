@@ -2,8 +2,6 @@ require "spec_helper"
 require "pp"
 
 RSpec.describe "Diffs printed when arguments don't match" do
-  include RSpec::Support::Spec::DiffHelpers
-
   before do
     allow(RSpec::Mocks.configuration).to receive(:color?).and_return(false)
   end
@@ -70,7 +68,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
         expect(d).to receive(:foo).with(expected_hash)
         expect {
           d.foo(:bad => :hash)
-        }.to fail_with(/\A#<Double "double"> received :foo with unexpected arguments\n  expected: \(#{hash_regex_inspect expected_hash}\)\n       got: \(#{hash_regex_inspect actual_hash}\)\nDiff:\n@@ #{Regexp.escape one_line_header} @@\n\-\[#{hash_regex_inspect expected_hash}\]\n\+\[#{hash_regex_inspect actual_hash}\]\n\z/)
+        }.to fail_with(/\A#<Double "double"> received :foo with unexpected arguments\n  expected: \(#{hash_regex_inspect expected_hash}\)\n       got: \(#{hash_regex_inspect actual_hash}\)\nDiff:\n@@ \-1 \+1 @@\n\-\[#{hash_regex_inspect expected_hash}\]\n\+\[#{hash_regex_inspect actual_hash}\]\n\z/)
       end
     end
 
@@ -92,7 +90,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
         expect(d).to receive(:foo).with([:a, :b, :c])
         expect {
           d.foo([])
-        }.to fail_with("#<Double \"double\"> received :foo with unexpected arguments\n  expected: ([:a, :b, :c])\n       got: ([])\nDiff:\n@@ #{one_line_header} @@\n-[[:a, :b, :c]]\n+[[]]\n")
+        }.to fail_with("#<Double \"double\"> received :foo with unexpected arguments\n  expected: ([:a, :b, :c])\n       got: ([])\nDiff:\n@@ -1 +1 @@\n-[[:a, :b, :c]]\n+[[]]\n")
       end
     end
 
@@ -108,7 +106,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
             d.foo([])
           }.to fail_with("#<Double \"double\"> received :foo with unexpected arguments\n" \
             "  expected: (#{collab_inspect})\n" \
-            "       got: ([])\nDiff:\n@@ #{one_line_header} @@\n-[#{collab_inspect}]\n+[[]]\n")
+            "       got: ([])\nDiff:\n@@ -1 +1 @@\n-[#{collab_inspect}]\n+[[]]\n")
         end
       end
     end
@@ -127,7 +125,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
             d.foo([:a, :b])
           }.to fail_with("#<Double \"double\"> received :foo with unexpected arguments\n" \
             "  expected: (#{collab_description})\n" \
-            "       got: ([:a, :b])\nDiff:\n@@ #{one_line_header} @@\n-[\"#{collab_description}\"]\n+[[:a, :b]]\n")
+            "       got: ([:a, :b])\nDiff:\n@@ -1 +1 @@\n-[\"#{collab_description}\"]\n+[[:a, :b]]\n")
         end
       end
     end
@@ -155,7 +153,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
             d.foo([:a, :b])
           }.to fail_with("#<Double \"double\"> received :foo with unexpected arguments\n" \
             "  expected: (#{collab_inspect})\n" \
-            "       got: ([:a, :b])\nDiff:\n@@ #{one_line_header} @@\n-[#{collab_pp}]\n+[[:a, :b]]\n")
+            "       got: ([:a, :b])\nDiff:\n@@ -1 +1 @@\n-[#{collab_pp}]\n+[[:a, :b]]\n")
         end
       end
     end
