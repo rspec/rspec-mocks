@@ -1,4 +1,5 @@
 RSpec::Support.require_rspec_support 'reentrant_mutex'
+RSpec::Support.require_rspec_support "with_keywords_when_needed"
 
 module RSpec
   module Mocks
@@ -98,7 +99,7 @@ module RSpec
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
         wrap_original(__method__) do |original, *args, &block|
-          original.call(*args, &block)
+          RSpec::Support::WithKeywordsWhenNeeded.call(original, *args, &block)
         end
       end
 

@@ -12,6 +12,10 @@ RSpec.describe "and_call_original" do
           yield x, :additional_yielded_arg
         end
 
+        def meth_3(a: '')
+          a
+        end
+
         def self.new_instance
           new
         end
@@ -51,6 +55,12 @@ RSpec.describe "and_call_original" do
       allow(instance).to receive(:meth_1).and_return(:stubbed_value)
       expect(instance).to receive(:meth_1).and_call_original
       expect(instance.meth_1).to eq(:original)
+    end
+
+    it 'supports keyword arguments' do
+      expect(instance).to receive(:meth_3).and_call_original
+      value = instance.meth_3(a: :a)
+      expect(value).to eq(:a)
     end
 
     it 'passes args and blocks through to the original method' do

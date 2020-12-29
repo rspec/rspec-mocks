@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_support 'method_signature_verifier'
-
 module RSpec
   module Mocks
     # A message expectation that knows about the real implementation of the
