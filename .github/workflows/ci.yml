@@ -31,7 +31,7 @@ jobs:
           - ruby-head
         env:
           -
-            DIFF_LCS_VERSION: "> 1.4.3"
+            BOGUS: ""
         include:
           - ruby: jruby-9.2.13.0
             env:
