@@ -185,6 +185,12 @@ RSpec.describe "and_call_original" do
       expect(klazz.alternate_new).to be_an_instance_of(klazz)
     end
 
+    it "works for methods that accept keyword arguments" do
+      def instance.foo(bar:); bar; end
+      expect(instance).to receive(:foo).and_call_original
+      expect(instance.foo(bar: "baz")).to eq("baz")
+    end
+
     context 'on an object that defines method_missing' do
       before do
         klass.class_exec do
