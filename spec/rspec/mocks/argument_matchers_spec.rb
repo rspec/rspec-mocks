@@ -381,16 +381,36 @@ module RSpec
           a_double.random_call(:a => "a", :b => "b")
         end
 
-        it "matches against a hash submitted by reference and received by value" do
-          opts = {:a => "a", :b => "b"}
-          expect(a_double).to receive(:random_call).with(opts)
-          a_double.random_call(:a => "a", :b => "b")
+        if RSpec::Support::RubyFeatures.required_kw_args_supported?
+          it "fails to match against a hash submitted by reference and received by value in Ruby 3", :reset => true do
+            opts = {:a => "a", :b => "b"}
+            expect(a_double).to receive(:random_call).with(opts)
+            expect do
+              a_double.random_call(:a => "a", :b => "b")
+            end.to fail_with(/expected: \(\{:a=>"a", :b=>"b"|:b=>"b", :a=>"a"\}\)/)
+          end
+        else
+          it "matches against a hash submitted by reference and received by value in Ruby 2" do
+            opts = {:a => "a", :b => "b"}
+            expect(a_double).to receive(:random_call).with(opts)
+            a_double.random_call(:a => "a", :b => "b")
+          end
         end
 
-        it "matches against a hash submitted by value and received by reference" do
-          opts = {:a => "a", :b => "b"}
-          expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
-          a_double.random_call(opts)
+        if RUBY_VERSION >= "2.7"
+          it "fails to match against a hash submitted by value and received by reference in Ruby 2.7 or later", :reset => true do
+            opts = {:a => "a", :b => "b"}
+            expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
+            expect do
+              a_double.random_call(opts)
+            end.to fail_with(/expected: \(\{(:a=>\"a\", :b=>\"b\"|:b=>\"b\", :a=>\"a\")\}\)/)
+          end
+        else
+          it "matches against a hash submitted by value and received by reference in Ruby 2.6 or before" do
+            opts = {:a => "a", :b => "b"}
+            expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
+            a_double.random_call(opts)
+          end
         end
 
         it "fails for a hash w/ wrong values", :reset => true do

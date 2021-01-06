@@ -84,7 +84,7 @@ module RSpec
       it "can accept an inner hash as a message argument" do
         hash = {:a => {:key => "value"}}
         expect(object).to receive(:foobar).with(:key => "value").and_return(1)
-        expect(object.foobar(hash[:a])).to equal(1)
+        expect(object.foobar(**hash[:a])).to equal(1)
       end
 
       it "can create a positive message expectation" do

@@ -466,12 +466,14 @@ RSpec.context "with default syntax configuration" do
   let(:expected_arguments) {
     [
       /Using.*without explicitly enabling/,
-      {:replacement => "the new `:expect` syntax or explicitly enable `:should`"}
     ]
+  }
+  let(:expected_keywords) {
+    {:replacement => "the new `:expect` syntax or explicitly enable `:should`"}
   }
 
   it "it warns about should once, regardless of how many times it is called" do
-    expect(RSpec).to receive(:deprecate).with(*expected_arguments)
+    expect(RSpec).to receive(:deprecate).with(*expected_arguments, **expected_keywords)
     o = Object.new
     o2 = Object.new
     o.should_receive(:bees)
@@ -482,7 +484,7 @@ RSpec.context "with default syntax configuration" do
   end
 
   it "warns about should not once, regardless of how many times it is called" do
-    expect(RSpec).to receive(:deprecate).with(*expected_arguments)
+    expect(RSpec).to receive(:deprecate).with(*expected_arguments, **expected_keywords)
     o = Object.new
     o2 = Object.new
     o.should_not_receive(:bees)
@@ -490,7 +492,7 @@ RSpec.context "with default syntax configuration" do
   end
 
   it "warns about stubbing once, regardless of how many times it is called" do
-    expect(RSpec).to receive(:deprecate).with(*expected_arguments)
+    expect(RSpec).to receive(:deprecate).with(*expected_arguments, **expected_keywords)
     o = Object.new
     o2 = Object.new
 
