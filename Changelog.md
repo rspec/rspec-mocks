@@ -1,4 +1,5 @@
 ### Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.1...4-0-dev)
 
 Breaking Changes:
 
@@ -9,10 +10,18 @@ Breaking Changes:
 
 Bug Fixes:
 
-* Issue `ArgumentError` rather than `TypeError` when unsupported methods on
-  unsupported objects are attempted to be stubbed. (@zhisme, #1357)
+* Support keyword arguments with `and_call_original` on Ruby 3.0.
+  (Bryan Powell, #1385)
 * `RSpec::Mocks::Constant#previously_defined?` is now always a boolean.
   (Phil Pirozhkov, #1397)
+
+### 3.10.1 / 2020-12-27
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.0...v3.10.1)
+
+Bug Fixes:
+
+* Issue `ArgumentError` rather than `TypeError` when unsupported methods on
+  unsupported objects are attempted to be stubbed. (@zhisme, #1357)
 
 ### 3.10.0 / 2020-10-30
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.9.1...v3.10.0)
