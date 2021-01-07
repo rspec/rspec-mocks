@@ -64,6 +64,7 @@ module RSpec
           define_method(method_name) do |*args, &block|
             method_double.proxy_method_invoked(self, *args, &block)
           end
+          ruby2_keywords(method_name) if Module.private_method_defined?(:ruby2_keywords)
           __send__(visibility, method_name)
         end
 
