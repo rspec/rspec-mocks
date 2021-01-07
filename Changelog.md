@@ -1,3 +1,11 @@
+### Development
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.1...main)
+
+Bug Fixes:
+
+* Support keyword arguments with `and_call_original` on Ruby 3.0.
+  (Bryan Powell, #1385)
+
 ### 3.10.1 / 2020-12-27
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.0...v3.10.1)
 
