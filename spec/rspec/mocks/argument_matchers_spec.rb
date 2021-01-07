@@ -381,20 +381,10 @@ module RSpec
           a_double.random_call(:a => "a", :b => "b")
         end
 
-        if RSpec::Support::RubyFeatures.required_kw_args_supported?
-          it "fails to match against a hash submitted by reference and received by value in Ruby 3", :reset => true do
-            opts = {:a => "a", :b => "b"}
-            expect(a_double).to receive(:random_call).with(opts)
-            expect do
-              a_double.random_call(:a => "a", :b => "b")
-            end.to fail_with(/expected: \(\{:a=>"a", :b=>"b"|:b=>"b", :a=>"a"\}\)/)
-          end
-        else
-          it "matches against a hash submitted by reference and received by value in Ruby 2" do
-            opts = {:a => "a", :b => "b"}
-            expect(a_double).to receive(:random_call).with(opts)
-            a_double.random_call(:a => "a", :b => "b")
-          end
+        it "matches against a hash submitted by reference and received by value (in both Ruby 2 and Ruby 3)" do
+          opts = {:a => "a", :b => "b"}
+          expect(a_double).to receive(:random_call).with(opts)
+          a_double.random_call(:a => "a", :b => "b")
         end
 
         if RUBY_VERSION >= "2.7"

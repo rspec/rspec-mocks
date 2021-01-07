@@ -63,7 +63,7 @@ module RSpec
         if Hash.respond_to?(:ruby2_keywords_hash?, true)
           # if both arguments end with Hashes, and if one is a keyword hash and the other is not, they don't match
           if Hash === expected_args.last && Hash === actual_args.last
-            if Hash.ruby2_keywords_hash?(actual_args.last) != Hash.ruby2_keywords_hash?(expected_args.last)
+            if !Hash.ruby2_keywords_hash?(actual_args.last) && Hash.ruby2_keywords_hash?(expected_args.last)
               return false
             end
           end
