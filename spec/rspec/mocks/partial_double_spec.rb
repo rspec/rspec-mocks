@@ -87,6 +87,8 @@ module RSpec
           expect(object).to receive(:foobar).with(:key => "value").and_return(1)
           # Use eval to avoid syntax error on 1.8 and 1.9
           eval("expect(object.foobar(**hash[:a])).to equal(1)")
+          # Avoid warning: assigned but unused variable - hash
+          hash = hash
         end
       end
 
