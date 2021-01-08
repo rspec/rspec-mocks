@@ -381,14 +381,14 @@ module RSpec
           a_double.random_call(:a => "a", :b => "b")
         end
 
-        it "matches against a hash submitted by reference and received by value (in both Ruby 2 and Ruby 3)" do
+        it "matches against a hash submitted as keyword arguments a and received as a positional argument (in both Ruby 2 and Ruby 3)" do
           opts = {:a => "a", :b => "b"}
           expect(a_double).to receive(:random_call).with(opts)
           a_double.random_call(:a => "a", :b => "b")
         end
 
         if RUBY_VERSION >= "2.7"
-          it "fails to match against a hash submitted by value and received by reference in Ruby 2.7 or later", :reset => true do
+          it "fails to matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 2.7 or later", :reset => true do
             opts = {:a => "a", :b => "b"}
             expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
             expect do
@@ -396,7 +396,7 @@ module RSpec
             end.to fail_with(/expected: \(\{(:a=>\"a\", :b=>\"b\"|:b=>\"b\", :a=>\"a\")\}\)/)
           end
         else
-          it "matches against a hash submitted by value and received by reference in Ruby 2.6 or before" do
+          it "matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 2.6 or before" do
             opts = {:a => "a", :b => "b"}
             expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
             a_double.random_call(opts)
