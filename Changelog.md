@@ -4,6 +4,8 @@ Breaking Changes:
 
 * Ruby < 2.3 is no longer supported. (Phil Pirozhkov, #1349)
 * Extract monkey-patching `should_receive`/`stub` syntax. (Phil Pirozhkov, #1365)
+* Remove the deprecated `RSpec::Mocks::CannotSupportArgMutationsError`.
+  (Phil Pirozhkov, #1400)
 
 Bug Fixes:
 
