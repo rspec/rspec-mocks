@@ -285,8 +285,40 @@ module RSpec
           target.to receive(:foo).and_return(:baz)
           expect { reset object }.to change { object.foo }.from(:baz).to(:bar)
         end
+      end
 
-        context "on a frozen object" do
+      shared_examples "resets partial mocks of any instance cleanly" do
+        let(:klass)  { Struct.new(:foo) }
+        let(:object) { klass.new :bar }
+
+        it "removes the method double" do
+          target.to receive(:foo).and_return(:baz)
+          expect {
+            verify_all
+          }.to change { object.foo }.from(:baz).to(:bar)
+        end
+      end
+
+      shared_examples "handles frozen objects cleanly" do
+        let(:klass)  { Struct.new(:foo) }
+        let(:object) { klass.new :bar }
+
+        context "when adding the method double" do
+          it "raises clear error" do
+            object.freeze
+            expect {
+              target.to receive(:foo).and_return(:baz)
+            }.to raise_error(ArgumentError, /Cannot proxy frozen objects/)
+          end
+        end
+
+        context "when removing the method double" do
+          before do
+            if RUBY_VERSION < "2.2" && RUBY_VERSION >= "2.0" && RSpec::Support::Ruby.mri?
+              pending "Does not work on 2.0-2.1 because frozen structs can have methods restored"
+            end
+          end
+
           it "warns about being unable to remove the method double" do
             target.to receive(:foo).and_return(:baz)
             expect_warning_without_call_site(/rspec-mocks was unable to restore the original `foo` method on #{object.inspect}/)
@@ -302,19 +334,20 @@ module RSpec
             reset object
           end
         end
-      end
 
-      shared_examples "resets partial mocks of any instance cleanly" do
-        let(:klass)  { Struct.new(:foo) }
-        let(:object) { klass.new :bar }
+        context "with fake frozen object" do
+          let(:klass)  { Struct.new(:foo, :frozen?, :freeze) }
+          let(:object) { klass.new :bar, true }
 
-        it "removes the method double" do
-          target.to receive(:foo).and_return(:baz)
-          expect {
-            verify_all
-          }.to change { object.foo }.from(:baz).to(:bar)
+          it "allows the caller to configure how the subject responds" do
+            object.freeze
+            target.to receive(:foo).and_return(5)
+            expect(object.foo).to eq(5)
+            expect { reset object }.to change { object.foo }.from(5).to(:bar)
+          end
         end
       end
+
 
       describe "allow(...).to receive" do
         it_behaves_like "an expect syntax allowance" do
@@ -322,6 +355,9 @@ module RSpec
           let(:wrapped)  { allow(receiver) }
         end
         it_behaves_like "resets partial mocks cleanly" do
+          let(:target) { allow(object) }
+        end
+        it_behaves_like "handles frozen objects cleanly" do
           let(:target) { allow(object) }
         end
 
@@ -424,6 +460,9 @@ module RSpec
           end
         end
         it_behaves_like "resets partial mocks cleanly" do
+          let(:target) { expect(object) }
+        end
+        it_behaves_like "handles frozen objects cleanly" do
           let(:target) { expect(object) }
         end
 
