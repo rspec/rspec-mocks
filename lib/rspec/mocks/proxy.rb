@@ -35,8 +35,7 @@ module RSpec
 
       # @private
       def ensure_can_be_proxied!(object)
-        return unless object.is_a?(Symbol) || object.frozen?
-        return if object.nil?
+        return unless object.is_a?(Symbol) || (object.is_a?(String) && object.frozen?)
 
         msg = "Cannot proxy frozen objects"
         if Symbol === object
