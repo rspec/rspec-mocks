@@ -66,7 +66,7 @@ module RSpec
 
       # @private
       def self.unmutated(name)
-        previously_defined = recursive_const_defined?(name)
+        previously_defined = !!recursive_const_defined?(name)
       rescue NameError
         new(name) do |c|
           c.valid_name = false
