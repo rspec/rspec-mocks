@@ -32,6 +32,8 @@ if RUBY_VERSION < '2.4.0'
   gem 'minitest', '< 5.12.0'
 end
 
+gem 'thor', '> 1.0.0'
+
 ### deps for rdoc.info
 group :documentation do
   gem 'redcarpet', :platform => :mri
