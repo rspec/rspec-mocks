@@ -1,4 +1,4 @@
-# RSpec Mocks [![Build Status](https://secure.travis-ci.org/rspec/rspec-mocks.svg?branch=main)](http://travis-ci.org/rspec/rspec-mocks) [![Code Climate](https://codeclimate.com/github/rspec/rspec-mocks.svg)](https://codeclimate.com/github/rspec/rspec-mocks)
+# RSpec Mocks [![Build Status](https://github.com/rspec/rspec-mocks/workflows/RSpec%20CI/badge.svg?branch=3-10-maintenance)](https://github.com/rspec/rspec-mocks/actions) [![Code Climate](https://codeclimate.com/github/rspec/rspec-mocks.svg)](https://codeclimate.com/github/rspec/rspec-mocks)
 rspec-mocks is a test-double framework for rspec with support for method stubs,
 fakes, and message expectations on generated test-doubles and real objects
 alike.
