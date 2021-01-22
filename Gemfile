@@ -46,6 +46,8 @@ end
 
 if RUBY_VERSION <= '2.3.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
   gem "childprocess", "< 1.0.0"
+elsif RUBY_VERSION < '2.0.0'
+  gem "childprocess", "< 1.0.0"
 end
 
 if RUBY_VERSION < '1.9.2'
@@ -57,13 +59,21 @@ if RUBY_VERSION < '2.4.0'
   gem 'minitest', '< 5.12.0'
 end
 
+if RUBY_VERSION < '2.0.0'
+  gem 'thor', '< 1.0.0'
+else
+  gem 'thor', '> 1.0.0'
+end
+
 ### deps for rdoc.info
 group :documentation do
   gem 'redcarpet', :platform => :mri
   gem 'github-markup', :platform => :mri
 end
 
-gem 'simplecov', '~> 0.8'
+group :coverage do
+  gem 'simplecov', '~> 0.8'
+end
 
 if RUBY_VERSION < '2.0.0' || RUBY_ENGINE == 'java'
   gem 'json', '< 2.0.0' # this is a dependency of simplecov
