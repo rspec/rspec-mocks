@@ -38,7 +38,9 @@ group :documentation do
   gem 'github-markup', :platform => :mri
 end
 
-gem 'simplecov', '~> 0.8'
+group :coverage do
+  gem 'simplecov', '~> 0.8'
+end
 
 gem "jruby-openssl", platforms: [:jruby]
 
