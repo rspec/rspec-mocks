@@ -12,6 +12,10 @@ RSpec.describe "and_call_original" do
           yield x, :additional_yielded_arg
         end
 
+        def meth_3(x:)
+          x
+        end
+
         def self.new_instance
           new
         end
@@ -123,6 +127,11 @@ RSpec.describe "and_call_original" do
       it 'works for instance methods defined on the class' do
         expect_any_instance_of(klass).to receive(:meth_1).and_call_original
         expect(klass.new.meth_1).to eq(:original)
+      end
+
+      it 'works for instance methods that use keyword arguments' do
+        expect_any_instance_of(klass).to receive(:meth_3).and_call_original
+        expect(klass.new.meth_3(x: :kwarg)).to eq(:kwarg)
       end
 
       it 'works for instance methods defined on the superclass of the class' do

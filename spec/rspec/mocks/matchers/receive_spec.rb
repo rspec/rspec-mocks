@@ -62,6 +62,14 @@ module RSpec
           expect(receiver.foo).to eq(4)
         end
 
+        it 'allows a `do...end` block implementation with keyword args to be provided' do
+          wrapped.to receive(:foo) do |**kwargs|
+            kwargs[:kw]
+          end
+
+          expect(receiver.foo(kw: :arg)).to eq(:arg)
+        end
+
         it 'allows chaining off a `do...end` block implementation to be provided' do
           wrapped.to receive(:foo) do
             4

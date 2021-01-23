@@ -261,6 +261,7 @@ module RSpec
             recorder.playback!(self, method_name)
             __send__(method_name, *args, &blk)
           end
+          @klass.__send__(:ruby2_keywords, method_name) if @klass.respond_to?(:ruby2_keywords, true)
         end
 
         def mark_invoked!(method_name)
