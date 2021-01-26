@@ -24,16 +24,24 @@ module RSpec
           receiver.foo(1.1)
         end
 
-        it 'allows a `do...end` block implementation to be provided' do
-          wrapped.to receive(:foo) do
-            4
+        context 'without yielding receiver' do
+          # when `yield_receiver_to_any_instance_implementation_blocks` is `true`
+          # the block arguments are different for `expect` and `expect_any_instance_of`
+          around do |example|
+             previous_value = RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks?
+             RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks = false
+             example.run
+             RSpec::Mocks.configuration.yield_receiver_to_any_instance_implementation_blocks = previous_value
           end
 
-          expect(receiver.foo).to eq(4)
-        end
+          it 'allows a `do...end` block implementation to be provided' do
+            wrapped.to receive(:foo) do
+              4
+            end
 
-        if RSpec::Support::RubyFeatures.kw_args_supported?
-          binding.eval(<<-RUBY, __FILE__, __LINE__)
+            expect(receiver.foo).to eq(4)
+          end
+
           it 'allows a `do...end` block implementation with keyword args to be provided' do
             wrapped.to receive(:foo) do |**kwargs|
               kwargs[:kw]
@@ -57,11 +65,7 @@ module RSpec
 
             expect(receiver.foo).to eq(:arg)
           end
-          RUBY
-        end
 
-        if RSpec::Support::RubyFeatures.required_kw_args_supported?
-          binding.eval(<<-RUBY, __FILE__, __LINE__)
           it 'allows a `do...end` block implementation with required keyword args' do
             wrapped.to receive(:foo) do |kw:|
               kw
@@ -69,7 +73,6 @@ module RSpec
 
             expect(receiver.foo(kw: :arg)).to eq(:arg)
           end
-          RUBY
         end
 
         it 'allows chaining off a `do...end` block implementation to be provided' do
