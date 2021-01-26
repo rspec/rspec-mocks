@@ -12,7 +12,15 @@ RSpec.describe "and_call_original" do
           yield x, :additional_yielded_arg
         end
 
-        def meth_3(x:)
+        def meth_3(**kwargs)
+          kwargs
+        end
+
+        def meth_4(x: 1)
+          x
+        end
+
+        def meth_5(x:)
           x
         end
 
@@ -129,9 +137,24 @@ RSpec.describe "and_call_original" do
         expect(klass.new.meth_1).to eq(:original)
       end
 
-      it 'works for instance methods that use keyword arguments' do
+      it 'works for instance methods that use double splat' do
         expect_any_instance_of(klass).to receive(:meth_3).and_call_original
-        expect(klass.new.meth_3(x: :kwarg)).to eq(:kwarg)
+        expect(klass.new.meth_3(x: :kwarg)).to eq({x: :kwarg})
+      end
+
+      it 'works for instance methods that use optional keyword arguments' do
+        expect_any_instance_of(klass).to receive(:meth_4).and_call_original
+        expect(klass.new.meth_4).to eq(1)
+      end
+
+      it 'works for instance methods that use optional keyword arguments with an argument supplied' do
+        expect_any_instance_of(klass).to receive(:meth_4).and_call_original
+        expect(klass.new.meth_4(x: :kwarg)).to eq(:kwarg)
+      end
+
+      it 'works for instance methods that use required keyword arguments' do
+        expect_any_instance_of(klass).to receive(:meth_5).and_call_original
+        expect(klass.new.meth_5(x: :kwarg)).to eq(:kwarg)
       end
 
       it 'works for instance methods defined on the superclass of the class' do
