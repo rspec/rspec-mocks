@@ -32,12 +32,44 @@ module RSpec
           expect(receiver.foo).to eq(4)
         end
 
-        it 'allows a `do...end` block implementation with keyword args to be provided' do
-          wrapped.to receive(:foo) do |**kwargs|
-            kwargs[:kw]
+        if RSpec::Support::RubyFeatures.kw_args_supported?
+          binding.eval(<<-RUBY, __FILE__, __LINE__)
+          it 'allows a `do...end` block implementation with keyword args to be provided' do
+            wrapped.to receive(:foo) do |**kwargs|
+              kwargs[:kw]
+            end
+
+            expect(receiver.foo(kw: :arg)).to eq(:arg)
           end
 
-          expect(receiver.foo(kw: :arg)).to eq(:arg)
+          it 'allows a `do...end` block implementation with optional keyword args to be provided' do
+            wrapped.to receive(:foo) do |kw: :arg|
+              kw
+            end
+
+            expect(receiver.foo(kw: 1)).to eq(1)
+          end
+
+          it 'allows a `do...end` block implementation with optional keyword args to be provided' do
+            wrapped.to receive(:foo) do |kw: :arg|
+              kw
+            end
+
+            expect(receiver.foo).to eq(:arg)
+          end
+          RUBY
+        end
+
+        if RSpec::Support::RubyFeatures.required_kw_args_supported?
+          binding.eval(<<-RUBY, __FILE__, __LINE__)
+          it 'allows a `do...end` block implementation with required keyword args' do
+            wrapped.to receive(:foo) do |kw:|
+              kw
+            end
+
+            expect(receiver.foo(kw: :arg)).to eq(:arg)
+          end
+          RUBY
         end
 
         it 'allows chaining off a `do...end` block implementation to be provided' do
