@@ -32,6 +32,9 @@ Bug Fixes:
   (Bryan Powell, #1385)
 * `RSpec::Mocks::Constant#previously_defined?` is now always a boolean.
   (Phil Pirozhkov, #1397)
+* Support keyword arguments on Ruby 3.0 when used with `expect_any_instance_of`
+  or `allow_any_instance_of` with `and_call_original`.
+  (Jess Hottenstein, #1407)
 
 ### 3.10.1 / 2020-12-27
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.0...v3.10.1)
