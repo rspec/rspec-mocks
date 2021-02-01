@@ -7,7 +7,7 @@ module RSpec
         @yield_receiver_to_any_instance_implementation_blocks = true
         @verify_doubled_constant_names = false
         @transfer_nested_constants = false
-        @verify_partial_doubles = false
+        @verify_partial_doubles = true
         @temporarily_suppress_partial_double_verification = false
         @color = false
       end

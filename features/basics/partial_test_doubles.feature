@@ -23,8 +23,6 @@ Feature: Partial test doubles
   At the end of the example, RSpec verifies any message expectations, and then restores the
   original methods.
 
-  Note: we recommend enabling the [`verify_partial_doubles`](../verifying-doubles/partial-doubles) config option.
-
   Scenario: Only the specified methods are redefined
     Given a file named "partial_double_spec.rb" with:
       """ruby

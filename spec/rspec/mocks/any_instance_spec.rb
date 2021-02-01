@@ -1166,6 +1166,13 @@ module RSpec
       end
 
       context "passing the receiver to the implementation block" do
+        let(:klass) do
+          Class.new do
+            def bees(arg)
+            end
+          end
+        end
+
         context "when configured to pass the instance" do
           include_context 'with isolated configuration'
           before(:each) do

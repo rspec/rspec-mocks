@@ -23,7 +23,9 @@ module RSpec
       end
 
       specify "trying to raise a class_double raises a TypeError" do
-        subject = Object.new
+        subject = Class.new do
+          def some_method; end
+        end.new
         class_double("StubbedError").as_stubbed_const
         allow(subject).to receive(:some_method).and_raise(StubbedError)
         expect { subject.some_method }.to raise_error(TypeError, 'exception class/object expected')
