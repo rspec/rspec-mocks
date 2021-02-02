@@ -7,6 +7,8 @@ Breaking Changes:
 * Extract monkey-patching `should_receive`/`stub` syntax. (Phil Pirozhkov, #1365)
 * Remove the deprecated `RSpec::Mocks::CannotSupportArgMutationsError` constant.
   (Phil Pirozhkov, #1400)
+* Change the default setting for `RSpec::Mocks::Configuration#verify_partial_doubles`
+  to `true`. (Phil Pirozhkov, #1409)
 
 Bug Fixes:
 

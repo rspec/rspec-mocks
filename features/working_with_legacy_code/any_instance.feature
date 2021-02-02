@@ -31,9 +31,12 @@ Feature: Any Instance
       """ruby
       RSpec.describe "allow_any_instance_of" do
         it "returns the specified value on any instance of the class" do
-          allow_any_instance_of(Object).to receive(:foo).and_return(:return_value)
+          class Klass
+            def foo; end
+          end
+          allow_any_instance_of(Klass).to receive(:foo).and_return(:return_value)
 
-          o = Object.new
+          o = Klass.new
           expect(o.foo).to eq(:return_value)
         end
       end
@@ -47,9 +50,13 @@ Feature: Any Instance
       RSpec.describe "allow_any_instance_of" do
         context "with receive_messages" do
           it "stubs multiple methods" do
-            allow_any_instance_of(Object).to receive_messages(:foo => 'foo', :bar => 'bar')
+            class Klass
+              def foo; end
+              def bar; end
+            end
+            allow_any_instance_of(Klass).to receive_messages(:foo => 'foo', :bar => 'bar')
 
-            o = Object.new
+            o = Klass.new
             expect(o.foo).to eq('foo')
             expect(o.bar).to eq('bar')
           end
@@ -65,10 +72,13 @@ Feature: Any Instance
       RSpec.describe "allow_any_instance_of" do
         context "with arguments" do
           it "returns the stubbed value when arguments match" do
-            allow_any_instance_of(Object).to receive(:foo).with(:param_one, :param_two).and_return(:result_one)
-            allow_any_instance_of(Object).to receive(:foo).with(:param_three, :param_four).and_return(:result_two)
+            class Klass
+              def foo(one, two); end
+            end
+            allow_any_instance_of(Klass).to receive(:foo).with(:param_one, :param_two).and_return(:result_one)
+            allow_any_instance_of(Klass).to receive(:foo).with(:param_three, :param_four).and_return(:result_two)
 
-            o = Object.new
+            o = Klass.new
             expect(o.foo(:param_one, :param_two)).to eq(:result_one)
             expect(o.foo(:param_three, :param_four)).to eq(:result_two)
           end
@@ -99,15 +109,21 @@ Feature: Any Instance
       """ruby
       RSpec.describe "expect_any_instance_of" do
         before do
-          expect_any_instance_of(Object).to receive(:foo)
+          expect_any_instance_of(klass).to receive(:foo)
+        end
+
+        let(:klass) do
+          Class.new do
+            def foo; end
+          end
         end
 
         it "passes when an instance receives the message" do
-          Object.new.foo
+          klass.new.foo
         end
 
         it "fails when no instance receives the message" do
-          Object.new.to_s
+          klass.new.to_s
         end
       end
       """

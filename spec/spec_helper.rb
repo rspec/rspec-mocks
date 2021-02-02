@@ -77,7 +77,10 @@ end
 require 'rspec/support/spec'
 
 RSpec.configure do |config|
-  config.mock_with :rspec
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = false
+  end
+
   config.color = true
   config.order = :random
 

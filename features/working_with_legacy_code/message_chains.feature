@@ -7,7 +7,7 @@ Feature: Message Chains
   allow(double).to receive_message_chain("foo.bar") { :baz }
   allow(double).to receive_message_chain(:foo, :bar => :baz)
   allow(double).to receive_message_chain(:foo, :bar) { :baz }
-  ````
+  ```
 
   Given any of these three forms:
 
@@ -74,19 +74,25 @@ Feature: Message Chains
     Given a file named "receive_message_chain_spec.rb" with:
       """ruby
       RSpec.describe "Using receive_message_chain on any instance of a class" do
+        let(:klass) do
+          Class.new do
+            def foo; end
+          end
+        end
+
         example "using a string and a block" do
-          allow_any_instance_of(Object).to receive_message_chain("foo.bar") { :baz }
-          expect(Object.new.foo.bar).to eq(:baz)
+          allow_any_instance_of(klass).to receive_message_chain("foo.bar") { :baz }
+          expect(klass.new.foo.bar).to eq(:baz)
         end
 
         example "using symbols and a hash" do
-          allow_any_instance_of(Object).to receive_message_chain(:foo, :bar => :baz)
-          expect(Object.new.foo.bar).to eq(:baz)
+          allow_any_instance_of(klass).to receive_message_chain(:foo, :bar => :baz)
+          expect(klass.new.foo.bar).to eq(:baz)
         end
 
         example "using symbols and a block" do
-          allow_any_instance_of(Object).to receive_message_chain(:foo, :bar) { :baz }
-          expect(Object.new.foo.bar).to eq(:baz)
+          allow_any_instance_of(klass).to receive_message_chain(:foo, :bar) { :baz }
+          expect(klass.new.foo.bar).to eq(:baz)
         end
       end
       """

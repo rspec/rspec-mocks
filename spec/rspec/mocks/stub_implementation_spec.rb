@@ -84,7 +84,8 @@ module RSpec
       end
 
       context "when partial doubles are not verified" do
-        before { expect(RSpec::Mocks.configuration.verify_partial_doubles?).to be false }
+        include_context "with isolated configuration"
+        before { RSpec::Mocks.configuration.verify_partial_doubles = false }
         include_examples "stubbing `new` on class objects"
       end
 
