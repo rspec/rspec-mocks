@@ -82,14 +82,14 @@ module RSpec
       end
 
       if RSpec::Support::RubyFeatures.required_kw_args_supported?
+        # Use eval to avoid syntax error on 1.8 and 1.9
+        binding.eval(<<-CODE, __FILE__, __LINE__)
         it "can accept an inner hash as a message argument" do
           hash = {:a => {:key => "value"}}
           expect(object).to receive(:foobar).with(:key => "value").and_return(1)
-          # Use eval to avoid syntax error on 1.8 and 1.9
-          eval("expect(object.foobar(**hash[:a])).to equal(1)")
-          # Avoid warning: assigned but unused variable - hash
-          hash = hash
+          expect(object.foobar(**hash[:a])).to equal(1)
         end
+        CODE
       end
 
       it "can create a positive message expectation" do
