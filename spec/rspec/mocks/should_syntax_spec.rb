@@ -463,16 +463,15 @@ RSpec.context "with default syntax configuration" do
   after(:all)  { RSpec::Mocks.configuration.syntax = orig_syntax }
   before       { RSpec::Mocks.configuration.reset_syntaxes_to_default }
 
-  let(:expected_arguments) {
-    [
-      /Using.*without explicitly enabling/,
-    ]
-  }
-  let(:expected_keywords) {
-    {:replacement => "the new `:expect` syntax or explicitly enable `:should`"}
-  }
-
   if RSpec::Support::RubyFeatures.required_kw_args_supported?
+    let(:expected_arguments) {
+      [
+        /Using.*without explicitly enabling/,
+      ]
+    }
+    let(:expected_keywords) {
+      {:replacement => "the new `:expect` syntax or explicitly enable `:should`"}
+    }
     it "it warns about should once, regardless of how many times it is called" do
       # Use eval to avoid syntax error on 1.8 and 1.9
       eval("expect(RSpec).to receive(:deprecate).with(*expected_arguments, **expected_keywords)")
@@ -497,6 +496,40 @@ RSpec.context "with default syntax configuration" do
     it "warns about stubbing once, regardless of how many times it is called" do
       # Use eval to avoid syntax error on 1.8 and 1.9
       eval("expect(RSpec).to receive(:deprecate).with(*expected_arguments, **expected_keywords)")
+      o = Object.new
+      o2 = Object.new
+
+      o.stub(:faces)
+      o2.stub(:faces)
+    end
+  else
+    let(:expected_arguments) {
+      [
+        /Using.*without explicitly enabling/,
+        {:replacement => "the new `:expect` syntax or explicitly enable `:should`"}
+      ]
+    }
+    it "it warns about should once, regardless of how many times it is called" do
+      expect(RSpec).to receive(:deprecate).with(*expected_arguments)
+      o = Object.new
+      o2 = Object.new
+      o.should_receive(:bees)
+      o2.should_receive(:bees)
+
+      o.bees
+      o2.bees
+    end
+
+    it "warns about should not once, regardless of how many times it is called" do
+      expect(RSpec).to receive(:deprecate).with(*expected_arguments)
+      o = Object.new
+      o2 = Object.new
+      o.should_not_receive(:bees)
+      o2.should_not_receive(:bees)
+    end
+
+    it "warns about stubbing once, regardless of how many times it is called" do
+      expect(RSpec).to receive(:deprecate).with(*expected_arguments)
       o = Object.new
       o2 = Object.new
 
