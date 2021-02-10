@@ -9,6 +9,8 @@ Breaking Changes:
   (Phil Pirozhkov, #1400)
 * Change the default setting for `RSpec::Mocks::Configuration#verify_partial_doubles`
   to `true`. (Phil Pirozhkov, #1409)
+* Remove deprecated `allow_message_expectations_on_nil` example method.
+  (Phil Pirozhkov, #1410)
 
 Bug Fixes:
 

@@ -123,17 +123,21 @@ module RSpec
         end
       end
 
-      it "uses reports nil in the error message" do
-        allow_message_expectations_on_nil
+      context 'configured to allow expectation on nil' do
+        include_context 'with isolated configuration'
 
-        nil_var = nil
-        expect(nil_var).to receive(:foobar)
-        expect {
-          verify nil_var
-        }.to raise_error(
-          RSpec::Mocks::MockExpectationError,
-          %Q|(nil).foobar(*(any args))\n    expected: 1 time with any arguments\n    received: 0 times with any arguments|
-        )
+        it "uses reports nil in the error message" do
+          RSpec::Mocks.configuration.allow_message_expectations_on_nil = true
+
+          nil_var = nil
+          expect(nil_var).to receive(:foobar)
+          expect {
+            verify nil_var
+          }.to raise_error(
+            RSpec::Mocks::MockExpectationError,
+            %Q|(nil).foobar(*(any args))\n    expected: 1 time with any arguments\n    received: 0 times with any arguments|
+          )
+        end
       end
 
       it "includes the class name in the error when mocking a class method that is called an extra time with the wrong args" do
