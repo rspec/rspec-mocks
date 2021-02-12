@@ -58,7 +58,7 @@ module RSpec::Mocks::Matchers
       end
 
       it "works with and_invoke" do
-        allow(object).to receive_message_chain(:to_a, :length).and_invoke -> { raise "error" }
+        allow(object).to receive_message_chain(:to_a, :length).and_invoke(lambda { raise "error" })
 
         expect { object.to_a.length }.to raise_error("error")
       end

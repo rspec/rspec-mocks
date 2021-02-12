@@ -4,7 +4,7 @@ module RSpec
       let(:a_double) { double }
 
       before(:each) do
-        expect(a_double).to receive(:do_something).and_invoke(-> { 1 }, -> { raise "2" }, -> { 3 })
+        expect(a_double).to receive(:do_something).and_invoke(lambda { 1 }, lambda { raise "2" }, lambda { 3 })
       end
 
       it "invokes procs in order" do
@@ -41,7 +41,7 @@ module RSpec
       let(:a_double) { double }
 
       before(:each) do
-        expect(a_double).to receive(:do_something).exactly(3).times.and_invoke(-> { 1 }, -> { raise "2" }, -> { 3 })
+        expect(a_double).to receive(:do_something).exactly(3).times.and_invoke(lambda { 1 }, lambda { raise "2" }, lambda { 3 })
       end
 
       it "returns values in order to consecutive calls" do
@@ -55,7 +55,7 @@ module RSpec
     RSpec.describe "a message expectation with multiple invoke handlers specifying at_least less than the number of values" do
       let(:a_double) { double }
 
-      before { expect(a_double).to receive(:do_something).at_least(:twice).with(no_args).and_invoke(-> { 11 }, -> { 22 }) }
+      before { expect(a_double).to receive(:do_something).at_least(:twice).with(no_args).and_invoke(lambda { 11 }, lambda { 22 }) }
 
       it "uses the last return value for subsequent calls" do
         expect(a_double.do_something).to equal(11)
@@ -70,7 +70,7 @@ module RSpec
       end
 
       context "when method is stubbed too" do
-        before { allow(a_double).to receive(:do_something).and_invoke -> { :stub_result } }
+        before { allow(a_double).to receive(:do_something).and_invoke lambda { :stub_result } }
 
         it "uses the last value for subsequent calls" do
           expect(a_double.do_something).to equal(11)
@@ -88,7 +88,7 @@ module RSpec
 
     RSpec.describe "a message expectation with multiple invoke handlers with a specified count larger than the number of values" do
       let(:a_double) { double }
-      before { expect(a_double).to receive(:do_something).exactly(3).times.and_invoke(-> { 11 }, -> { 22 }) }
+      before { expect(a_double).to receive(:do_something).exactly(3).times.and_invoke(lambda { 11 }, lambda { 22 }) }
 
       it "uses the last return value for subsequent calls" do
         expect(a_double.do_something).to equal(11)
