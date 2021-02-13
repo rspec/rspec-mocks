@@ -81,7 +81,6 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = false
   end
 
-  config.color = true
   config.order = :random
 
   old_verbose = nil
