@@ -117,6 +117,10 @@ module RSpec
         end
 
         procs.unshift(first_proc)
+        if procs.any? { |p| !p.respond_to?(:call) }
+          raise ArgumentError, "Arguments to `and_invoke` must be callable."
+        end
+
         @expected_received_count = [@expected_received_count, procs.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
         self.terminal_implementation_action = AndInvokeImplementation.new(procs)
 
