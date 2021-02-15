@@ -40,6 +40,18 @@ module RSpec
           expect(dbl.square_then_cube(2)).to eq 8
         end
       end
+
+      context 'when calling passed callables' do
+        let(:dbl) { double }
+
+        it 'passes the arguments into the callable' do
+          expect(dbl).to receive(:square_then_cube).and_invoke(lambda { |i| i ** 2 },
+                                                               lambda { |i| i ** 3 })
+
+          expect(dbl.square_then_cube(2)).to eq 4
+          expect(dbl.square_then_cube(2)).to eq 8
+        end
+      end
     end
   end
 end
