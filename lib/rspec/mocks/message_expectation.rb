@@ -95,11 +95,11 @@ module RSpec
       #
       # @return [nil] No further chaining is supported after this.
       # @example
-      #   allow(api).to receive(:get_foo).and_return(-> { raise ApiTimeout })
+      #   allow(api).to receive(:get_foo).and_invoke(-> { raise ApiTimeout })
       #   api.get_foo # => raises ApiTimeout
       #   api.get_foo # => raises ApiTimeout
       #
-      #   allow(api).to receive(:get_foo).and_return(-> { raise ApiTimeout }, -> { raise ApiTimeout }, -> { :a_foo })
+      #   allow(api).to receive(:get_foo).and_invoke(-> { raise ApiTimeout }, -> { raise ApiTimeout }, -> { :a_foo })
       #   api.get_foo # => raises ApiTimeout
       #   api.get_foo # => rasies ApiTimeout
       #   api.get_foo # => :a_foo

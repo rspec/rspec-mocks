@@ -13,7 +13,7 @@ module RSpec
 
       context 'when no argument is passed' do
         it 'raises ArgumentError' do
-          expect { allow(obj).to receive(:foo).and_return }.to raise_error(ArgumentError)
+          expect { allow(obj).to receive(:foo).and_invoke }.to raise_error(ArgumentError)
         end
       end
     end
