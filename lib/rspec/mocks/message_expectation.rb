@@ -732,12 +732,14 @@ module RSpec
         @procs_to_invoke = procs_to_invoke
       end
 
-      def call(*_args_to_ignore, &_block)
-        if @procs_to_invoke.size > 1
-          @procs_to_invoke.shift.call
-        else
-          @procs_to_invoke.first.call
-        end
+      def call(*args, &block)
+        proc = if @procs_to_invoke.size > 1
+                 @procs_to_invoke.shift
+               else
+                 @procs_to_invoke.first
+               end
+
+        proc.call(*args, &block)
       end
     end
 
