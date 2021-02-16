@@ -54,13 +54,13 @@ module RSpec
           expect(receiver.foo).to eq(:curly)
         end
 
-        it 'does not support other matchers', :unless => options.include?(:allow_other_matchers) do
+        it 'does not support other matchers', :skip => options.include?(:allow_other_matchers) do
           expect {
             wrapped.to eq(3)
           }.to raise_error(UnsupportedMatcherError)
         end
 
-        it 'does support inherited matchers', :unless => options.include?(:allow_other_matchers) do
+        it 'does support inherited matchers', :skip => options.include?(:allow_other_matchers) do
           receive_foo = Class.new(RSpec::Mocks::Matchers::Receive).new(:foo, nil)
           wrapped.to receive_foo
           receiver.foo
