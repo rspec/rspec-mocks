@@ -54,6 +54,12 @@ module RSpec::Mocks::Matchers
       expect(object.to_a.length).to eq(3)
     end
 
+    it "works with and_invoke" do
+      allow(object).to receive_message_chain(:to_a, :length).and_invoke(lambda { raise "error" })
+
+      expect { object.to_a.length }.to raise_error("error")
+    end
+
     it "can constrain the return value by the argument to the last call" do
       allow(object).to receive_message_chain(:one, :plus).with(1) { 2 }
       allow(object).to receive_message_chain(:one, :plus).with(2) { 3 }

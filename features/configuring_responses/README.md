@@ -3,6 +3,7 @@ methods are provided to configure how the test double responds to the message.
 
 * <a href="./configuring-responses/returning-a-value">`and_return`</a>
 * <a href="./configuring-responses/raising-an-error">`and_raise`</a>
+* <a href="./configuring-responses/mixed-responses">`and_invoke`</a>
 * <a href="./configuring-responses/throwing">`and_throw`</a>
 * <a href="./configuring-responses/yielding">`and_yield`</a>
 * <a href="./configuring-responses/calling-the-original-implementation">`and_call_original`</a>

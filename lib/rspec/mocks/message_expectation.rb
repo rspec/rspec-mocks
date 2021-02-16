@@ -53,7 +53,7 @@ module RSpec
       # etc.
       #
       # If the message is received more times than there are values, the last
-      # value is received for every subsequent call.
+      # value is returned for every subsequent call.
       #
       # @return [nil] No further chaining is supported after this.
       # @example
@@ -81,6 +81,48 @@ module RSpec
         values.unshift(first_value)
         @expected_received_count = [@expected_received_count, values.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
         self.terminal_implementation_action = AndReturnImplementation.new(values)
+
+        nil
+      end
+
+      # Tells the object to invoke a Proc when it receives the message. Given
+      # more than one value, the result of the first Proc is returned the first
+      # time the message is received, the result of the second Proc is returned
+      # the next time, etc, etc.
+      #
+      # If the message is received more times than there are Procs, the result of
+      # the last Proc is returned for every subsequent call.
+      #
+      # @return [nil] No further chaining is supported after this.
+      # @example
+      #   allow(api).to receive(:get_foo).and_invoke(-> { raise ApiTimeout })
+      #   api.get_foo # => raises ApiTimeout
+      #   api.get_foo # => raises ApiTimeout
+      #
+      #   allow(api).to receive(:get_foo).and_invoke(-> { raise ApiTimeout }, -> { raise ApiTimeout }, -> { :a_foo })
+      #   api.get_foo # => raises ApiTimeout
+      #   api.get_foo # => rasies ApiTimeout
+      #   api.get_foo # => :a_foo
+      #   api.get_foo # => :a_foo
+      #   api.get_foo # => :a_foo
+      #   # etc
+      def and_invoke(first_proc, *procs)
+        raise_already_invoked_error_if_necessary(__method__)
+        if negative?
+          raise "`and_invoke` is not supported with negative message expectations"
+        end
+
+        if block_given?
+          raise ArgumentError, "Implementation blocks aren't supported with `and_invoke`"
+        end
+
+        procs.unshift(first_proc)
+        if procs.any? { |p| !p.respond_to?(:call) }
+          raise ArgumentError, "Arguments to `and_invoke` must be callable."
+        end
+
+        @expected_received_count = [@expected_received_count, procs.size].max unless ignoring_args? || (@expected_received_count == 0 && @at_least)
+        self.terminal_implementation_action = AndInvokeImplementation.new(procs)
 
         nil
       end
@@ -680,6 +722,24 @@ module RSpec
         else
           @values_to_return.first
         end
+      end
+    end
+
+    # Handles the implementation of an `and_invoke` implementation.
+    # @private
+    class AndInvokeImplementation
+      def initialize(procs_to_invoke)
+        @procs_to_invoke = procs_to_invoke
+      end
+
+      def call(*args, &block)
+        proc = if @procs_to_invoke.size > 1
+                 @procs_to_invoke.shift
+               else
+                 @procs_to_invoke.first
+               end
+
+        proc.call(*args, &block)
       end
     end
 
