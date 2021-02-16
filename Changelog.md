@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.1...4-0-dev)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.2...4-0-dev)
 
 Breaking Changes:
 
@@ -11,6 +11,14 @@ Breaking Changes:
   to `true`. (Phil Pirozhkov, #1409)
 * Remove deprecated `allow_message_expectations_on_nil` example method.
   (Phil Pirozhkov, #1410)
+
+Enhancements:
+
+* Add `and_invoke` implementation for configuring responses to `receive`
+  (and `receive_messages`) with multiple callable objects. (Kyle Smith, #1411)
+
+### 3.10.2 / 2021-01-27
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.1...v3.10.2)
 
 Bug Fixes:
 
