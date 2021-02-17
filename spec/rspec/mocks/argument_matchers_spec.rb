@@ -387,8 +387,8 @@ module RSpec
           a_double.random_call(:a => "a", :b => "b")
         end
 
-        if RUBY_VERSION >= "2.7"
-          it "fails to matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 2.7 or later", :reset => true do
+        if RUBY_VERSION >= "3"
+          it "fails to matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 3.0 or later", :reset => true do
             opts = {:a => "a", :b => "b"}
             expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
             expect do

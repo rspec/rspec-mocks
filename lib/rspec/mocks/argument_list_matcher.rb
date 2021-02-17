@@ -60,7 +60,7 @@ module RSpec
 
         return false if expected_args.size != actual_args.size
 
-        if Hash.respond_to?(:ruby2_keywords_hash?, true)
+        if RUBY_VERSION >= "3"
           # if both arguments end with Hashes, and if one is a keyword hash and the other is not, they don't match
           if Hash === expected_args.last && Hash === actual_args.last
             if !Hash.ruby2_keywords_hash?(actual_args.last) && Hash.ruby2_keywords_hash?(expected_args.last)
