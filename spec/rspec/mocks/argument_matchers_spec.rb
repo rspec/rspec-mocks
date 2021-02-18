@@ -396,7 +396,7 @@ module RSpec
             end.to fail_with(/expected: \(\{(:a=>\"a\", :b=>\"b\"|:b=>\"b\", :a=>\"a\")\}\)/)
           end
         else
-          it "matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 2.6 or before" do
+          it "matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 2.7 or before" do
             opts = {:a => "a", :b => "b"}
             expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
             a_double.random_call(opts)
