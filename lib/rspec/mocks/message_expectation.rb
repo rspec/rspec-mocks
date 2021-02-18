@@ -364,6 +364,7 @@ module RSpec
         @argument_list_matcher = ArgumentListMatcher.new(*args)
         self
       end
+      ruby2_keywords(:with) if Module.private_method_defined?(:ruby2_keywords)
 
       # Expect messages to be received in a specific order.
       #
