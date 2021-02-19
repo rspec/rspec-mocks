@@ -21,29 +21,36 @@ module RSpec
         # Get rid of calling overridden `method_missing`
         missing_method = ::BasicObject.instance_method(:method_missing)
 
-        unless missing_method.respond_to?(:bind_call) # < Ruby 2.7
-          def missing_method.bind_call(receiver, *args, &block)
-            bind(receiver).call(*args, &block)
+        missing_method.instance_eval do
+          unless respond_to?(:bind_call) # < Ruby 2.7
+            # @private
+            def bind_call(receiver, *args, &block)
+              bind(receiver).call(*args, &block)
+            end
           end
-        end
 
-        # Tell whether the method call which caused `method_missing`
-        # was called in the private or public form, by using
-        # `NoMethodError#private_call?`.
-        def missing_method.private_call?(object, message)
-          bind_call(object, message)
-        rescue NoMethodError => e
-          e.private_call?
-        rescue NameError # without receiver, arguments and parentheses
-          true
-        else # should not happen
-          false
+          # Tell whether the method call which caused `method_missing`
+          # was called in the private or public form, by using
+          # `NoMethodError#private_call?`.
+          # @private
+          def private_call?(object, message)
+            bind_call(object, message)
+          rescue NoMethodError => e
+            e.private_call?
+          rescue NameError # without receiver, arguments and parentheses
+            true
+          else # should not happen
+            false
+          end
         end
       else
         missing_method = (defined?(::BasicObject) ? ::BasicObject : ::Object).new
 
-        def missing_method.private_call?(object, message)
-          object.instance_variable_get(:@__sending_message) == message
+        missing_method.instance_eval do
+          # @private
+          def private_call?(object, message)
+            object.instance_variable_get(:@__sending_message) == message
+          end
         end
 
         # Redefining `__send__` causes ruby to issue a warning.
