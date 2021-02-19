@@ -17,7 +17,8 @@ module RSpec
         end
       end
 
-      if ::NoMethodError.method_defined?(:private_call?) # >= Ruby 2.4
+      if ::NoMethodError.method_defined?(:private_call?) && # >= Ruby 2.4
+         !(defined?(RUBY_ENGINE) && RUBY_ENGINE == "jruby")
         # Get rid of calling overridden `method_missing`
         missing_method = ::BasicObject.instance_method(:method_missing)
 
