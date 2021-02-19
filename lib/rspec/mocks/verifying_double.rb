@@ -34,23 +34,15 @@ module RSpec
         super
       end
 
-      # @private
-      module SilentIO
-        def self.method_missing(*); end
-        def self.respond_to?(*)
-          true
-        end
-      end
-
       # Redefining `__send__` causes ruby to issue a warning.
-      old, $stderr = $stderr, SilentIO
+      old, $VERBOSE = $VERBOSE, nil
       def __send__(name, *args, &block)
         @__sending_message = name
         super
       ensure
         @__sending_message = nil
       end
-      $stderr = old
+      $VERBOSE = old
 
       def send(name, *args, &block)
         __send__(name, *args, &block)
