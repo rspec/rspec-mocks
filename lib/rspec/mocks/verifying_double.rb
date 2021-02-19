@@ -17,12 +17,58 @@ module RSpec
         end
       end
 
+      if ::NoMethodError.method_defined?(:private_call?) # >= Ruby 2.4
+        # Get rid of calling overridden `method_missing`
+        missing_method = ::BasicObject.instance_method(:method_missing)
+
+        unless missing_method.respond_to?(:bind_call) # < Ruby 2.7
+          def missing_method.bind_call(receiver, *args, &block)
+            bind(receiver).call(*args, &block)
+          end
+        end
+
+        # Tell whether the method call which caused `method_missing`
+        # was called in the private or public form, by using
+        # `NoMethodError#private_call?`.
+        def missing_method.private_call?(object, message)
+          bind_call(object, message)
+        rescue NoMethodError => e
+          e.private_call?
+        rescue NameError # without receiver, arguments and parentheses
+          true
+        else # should not happen
+          false
+        end
+      else
+        missing_method = (defined?(::BasicObject) ? ::BasicObject : ::Object).new
+
+        def missing_method.private_call?(object, message)
+          object.instance_variable_get(:@__sending_message) == message
+        end
+
+        # Redefining `__send__` causes ruby to issue a warning.
+        old, $VERBOSE = $VERBOSE, nil
+        def __send__(name, *args, &block)
+          @__sending_message = name
+          super
+        ensure
+          @__sending_message = nil
+        end
+        $VERBOSE = old
+
+        def send(name, *args, &block)
+          __send__(name, *args, &block)
+        end
+      end
+
+      MISSING_METHOD = missing_method
+
       def method_missing(message, *args, &block)
         # Null object conditional is an optimization. If not a null object,
         # validity of method expectations will have been checked at definition
         # time.
         if null_object?
-          if @__sending_message == message
+          if MISSING_METHOD.private_call?(self, message)
             __mock_proxy.ensure_implemented(message)
           else
             __mock_proxy.ensure_publicly_implemented(message, self)
@@ -32,20 +78,6 @@ module RSpec
         end
 
         super
-      end
-
-      # Redefining `__send__` causes ruby to issue a warning.
-      old, $VERBOSE = $VERBOSE, nil
-      def __send__(name, *args, &block)
-        @__sending_message = name
-        super
-      ensure
-        @__sending_message = nil
-      end
-      $VERBOSE = old
-
-      def send(name, *args, &block)
-        __send__(name, *args, &block)
       end
 
       def initialize(doubled_module, *args)
