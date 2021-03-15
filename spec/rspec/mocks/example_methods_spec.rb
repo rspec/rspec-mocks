@@ -33,6 +33,17 @@ module RSpec
           expect(dbl.foo).to eq(1)
         end
       end
+
+      describe '#allow_message_expectations_on_nil' do
+        it "emits a deprecation warning on use" do
+          expect_deprecation_with_call_site(__FILE__, __LINE__ + 3, /allow_message_expectations_on_nil/)
+          RSpec.describe do
+            it do
+              allow_message_expectations_on_nil
+            end
+          end.run
+        end
+      end
     end
   end
 end

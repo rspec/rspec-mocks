@@ -87,10 +87,7 @@ RSpec.configure do |config|
     expectations.syntax = :expect
   end
 
-  config.mock_with :rspec do |mocks|
-    $default_rspec_mocks_syntax = mocks.syntax
-    mocks.syntax = :expect
-  end
+  $default_rspec_mocks_syntax = [:should, :expect]
 
   old_verbose = nil
   config.before(:each, :silence_warnings) do

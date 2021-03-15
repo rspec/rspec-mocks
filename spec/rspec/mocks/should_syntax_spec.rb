@@ -551,16 +551,6 @@ RSpec.context "with default syntax configuration" do
     o2.unstub(:faces)
   end
 
-  it "doesn't warn about stubbing after a reset and setting should" do
-    expect(RSpec).not_to receive(:deprecate)
-    RSpec::Mocks.configuration.reset_syntaxes_to_default
-    RSpec::Mocks.configuration.syntax = :should
-    o = Object.new
-    o2 = Object.new
-    o.stub(:faces)
-    o2.stub(:faces)
-  end
-
   it "includes the call site in the deprecation warning" do
     obj = Object.new
     expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)

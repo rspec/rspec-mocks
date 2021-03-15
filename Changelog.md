@@ -11,6 +11,10 @@ Bug Fixes:
 * Support keyword argument semantics when constraining argument expectations using
   `with` on Ruby 3.0+ (Yusuke Endoh, #1394)
 
+Deprecations:
+
+* Add RSpec 4 deprecation warnings. (Phil Pirozhkov, #1418)
+
 ### 3.10.2 / 2021-01-27
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.1...v3.10.2)
 

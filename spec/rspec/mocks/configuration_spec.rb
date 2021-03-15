@@ -68,6 +68,11 @@ module RSpec
             expect(::RSpec::Mocks::ExampleMethods).not_to receive(:method_added)
             configure_syntax :expect
           end
+
+          it 'emits a deprecation warning' do
+            expect_deprecation_without_call_site(/Mocks syntax configuration/)
+            configure_syntax :expect
+          end
         end
 
         context 'when configured to :should' do
@@ -89,14 +94,15 @@ module RSpec
             expect(configured_syntax).to eq([:should])
           end
 
-          it "does not warn about the should syntax" do
-            RSpec.should_not_receive(:deprecate)
-            Object.new.should_not_receive(:bees)
-          end
-
           it 'is a no-op when configured a second time' do
             Syntax.default_should_syntax_host.should_not_receive(:method_added)
             ::RSpec::Mocks::ExampleMethods.should_not_receive(:method_undefined)
+          end
+
+          it 'emits two deprecation warnings' do
+            configure_syntax :expect
+            expect_deprecation_without_call_site(/`:should` Mocks syntax/)
+            expect_deprecation_without_call_site(/Mocks syntax configuration/)
             configure_syntax :should
           end
         end
@@ -123,6 +129,12 @@ module RSpec
           it "does not warn about the should syntax" do
             expect(RSpec).not_to receive(:deprecate)
             expect(Object.new).not_to receive(:bees)
+          end
+
+          it 'emits two deprecation warnings' do
+            expect_deprecation_without_call_site(/`:should` Mocks syntax/)
+            expect_deprecation_without_call_site(/Mocks syntax configuration/)
+            configure_syntax [:should, :expect]
           end
         end
       end

@@ -80,6 +80,11 @@ module RSpec
       #
       def syntax=(*values)
         syntaxes = values.flatten
+        if self.class.warn_about_syntax?
+          RSpec.deprecate('Mocks syntax configuration',
+                          :replacement => 'the default `expect` syntax',
+                          :call_site => nil)
+        end
         if syntaxes.include?(:expect)
           Syntax.enable_expect
         else
@@ -87,6 +92,11 @@ module RSpec
         end
 
         if syntaxes.include?(:should)
+          if self.class.warn_about_syntax?
+            RSpec.deprecate('`:should` Mocks syntax',
+                            :replacement => 'the default `expect` syntax',
+                            :call_site => nil)
+          end
           Syntax.enable_should
         else
           Syntax.disable_should
@@ -199,6 +209,18 @@ module RSpec
         self.syntax = [:should, :expect]
         RSpec::Mocks::Syntax.warn_about_should!
       end
+
+      # @private
+      def self.warn_about_syntax?
+        @warn_about_syntax
+      end
+
+      # @private
+      def self.warn_about_syntax!
+        @warn_about_syntax = true
+      end
+
+      @warn_about_syntax = false
     end
 
     # Mocks specific configuration, as distinct from `RSpec.configuration`
@@ -208,5 +230,6 @@ module RSpec
     end
 
     configuration.reset_syntaxes_to_default
+    Configuration.warn_about_syntax!
   end
 end
