@@ -62,7 +62,12 @@ module RSpec
         # `#<MyClass:0x007fbb94e3cd10>`, rather than the expected `MyClass`.
         owner = owner.class unless Module === owner
 
-        owner == @klass || !(method_defined_on_klass?(owner))
+        owner == @klass ||
+          # When `extend self` is used, and not under `allow_any_instance_of`
+          # nor `expect_any_instance_of`.
+          (owner.singleton_class == @klass &&
+            !Mocks.space.any_instance_recorder_for(owner, true)) ||
+          !(method_defined_on_klass?(owner))
       end
     end
   end

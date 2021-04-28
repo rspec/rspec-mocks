@@ -138,6 +138,10 @@ module RSpec
           def value
             "#{super}_prepended".to_sym
           end
+
+          def value_without_super
+            :prepended
+          end
         end
 
         it "handles stubbing prepended methods" do
@@ -163,6 +167,15 @@ module RSpec
           expect(object.value).to eq :original_prepended
           allow(object).to receive(:value) { :stubbed }
           expect(object.value).to eq :stubbed
+        end
+
+        it "handles stubbing prepending methods that were only defined on the prepended module" do
+          object = Object.new
+          object.singleton_class.send(:prepend, ToBePrepended)
+
+          expect(object.value_without_super).to eq :prepended
+          allow(object).to receive(:value_without_super) { :stubbed }
+          expect(object.value_without_super).to eq :stubbed
         end
 
         it 'does not unnecessarily prepend a module when the prepended module does not override the stubbed method' do
@@ -346,6 +359,21 @@ module RSpec
 
           allow(mod).to receive(:hello) { :stub }
           reset mod
+
+          expect(mod.hello).to eq(:hello)
+        end
+
+        it "correctly restores from allow_any_instance_of for self extend" do
+          mod = Module.new {
+            extend self
+            def hello; :hello; end
+          }
+
+          allow_any_instance_of(mod).to receive(:hello) { :stub }
+
+          expect(mod.hello).to eq(:stub)
+
+          reset_all
 
           expect(mod.hello).to eq(:hello)
         end

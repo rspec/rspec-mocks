@@ -21,6 +21,7 @@ Bug Fixes:
 
 * Support keyword argument semantics when constraining argument expectations using
   `with` on Ruby 3.0+ (Yusuke Endoh, #1394)
+* Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
 
 ### 3.10.2 / 2021-01-27
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.1...v3.10.2)
