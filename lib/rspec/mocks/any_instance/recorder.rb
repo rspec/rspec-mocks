@@ -120,7 +120,7 @@ module RSpec
 
         # @private
         def build_alias_method_name(method_name)
-          "__#{method_name}_without_any_instance__"
+          "__#{@klass}__#{method_name}_without_any_instance__"
         end
 
         # @private
