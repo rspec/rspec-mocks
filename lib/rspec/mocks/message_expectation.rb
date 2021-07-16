@@ -433,6 +433,7 @@ module RSpec
           @expectation_type = type
           @ordered = false
           @at_least = @at_most = @exactly = nil
+          @invoking = false
 
           # Initialized to nil so that we don't allocate an array for every
           # mock or stub. See also comment in `and_yield`.
@@ -467,7 +468,15 @@ module RSpec
         end
 
         def invoke(parent_stub, *args, &block)
-          invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
+          if @invoking
+            safe_invoke_without_incrementing_received_count(parent_stub, *args, &block)
+          else
+            invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
+          end
+        end
+
+        def safe_invoke_without_incrementing_received_count(parent_stub, *args, &block)
+          invoke_incrementing_actual_calls_by(0, false, parent_stub, *args, &block)
         end
 
         def invoke_without_incrementing_received_count(parent_stub, *args, &block)
@@ -598,6 +607,8 @@ module RSpec
         def invoke_incrementing_actual_calls_by(increment, allowed_to_fail, parent_stub, *args, &block)
           args.unshift(orig_object) if yield_receiver_to_implementation_block?
 
+          @invoking = true
+
           if negative? || (allowed_to_fail && (@exactly || @at_most) && (@actual_received_count == @expected_received_count))
             # args are the args we actually received, @argument_list_matcher is the
             # list of args we were expecting
@@ -617,6 +628,7 @@ module RSpec
             parent_stub.invoke(nil, *args, &block)
           end
         ensure
+          @invoking = false
           @actual_received_count_write_mutex.synchronize do
             @actual_received_count += increment
           end
