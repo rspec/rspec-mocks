@@ -199,6 +199,8 @@ module RSpec
       # early on.
       # @deprecated Use {RSpec::Mocks::Configuration#allow_message_expectations_on_nil} instead.
       def allow_message_expectations_on_nil
+        RSpec.deprecate("`allow_message_expectations_on_nil` example method",
+                        :replacement => "`allow_message_expectations_on_nil` configuration option")
         RSpec::Mocks.space.proxy_for(nil).warn_about_expectations = false
       end
 
