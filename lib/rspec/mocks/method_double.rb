@@ -3,6 +3,9 @@ module RSpec
     # @private
     class MethodDouble
       # @private
+      FROZEN_ERROR_MSG = /can't modify frozen/
+
+      # @private
       attr_reader :method_name, :object, :expectations, :stubs, :method_stasher
 
       # @private
@@ -16,6 +19,8 @@ module RSpec
         @method_is_proxied = false
         @expectations = []
         @stubs = []
+      rescue TypeError
+        raise ArgumentError, "Static objects such as #{@object.class}:#{@object} cannot be mocked or stubbed."
       end
 
       def original_implementation_callable
@@ -68,6 +73,11 @@ module RSpec
         end
 
         @method_is_proxied = true
+      rescue RuntimeError => e
+        if FROZEN_ERROR_MSG === e.message
+          raise ArgumentError, "Cannot proxy frozen objects, rspec-mocks relies on proxies for method stubbing and expectations."
+        end
+        raise
       end
 
       # The implementation of the proxied method. Subclasses may override this
@@ -80,7 +90,6 @@ module RSpec
 
       # @private
       def restore_original_method
-        return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
         remove_method_from_definition_target
@@ -88,6 +97,9 @@ module RSpec
         restore_original_visibility
 
         @method_is_proxied = false
+      rescue RuntimeError => e
+        return show_frozen_warning if FROZEN_ERROR_MSG === e.message
+        raise
       end
 
       # @private

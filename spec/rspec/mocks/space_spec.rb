@@ -235,17 +235,16 @@ module RSpec::Mocks
     it 'raises ArgumentError with message if object is symbol' do
       space1 = Space.new
       object = :subject
-      expected_message = "Cannot proxy frozen objects. Symbols such as #{object} cannot be mocked or stubbed."
-
-      expect { space1.proxy_for(object) }.to raise_error(ArgumentError, expected_message)
+      expected_message = "Static objects such as #{object.class}:#{object} cannot be mocked or stubbed."
+      expect { space1.proxy_for(object).add_message_expectation(:foo) }.to raise_error(ArgumentError, expected_message)
     end
 
     it 'raises ArgumentError with message if object is frozen' do
       space1 = Space.new
-      object = "subject".freeze
+      object = {}.freeze
       expected_message = "Cannot proxy frozen objects, rspec-mocks relies on proxies for method stubbing and expectations."
 
-      expect { space1.proxy_for(object) }.to raise_error(ArgumentError, expected_message)
+      expect { space1.proxy_for(object).add_message_expectation(:foo) }.to raise_error(ArgumentError, expected_message)
     end
 
     def in_new_space_scope
