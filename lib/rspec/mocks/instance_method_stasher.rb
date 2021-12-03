@@ -5,6 +5,7 @@ module RSpec
       def initialize(object, method)
         @object = object
         @method = method
+        object.class.__persistent__ = true if object.respond_to?(:java_class)  # https://github.com/jruby/jruby/wiki/Persistence
         @klass = (class << object; self; end)
 
         @original_method = nil
