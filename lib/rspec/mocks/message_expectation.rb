@@ -406,7 +406,6 @@ module RSpec
       # some collaborators it delegates to for this stuff but for now this was
       # the simplest way to split the public from private stuff to make it
       # easier to publish the docs for the APIs we want published.
-      # rubocop:disable Metrics/ModuleLength
       module ImplementationDetails
         attr_accessor :error_generator, :implementation
         attr_reader :message
@@ -686,7 +685,6 @@ module RSpec
           nil
         end
       end
-      # rubocop:enable Metrics/ModuleLength
 
       include ImplementationDetails
     end
