@@ -1,2 +1,9 @@
-default: --require features --tags ~@wip features --format progress
+<%
+
+USE_TILDE_TAGS = !defined?(::RUBY_ENGINE_VERSION) || (::RUBY_ENGINE_VERSION < '2.0.0')
+NOT_WIP_TAG = USE_TILDE_TAGS ? '~@wip' : '"not @wip"'
+
+%>
+
+default: --require features --tags <%= NOT_WIP_TAG %> features --format progress
 wip: --require features --tags @wip:3 --wip features
