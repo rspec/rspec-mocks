@@ -3,7 +3,8 @@
 
 if defined?(Cucumber)
   require 'shellwords'
-  Before('~@allow-old-syntax') do
+  tag = !defined?(::RUBY_ENGINE_VERSION) || (::RUBY_ENGINE_VERSION < '2.0.0') ? '~@allow-old-syntax' : 'not @allow-old-syntax'
+  Before(tag) do
     set_environment_variable('SPEC_OPTS', "-r#{Shellwords.escape(__FILE__)}")
   end
 else

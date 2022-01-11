@@ -81,6 +81,10 @@ else
   gem 'json', '> 2.3.0'
 end
 
+if RUBY_VERSION < '2.0.0'
+  gem 'cucumber', "<= 1.3.22"
+end
+
 platforms :jruby do
   if RUBY_VERSION < '1.9.0'
     # Pin jruby-openssl on older J Ruby
