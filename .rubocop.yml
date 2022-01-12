@@ -11,7 +11,10 @@ Metrics/CyclomaticComplexity:
   Max: 18
 
 Layout/LineLength:
-  Max: 325
+  Max: 193
+  Exclude:
+    - features/**/*
+    - spec/**/*
 
 Metrics/MethodLength:
   Max: 49
@@ -20,10 +23,14 @@ Metrics/AbcSize:
   Max: 47
 
 Metrics/BlockLength:
-  Max: 1066
+  Max: 45
+  Exclude:
+    - spec/**/*
 
 Metrics/ModuleLength:
-  Max: 1066
+  Max: 220
+  Exclude:
+    - spec/**/*
 
 Metrics/PerceivedComplexity:
   Max: 19
