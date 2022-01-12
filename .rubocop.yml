@@ -10,8 +10,11 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Max: 18
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 193
+  Exclude:
+    - features/**/*
+    - spec/**/*
 
 Metrics/MethodLength:
   Max: 49
@@ -25,7 +28,9 @@ Metrics/BlockLength:
     - spec/**/*
 
 Metrics/ModuleLength:
-  Max: 210
+  Max: 220
+  Exclude:
+    - spec/**/*
 
 Metrics/PerceivedComplexity:
   Max: 19
