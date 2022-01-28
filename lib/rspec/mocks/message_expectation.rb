@@ -53,7 +53,7 @@ module RSpec
       # etc.
       #
       # If the message is received more times than there are values, the last
-      # value is received for every subsequent call.
+      # value is returned for every subsequent call.
       #
       # @return [nil] No further chaining is supported after this.
       # @example
