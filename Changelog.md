@@ -8,6 +8,7 @@ Enhancements:
 
 Bug Fixes:
 
+* Suppress warning by setting `$VERBOSE` to nil. (Nobuyoshi Nakada, #1414)
 * Support keyword argument semantics when constraining argument expectations using
   `with` on Ruby 3.0+ (Yusuke Endoh, #1394)
 
