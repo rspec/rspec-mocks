@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.2...4-0-dev)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.3...4-0-dev)
 
 Breaking Changes:
 
@@ -23,10 +23,8 @@ Bug Fixes:
   `with` on Ruby 3.0+ (Yusuke Endoh, #1394)
 * Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
 
-Enhancements:
-
-* Add `and_invoke` implementation for configuring responses to `receive`
-  (and `receive_messages`) with multiple callable objects. (Kyle Smith, #1411)
+### 3.10.3 / 2021-01-28
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.2...v3.10.3)
 
 Bug Fixes:
 
