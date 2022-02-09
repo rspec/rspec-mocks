@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.3...4-0-dev)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...4-0-dev)
 
 Breaking Changes:
 
@@ -12,16 +12,17 @@ Breaking Changes:
 * Remove deprecated `allow_message_expectations_on_nil` example method.
   (Phil Pirozhkov, #1410)
 
+Bug Fixes:
+
+* Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
+
+### 3.11.0 / 2022-02-09
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.3...v3.11.0)
+
 Enhancements:
 
 * Add `and_invoke` implementation for configuring responses to `receive`
   (and `receive_messages`) with multiple callable objects. (Kyle Smith, #1411)
-
-Bug Fixes:
-
-* Support keyword argument semantics when constraining argument expectations using
-  `with` on Ruby 3.0+ (Yusuke Endoh, #1394)
-* Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
 
 ### 3.10.3 / 2021-01-28
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.2...v3.10.3)
