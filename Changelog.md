@@ -1,12 +1,15 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.3...main)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...main)
+
+### 3.11.0 / 2022-02-09
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.3...v3.11.0)
 
 Enhancements:
 
 * Add `and_invoke` implementation for configuring responses to `receive`
   (and `receive_messages`) with multiple callable objects. (Kyle Smith, #1411)
 
-### 3.10.3 / 2021-01-28
+### 3.10.3 / 2022-01-28
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.2...v3.10.3)
 
 Bug Fixes:

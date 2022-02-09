@@ -3,7 +3,7 @@ module RSpec
     # Version information for RSpec mocks.
     module Version
       # Version of RSpec mocks currently in use in SemVer format.
-      STRING = '3.11.0.pre'
+      STRING = '3.12.0.pre'
     end
   end
 end
