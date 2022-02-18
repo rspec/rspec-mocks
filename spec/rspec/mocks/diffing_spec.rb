@@ -83,6 +83,39 @@ RSpec.describe "Diffs printed when arguments don't match" do
       end
     end
 
+    if RSpec::Support::RubyFeatures.distincts_kw_args_from_positional_hash?
+      eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+        it "print a diff when keyword argument were expected but got an option hash (using splat)" do
+          with_unfulfilled_double do |d|
+            expect(d).to receive(:foo).with(**expected_hash)
+            expect {
+              d.foo(expected_hash)
+            }.to fail_with(
+              "#<Double \"double\"> received :foo with unexpected arguments\n" \
+              "  expected: ({:baz=>:quz, :foo=>:bar}) (keyword arguments)\n" \
+              "       got: ({:baz=>:quz, :foo=>:bar}) (options hash)"
+            )
+          end
+        end
+      RUBY
+
+      eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+        it "print a diff when keyword argument were expected but got an option hash (literal)" do
+          with_unfulfilled_double do |d|
+            expect(d).to receive(:foo).with(:positional, keyword: 1)
+            expect {
+              options = { keyword: 1 }
+              d.foo(:positional, options)
+            }.to fail_with(
+              "#<Double \"double\"> received :foo with unexpected arguments\n" \
+              "  expected: (:positional, {:keyword=>1}) (keyword arguments)\n" \
+              "       got: (:positional, {:keyword=>1}) (options hash)"
+            )
+          end
+        end
+      RUBY
+    end
+
     if RUBY_VERSION.to_f < 1.9
       # Ruby 1.8 hashes are not ordered, but `#inspect` on a particular unchanged
       # hash instance should return consistent output. However, on Travis that does
