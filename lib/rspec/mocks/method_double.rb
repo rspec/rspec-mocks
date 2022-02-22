@@ -77,7 +77,7 @@ module RSpec
         # TODO: drop in favor of FrozenError in ruby 2.5+
         #  RuntimeError (and FrozenError) for ruby 2.x
         #  TypeError for ruby 1.x
-        if FROZEN_ERROR_MSG === e.message
+        if (defined?(FrozenError) && e.is_a?(FrozenError)) || FROZEN_ERROR_MSG === e.message
           raise ArgumentError, "Cannot proxy frozen objects, rspec-mocks relies on proxies for method stubbing and expectations."
         end
         raise
@@ -105,7 +105,9 @@ module RSpec
         # TODO: drop in favor of FrozenError in ruby 2.5+
         #  RuntimeError (and FrozenError) for ruby 2.x
         #  TypeError for ruby 1.x
-        return show_frozen_warning if FROZEN_ERROR_MSG === e.message
+        if (defined?(FrozenError) && e.is_a?(FrozenError)) || FROZEN_ERROR_MSG === e.message
+          return show_frozen_warning
+        end
         raise
       end
 
