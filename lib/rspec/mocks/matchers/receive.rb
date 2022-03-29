@@ -62,7 +62,7 @@ module RSpec
             @recorded_customizations << ExpectationCustomization.new(method, args, block)
             self
           end
-          ruby2_keywords(method) if Module.private_method_defined?(:ruby2_keywords)
+          ruby2_keywords(method) if respond_to?(:ruby2_keywords, true)
         end
 
       private

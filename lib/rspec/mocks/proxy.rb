@@ -230,6 +230,7 @@ module RSpec
           @object.__send__(:method_missing, message, *args, &block)
         end
       end
+      ruby2_keywords :message_received if respond_to?(:ruby2_keywords, true)
 
       # @private
       def raise_unexpected_message_error(method_name, args)
@@ -279,12 +280,14 @@ module RSpec
           expectation.matches?(method_name, *args)
         end
       end
+      ruby2_keywords :find_matching_expectation if respond_to?(:ruby2_keywords, true)
 
       def find_almost_matching_expectation(method_name, *args)
         find_best_matching_expectation_for(method_name) do |expectation|
           expectation.matches_name_but_not_args(method_name, *args)
         end
       end
+      ruby2_keywords :find_almost_matching_expectation if respond_to?(:ruby2_keywords, true)
 
       def find_best_matching_expectation_for(method_name)
         first_match = nil
@@ -301,10 +304,12 @@ module RSpec
       def find_matching_method_stub(method_name, *args)
         method_double_for(method_name).stubs.find { |stub| stub.matches?(method_name, *args) }
       end
+      ruby2_keywords :find_matching_method_stub if respond_to?(:ruby2_keywords, true)
 
       def find_almost_matching_stub(method_name, *args)
         method_double_for(method_name).stubs.find { |stub| stub.matches_name_but_not_args(method_name, *args) }
       end
+      ruby2_keywords :find_almost_matching_stub if respond_to?(:ruby2_keywords, true)
     end
 
     # @private
@@ -360,6 +365,7 @@ module RSpec
         end
         super
       end
+      ruby2_keywords :message_received if respond_to?(:ruby2_keywords, true)
 
     private
 

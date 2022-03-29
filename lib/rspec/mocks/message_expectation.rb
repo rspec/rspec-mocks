@@ -139,9 +139,12 @@ module RSpec
       #   counter.increment
       #   expect(counter.count).to eq(original_count + 1)
       def and_call_original
-        wrap_original(__method__) do |original, *args, &block|
-          original.call(*args, &block)
+        block = lambda do |original, *args, &b|
+          original.call(*args, &b)
         end
+        block = block.ruby2_keywords if block.respond_to?(:ruby2_keywords)
+
+        wrap_original(__method__, &block)
       end
 
       # Decorates the stubbed method with the supplied block. The original
@@ -364,7 +367,7 @@ module RSpec
         @argument_list_matcher = ArgumentListMatcher.new(*args)
         self
       end
-      ruby2_keywords(:with) if Module.private_method_defined?(:ruby2_keywords)
+      ruby2_keywords(:with) if respond_to?(:ruby2_keywords, true)
 
       # Expect messages to be received in a specific order.
       #
@@ -461,18 +464,22 @@ module RSpec
         def matches?(message, *args)
           @message == message && @argument_list_matcher.args_match?(*args)
         end
+        ruby2_keywords :matches? if respond_to?(:ruby2_keywords, true)
 
         def safe_invoke(parent_stub, *args, &block)
           invoke_incrementing_actual_calls_by(1, false, parent_stub, *args, &block)
         end
+        ruby2_keywords :safe_invoke if respond_to?(:ruby2_keywords, true)
 
         def invoke(parent_stub, *args, &block)
           invoke_incrementing_actual_calls_by(1, true, parent_stub, *args, &block)
         end
+        ruby2_keywords :invoke if respond_to?(:ruby2_keywords, true)
 
         def invoke_without_incrementing_received_count(parent_stub, *args, &block)
           invoke_incrementing_actual_calls_by(0, true, parent_stub, *args, &block)
         end
+        ruby2_keywords :invoke_without_incrementing_received_count if respond_to?(:ruby2_keywords, true)
 
         def negative?
           @expected_received_count == 0 && !@at_least
@@ -621,6 +628,7 @@ module RSpec
             @actual_received_count += increment
           end
         end
+        ruby2_keywords :invoke_incrementing_actual_calls_by if respond_to?(:ruby2_keywords, true)
 
         def has_been_invoked?
           @actual_received_count > 0
@@ -755,6 +763,7 @@ module RSpec
           action.call(*args, &block)
         end.last
       end
+      ruby2_keywords :call if respond_to?(:ruby2_keywords, true)
 
       def present?
         actions.any?
@@ -800,6 +809,7 @@ module RSpec
       def call(*args, &block)
         @block.call(@method, *args, &block)
       end
+      ruby2_keywords :call if respond_to?(:ruby2_keywords, true)
 
     private
 

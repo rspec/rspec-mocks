@@ -63,6 +63,8 @@ module RSpec
           define_method(method_name) do |*args, &block|
             method_double.proxy_method_invoked(self, *args, &block)
           end
+          # This can't be `if respond_to?(:ruby2_keywords, true)`,
+          # see https://github.com/rspec/rspec-mocks/pull/1385#issuecomment-755340298
           ruby2_keywords(method_name) if Module.private_method_defined?(:ruby2_keywords)
           __send__(visibility, method_name)
         end
@@ -77,6 +79,7 @@ module RSpec
       def proxy_method_invoked(_obj, *args, &block)
         @proxy.message_received method_name, *args, &block
       end
+      ruby2_keywords :proxy_method_invoked if respond_to?(:ruby2_keywords, true)
 
       # @private
       def restore_original_method
