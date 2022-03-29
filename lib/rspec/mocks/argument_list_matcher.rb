@@ -46,7 +46,7 @@ module RSpec
         @expected_args = expected_args
         ensure_expected_args_valid!
       end
-      ruby2_keywords :initialize if Module.private_method_defined?(:ruby2_keywords)
+      ruby2_keywords :initialize if respond_to?(:ruby2_keywords, true)
 
       # @api public
       # @param [Array] actual_args
@@ -71,6 +71,7 @@ module RSpec
 
         Support::FuzzyMatcher.values_match?(expected_args, actual_args)
       end
+      ruby2_keywords :args_match? if respond_to?(:ruby2_keywords, true)
 
       # @private
       # Resolves abstract arg placeholders like `no_args` and `any_args` into
