@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...4-0-dev)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...4-0-dev)
 
 Breaking Changes:
 
@@ -16,7 +16,8 @@ Bug Fixes:
 
 * Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
 
-Bug Fixes:
+### 3.11.1 / 2022-03-31
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...v3.11.1)
 
 * Add extra `ruby2_keywords` calls to properly designate methods using
  `*args` to pass keyword around, fixes an issue with TruffleRuby.
