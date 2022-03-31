@@ -1,6 +1,12 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...main)
 
+Bug Fixes:
+
+* Add extra `ruby2_keywords` calls to properly designate methods using
+ `*args` to pass keyword around, fixes an issue with TruffleRuby.
+ (Benoit Daloze, #1464)
+
 ### 3.11.0 / 2022-02-09
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.10.3...v3.11.0)
 
