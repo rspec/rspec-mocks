@@ -39,10 +39,10 @@ A method stub is an instruction to an object (real or test double) to return a
 known value in response to a message:
 
 ```ruby
-allow(die).to receive(:roll) { 3 }
+allow(dice).to receive(:roll) { 3 }
 ```
 
-This tells the `die` object to return the value `3` when it receives the `roll` message.
+This tells the `dice` object to return the value `3` when it receives the `roll` message.
 
 ## Message Expectations
 
