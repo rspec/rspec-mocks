@@ -185,11 +185,23 @@ module RSpec
       def self.applies_to?(method_name)
         return false unless method_name == :new
         klass = yield
-        return false unless klass.respond_to?(:new, true)
+        return false unless ::Class === klass && klass.respond_to?(:new, true)
 
         # We only want to apply our special logic to normal `new` methods.
         # Methods that the user has monkeyed with should be left as-is.
-        ::RSpec::Support.method_handle_for(klass, :new).owner == ::Class
+        uses_class_new?(klass)
+      end
+
+      if RUBY_VERSION.to_i >= 3
+        CLASS_NEW = ::Class.singleton_class.instance_method(:new)
+
+        def self.uses_class_new?(klass)
+          ::RSpec::Support.method_handle_for(klass, :new) == CLASS_NEW.bind(klass)
+        end
+      else # Ruby 2's Method#== is too strict
+        def self.uses_class_new?(klass)
+          ::RSpec::Support.method_handle_for(klass, :new).owner == ::Class
+        end
       end
 
       def with_signature
