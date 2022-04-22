@@ -622,6 +622,20 @@ module RSpec
           end
         end
 
+        context "on a class with a twice-aliased `new`" do
+          it 'uses the method signature from `#initialize` for arg verification', :if => (RUBY_VERSION.to_i >= 3) do
+            subclass = Class.new(klass) do
+              class << self
+                alias_method :_new, :new
+                alias_method :new, :_new
+              end
+            end
+
+            prevents(/arguments/) { allow(subclass).to receive(:new).with(1) }
+            allow(subclass).to receive(:new).with(1, 2)
+          end
+        end
+
         context 'on a class that has redefined `self.method`' do
           it 'allows the stubbing of :new' do
             subclass = Class.new(klass) do
