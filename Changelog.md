@@ -1,6 +1,12 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...main)
 
+Bug Fixes:
+
+* Use the original implementation of `Class.new` to detect overridden definitions
+  of `new` rather than the owner, fixing detection of "double aliased" methods
+  in Ruby 3 and above. (Benoit Daloze, #1470)
+
 ### 3.11.1 / 2022-03-31
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...v3.11.1)
 
