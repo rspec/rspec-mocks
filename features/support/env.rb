@@ -2,7 +2,7 @@ require 'aruba/cucumber'
 require 'rspec/expectations'
 
 Aruba.configure do |config|
-  if RUBY_PLATFORM =~ /java/ || defined?(Rubinius)
+  if RUBY_PLATFORM =~ /java/ || defined?(Rubinius) || (defined?(RUBY_ENGINE) && RUBY_ENGINE == 'truffleruby')
     config.exit_timeout = 60
   else
     config.exit_timeout = 5
