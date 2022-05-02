@@ -240,14 +240,6 @@ module RSpec::Mocks
       expect { space1.proxy_for(object) }.to raise_error(ArgumentError, expected_message)
     end
 
-    it 'raises ArgumentError with message if object is frozen' do
-      space1 = Space.new
-      object = "subject".freeze
-      expected_message = "Cannot proxy frozen objects, rspec-mocks relies on proxies for method stubbing and expectations."
-
-      expect { space1.proxy_for(object) }.to raise_error(ArgumentError, expected_message)
-    end
-
     def in_new_space_scope
       RSpec::Mocks.setup
       yield
