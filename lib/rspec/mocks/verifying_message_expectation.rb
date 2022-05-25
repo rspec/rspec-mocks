@@ -31,6 +31,7 @@ module RSpec
           end
         end
       end
+      ruby2_keywords(:with) if respond_to?(:ruby2_keywords, true)
 
     private
 

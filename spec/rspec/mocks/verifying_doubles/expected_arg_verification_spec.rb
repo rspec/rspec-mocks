@@ -117,6 +117,27 @@ module RSpec
             }.to raise_error(ArgumentError, /no_args/)
           end
         end
+
+        context "for a method with keyword args" do
+          it "matches against a hash submitted as keyword arguments and received as positional argument (in both Ruby 2 and Ruby 3)" do
+            expect(dbl).to receive(:kw_args_method).with(1, {:required_arg => 2, :optional_arg => 3})
+            dbl.kw_args_method(1, :required_arg => 2, :optional_arg => 3)
+          end
+
+          if RUBY_VERSION >= "3"
+            it "fails to match against a hash submitted as a positional argument and received as keyword arguments in Ruby 3.0 or later", :reset => true do
+              expect(dbl).to receive(:kw_args_method).with(1, :required_arg => 2, :optional_arg => 3)
+              expect do
+                dbl.kw_args_method(1, {:required_arg => 2, :optional_arg => 3})
+              end.to fail_with(/expected: \(1, {:optional_arg=>3, :required_arg=>2}\) \(keyword arguments\).*got: \(1, {:optional_arg=>3, :required_arg=>2}\) \(options hash\)/m)
+            end
+          else
+            it "matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 2.7 or before" do
+              expect(dbl).to receive(:kw_args_method).with(1, :required_arg => 2, :optional_arg => 3)
+              dbl.kw_args_method(1, {:required_arg => 2, :optional_arg => 3})
+            end
+          end
+        end
       end
     end
   end
