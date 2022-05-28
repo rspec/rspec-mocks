@@ -21,6 +21,8 @@ Bug Fixes:
 * Use the original implementation of `Class.new` to detect overridden definitions
   of `new` rather than the owner, fixing detection of "double aliased" methods
   in Ruby 3 and above. (Benoit Daloze, #1470)
+* Support keyword argument semantics when constraining argument expectations using
+  `with` on Ruby 3.0+ with `instance_double` (Andrii Malyshko, #1473)
 
 ### 3.11.1 / 2022-03-31
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.0...v3.11.1)
