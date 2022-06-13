@@ -193,7 +193,7 @@ module RSpec
       end
 
       if RUBY_VERSION.to_i >= 3
-        CLASS_NEW = ::Class.singleton_class.instance_method(:new)
+        CLASS_NEW = ::Class.instance_method(:new)
 
         def self.uses_class_new?(klass)
           ::RSpec::Support.method_handle_for(klass, :new) == CLASS_NEW.bind(klass)
