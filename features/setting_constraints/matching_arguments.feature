@@ -111,7 +111,7 @@ Feature: Matching arguments
   Scenario: Using a RSpec matcher
     Given a file named "rspec_matcher_spec.rb" with:
       """ruby
-      RSpec.describe "Using a RSpec matcher" do
+      RSpec.describe "Using any matcher from rspec-expectations" do
         let(:dbl) { double }
         before { expect(dbl).to receive(:foo).with(a_collection_containing_exactly(1, 2)) }
 
@@ -132,6 +132,36 @@ Feature: Matching arguments
       | #<Double (anonymous)> received :foo with unexpected arguments |
       | expected: (a collection containing exactly 1 and 2)           |
       | got: ([1, 3])                                                 |
+
+  Scenario: Using satisfy for any expectation
+    Given a file named "rspec_satisfy_spec.rb" with:
+      """ruby
+      RSpec.describe "Using satisfy for any expectation" do
+        let(:dbl) { double }
+        before do
+          expectation = satisfy do |arg|
+            arg[:a] == 5
+          end
+          expect(dbl).to receive(:foo).with(expectation)
+        end
+
+        it "passes when the expectation is true" do
+          dbl.foo(a: 5)
+        end
+
+        it "fails when the expectation is false" do
+          dbl.foo(a: 3)
+        end
+      end
+      """
+    When I run `rspec rspec_satisfy_spec.rb`
+    Then it should fail with the following output:
+      | 2 examples, 1 failure                                         |
+      |                                                               |
+      | Failure/Error: dbl.foo(a: 3)                                  |
+      | #<Double (anonymous)> received :foo with unexpected arguments |
+      | expected: (satisfy expression `arg[:a] == 5`)                 |
+      |      got: ({:a=>3})                                           |
 
   Scenario: Using a custom matcher
     Given a file named "custom_matcher_spec.rb" with:
