@@ -111,7 +111,7 @@ Feature: Matching arguments
   Scenario: Using a RSpec matcher
     Given a file named "rspec_matcher_spec.rb" with:
       """ruby
-      RSpec.describe "Using a Rspec matcher" do
+      RSpec.describe "Using a RSpec matcher" do
         let(:dbl) { double }
         before { expect(dbl).to receive(:foo).with(a_collection_containing_exactly(1, 2)) }
 
