@@ -140,7 +140,7 @@ Feature: Matching arguments
         let(:dbl) { double }
         before do
           expectation = satisfy do |data|
-            data.dig(:a, :b, :c) == 5
+            data[:a][:b][:c] == 5
           end
           expect(dbl).to receive(:foo).with(expectation)
         end
@@ -160,7 +160,7 @@ Feature: Matching arguments
       |                                                               |
       | Failure/Error: dbl.foo(a: { b: { c: 3 } })                    |
       | #<Double (anonymous)> received :foo with unexpected arguments |
-      | expected: (satisfy expression `data.dig(:a, :b, :c) == 5`)    |
+      | expected: (satisfy expression `data[:a][:b][:c] == 5`)        |
       |      got: ({:a=>{:b=>{:c=>3}}})                               |
 
   Scenario: Using a custom matcher
