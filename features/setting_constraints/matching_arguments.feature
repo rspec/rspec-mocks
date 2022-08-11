@@ -111,7 +111,7 @@ Feature: Matching arguments
   Scenario: Using a RSpec matcher
     Given a file named "rspec_matcher_spec.rb" with:
       """ruby
-      RSpec.describe "Using any matcher from rspec-expectations" do
+      RSpec.describe "Using a Rspec matcher" do
         let(:dbl) { double }
         before { expect(dbl).to receive(:foo).with(a_collection_containing_exactly(1, 2)) }
 
@@ -133,24 +133,24 @@ Feature: Matching arguments
       | expected: (a collection containing exactly 1 and 2)           |
       | got: ([1, 3])                                                 |
 
-  Scenario: Using satisfy for any expectation
+  Scenario: Using satisfy for complex custom expecations
     Given a file named "rspec_satisfy_spec.rb" with:
       """ruby
-      RSpec.describe "Using satisfy for any expectation" do
+      RSpec.describe "Using satisfy for complex custom expecations" do
         let(:dbl) { double }
         before do
-          expectation = satisfy do |arg|
-            arg[:a] == 5
+          expectation = satisfy do |data|
+            data.dig(:a, :b, :c) == 5
           end
           expect(dbl).to receive(:foo).with(expectation)
         end
 
         it "passes when the expectation is true" do
-          dbl.foo(a: 5)
+          dbl.foo(a: { b: { c: 5 } })
         end
 
         it "fails when the expectation is false" do
-          dbl.foo(a: 3)
+          dbl.foo(a: { b: { c: 3 } })
         end
       end
       """
@@ -158,10 +158,10 @@ Feature: Matching arguments
     Then it should fail with the following output:
       | 2 examples, 1 failure                                         |
       |                                                               |
-      | Failure/Error: dbl.foo(a: 3)                                  |
+      | Failure/Error: dbl.foo(a: { b: { c: 3 } })                    |
       | #<Double (anonymous)> received :foo with unexpected arguments |
-      | expected: (satisfy expression `arg[:a] == 5`)                 |
-      |      got: ({:a=>3})                                           |
+      | expected: (satisfy expression `data.dig(:a, :b, :c) == 5`)    |
+      |      got: ({:a=>{:b=>{:c=>3}}})                               |
 
   Scenario: Using a custom matcher
     Given a file named "custom_matcher_spec.rb" with:
