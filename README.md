@@ -279,7 +279,7 @@ expect(double).to receive(:msg).with(hash_including(:a => 5)) # first arg is a h
 expect(double).to receive(:msg).with(array_including(5)) # first arg is an array with 5 as one of the key-values
 expect(double).to receive(:msg).with(hash_excluding(:a => 5)) # first arg is a hash without a: 5 as one of the key-values
 expect(double).to receive(:msg).with(start_with('a')) # any matcher, custom or from rspec-expectations
-expect(double).to receive(:msg).with(satisfy{|data| data.dig(:a, :b, :c) == 5 }) # any expectation
+expect(double).to receive(:msg).with(satisfy { |data| data.dig(:a, :b, :c) == 5 }) # assert anything you want
 ```
 
 ## Receive Counts

@@ -138,18 +138,18 @@ Feature: Matching arguments
       """ruby
       RSpec.describe "Using satisfy for complex custom expecations" do
         let(:dbl) { double }
-        before do
-          expectation = satisfy do |data|
-            data[:a][:b][:c] == 5
-          end
-          expect(dbl).to receive(:foo).with(expectation)
+
+        def a_b_c_equals_5
+          satisfy { |data| data[:a][:b][:c] == 5 }
         end
 
         it "passes when the expectation is true" do
+          expect(dbl).to receive(:foo).with(a_b_c_equals_5)
           dbl.foo(a: { b: { c: 5 } })
         end
 
         it "fails when the expectation is false" do
+          expect(dbl).to receive(:foo).with(a_b_c_equals_5)
           dbl.foo(a: { b: { c: 3 } })
         end
       end
