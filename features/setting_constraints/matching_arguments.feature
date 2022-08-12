@@ -145,12 +145,12 @@ Feature: Matching arguments
 
         it "passes when the expectation is true" do
           expect(dbl).to receive(:foo).with(a_b_c_equals_5)
-          dbl.foo(a: { b: { c: 5 } })
+          dbl.foo({ :a => { :b=> { :c => 5 } } })
         end
 
         it "fails when the expectation is false" do
           expect(dbl).to receive(:foo).with(a_b_c_equals_5)
-          dbl.foo(a: { b: { c: 3 } })
+          dbl.foo({ :a => { :b=> { :c => 3 } } })
         end
       end
       """
@@ -158,7 +158,7 @@ Feature: Matching arguments
     Then it should fail with the following output:
       | 2 examples, 1 failure                                         |
       |                                                               |
-      | Failure/Error: dbl.foo(a: { b: { c: 3 } })                    |
+      | Failure/Error: dbl.foo({ :a => { :b=> { :c => 3 } } })        |
       | #<Double (anonymous)> received :foo with unexpected arguments |
       | expected: (satisfy expression `data[:a][:b][:c] == 5`)        |
       |      got: ({:a=>{:b=>{:c=>3}}})                               |
