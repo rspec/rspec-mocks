@@ -156,21 +156,23 @@ module RSpec
 
       private
 
-        def ancestor_is_an_observer?(method_name)
-          lambda do |ancestor|
-            unless ancestor == @klass
-              ::RSpec::Mocks.space.
-                any_instance_recorder_for(ancestor).already_observing?(method_name)
-            end
-          end
+        def ancestor_is_an_observer?(ancestor, method_name)
+          return if ancestor == @klass
+
+          ::RSpec::Mocks.space.
+            any_instance_recorder_for(ancestor).already_observing?(method_name)
         end
 
         def super_class_observers_for(method_name)
-          @klass.ancestors.select(&ancestor_is_an_observer?(method_name))
+          @klass.ancestors.select do |ancestor|
+            ancestor_is_an_observer?(ancestor, method_name)
+          end
         end
 
         def super_class_observing?(method_name)
-          @klass.ancestors.any?(&ancestor_is_an_observer?(method_name))
+          @klass.ancestors.any? do |ancestor|
+            ancestor_is_an_observer?(ancestor, method_name)
+          end
         end
 
         def normalize_chain(*args)
