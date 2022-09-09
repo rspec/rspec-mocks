@@ -28,7 +28,13 @@ module RSpec
   end
 end
 
-Minitest::Test.include(RSpec::Mocks::MinitestIntegration)
+begin
+  Minitest::Test.include(RSpec::Mocks::MinitestIntegration)
+rescue # rubocop:disable Lint/HandleExceptions
+  # this is a workaround for yard not recognising the include
+  # as this should only occur if Minitest isn't available we
+  # can ignore it
+end
 
 if defined?(::Minitest::Expectation)
   if defined?(::RSpec::Expectations) && ::Minitest::Expectation.method_defined?(:to)

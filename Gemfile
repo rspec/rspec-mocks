@@ -14,7 +14,11 @@ end
 
 gem 'diff-lcs', '~> 1.4', '>= 1.4.4'
 
-gem 'ffi', '~> 1.12.0'
+if RUBY_VERSION < '2.4.0' && !!(RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/)
+  gem 'ffi', '< 1.15'
+else
+  gem 'ffi', '~> 1.15'
+end
 
 gem 'yard', '~> 0.9.24', :require => false
 
