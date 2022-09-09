@@ -42,11 +42,13 @@ module RSpec
       ensure
         @__sending_message = nil
       end
+      ruby2_keywords :__send__ if respond_to?(:ruby2_keywords, true)
       $VERBOSE = old
 
       def send(name, *args, &block)
         __send__(name, *args, &block)
       end
+      ruby2_keywords :send if respond_to?(:ruby2_keywords, true)
 
       def initialize(doubled_module, *args)
         @doubled_module = doubled_module

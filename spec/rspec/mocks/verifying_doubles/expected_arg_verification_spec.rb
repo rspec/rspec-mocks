@@ -143,6 +143,15 @@ module RSpec
                 dbl.kw_args_method(1, {:required_arg => 2, :optional_arg => 3})
               end
             end
+
+            context "when using `send`" do
+              let(:dbl) { instance_double(Class.new { eval "def m(k:); end" }) }
+
+              it "matches against keyword arguments" do
+                expect(dbl).to receive(:m).with(:k => 1)
+                dbl.send(:m, :k => 1)
+              end
+            end
           end
         end
       end
