@@ -90,7 +90,7 @@ Feature: Scope
         end
       end
       """
-    When I run `rspec leak_test_double_spec.rb`
+    When I run `rspec --order defined leak_test_double_spec.rb`
     Then it should fail with the following output:
       | 2 examples, 1 failure                                                                                                         |
       |                                                                                                                               |
