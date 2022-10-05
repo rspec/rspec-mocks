@@ -10,7 +10,7 @@ Feature: Mixed responses
       RSpec.describe "when the method is called multiple times" do
         it "raises and then later returns a value" do
           dbl = double
-          allow(dbl).to receive(:foo).and_invoke(lambda { raise "failure" }, lambda { true })
+          allow(dbl).to receive(:foo).and_invoke(proc { raise "failure" }, proc { true })
 
           expect { dbl.foo }.to raise_error("failure")
           expect(dbl.foo).to eq(true)
