@@ -4,8 +4,9 @@ Feature: Mixed responses
   callables to have different behavior for consecutive calls. The final callable will continue to be
   called if the message is received additional times.
 
-  Note: The invoked callable will be invoked with any arguments, so it is recommended to use a `lambda`
-  or similar with the same arity as your method but you can use a `proc` if you do not care (e.g. when raising).
+  Note: The invoked callable will be invoked with the calls arguments, so it is recommended to use a
+  `lambda` or similar with the same arity as your method but you can use a `proc` if you do not care
+  about arity (e.g. when raising).
 
   Scenario: Mixed responses
     Given a file named "raises_and_then_returns.rb" with:
