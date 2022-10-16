@@ -2,6 +2,9 @@ inherit_from:
   - .rubocop_todo.yml
   - .rubocop_rspec_base.yml
 
+AllCops:
+  TargetRubyVersion: 2.4
+
 # All these metrics should go down over time.
 
 Metrics/ClassLength:
