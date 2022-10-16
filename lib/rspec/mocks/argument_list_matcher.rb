@@ -71,6 +71,7 @@ module RSpec
 
         Support::FuzzyMatcher.values_match?(expected_args, actual_args)
       end
+      ruby2_keywords :args_match? if respond_to?(:ruby2_keywords, true)
 
       # @private
       # Resolves abstract arg placeholders like `no_args` and `any_args` into
