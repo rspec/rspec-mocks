@@ -16,6 +16,11 @@ Bug Fixes:
 
 * Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
 
+Enhancements:
+
+* Improve diff output when diffing keyword arguments against hashes.
+  (Jean Boussier, #1461)
+
 Bug Fixes:
 
 * Use the original implementation of `Class.new` to detect overridden definitions
