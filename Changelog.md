@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...4-0-dev)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.2...4-0-dev)
 
 Breaking Changes:
 
@@ -20,6 +20,9 @@ Enhancements:
 
 * Improve diff output when diffing keyword arguments against hashes.
   (Jean Boussier, #1461)
+
+### 3.11.2 / 2022-10-25
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...3.11.2)
 
 Bug Fixes:
 
