@@ -10,7 +10,7 @@ Bug Fixes:
 
 * Use the original implementation of `Class.new` to detect overridden definitions
   of `new` rather than the owner, fixing detection of "double aliased" methods
-  in Ruby 3 and above. (Benoit Daloze, #1470)
+  in Ruby 3 and above. (Benoit Daloze, #1470, #1476)
 * Support keyword argument semantics when constraining argument expectations using
   `with` on Ruby 3.0+ with `instance_double` (Andrii Malyshko, #1473)
 
