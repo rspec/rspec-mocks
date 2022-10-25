@@ -7,7 +7,7 @@ Enhancements:
   (Jean Boussier, #1461)
 
 ### 3.11.2 / 2022-10-25
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...3.11.2)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...v3.11.2)
 
 Bug Fixes:
 
