@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.1...main)
 
+Enhancements:
+
+* Improve diff output when diffing keyword arguments against hashes.
+  (Jean Boussier, #1461)
+
 Bug Fixes:
 
 * Use the original implementation of `Class.new` to detect overridden definitions
