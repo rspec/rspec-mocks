@@ -1,5 +1,5 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.2...4-0-dev)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.0...4-0-dev)
 
 Breaking Changes:
 
@@ -15,6 +15,9 @@ Breaking Changes:
 Bug Fixes:
 
 * Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
+
+### 3.12.0 / 2022-10-26
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.2...v3.12.0)
 
 Enhancements:
 
