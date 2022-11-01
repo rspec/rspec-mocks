@@ -30,7 +30,7 @@ end
 
 begin
   Minitest::Test.include(RSpec::Mocks::MinitestIntegration)
-rescue # rubocop:disable Lint/HandleExceptions
+rescue
   # this is a workaround for yard not recognising the include
   # as this should only occur if Minitest isn't available we
   # can ignore it

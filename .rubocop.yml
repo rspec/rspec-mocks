@@ -3,6 +3,8 @@ inherit_from:
   - .rubocop_rspec_base.yml
 
 # All these metrics should go down over time.
+AllCops:
+  TargetRubyVersion: 2.4
 
 Metrics/ClassLength:
   Max: 279
