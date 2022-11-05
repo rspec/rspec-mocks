@@ -31,6 +31,20 @@ module RSpec
         end
       end
 
+      # FIXME: this is defined here to prevent
+      # "warning: method redefined; discarding old kw_args_method"
+      # because shared examples are evaluated several times.
+      # When we flatten those shared examples in RSpec 4 because
+      # of no "should" syntax, it will become possible to put this
+      # class definition closer to examples that use it.
+      if RSpec::Support::RubyFeatures.required_kw_args_supported?
+        binding.eval(<<-RUBY, __FILE__, __LINE__)
+        class TestObject
+          def kw_args_method(a:, b:); end
+        end
+        RUBY
+      end
+
       shared_examples "a receive matcher" do |*options|
         it 'allows the caller to configure how the subject responds' do
           wrapped.to receive(:foo).and_return(5)
@@ -108,6 +122,45 @@ module RSpec
               end
 
               expect(receiver.foo(kw: :arg)).to eq(:arg)
+            end
+
+            it "expects to receive keyword args" do
+              dbl = instance_double(TestObject)
+              expect(dbl).to receive(:kw_args_method).with(a: 1, b: 2)
+              dbl.kw_args_method(a: 1, b: 2)
+            end
+
+            if RUBY_VERSION >= '3.0'
+              it "fails to expect to receive hash with keyword args" do
+                expect {
+                  dbl = instance_double(TestObject)
+                  expect(dbl).to receive(:kw_args_method).with(a: 1, b: 2)
+                  dbl.kw_args_method({a: 1, b: 2})
+                }.to fail_with do |failure|
+                  reset_all
+                  expect(failure.message)
+                    .to include('expected: ({:a=>1, :b=>2}) (keyword arguments)')
+                    .and include('got: ({:a=>1, :b=>2}) (options hash)')
+                end
+              end
+            else
+              it "expects to receive hash with keyword args" do
+                dbl = instance_double(TestObject)
+                expect(dbl).to receive(:kw_args_method).with(a: 1, b: 2)
+                dbl.kw_args_method({a: 1, b: 2})
+              end
+            end
+
+            it "expects to receive hash with a hash" do
+              dbl = instance_double(TestObject)
+              expect(dbl).to receive(:kw_args_method).with({a: 1, b: 2})
+              dbl.kw_args_method({a: 1, b: 2})
+            end
+
+            it "expects to receive keyword args with a hash" do
+              dbl = instance_double(TestObject)
+              expect(dbl).to receive(:kw_args_method).with({a: 1, b: 2})
+              dbl.kw_args_method(a: 1, b: 2)
             end
             RUBY
           end
