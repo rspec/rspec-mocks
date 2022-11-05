@@ -31,6 +31,16 @@ module RSpec
         end
       end
 
+      # FIXME: this is defined here to prevent
+      # "warning: method redefined; discarding old kw_args_method"
+      # because shared examples are evaluated several times.
+      # When we flatten those shared examples in RSpec 4 because
+      # of no "should" syntax, it will become possible to put this
+      # class definition closer to examples that use it.
+      class TestObject
+        def kw_args_method(a:, b:); end
+      end
+
       shared_examples "a receive matcher" do |*options|
         it 'allows the caller to configure how the subject responds' do
           wrapped.to receive(:foo).and_return(5)
@@ -108,10 +118,6 @@ module RSpec
               end
 
               expect(receiver.foo(kw: :arg)).to eq(:arg)
-            end
-
-            class TestObject
-              def kw_args_method(a:, b:); end
             end
 
             it "expects to receive keyword args" do
