@@ -109,6 +109,22 @@ module RSpec
 
               expect(receiver.foo(kw: :arg)).to eq(:arg)
             end
+
+            class TestObject
+              def kw_args_method(a:, b:); end
+            end
+
+            it "expects to receive keyword args" do
+              dbl = instance_double(TestObject)
+              expect(dbl).to receive(:kw_args_method).with(a: 1, b: 2)
+              dbl.kw_args_method(a: 1, b: 2)
+            end
+
+            it "expects to receive keyword args with a hash" do
+              dbl = instance_double(TestObject)
+              expect(dbl).to receive(:kw_args_method).with({a: 1, b: 2})
+              dbl.kw_args_method(a: 1, b: 2)
+            end
             RUBY
           end
         end
