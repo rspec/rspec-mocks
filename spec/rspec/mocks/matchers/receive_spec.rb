@@ -37,8 +37,12 @@ module RSpec
       # When we flatten those shared examples in RSpec 4 because
       # of no "should" syntax, it will become possible to put this
       # class definition closer to examples that use it.
-      class TestObject
-        def kw_args_method(a:, b:); end
+      if RSpec::Support::RubyFeatures.required_kw_args_supported?
+        binding.eval(<<-RUBY, __FILE__, __LINE__)
+        class TestObject
+          def kw_args_method(a:, b:); end
+        end
+        RUBY
       end
 
       shared_examples "a receive matcher" do |*options|
