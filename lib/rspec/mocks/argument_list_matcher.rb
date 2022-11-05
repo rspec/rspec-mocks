@@ -61,7 +61,9 @@ module RSpec
         return false if expected_args.size != actual_args.size
 
         if RUBY_VERSION >= "3"
-          # if both arguments end with Hashes, and if one is a keyword hash and the other is not, they don't match
+          # If the expectation was set with keywords, while the actual method was called with a positional hash argument, they don't match.
+          # If the expectation was set without keywords, e.g., with({a: 1}), then it fine to call it with either foo(a: 1) or foo({a: 1}).
+          # This corresponds to Ruby semantics, as if the method was def foo(options).
           if Hash === expected_args.last && Hash === actual_args.last
             if !Hash.ruby2_keywords_hash?(actual_args.last) && Hash.ruby2_keywords_hash?(expected_args.last)
               return false

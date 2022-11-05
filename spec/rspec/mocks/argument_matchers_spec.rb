@@ -388,7 +388,7 @@ module RSpec
         end
 
         if RUBY_VERSION >= "3"
-          it "fails to matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 3.0 or later", :reset => true do
+          it "fails to match against a hash submitted as a positional argument and received as keyword arguments in Ruby 3.0 or later", :reset => true do
             opts = {:a => "a", :b => "b"}
             expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
             expect do
