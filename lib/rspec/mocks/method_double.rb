@@ -2,6 +2,9 @@ module RSpec
   module Mocks
     # @private
     class MethodDouble
+      # @private TODO: drop in favor of FrozenError in ruby 2.5+
+      FROZEN_ERROR_MSG = /can't modify frozen/
+
       # @private
       attr_reader :method_name, :object, :expectations, :stubs, :method_stasher
 
@@ -71,6 +74,14 @@ module RSpec
         end
 
         @method_is_proxied = true
+      rescue RuntimeError, TypeError => e
+        # TODO: drop in favor of FrozenError in ruby 2.5+
+        #  RuntimeError (and FrozenError) for ruby 2.x
+        #  TypeError for ruby 1.x
+        if (defined?(FrozenError) && e.is_a?(FrozenError)) || FROZEN_ERROR_MSG === e.message
+          raise ArgumentError, "Cannot proxy frozen objects, rspec-mocks relies on proxies for method stubbing and expectations."
+        end
+        raise
       end
 
       # The implementation of the proxied method. Subclasses may override this
@@ -84,7 +95,6 @@ module RSpec
 
       # @private
       def restore_original_method
-        return show_frozen_warning if object_singleton_class.frozen?
         return unless @method_is_proxied
 
         remove_method_from_definition_target
@@ -95,6 +105,14 @@ module RSpec
         end
 
         @method_is_proxied = false
+      rescue RuntimeError, TypeError => e
+        # TODO: drop in favor of FrozenError in ruby 2.5+
+        #  RuntimeError (and FrozenError) for ruby 2.x
+        #  TypeError for ruby 1.x
+        if (defined?(FrozenError) && e.is_a?(FrozenError)) || FROZEN_ERROR_MSG === e.message
+          return show_frozen_warning
+        end
+        raise
       end
 
       # @private
