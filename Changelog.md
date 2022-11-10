@@ -1,7 +1,6 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.0...main)
 
-
 Bug Fixes:
 
 * Change check to detect frozen objects to rescue errors rather than
