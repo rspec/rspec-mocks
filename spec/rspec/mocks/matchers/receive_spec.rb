@@ -348,7 +348,6 @@ module RSpec
         end
       end
 
-
       describe "allow(...).to receive" do
         it_behaves_like "an expect syntax allowance" do
           let(:receiver) { double }
