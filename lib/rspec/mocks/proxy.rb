@@ -35,15 +35,9 @@ module RSpec
 
       # @private
       def ensure_can_be_proxied!(object)
-        return unless object.is_a?(Symbol) || object.frozen?
-        return if object.nil?
+        return unless object.is_a?(Symbol)
 
-        msg = "Cannot proxy frozen objects"
-        if Symbol === object
-          msg << ". Symbols such as #{object} cannot be mocked or stubbed."
-        else
-          msg << ", rspec-mocks relies on proxies for method stubbing and expectations."
-        end
+        msg = "Cannot proxy frozen objects. Symbols such as #{object} cannot be mocked or stubbed."
         raise ArgumentError, msg
       end
 
