@@ -15,10 +15,6 @@ Breaking Changes:
 Bug Fixes:
 
 * Fix stubbing of prepended-only methods. (Lin Jen-Shin, #1218)
-
-
-Bug Fixes:
-
 * Change check to detect frozen objects to rescue errors rather than
   pre-empting by checking `frozen?` due to some objects mis-behaving.
   (Keegan Roth, #1401)
