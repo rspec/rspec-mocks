@@ -133,7 +133,7 @@ module RSpec
 
         context "behaves as 'every instance'" do
           let(:super_class) { Class.new { def foo; 'bar'; end } }
-          let(:sub_class)   { Class.new(super_class) }
+          let(:sub_class)   { Class.new(super_class) { def bar; 'foo'; end } }
 
           it "stubs every instance in the spec" do
             allow_any_instance_of(klass).to receive(:foo).and_return(result = Object.new)
@@ -158,6 +158,15 @@ module RSpec
             allow_any_instance_of(super_class).to receive(:foo)
             allow_any_instance_of(sub_class).to receive(:foo).and_return('baz')
             expect(sub_class.new.foo).to eq('baz')
+          end
+
+          it 'handles stubbing on a sub class when a super class is stubbed differently' do
+            expect_any_instance_of(super_class).to receive(:foo)
+            expect_any_instance_of(sub_class).to receive(:bar).and_return('baz')
+            expect(sub_class.new.bar).to eq('baz')
+            expect {
+              verify_all
+            }.to fail_with "Exactly one instance should have received the following message(s) but didn't: foo"
           end
 
           it 'handles method restoration on subclasses' do
