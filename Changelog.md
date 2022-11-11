@@ -6,6 +6,8 @@ Bug Fixes:
 * Change check to detect frozen objects to rescue errors rather than
   pre-empting by checking `frozen?` due to some objects mis-behaving.
   (Keegan Roth, #1401)
+* Prevent unfulfilled expectations using `expect_any_instance_of` across a class
+  inheritance boundary from raising rather than failing. (Jon Rowe, #1496)
 
 ### 3.12.0 / 2022-10-26
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.2...v3.12.0)
