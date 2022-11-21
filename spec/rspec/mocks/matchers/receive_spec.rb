@@ -679,6 +679,12 @@ module RSpec
             expect(3).to eq(3)
           end
         end
+
+        it 'with a nonsense allowance it fails with a reasonable error message' do
+          expect {
+            allow(true).not_to be_nil
+          }.to raise_error(start_with("`allow(...).not_to be_nil` is not supported since it doesn't really make sense"))
+        end
       end
 
       context "when rspec-expectations is included in the test framework last" do

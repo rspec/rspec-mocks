@@ -54,7 +54,7 @@ module RSpec
 
       def raise_negation_unsupported(method_name, matcher)
         raise NegationUnsupportedError,
-              "`#{expression}(...).#{method_name} #{matcher.name}` is not supported since it " \
+              "`#{expression}(...).#{method_name} #{matcher.matcher_name}` is not supported since it " \
               "doesn't really make sense. What would it even mean?"
       end
     end

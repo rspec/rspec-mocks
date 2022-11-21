@@ -16,7 +16,7 @@ module RSpec
           @subject = nil
         end
 
-        def name
+        def matcher_name
           "have_received"
         end
 
