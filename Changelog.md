@@ -8,6 +8,8 @@ Bug Fixes:
   (Keegan Roth, #1401)
 * Prevent unfulfilled expectations using `expect_any_instance_of` across a class
   inheritance boundary from raising rather than failing. (Jon Rowe, #1496)
+* Prevent a misleading error message when using `allow(...).not_to` with
+  unsupported matchers. (Phil Pirozhkov, #1503)
 
 ### 3.12.0 / 2022-10-26
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.2...v3.12.0)
