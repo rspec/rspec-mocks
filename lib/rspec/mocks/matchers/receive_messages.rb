@@ -10,7 +10,7 @@ module RSpec
           @backtrace_line = CallerFilter.first_non_rspec_line
         end
 
-        def name
+        def matcher_name
           "receive_messages"
         end
 

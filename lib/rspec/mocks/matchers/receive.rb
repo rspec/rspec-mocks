@@ -13,7 +13,7 @@ module RSpec
           @recorded_customizations = []
         end
 
-        def name
+        def matcher_name
           "receive"
         end
 
