@@ -20,7 +20,7 @@ module RSpec
           end
         end
 
-        def name
+        def matcher_name
           "receive_message_chain"
         end
 
