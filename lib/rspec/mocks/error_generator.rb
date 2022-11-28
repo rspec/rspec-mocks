@@ -269,13 +269,19 @@ module RSpec
         expected_args = format_args(expectation.expected_args)
         actual_args = format_received_args(args_for_multiple_calls)
 
-        if RSpec::Support::RubyFeatures.distincts_kw_args_from_positional_hash? && expected_args == actual_args
+        if RSpec::Support::RubyFeatures.distincts_kw_args_from_positional_hash?
           expected_hash = expectation.expected_args.last
           actual_hash = args_for_multiple_calls.last.last
           if Hash === expected_hash && Hash === actual_hash &&
             (Hash.ruby2_keywords_hash?(expected_hash) != Hash.ruby2_keywords_hash?(actual_hash))
-            actual_args += Hash.ruby2_keywords_hash?(actual_hash) ? " (keyword arguments)" : " (options hash)"
-            expected_args += Hash.ruby2_keywords_hash?(expected_hash) ? " (keyword arguments)" : " (options hash)"
+
+            actual_description = Hash.ruby2_keywords_hash?(actual_hash) ? " (keyword arguments)" : " (options hash)"
+            expected_description = Hash.ruby2_keywords_hash?(expected_hash) ? " (keyword arguments)" : " (options hash)"
+
+            if actual_description != expected_description
+              actual_args += actual_description
+              expected_args += expected_description
+            end
           end
         end
 
@@ -284,7 +290,7 @@ module RSpec
         if args_for_multiple_calls.one?
           diff = diff_message(expectation.expected_args, args_for_multiple_calls.first)
           if RSpec::Mocks.configuration.color?
-            message << "\nDiff:#{diff}" unless diff.gsub(/\e\[\d+m/,'').strip.empty?
+            message << "\nDiff:#{diff}" unless diff.gsub(/\e\[\d+m/, '').strip.empty?
           else
             message << "\nDiff:#{diff}" unless diff.strip.empty?
           end

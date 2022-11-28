@@ -128,6 +128,32 @@ RSpec.describe "Diffs printed when arguments don't match" do
             end
           end
         RUBY
+
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when the positional argument doesnt match" do
+            with_unfulfilled_double do |d|
+              input = Class.new
+
+              expected_input = input.new()
+              actual_input = input.new()
+
+              expect(d).to receive(:foo).with(expected_input, one: 1)
+
+              expect {
+                options = { one: 1 }
+                d.foo(actual_input, options)
+              }.to fail_with(
+                "#<Double \"double\"> received :foo with unexpected arguments\n" \
+                "  expected: (#{expected_input.inspect}, {:one=>1}) (keyword arguments)\n" \
+                "       got: (#{actual_input.inspect}, {:one=>1}) (options hash)\n" \
+                "Diff:\n" \
+                "@@ -1 +1 @@\n" \
+                "-[#{expected_input.inspect}, {:one=>1}]\n" \
+                "+[#{actual_input.inspect}, {:one=>1}]\n"
+              )
+            end
+          end
+        RUBY
       end
     end
 
@@ -167,6 +193,30 @@ RSpec.describe "Diffs printed when arguments don't match" do
               "#{d.inspect} received :foo with unexpected arguments\n" \
               "  expected: (:positional, {:keyword=>1}) (keyword arguments)\n" \
               "       got: (:positional, {:keyword=>1}) (options hash)"
+            )
+          end
+        RUBY
+
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when the positional argument doesnt match" do
+            input = Class.new
+
+            expected_input = input.new()
+            actual_input = input.new()
+
+            expect(d).to receive(:foo).with(expected_input, one: 1)
+
+            expect {
+              options = { one: 1 }
+              d.foo(actual_input, options)
+            }.to fail_with(
+              "#{d.inspect} received :foo with unexpected arguments\n" \
+              "  expected: (#{expected_input.inspect}, {:one=>1}) (keyword arguments)\n" \
+              "       got: (#{actual_input.inspect}, {:one=>1}) (options hash)\n" \
+              "Diff:\n" \
+              "@@ -1 +1 @@\n" \
+              "-[#{expected_input.inspect}, {:one=>1}]\n" \
+              "+[#{actual_input.inspect}, {:one=>1}]\n"
             )
           end
         RUBY
