@@ -82,7 +82,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
       with_unfulfilled_double do |d|
         expect(d).to receive(:foo).with(expected_hash)
         expect {
-          d.foo(:bad => :hash)
+          d.foo({:bad => :hash})
         }.to fail_with(/\A#<Double "double"> received :foo with unexpected arguments\n  expected: \(#{hash_regex_inspect expected_hash}\)\n       got: \(#{hash_regex_inspect actual_hash}\)\nDiff:\n@@ #{Regexp.escape one_line_header} @@\n\-\[#{hash_regex_inspect expected_hash}\]\n\+\[#{hash_regex_inspect actual_hash}\]\n\z/)
       end
     end
