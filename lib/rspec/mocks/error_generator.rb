@@ -283,7 +283,11 @@ module RSpec
 
         if args_for_multiple_calls.one?
           diff = diff_message(expectation.expected_args, args_for_multiple_calls.first)
-          message << "\nDiff:#{diff}" unless diff.strip.empty?
+          if RSpec::Mocks.configuration.color?
+            message << "\nDiff:#{diff}" unless diff.gsub(/\e\[\d+m/,'').strip.empty?
+          else
+            message << "\nDiff:#{diff}" unless diff.strip.empty?
+          end
         end
 
         message

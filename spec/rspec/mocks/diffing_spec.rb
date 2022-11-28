@@ -30,6 +30,19 @@ RSpec.describe "Diffs printed when arguments don't match" do
       end
     end
 
+    it "does not print a diff when differ returns a string of only whitespace when colour is enabled" do
+      allow(RSpec::Mocks.configuration).to receive(:color?) { true }
+      differ = instance_double(RSpec::Support::Differ, :diff => "\e[0m\n  \t\e[0m")
+      allow(RSpec::Support::Differ).to receive_messages(:new => differ)
+
+      with_unfulfilled_double do |d|
+        expect(d).to receive(:foo).with("some string\nline2")
+        expect {
+          d.foo("this other string")
+        }.to fail_with(a_string_excluding("Diff:"))
+      end
+    end
+
     it "prints a diff of the strings for individual mismatched multi-line string arguments" do
       with_unfulfilled_double do |d|
         expect(d).to receive(:foo).with("some string\nline2")
