@@ -30,6 +30,19 @@ RSpec.describe "Diffs printed when arguments don't match" do
       end
     end
 
+    it "does not print a diff when differ returns a string of only whitespace when colour is enabled" do
+      allow(RSpec::Mocks.configuration).to receive(:color?) { true }
+      differ = instance_double(RSpec::Support::Differ, :diff => "\e[0m\n  \t\e[0m")
+      allow(RSpec::Support::Differ).to receive_messages(:new => differ)
+
+      with_unfulfilled_double do |d|
+        expect(d).to receive(:foo).with("some string\nline2")
+        expect {
+          d.foo("this other string")
+        }.to fail_with(a_string_excluding("Diff:"))
+      end
+    end
+
     it "prints a diff of the strings for individual mismatched multi-line string arguments" do
       with_unfulfilled_double do |d|
         expect(d).to receive(:foo).with("some string\nline2")
@@ -69,7 +82,7 @@ RSpec.describe "Diffs printed when arguments don't match" do
       with_unfulfilled_double do |d|
         expect(d).to receive(:foo).with(expected_hash)
         expect {
-          d.foo(:bad => :hash)
+          d.foo({:bad => :hash})
         }.to fail_with(/\A#<Double "double"> received :foo with unexpected arguments\n  expected: \(#{hash_regex_inspect expected_hash}\)\n       got: \(#{hash_regex_inspect actual_hash}\)\nDiff:\n@@ #{Regexp.escape one_line_header} @@\n\-\[#{hash_regex_inspect expected_hash}\]\n\+\[#{hash_regex_inspect actual_hash}\]\n\z/)
       end
     end
@@ -83,37 +96,131 @@ RSpec.describe "Diffs printed when arguments don't match" do
       end
     end
 
-    if RSpec::Support::RubyFeatures.distincts_kw_args_from_positional_hash?
-      eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
-        it "print a diff when keyword argument were expected but got an option hash (using splat)" do
-          with_unfulfilled_double do |d|
-            expect(d).to receive(:foo).with(**expected_hash)
+    context 'with keyword arguments on normal doubles' do
+      if RSpec::Support::RubyFeatures.distincts_kw_args_from_positional_hash?
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when keyword argument were expected but got an option hash (using splat)" do
+            with_unfulfilled_double do |d|
+              expect(d).to receive(:foo).with(**expected_hash)
+              expect {
+                d.foo(expected_hash)
+              }.to fail_with(
+                "#<Double \"double\"> received :foo with unexpected arguments\n" \
+                "  expected: ({:baz=>:quz, :foo=>:bar}) (keyword arguments)\n" \
+                "       got: ({:baz=>:quz, :foo=>:bar}) (options hash)"
+              )
+            end
+          end
+        RUBY
+
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when keyword argument were expected but got an option hash (literal)" do
+            with_unfulfilled_double do |d|
+              expect(d).to receive(:foo).with(:positional, keyword: 1)
+              expect {
+                options = { keyword: 1 }
+                d.foo(:positional, options)
+              }.to fail_with(
+                "#<Double \"double\"> received :foo with unexpected arguments\n" \
+                "  expected: (:positional, {:keyword=>1}) (keyword arguments)\n" \
+                "       got: (:positional, {:keyword=>1}) (options hash)"
+              )
+            end
+          end
+        RUBY
+
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when the positional argument doesnt match" do
+            with_unfulfilled_double do |d|
+              input = Class.new
+
+              expected_input = input.new()
+              actual_input = input.new()
+
+              expect(d).to receive(:foo).with(expected_input, one: 1)
+
+              expect {
+                options = { one: 1 }
+                d.foo(actual_input, options)
+              }.to fail_with(
+                "#<Double \"double\"> received :foo with unexpected arguments\n" \
+                "  expected: (#{expected_input.inspect}, {:one=>1}) (keyword arguments)\n" \
+                "       got: (#{actual_input.inspect}, {:one=>1}) (options hash)\n" \
+                "Diff:\n" \
+                "@@ -1 +1 @@\n" \
+                "-[#{expected_input.inspect}, {:one=>1}]\n" \
+                "+[#{actual_input.inspect}, {:one=>1}]\n"
+              )
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with keyword arguments on partial doubles' do
+      include_context "with isolated configuration"
+
+      let(:d) { Class.new { def foo(a, b); end }.new }
+
+      before(:example) do
+        RSpec::Mocks.configuration.verify_partial_doubles = true
+        allow(RSpec.configuration).to receive(:color_enabled?) { false }
+      end
+
+      after(:example) { reset d }
+
+      if RSpec::Support::RubyFeatures.distincts_kw_args_from_positional_hash?
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when keyword argument were expected but got an option hash (using splat)" do
+            expect(d).to receive(:foo).with(:positional, **expected_hash)
             expect {
-              d.foo(expected_hash)
+              d.foo(:positional, expected_hash)
             }.to fail_with(
-              "#<Double \"double\"> received :foo with unexpected arguments\n" \
-              "  expected: ({:baz=>:quz, :foo=>:bar}) (keyword arguments)\n" \
-              "       got: ({:baz=>:quz, :foo=>:bar}) (options hash)"
+              "#{d.inspect} received :foo with unexpected arguments\n" \
+              "  expected: (:positional, {:baz=>:quz, :foo=>:bar}) (keyword arguments)\n" \
+              "       got: (:positional, {:baz=>:quz, :foo=>:bar}) (options hash)"
             )
           end
-        end
-      RUBY
+        RUBY
 
-      eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
-        it "print a diff when keyword argument were expected but got an option hash (literal)" do
-          with_unfulfilled_double do |d|
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when keyword argument were expected but got an option hash (literal)" do
             expect(d).to receive(:foo).with(:positional, keyword: 1)
             expect {
               options = { keyword: 1 }
               d.foo(:positional, options)
             }.to fail_with(
-              "#<Double \"double\"> received :foo with unexpected arguments\n" \
+              "#{d.inspect} received :foo with unexpected arguments\n" \
               "  expected: (:positional, {:keyword=>1}) (keyword arguments)\n" \
               "       got: (:positional, {:keyword=>1}) (options hash)"
             )
           end
-        end
-      RUBY
+        RUBY
+
+        eval <<-'RUBY', nil, __FILE__, __LINE__ + 1
+          it "prints a diff when the positional argument doesnt match" do
+            input = Class.new
+
+            expected_input = input.new()
+            actual_input = input.new()
+
+            expect(d).to receive(:foo).with(expected_input, one: 1)
+
+            expect {
+              options = { one: 1 }
+              d.foo(actual_input, options)
+            }.to fail_with(
+              "#{d.inspect} received :foo with unexpected arguments\n" \
+              "  expected: (#{expected_input.inspect}, {:one=>1}) (keyword arguments)\n" \
+              "       got: (#{actual_input.inspect}, {:one=>1}) (options hash)\n" \
+              "Diff:\n" \
+              "@@ -1 +1 @@\n" \
+              "-[#{expected_input.inspect}, {:one=>1}]\n" \
+              "+[#{actual_input.inspect}, {:one=>1}]\n"
+            )
+          end
+        RUBY
+      end
     end
 
     if RUBY_VERSION.to_f < 1.9
