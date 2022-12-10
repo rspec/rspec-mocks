@@ -3,6 +3,8 @@
 
 Bug Fixes:
 
+* Remove empty diff marker when a diff only contains console codes. (Jon Rowe, #1506)
+* Show keyword vs hash diff marker when arguments are not `==` (Jon Rowe, #1506)
 * Change check to detect frozen objects to rescue errors rather than
   pre-empting by checking `frozen?` due to some objects mis-behaving.
   (Keegan Roth, #1401)
