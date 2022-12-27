@@ -107,6 +107,20 @@ module RSpec
           }.to_not raise_error
         end
 
+        if RSpec::Support::RubyFeatures.required_kw_args_supported?
+          it "passes if expectations against yielded keyword arguments pass" do
+            binding.eval(<<-RUBY, __FILE__, __LINE__)
+              dbl = double(:foo => nil)
+              yielded = []
+              dbl.foo(a: 1)
+              expect(dbl).to have_received(:foo) do |a:|
+                yielded << a
+              end
+              _expect(yielded).to eq([1])
+            RUBY
+          end
+        end
+
         it "fails if expectations against the yielded arguments fail" do
           dbl = double(:foo => nil)
           dbl.foo(43)
