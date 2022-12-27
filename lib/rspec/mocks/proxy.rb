@@ -192,6 +192,7 @@ module RSpec
           @messages_received << [message, args, block]
         end
       end
+      ruby2_keywords :record_message_received if respond_to?(:ruby2_keywords, true)
 
       # @private
       def message_received(message, *args, &block)
