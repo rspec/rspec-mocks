@@ -186,7 +186,7 @@ expect(invitation.accept).to eq(true)
 ```
 
 Note that `have_received(...).with(...)` is unable to work properly when
-passed arguments are mutated after the spy records the received message.
+passed arguments are mutated after the spy records received the message.
 For example, this does not work properly:
 
 ```ruby
