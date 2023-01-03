@@ -160,6 +160,7 @@ module RSpec
         validate_arguments!(args)
         super
       end
+      ruby2_keywords :proxy_method_invoked if respond_to?(:ruby2_keywords, true)
 
       def validate_arguments!(actual_args)
         @method_reference.with_signature do |signature|
