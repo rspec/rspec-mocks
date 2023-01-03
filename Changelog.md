@@ -13,6 +13,8 @@ Bug Fixes:
 * Prevent a misleading error message when using `allow(...).not_to` with
   unsupported matchers. (Phil Pirozhkov, #1503)
 * Fix mocking keyword args for `have_received` with a block. (Adam Steel, #1508)
+* Fix mocking keyword args for `received` with Ruby 3.2.0. (Slava Kardakov,
+  Benoit Tigeot, Phil Pirozhkov, Benoit Daloze, #1514)
 
 ### 3.12.0 / 2022-10-26
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.11.2...v3.12.0)
