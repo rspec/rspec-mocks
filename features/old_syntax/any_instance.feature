@@ -37,7 +37,7 @@ Feature: `any_instance`
     Given a file named "spec/example_spec.rb" with:
       """ruby
       RSpec.describe "Stubbing multiple methods with any_instance" do
-        it "returns the specified values for the givne messages" do
+        it "returns the specified values for the given messages" do
           Object.any_instance.stub(:foo => 'foo', :bar => 'bar')
 
           o = Object.new
