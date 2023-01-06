@@ -101,7 +101,7 @@ module RSpec
         double = yield
 
         expect {
-          # send bypasses visbility, so we use eval instead.
+          # send bypasses visibility, so we use eval instead.
           eval("double.#{method_name}")
         }.to raise_error(NoMethodError, a_message_indicating_visibility_violation(method_name, visibility))
 

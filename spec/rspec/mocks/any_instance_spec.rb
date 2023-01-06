@@ -424,7 +424,7 @@ module RSpec
           expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
-        it "removes stubs from sub class after invokation when super class was originally stubbed" do
+        it "removes stubs from sub class after Invocation when super class was originally stubbed" do
           allow_any_instance_of(klass).to receive(:existing_method).and_return(:any_instance_value)
           obj = Class.new(klass).new
           expect(obj.existing_method).to eq(:any_instance_value)

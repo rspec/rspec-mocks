@@ -138,7 +138,7 @@ module RSpec::Mocks
           expect(get_proxy(space, obj1)).not_to equal(get_proxy(space, obj2))
         end
 
-        it 'can stil return a proxy from a parent context' do
+        it 'can still return a proxy from a parent context' do
           proxy    = get_proxy(space, Object)
           subspace = space.new_scope
 
@@ -183,7 +183,7 @@ module RSpec::Mocks
         expect(the_space.constant_mutator_for("Foo")).not_to equal(the_space.constant_mutator_for("Bar"))
       end
 
-      it 'can stil return a mutator from a parent context' do
+      it 'can still return a mutator from a parent context' do
         the_space = RSpec::Mocks.space
 
         stub_const("Foo", 3)
@@ -203,7 +203,7 @@ module RSpec::Mocks
         expect(space.any_instance_recorder_for(String)).not_to equal(space.any_instance_recorder_for(Symbol))
       end
 
-      it 'can stil return a recorder from a parent context' do
+      it 'can still return a recorder from a parent context' do
         recorder = space.any_instance_recorder_for(String)
         subspace = space.new_scope
 

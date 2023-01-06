@@ -57,7 +57,7 @@ module RSpec
             expect(array_including(1, 2, 3, 4, 5)).not_to be === [1, 2]
           end
 
-          it "fails when passed a composed matcher is pased and not satisfied" do
+          it "fails when passed a composed matcher is passed and not satisfied" do
             with_unfulfilled_double do |dbl|
               expect {
                 klass = Class.new

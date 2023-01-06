@@ -492,7 +492,7 @@ module RSpec
             }.to raise_error(/received :two out of order/m)
           end
 
-          it "fails with at most receive counts when recieved out of order", :ordered_and_vague_counts_unsupported do
+          it "fails with at most receive counts when received out of order", :ordered_and_vague_counts_unsupported do
             the_dbl.one
             the_dbl.two
             the_dbl.one
@@ -503,7 +503,7 @@ module RSpec
             }.to raise_error(/received :two out of order/m)
           end
 
-          it "fails with at least receive counts when recieved out of order", :ordered_and_vague_counts_unsupported do
+          it "fails with at least receive counts when received out of order", :ordered_and_vague_counts_unsupported do
             the_dbl.one
             the_dbl.two
             the_dbl.one

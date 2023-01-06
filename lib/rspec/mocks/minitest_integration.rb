@@ -37,7 +37,7 @@ if defined?(::Minitest::Expectation)
     # not want to here (or else we would interfere with rspec-expectations' definition).
   else
     # ...otherwise, define those methods now. If `rspec/expectations/minitest_integration`
-    # is loaded after this file, it'll overide the defintion here.
+    # is loaded after this file, it'll override the definition here.
     Minitest::Expectation.class_eval do
       include RSpec::Mocks::ExpectationTargetMethods
 

@@ -45,7 +45,7 @@ module RSpec
         verify @double
       end
 
-      it "passes mutiple calls with different args" do
+      it "passes multiple calls with different args" do
         expect(@double).to receive(:do_something).once.with(1)
         expect(@double).to receive(:do_something).once.with(2)
         @double.do_something(1)

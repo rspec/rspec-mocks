@@ -3,7 +3,7 @@ Feature: Block implementation
   When you pass a block, RSpec will use your block as the implementation of the method. Any
   arguments (or a block) provided by the caller will be yielded to your block implementation.
   This feature is extremely flexible, and supports many use cases that are not directly
-  supported by the more declaritive fluent interface.
+  supported by the more declarative fluent interface.
 
   You can pass a block to any of the fluent interface methods:
 

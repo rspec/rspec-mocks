@@ -21,7 +21,7 @@ RSpec.describe "Failure notification" do
     expect(error.backtrace.first).to match(/#{File.basename(__FILE__)}:#{expected_from_line}/)
   end
 
-  it "does not allow a double to miscount the number of times a message was recevied when a failure is notified in an alternate way" do
+  it "does not allow a double to miscount the number of times a message was received when a failure is notified in an alternate way" do
     dbl = double("Foo")
     expect(dbl).not_to receive(:bar)
 
