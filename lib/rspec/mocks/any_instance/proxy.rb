@@ -10,7 +10,7 @@ module RSpec
       #
       # This proxy sits in front of the recorder and delegates both to it
       # and to the `RSpec::Mocks::Proxy` for each already mocked or stubbed
-      # instance of the class, in order to propogates changes to the instances.
+      # instance of the class, in order to propagates changes to the instances.
       #
       # Note that unlike `RSpec::Mocks::Proxy`, this proxy class is stateless
       # and is not persisted in `RSpec::Mocks.space`.
