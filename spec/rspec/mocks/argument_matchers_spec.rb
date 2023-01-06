@@ -295,7 +295,7 @@ module RSpec
         end
       end
 
-      context "handling arbitary matchers" do
+      context "handling arbitrary matchers" do
         it "matches any arbitrary object using #===" do
           matcher = double
           expect(matcher).to receive(:===).with(4).and_return(true)

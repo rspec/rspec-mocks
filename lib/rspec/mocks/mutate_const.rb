@@ -81,7 +81,7 @@ module RSpec
       # Queries rspec-mocks to find out information about the named constant.
       #
       # @param [String] name the name of the constant
-      # @return [Constant] an object contaning information about the named
+      # @return [Constant] an object containing information about the named
       #   constant.
       def self.original(name)
         mutator = ::RSpec::Mocks.space.constant_mutator_for(name)
