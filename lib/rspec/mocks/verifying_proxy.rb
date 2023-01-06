@@ -57,7 +57,7 @@ module RSpec
     # A verifying proxy mostly acts like a normal proxy, except that it
     # contains extra logic to try and determine the validity of any expectation
     # set on it. This includes whether or not methods have been defined and the
-    # validatiy of arguments on method calls.
+    # validity of arguments on method calls.
     #
     # In all other ways this behaves like a normal proxy. It only adds the
     # verification behaviour to specific methods then delegates to the parent
