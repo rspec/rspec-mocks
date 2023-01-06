@@ -323,7 +323,7 @@ module RSpec
         @double.foo(:arg) { :bar }
       end
 
-      it "passes proc to stub block without an argurment" do
+      it "passes proc to stub block without an argument" do
         allow(@double).to receive(:foo) { |&block| expect(block.call).to eq(:bar) }
         @double.foo { :bar }
       end
