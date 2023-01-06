@@ -43,7 +43,7 @@ module RSpec::Mocks::Matchers
         expect(object.to_a.length).to eq(3)
       end
 
-      it "gives the { } block prescedence over the do block" do
+      it "gives the { } block precedence over the do block" do
         allow(object).to receive_message_chain(:to_a, :length) { 3 } do
           4
         end
