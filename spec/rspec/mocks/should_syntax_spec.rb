@@ -408,7 +408,7 @@ RSpec.describe "Using the legacy should syntax" do
           expect(obj.existing_method).to eq(:existing_method_return_value)
         end
 
-        it "removes stubs from sub class after invokation when super class was originally stubbed" do
+        it "removes stubs from sub class after Invocation when super class was originally stubbed" do
           klass.any_instance.stub(:existing_method).and_return(:any_instance_value)
           obj = Class.new(klass).new
           expect(obj.existing_method).to eq(:any_instance_value)
