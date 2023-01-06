@@ -101,7 +101,7 @@ Feature: Spies
           expect(invitation).to have_received(:deliver).twice
         end
 
-        it "passes when an order constraint is satisifed" do
+        it "passes when an order constraint is satisfied" do
           expect(invitation).to have_received(:deliver).with("foo@example.com").ordered
           expect(invitation).to have_received(:deliver).with("bar@example.com").ordered
         end
@@ -110,7 +110,7 @@ Feature: Spies
           expect(invitation).to have_received(:deliver).at_least(3).times
         end
 
-        it "fails when an order constraint is not satisifed" do
+        it "fails when an order constraint is not satisfied" do
           expect(invitation).to have_received(:deliver).with("bar@example.com").ordered
           expect(invitation).to have_received(:deliver).with("foo@example.com").ordered
         end
@@ -126,6 +126,6 @@ Feature: Spies
       |           expected: at least 3 times with any arguments                                             |
       |           received: 2 times with any arguments                                                      |
       |                                                                                                     |
-      |  2) An invitation fails when an order constraint is not satisifed                                   |
+      |  2) An invitation fails when an order constraint is not satisfied                                   |
       |     Failure/Error: expect(invitation).to have_received(:deliver).with("foo@example.com").ordered    |
       |       #<Double "invitation"> received :deliver out of order                                         |
