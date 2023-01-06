@@ -66,7 +66,7 @@ Feature: Dynamic classes
     When I run `rspec spec/user_spec.rb`
     Then the output should contain "1 example, 1 failure"
 
-  Scenario: workaround with explict definitions
+  Scenario: workaround with explicit definitions
 
     Given a file named "lib/user.rb" with:
       """ruby
