@@ -12,7 +12,8 @@ Bug Fixes:
   inheritance boundary from raising rather than failing. (Jon Rowe, #1496)
 * Prevent a misleading error message when using `allow(...).not_to` with
   unsupported matchers. (Phil Pirozhkov, #1503)
-* Fix mocking keyword args for `have_received` with a block. (Adam Steel, #1508)
+* Fix implementation blocks for mocks using keyword arguments on Ruby 3.2.0.
+  (Adam Steel, #1508)
 * Fix mocking keyword args for `received` with Ruby 3.2.0. (Slava Kardakov,
   Benoit Tigeot, Phil Pirozhkov, Benoit Daloze, #1514)
 
