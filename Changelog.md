@@ -1,6 +1,9 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.1...3-12-maintenance)
 
+### 3.12.2 / 2023-01-07
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.1...v3.12.2)
+
 Bug Fixes:
 
 * Fix implementation blocks for mocks using keyword arguments on Ruby 3.2.0.
