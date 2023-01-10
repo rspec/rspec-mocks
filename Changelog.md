@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.2...main)
 
+Bug Fixes:
+
+* Fix keyword delegation in `send` for verifying doubles on Ruby 3.
+  (Charlie Honig, #1485)
+
 ### 3.12.2 / 2023-01-07
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.1...v3.12.2)
 
