@@ -4,11 +4,7 @@ Feature: Returning a value
   different return values for consecutive calls. The final value will continue to be returned if
   the message is received additional times.
 
-  Note - using the multiple calls feature with `allow_any_instance_of` can result in confusing
-  behavior.  The rspec-mocks team [discourages](../../working_with_legacy_code/any_instance.feature)
-  using `allow_any_instance_of`, but its interaction with `and_return` is documented in
-  the [Working with Legacy Code](../../working_with_legacy_code/any_instance.feature#specify-different-return-values-for-multiple-calls-in-combination-with-`allow-any-instance-of`)
-  section.
+  Note - If you are looking for documentation for configuring responses from `allow_any_instance_of`, please see the [working with legacy code](../../working_with_legacy_code/any_instance.feature) documentation.
 
   Scenario: Nil is returned by default
     Given a file named "returns_nil_spec.rb" with:

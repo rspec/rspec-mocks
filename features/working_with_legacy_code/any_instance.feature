@@ -118,10 +118,8 @@ Feature: Any Instance
 
   Scenario: Specify different return values for multiple calls in combination with allow_any_instance_of
 
-    Using the multiple calls feature with `allow_any_instance_of` can result in confusing behavior.  With
-    `allow_any_instance_of`, the multiple calls are *configured* on the class, but *tracked* on the instance.  Therefore,
-    each individual instance will return the configured return values in the order specified, and then begin to repeat
-    the last value, as demonstrated in this code:
+    Using the multiple calls feature with `allow_any_instance_of` results in the behaviour where multiple calls are configured on every instance.
+    Therefore, each individual instance will return the configured return values in the order specified, and then begin to repeat the last value.
 
     Given a file named "multiple_calls_spec_with_allow_any_instance_of.rb" with:
       """ruby
@@ -143,14 +141,14 @@ Feature: Any Instance
           expect(second.foo).to eq(2)
 
           expect(first.foo).to eq(3)
-          expect(first.foo).to eq(3) # begins to repeat last value
+          expect(first.foo).to eq(3) # repeats last value from here
           expect(second.foo).to eq(3)
-          expect(second.foo).to eq(3) # begins to repeat last value
+          expect(second.foo).to eq(3) # repeats last value from here
 
           expect(third.foo).to eq(1)
           expect(third.foo).to eq(2)
           expect(third.foo).to eq(3)
-          expect(third.foo).to eq(3) # begins to repeat last value
+          expect(third.foo).to eq(3) # repeats last value from here
         end
       end
       """
