@@ -4,6 +4,12 @@ Feature: Returning a value
   different return values for consecutive calls. The final value will continue to be returned if
   the message is received additional times.
 
+  Note - using the multiple calls feature with `allow_any_instance_of` can result in confusing
+  behavior.  The rspec-mocks team [discourages](../../working_with_legacy_code/any_instance.feature)
+  using `allow_any_instance_of`, but its interaction with `and_return` is documented in
+  the [Working with Legacy Code](../../working_with_legacy_code/any_instance.feature#specify-different-return-values-for-multiple-calls-in-combination-with-`allow-any-instance-of`)
+  section.
+
   Scenario: Nil is returned by default
     Given a file named "returns_nil_spec.rb" with:
       """ruby
@@ -43,7 +49,7 @@ Feature: Returning a value
           expect(dbl.foo).to eq(1)
           expect(dbl.foo).to eq(2)
           expect(dbl.foo).to eq(3)
-          expect(dbl.foo).to eq(3)
+          expect(dbl.foo).to eq(3) # begins to repeat last value
           expect(dbl.foo).to eq(3)
         end
       end
