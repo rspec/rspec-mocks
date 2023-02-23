@@ -51,3 +51,31 @@ Feature: Wrapping the original implementation
       """
     When I run `rspec spec/and_wrap_original_spec.rb`
     Then the examples should all pass
+
+  @kw-arguments
+  Scenario: `and_wrap_original` can configure a default response that can be overridden for specific keyword arguments
+    Given a file named "lib/kw_api.rb" with:
+      """ruby
+      class API
+        def self.solve_for(x: 1, y: 2)
+          (x..y).to_a
+        end
+      end
+      """
+    Given a file named "spec/and_wrap_original_spec.rb" with:
+      """ruby
+      require 'kw_api'
+
+      RSpec.describe "and_wrap_original" do
+        it "can be overridden for specific arguments using #with" do
+          allow(API).to receive(:solve_for).and_wrap_original { |m, **kwargs| m.call(**kwargs).first(5) }
+          allow(API).to receive(:solve_for).with(x: 3, y: 4).and_return([3])
+
+          expect(API.solve_for(x: 1, y: 20)).to eq [1,2,3,4,5]
+          expect(API.solve_for(y: 20)).to eq [1,2,3,4,5]
+          expect(API.solve_for(x: 3, y: 4)).to eq [3]
+        end
+      end
+      """
+    When I run `rspec spec/and_wrap_original_spec.rb`
+    Then the examples should all pass

@@ -20,3 +20,14 @@ Before do
     set_environment_variable('RBXOPT', "-Xint=true #{ENV['RBXOPT']}")
   end
 end
+
+Before('@kw-arguments') do |scenario|
+  unless RSpec::Support::RubyFeatures.kw_args_supported?
+    warn "Skipping scenario due to lack of keyword argument support"
+    if Cucumber::VERSION.to_f >= 3.0
+      skip_this_scenario
+    else
+      scenario.skip_invoke!
+    end
+  end
+end
