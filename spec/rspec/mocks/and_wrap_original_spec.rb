@@ -61,6 +61,16 @@ RSpec.describe "and_wrap_original" do
         expect(instance.results 5).to eq [1, 2, 3, 4, 5]
         expect(instance.results).to eq :all
       end
+
+      if RSpec::Support::RubyFeatures.kw_args_supported?
+        binding.eval(<<-CODE, __FILE__, __LINE__)
+        it "works for methods that accept keyword arguments, using a keyword argument block" do
+          def instance.foo(bar: nil); bar; end
+          allow(instance).to receive(:foo).and_wrap_original { |m, **kwargs| m.call(**kwargs) }
+          expect(instance.foo(bar: "baz")).to eq("baz")
+        end
+        CODE
+      end
     end
 
     describe "allow(...).to receive(...).and_wrap_original" do
