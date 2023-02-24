@@ -70,6 +70,29 @@ Feature: Matching arguments
         it "fails when the args do not match" do
           dbl.foo(bar: "incorrect")
         end
+      end
+      """
+    When I run `rspec keyword_example_spec.rb`
+    Then it should fail with the following output:
+      | 2 examples, 1 failure                                                                 |
+      |                                                                                       |
+      | Failure/Error: dbl.foo(bar: "incorrect")                                              |
+      |   #<InstanceDouble(WithKeywords) (anonymous)> received :foo with unexpected arguments |
+      |     expected: ({:bar=>"baz"})                                                         |
+      |          got: ({:bar=>"incorrect"})                                                   |
+
+  @distincts_kw_args_from_positional_hash
+  Scenario: Using keyword arguments on Rubies that differentiate hashes from keyword arguments
+    Given a file named "keyword_example_spec.rb" with:
+      """ruby
+      class WithKeywords
+        def foo(bar: "")
+        end
+      end
+
+      RSpec.describe "Constraining a message expectation using with" do
+        let(:dbl) { instance_double(WithKeywords) }
+        before { expect(dbl).to receive(:foo).with(bar: "baz") }
 
         it "fails when the args do not match due to a hash" do
           dbl.foo({bar: "also incorrect"})
@@ -78,12 +101,7 @@ Feature: Matching arguments
       """
     When I run `rspec keyword_example_spec.rb`
     Then it should fail with the following output:
-      | 3 examples, 2 failures                                                                |
-      |                                                                                       |
-      | Failure/Error: dbl.foo(bar: "incorrect")                                              |
-      |   #<InstanceDouble(WithKeywords) (anonymous)> received :foo with unexpected arguments |
-      |     expected: ({:bar=>"baz"})                                                         |
-      |          got: ({:bar=>"incorrect"})                                                   |
+      | 1 example, 1 failure                                                                  |
       |                                                                                       |
       | Failure/Error: dbl.foo({bar: "also incorrect"})                                       |
       |   #<InstanceDouble(WithKeywords) (anonymous)> received :foo with unexpected arguments |
