@@ -71,6 +71,16 @@ module RSpec
         HashIncludingMatcher.new(ArgumentMatchers.anythingize_lonely_keys(*args))
       end
 
+      # Matches a hash that doesn't include the specified key(s) or key/value.
+      #
+      # @example
+      #   expect(object).to receive(:message).with(hash_excluding(:key => val))
+      #   expect(object).to receive(:message).with(hash_excluding(:key))
+      #   expect(object).to receive(:message).with(hash_excluding(:key, :key2 => :val2))
+      def hash_excluding(*args)
+        HashExcludingMatcher.new(ArgumentMatchers.anythingize_lonely_keys(*args))
+      end
+
       # Matches an array that includes the specified items at least once.
       # Ignores duplicates and additional values
       #
@@ -82,14 +92,14 @@ module RSpec
         ArrayIncludingMatcher.new(actually_an_array)
       end
 
-      # Matches a hash that doesn't include the specified key(s) or key/value.
+      # Matches an array that excludes the specified items.
       #
       # @example
-      #   expect(object).to receive(:message).with(hash_excluding(:key => val))
-      #   expect(object).to receive(:message).with(hash_excluding(:key))
-      #   expect(object).to receive(:message).with(hash_excluding(:key, :key2 => :val2))
-      def hash_excluding(*args)
-        HashExcludingMatcher.new(ArgumentMatchers.anythingize_lonely_keys(*args))
+      #   expect(object).to receive(:message).with(array_excluding(1,2,3))
+      #   expect(object).to receive(:message).with(array_excluding([1,2,3]))
+      def array_excluding(*args)
+        actually_an_array = Array === args.first && args.count == 1 ? args.first : args
+        ArrayExcludingMatcher.new(actually_an_array)
       end
 
       alias_method :hash_not_including, :hash_excluding
@@ -236,6 +246,8 @@ module RSpec
 
         def ===(actual)
           actual = actual.uniq
+          return true if (actual & @expected).count >= @expected.count
+
           @expected.uniq.all? do |expected_element|
             actual.any? do |actual_element|
               RSpec::Support::FuzzyMatcher.values_match?(expected_element, actual_element)
@@ -253,6 +265,38 @@ module RSpec
 
         def formatted_expected_values
           @expected.map do |x|
+            RSpec::Support.rspec_description_for_object(x)
+          end.join(", ")
+        end
+      end
+
+      # @private
+      class ArrayExcludingMatcher
+        def initialize(unexpected)
+          @unexpected = unexpected.uniq
+        end
+
+        def ===(actual)
+          actual = actual.uniq
+          return false unless (actual & @unexpected).empty?
+
+          actual.none? do |actual_element|
+            @unexpected.any? do |unexpected_element|
+              RSpec::Support::FuzzyMatcher.values_match?(unexpected_element, actual_element)
+            end
+          end
+        rescue NoMethodError
+          false
+        end
+
+        def description
+          "array_excluding(#{formatted_unexpected_values})"
+        end
+
+      private
+
+        def formatted_unexpected_values
+          @unexpected.map do |x|
             RSpec::Support.rspec_description_for_object(x)
           end.join(", ")
         end
