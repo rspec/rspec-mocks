@@ -55,8 +55,9 @@ module RSpec
           setup_any_instance_method_substitute(subject, :stub, block)
         end
 
+        own_methods = (instance_methods - superclass.instance_methods)
         MessageExpectation.public_instance_methods(false).each do |method|
-          next if method_defined?(method)
+          next if own_methods.include?(method)
 
           define_method(method) do |*args, &block|
             @recorded_customizations << ExpectationCustomization.new(method, args, block)
