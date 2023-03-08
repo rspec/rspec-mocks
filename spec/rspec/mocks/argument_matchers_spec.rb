@@ -280,6 +280,11 @@ module RSpec
           a_double.random_call([1, 2])
         end
 
+        it "matches array with array_including using fuzzymatcher", :reset => true do
+          expect(a_double).to receive(:random_call).with(array_including(a_value > 1))
+          a_double.random_call([1, 2])
+        end
+
         it "fails array_including when args aren't array", :reset => true do
           expect(a_double).to receive(:msg).with(array_including(1, 2, 3))
           expect {
@@ -292,6 +297,39 @@ module RSpec
           expect {
             a_double.msg([1, 2])
           }.to fail_including "expected: (array_including(1, 2, 3))"
+        end
+      end
+
+      describe "array_excluding" do
+        it "matches array with array_excluding different array" do
+          expect(a_double).to receive(:random_call).with(array_excluding(3, 4))
+          a_double.random_call([1, 2])
+        end
+
+        it "fails array_excluding when is the same array", :reset => true do
+          expect(a_double).to receive(:msg).with(array_excluding(1, 2, 3))
+          expect {
+            a_double.msg(1, 2, 3)
+          }.to fail_including "expected: (array_excluding(1, 2, 3))"
+        end
+
+        it "fails array_excluding when arg contains some elements", :reset => true do
+          expect(a_double).to receive(:msg).with(array_excluding(2, 3))
+          expect {
+            a_double.msg([1, 2])
+          }.to fail_including "expected: (array_excluding(2, 3))"
+        end
+
+        it "matches array_excluding when using the fuzzy matcher", :reset => true  do
+          expect(a_double).to receive(:msg).with(array_excluding(a_value > 3))
+          a_double.msg([1, 2])
+        end
+
+        it "fails array_excluding when using the fuzzy matcher", :reset => true  do
+          expect(a_double).to receive(:msg).with(array_excluding(a_value > 1))
+          expect {
+            a_double.msg([1, 2])
+          }.to fail_including "expected: (array_excluding(a value > 1))"
         end
       end
 
