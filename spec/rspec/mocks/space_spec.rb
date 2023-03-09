@@ -59,6 +59,8 @@ module RSpec::Mocks
       end
 
       it "allows Array#reverse to be stubbed" do
+        # This is a regression check solved in rspec/rspec-mocks#1533 previously
+        # this was not possible without a change to the implementation
         expect_any_instance_of(Array).to_not receive(:reverse)
       end
     end
