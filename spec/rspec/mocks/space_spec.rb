@@ -57,6 +57,12 @@ module RSpec::Mocks
 
         expect(resets).to match_array([:dbl_1, :dbl_2])
       end
+
+      it "allows Array#reverse to be stubbed" do
+        # This is a regression check solved in rspec/rspec-mocks#1533 previously
+        # this was not possible without a change to the implementation
+        expect_any_instance_of(Array).to_not receive(:reverse)
+      end
     end
 
     describe "#proxies_of(klass)" do
