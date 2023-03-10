@@ -77,9 +77,9 @@ module RSpec
 
       def reset_all
         proxies.each_value { |proxy| proxy.reset }
-        @constant_mutators.reverse.each { |mut| mut.idempotently_reset }
         any_instance_recorders.each_value { |recorder| recorder.stop_all_observation! }
         any_instance_recorders.clear
+        @constant_mutators.reverse.each { |mut| mut.idempotently_reset }
       end
 
       def register_constant_mutator(mutator)
