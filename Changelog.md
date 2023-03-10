@@ -1,6 +1,10 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.3...3-12-maintenance)
 
+Bug Fixes:
+
+* Fix an issue with asserting that Array#reverse is never called. (Brad Trick, #1533)
+
 ### 3.12.3 / 2023-01-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.2...v3.12.3)
 
