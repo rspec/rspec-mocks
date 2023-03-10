@@ -5,6 +5,10 @@ Enhancements:
 
 * Add an `array_excluding` matcher for arguments. (Zane Wolfgang Pickett, #1528)
 
+Bug Fixes:
+
+* Fix an issue with asserting that Array#reverse is never called. (Brad Trick, #1533)
+
 ### 3.12.3 / 2023-01-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.2...v3.12.3)
 
