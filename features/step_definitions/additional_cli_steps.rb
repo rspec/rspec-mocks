@@ -14,8 +14,16 @@ Then /^the examples should all fail, producing the following output:$/ do |table
   expect(all_output).to include(*lines)
 end
 
+RSpec::Matchers.define :match_table do |lines|
+  match do |all_output|
+    lines.all? { |line| all_output.include?(line) }
+  end
+
+  diffable
+end
+
 Then /^it should fail with the following output:$/ do |table|
   step %q(the exit status should be 1)
   lines = table.raw.flatten.reject(&:empty?)
-  expect(all_output).to include(*lines)
+  expect(all_output).to match_table(lines)
 end
