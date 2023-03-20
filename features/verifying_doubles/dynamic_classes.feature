@@ -53,7 +53,7 @@ Feature: Dynamic classes
       end
       """
 
-  Scenario: fails with method missing
+  Scenario: Fails with method missing
 
     Given a file named "lib/user.rb" with:
       """ruby
@@ -66,7 +66,7 @@ Feature: Dynamic classes
     When I run `rspec spec/user_spec.rb`
     Then the output should contain "1 example, 1 failure"
 
-  Scenario: workaround with explicit definitions
+  Scenario: Workaround with explicit definitions
 
     Given a file named "lib/user.rb" with:
       """ruby
@@ -81,7 +81,7 @@ Feature: Dynamic classes
     When I run `rspec spec/user_spec.rb`
     Then the examples should all pass
 
-  Scenario: workaround using callback
+  Scenario: Workaround using callback
 
     Given a file named "lib/user.rb" with:
       """ruby

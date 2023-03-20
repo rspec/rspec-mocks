@@ -12,7 +12,7 @@ Feature: Using an object double
   In addition, `object_double` can be used with specific constant values, as shown below. This
   is for niche situations, such as when dealing with singleton objects.
 
-  Scenario: doubling an existing object
+  Scenario: Doubling an existing object
     Given a file named "spec/user_spec.rb" with:
       """ruby
       class User
@@ -34,7 +34,7 @@ Feature: Using an object double
     When I run `rspec spec/user_spec.rb`
     Then the examples should all pass
 
-  Scenario: doubling a constant object
+  Scenario: Doubling a constant object
     Given a file named "spec/email_spec.rb" with:
       """ruby
       require 'logger'

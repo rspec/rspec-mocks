@@ -62,11 +62,11 @@ Feature: Using an instance double
       end
       """
 
-  Scenario: spec passes in isolation
+  Scenario: Spec passes in isolation
     When I run `rspec spec/unit/user_spec.rb`
     Then the examples should all pass
 
-  Scenario: spec passes with dependencies loaded and method implemented
+  Scenario: Spec passes with dependencies loaded and method implemented
     Given a file named "app/models/console_notifier.rb" with:
       """ruby
       class ConsoleNotifier
@@ -79,7 +79,7 @@ Feature: Using an instance double
     When I run `rspec -r./spec/spec_helper spec/unit/user_spec.rb`
     Then the examples should all pass
 
-  Scenario: spec fails with dependencies loaded and method unimplemented
+  Scenario: Spec fails with dependencies loaded and method unimplemented
     Given a file named "app/models/console_notifier.rb" with:
       """ruby
       class ConsoleNotifier
@@ -89,7 +89,7 @@ Feature: Using an instance double
     Then the output should contain "1 example, 1 failure"
     And the output should contain "ConsoleNotifier class does not implement the instance method:"
 
-  Scenario: spec fails with dependencies loaded and incorrect arity
+  Scenario: Spec fails with dependencies loaded and incorrect arity
     Given a file named "app/models/console_notifier.rb" with:
       """ruby
       class ConsoleNotifier
