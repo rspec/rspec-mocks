@@ -1,3 +1,5 @@
+# Configuring responses
+
 When [allowing](./basics/allowing-messages) or [expecting](./basics/expecting-messages) messages, the default response is to return `nil`. Several
 methods are provided to configure how the test double responds to the message.
 

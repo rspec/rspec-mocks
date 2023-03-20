@@ -1,4 +1,4 @@
-Feature: Integrate with any test framework
+Feature: Integrating with any test framework
 
   rspec-mocks is a stand-alone gem that can be integrated with any test framework. The
   example below demonstrates using rspec-mocks with [minitest](http://docs.seattlerb.org/minitest/), but these steps
@@ -11,7 +11,7 @@ Feature: Integrate with any test framework
     * Call `RSpec::Mocks.teardown` after a test completes (and after `verify`) to cleanup. This
       _must_ be called, even if an error has occurred, so it generally goes in an `ensure` clause.
 
-  Note: if you are using minitest, you'll probably want to use the built-in [minitest integration](./integrate-with-minitest).
+  Note: if you are using minitest, you'll probably want to use the built-in [minitest integration](./minitest).
 
   Scenario: Use rspec-mocks with Minitest
     Given a file named "test/test_helper.rb" with:

@@ -1,4 +1,4 @@
-Feature: Integrate with Minitest
+Feature: Integrating with Minitest
 
   To use rspec-mocks with minitest, simply require `rspec/mocks/minitest_integration`.
 

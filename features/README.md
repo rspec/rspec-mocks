@@ -1,3 +1,5 @@
+# RSpec Mocks
+
 rspec-mocks helps to control the context in a code example by letting you set known return
 values, fake implementations of methods, and even set expectations that specific messages
 are received by an object.
@@ -30,7 +32,7 @@ not exist or that have invalid arguments.
 book = instance_double("Book", :pages => 250)
 ```
 
-[Verifying doubles](./docs/verifying-doubles) have some clever tricks to enable you to both test in isolation without your
+[Verifying doubles](./verifying-doubles) have some clever tricks to enable you to both test in isolation without your
 dependencies loaded while still being able to validate them against real objects.
 
 ## Method Stubs

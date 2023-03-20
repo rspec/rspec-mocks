@@ -1,3 +1,5 @@
+# Mutating Constants
+
 ### Stubbing
 
 Support is provided for stubbing constants. Like with method stubs, the stubbed constants

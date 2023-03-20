@@ -4,7 +4,7 @@ Feature: Returning a value
   different return values for consecutive calls. The final value will continue to be returned if
   the message is received additional times.
 
-  Note - If you are looking for documentation for configuring responses from `allow_any_instance_of`, please see the [working with legacy code](../../working_with_legacy_code/any_instance.feature) documentation.
+  Note - If you are looking for documentation for configuring responses from `allow_any_instance_of`, please see the [working with legacy code](../working-with-legacy-code/any-instance) documentation.
 
   Scenario: Nil is returned by default
     Given a file named "returns_nil_spec.rb" with:

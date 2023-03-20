@@ -1,3 +1,5 @@
+# Old Syntax
+
 Historically, rspec-mocks has used a monkey-patched syntax to allow you to mock or stub any object:
 
 ```ruby
