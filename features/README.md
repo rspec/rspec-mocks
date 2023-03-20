@@ -32,7 +32,7 @@ not exist or that have invalid arguments.
 book = instance_double("Book", :pages => 250)
 ```
 
-[Verifying doubles](./verifying-doubles) have some clever tricks to enable you to both test in isolation without your
+[Verifying doubles](./rspec-mocks/verifying-doubles) have some clever tricks to enable you to both test in isolation without your
 dependencies loaded while still being able to validate them against real objects.
 
 ## Method Stubs

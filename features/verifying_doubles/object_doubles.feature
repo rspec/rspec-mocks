@@ -7,7 +7,7 @@ Feature: Using an object double
   real thing allows you to focus on the communication patterns of the object's interface
   without having to worry about accidentally causing side-effects. Object doubles can also be
   used to verify methods defined on an object using `method_missing`, which is not possible
-  with [`instance_double`](./using-an-instance-double).
+  with [`instance_double`](./instance-doubles).
 
   In addition, `object_double` can be used with specific constant values, as shown below. This
   is for niche situations, such as when dealing with singleton objects.

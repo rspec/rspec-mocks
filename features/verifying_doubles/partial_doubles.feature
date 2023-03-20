@@ -1,7 +1,7 @@
 Feature: Partial doubles
 
   When the `verify_partial_doubles` configuration option is set, the same argument and
-  method existence checks that are performed for [`object_double`](./using-an-object-double) are also performed on
+  method existence checks that are performed for [`object_double`](./object-doubles) are also performed on
   [partial doubles](../basics/partial-test-doubles). You should set this unless you have a good reason not to. It defaults to off
   only for backwards compatibility.
 
