@@ -50,11 +50,11 @@ Feature: Using a class double
       end
       """
 
-  Scenario: replacing existing constants
+  Scenario: Replacing existing constants
     When I run `rspec spec/user_spec.rb`
     Then the examples should all pass
 
-  Scenario: renaming `ConsoleNotifier.notify` to `send_notification`
+  Scenario: Renaming `ConsoleNotifier.notify` to `send_notification`
     Given a file named "lib/console_notifier.rb" with:
       """ruby
       class ConsoleNotifier

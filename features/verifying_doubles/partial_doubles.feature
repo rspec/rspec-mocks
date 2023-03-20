@@ -5,7 +5,7 @@ Feature: Partial doubles
   [partial doubles](../basics/partial-test-doubles). You should set this unless you have a good reason not to. It defaults to off
   only for backwards compatibility.
 
-  Scenario: doubling an existing object
+  Scenario: Doubling an existing object
     Given a file named "spec/user_spec.rb" with:
       """ruby
       class User
