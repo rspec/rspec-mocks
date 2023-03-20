@@ -1,4 +1,4 @@
-Feature: Standalone
+Feature: Using `rspec-mocks` on its own outside of RSpec (standalone mode)
 
   `require "rspec/mocks/standalone"` to expose the API at the top level (e.g. `main`) outside
   the RSpec environment in a REPL like IRB or in a one-off script.

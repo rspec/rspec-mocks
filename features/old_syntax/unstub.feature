@@ -1,5 +1,5 @@
 @allow-old-syntax
-Feature: `unstub`
+Feature: Using `unstub`
 
   `unstub` removes a method stub, essentially cleaning up the method
   stub early, rather than waiting for the cleanup that runs at the end

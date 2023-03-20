@@ -5,7 +5,7 @@ Feature: Matching arguments
   [allowed message](../basics/allowing-messages) will only be used when the arguments match.
 
   | To match...                                         | ...use an expression like:         | ...which matches calls like:                        |
-  | --------------------------------------------------- | ---------------------------------  | --------------------------------------------------- |
+  |-----------------------------------------------------|------------------------------------|-----------------------------------------------------|
   | Literal arguments                                   | `with(1, true)`                    | `foo(1, true)`                                      |
   | Literal arguments where one is a hash               | `with(1, {x: 1, y: 2})`            | `foo(1, x: 1, y: 2) (where last argument is a hash) |
   | Keyword arguments                                   | `with(x: 1, y: 2)`                 | `foo(x: 1, y: 2)` (where x and y are keywords)      |
