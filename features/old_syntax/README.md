@@ -8,7 +8,7 @@ obj.should_receive(:bar)
 ```
 
 Unfortunately, this is prone to weird, confusing failures when applied to [delegate/proxy
-objects](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax#delegation_issues). For a method like `stub` to work properly, it must be defined on every object in the
+objects](https://rspec.info/blog/2012/06/rspecs-new-expectation-syntax#delegation_issues). For a method like `stub` to work properly, it must be defined on every object in the
 system, but RSpec does not own every object in the system and cannot ensure that it always
 works consistently.
 
