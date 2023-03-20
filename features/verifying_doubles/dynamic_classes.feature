@@ -5,7 +5,7 @@ Feature: Dynamic classes
   the case when `method_missing` is used.
 
   There are a few ways to work around this. If the object has already been loaded you may
-  consider using an [`object_double`](./object-double), but that cannot work if you are testing in isolation.
+  consider using an [`object_double`](./object-doubles), but that cannot work if you are testing in isolation.
   Alternatively you could implement the methods directly (calling `super` to return the `method_missing` definition).
 
   Some of these classes may have methods to define these methods on the objects at runtime.

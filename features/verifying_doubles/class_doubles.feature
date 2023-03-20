@@ -1,6 +1,6 @@
 Feature: Using a class double
 
-  `class_double` is provided as a complement to [`instance_double`](./instance-double) with the difference that it
+  `class_double` is provided as a complement to [`instance_double`](./instance-doubles) with the difference that it
   verifies _class_ methods on the given class rather than instance methods.
 
   In addition, it also provides a convenience method `as_stubbed_const` to replace concrete
