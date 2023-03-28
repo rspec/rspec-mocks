@@ -91,12 +91,12 @@ module RSpec
       # `targets` will typically contain 1 of the `AnyInstance::Recorder`
       # return values and N `MessageExpectation` instances (one per instance
       # of the `any_instance` klass).
-      class FluentInterfaceProxy
+      class FluentInterfaceProxy < BasicObject
         def initialize(targets)
           @targets = targets
         end
 
-        if RUBY_VERSION.to_f > 1.8
+        if ::RUBY_VERSION.to_f > 1.8
           def respond_to_missing?(method_name, include_private=false)
             super || @targets.first.respond_to?(method_name, include_private)
           end
