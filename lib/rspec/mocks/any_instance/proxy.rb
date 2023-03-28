@@ -91,7 +91,13 @@ module RSpec
       # `targets` will typically contain 1 of the `AnyInstance::Recorder`
       # return values and N `MessageExpectation` instances (one per instance
       # of the `any_instance` klass).
-      class FluentInterfaceProxy < BasicObject
+      class FluentInterfaceProxy < defined?(BasicObject) ? BasicObject : Object
+        if superclass == ::Object
+          (instance_methods.map(&:to_sym) - [:__send__, :!, :instance_eval, :==, :instance_exec, :!=, :equal?, :__id__, :__binding__, :object_id]).each do |method|
+            undef_method method
+          end
+        end
+
         def initialize(targets)
           @targets = targets
         end
