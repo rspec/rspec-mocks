@@ -85,7 +85,7 @@ module RSpec
 
       unless defined?(BasicObject)
         class BasicObject
-          (instance_methods.map(&:to_sym) - [:__send__, :!, :instance_eval, :==, :instance_exec, :!=, :equal?, :__id__, :__binding__, :object_id]).each do |method|
+          (instance_methods.map(&:to_sym) - [:__send__, :"!", :instance_eval, :==, :instance_exec, :"!=", :equal?, :__id__, :__binding__, :object_id]).each do |method|
             undef_method method
           end
         end
