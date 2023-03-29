@@ -85,6 +85,7 @@ module RSpec
 
       unless defined?(BasicObject)
         class BasicObject
+          # Remove all methods except those expected to be defined on BasicObject
           (instance_methods.map(&:to_sym) - [:__send__, :"!", :instance_eval, :==, :instance_exec, :"!=", :equal?, :__id__, :__binding__, :object_id]).each do |method|
             undef_method method
           end
