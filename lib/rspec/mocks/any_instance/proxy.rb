@@ -83,6 +83,15 @@ module RSpec
         end
       end
 
+      unless defined?(BasicObject)
+        class BasicObject
+          # Remove all methods except those expected to be defined on BasicObject
+          (instance_methods.map(&:to_sym) - [:__send__, :"!", :instance_eval, :==, :instance_exec, :"!=", :equal?, :__id__, :__binding__, :object_id]).each do |method|
+            undef_method method
+          end
+        end
+      end
+
       # @private
       # Delegates messages to each of the given targets in order to
       # provide the fluent interface that is available off of message
@@ -91,12 +100,12 @@ module RSpec
       # `targets` will typically contain 1 of the `AnyInstance::Recorder`
       # return values and N `MessageExpectation` instances (one per instance
       # of the `any_instance` klass).
-      class FluentInterfaceProxy
+      class FluentInterfaceProxy < BasicObject
         def initialize(targets)
           @targets = targets
         end
 
-        if RUBY_VERSION.to_f > 1.8
+        if ::RUBY_VERSION.to_f > 1.8
           def respond_to_missing?(method_name, include_private=false)
             super || @targets.first.respond_to?(method_name, include_private)
           end
