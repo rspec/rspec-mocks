@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.4...3-12-maintenance)
 
+Bug Fixes:
+
+* Fix compatibility issue with Rails where active_support monkey patches `with`
+  when using any instance. (Lachlan Sylvester, #1540)
+
 ### 3.12.4 / 2023-01-17
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.3...v3.12.4)
 
