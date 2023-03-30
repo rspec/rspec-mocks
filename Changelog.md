@@ -14,6 +14,7 @@ Bug Fixes:
   with keyword arguments. (Igor Drozdov, #1552)
 
 ### 3.12.5 / 2023-03-30
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.4...v3.12.5)
 
 Bug Fixes:
 
