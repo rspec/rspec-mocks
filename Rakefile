@@ -30,36 +30,6 @@ namespace :clobber do
   end
 end
 
-with_changelog_in_features = lambda do |&block|
-  begin
-    sh "cp Changelog.md features/"
-    block.call
-  ensure
-    sh "rm features/Changelog.md"
-  end
-end
-
-desc "Push docs/cukes to relishapp using the relish-client-gem"
-task :relish, :version do |_t, args|
-  raise "rake relish[VERSION]" unless args[:version]
-
-  with_changelog_in_features.call do
-    if `relish versions rspec/rspec-mocks`.split.map(&:strip).include? args[:version]
-      puts "Version #{args[:version]} already exists"
-    else
-      sh "relish versions:add rspec/rspec-mocks:#{args[:version]}"
-    end
-    sh "relish push rspec/rspec-mocks:#{args[:version]}"
-  end
-end
-
-desc "Push to relish staging environment"
-task :relish_staging do
-  with_changelog_in_features.call do
-    sh "relish push rspec-staging/rspec-mocks"
-  end
-end
-
 task :default => [:spec, :cucumber]
 
 task :verify_private_key_present do
