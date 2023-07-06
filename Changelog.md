@@ -5,6 +5,11 @@ Enhancements:
 
 * Add an `array_excluding` matcher for arguments. (Zane Wolfgang Pickett, #1528)
 
+Bug Fixes:
+
+* Fix an issue with `and_call_original` when using the `method_missing` fallback
+  with keyword arguments. (Igor Drozdov, #1552)
+
 ### 3.12.5 / 2023-03-30
 
 Bug Fixes:
