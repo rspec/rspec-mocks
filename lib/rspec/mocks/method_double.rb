@@ -26,10 +26,7 @@ module RSpec
         # handler of the object. This accounts for cases where the user has not
         # correctly defined `respond_to?`, and also 1.8 which does not provide
         # method handles for missing methods even if `respond_to?` is correct.
-        @original_implementation_callable ||= original_method ||
-          Proc.new do |*args, &block|
-            @object.__send__(:method_missing, @method_name, *args, &block)
-          end
+        @original_implementation_callable ||= original_method || method_missing_block
       end
 
       alias_method :save_original_implementation_callable!, :original_implementation_callable
@@ -38,6 +35,16 @@ module RSpec
         @original_method ||=
           @method_stasher.original_method ||
           @proxy.original_method_handle_for(method_name)
+      end
+
+      # @private
+      def method_missing_block
+        block = Proc.new do |*args, &b|
+          @object.__send__(:method_missing, @method_name, *args, &b)
+        end
+        block.ruby2_keywords if block.respond_to?(:ruby2_keywords)
+
+        block
       end
 
       # @private

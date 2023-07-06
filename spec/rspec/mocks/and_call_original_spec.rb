@@ -243,6 +243,40 @@ RSpec.describe "and_call_original" do
       CODE
     end
 
+    if RSpec::Support::RubyFeatures.required_kw_args_supported?
+      binding.eval(<<-RUBY, __FILE__, __LINE__)
+      context 'on an object with a method propagated by method_missing' do
+        before do
+          klass.class_exec do
+            private
+
+            def call_method_with_kwarg(arg, kwarg:)
+              [arg, kwarg]
+            end
+
+            def method_missing(name, *args, **kwargs)
+              if name.to_s == "method_with_kwarg"
+                call_method_with_kwarg(*args, **kwargs)
+              else
+                super
+              end
+            end
+          end
+        end
+
+        it 'works for the method propagated by method missing' do
+          expect(instance).to receive(:method_with_kwarg).with(:arg, kwarg: 1).and_call_original
+          expect(instance.method_with_kwarg(:arg, kwarg: 1)).to eq([:arg, 1])
+        end
+
+        it 'works for the method of any_instance mock propagated by method missing' do
+          expect_any_instance_of(klass).to receive(:method_with_kwarg).with(:arg, kwarg: 1).and_call_original
+          expect(instance.method_with_kwarg(:arg, kwarg: 1)).to eq([:arg, 1])
+        end
+      end
+      RUBY
+    end
+
     context 'on an object that defines method_missing' do
       before do
         klass.class_exec do
