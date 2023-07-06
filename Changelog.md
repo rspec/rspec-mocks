@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.5...3-12-maintenance)
 
+Bug Fixes:
+
+* Fix an issue with `and_call_original` when using the `method_missing` fallback
+  with keyword arguments. (Igor Drozdov, #1552)
+
 ### 3.12.5 / 2023-03-30
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.4...v3.12.5)
 
