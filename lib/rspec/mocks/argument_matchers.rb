@@ -312,7 +312,7 @@ module RSpec
         begin
           object.class.name.include?(matcher_namespace)
         rescue NoMethodError
-          # Some objects, like BasicObject, don't implemented standard
+          # Some objects, like BasicObject, don't implement standard
           # reflection methods.
           false
         end
