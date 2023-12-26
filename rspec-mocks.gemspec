@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake',     '> 10.0.0'
   s.add_development_dependency 'cucumber', '>= 1.3'
   if RUBY_VERSION.to_f >= 2.4
-    s.add_development_dependency 'aruba',    '~> 1.1'
+    s.add_development_dependency 'aruba',    '>= 1.1.0', '< 3.0.0'
   else
     s.add_development_dependency 'aruba',    '~> 0.14.10'
   end
