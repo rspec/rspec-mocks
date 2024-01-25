@@ -21,6 +21,17 @@ Before do
   end
 end
 
+Before('@ripper') do |scenario|
+  unless RSpec::Support::RubyFeatures.ripper_supported?
+    warn "Skipping scenario due to lack of Ripper support"
+    if Cucumber::VERSION.to_f >= 3.0
+      skip_this_scenario
+    else
+      scenario.skip_invoke!
+    end
+  end
+end
+
 Before('@kw-arguments') do |scenario|
   unless RSpec::Support::RubyFeatures.kw_args_supported?
     warn "Skipping scenario due to lack of keyword argument support"
