@@ -19,7 +19,7 @@ puts "find_with_proc"
 
 MemoryProfiler.report do
   100.times do
-  1.upto(n).select(&find_with_proc(50))
+    1.upto(n).select(&find_with_proc(50))
   end
 end.pretty_print
 
@@ -28,7 +28,7 @@ puts "find"
 
 MemoryProfiler.report do
   100.times do
-    1.upto(n).select { find(50, _1) }
+    1.upto(n).select { |i| find(50, i) }
   end
 end.pretty_print
 
@@ -115,4 +115,3 @@ end.pretty_print
 # -----------------------------------
 #        200  Array
 #        100  Enumerator
-#
