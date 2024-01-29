@@ -326,9 +326,8 @@ module RSpec
       end
 
       # Used to specify a message that you expect or allow an object
-      # to receive. The object returned by `receive` supports the same
-      # fluent interface that `should_receive` and `stub` have always
-      # supported, allowing you to constrain the arguments or number of
+      # to receive. The object returned by `receive` supports a fluent
+      # interface, allowing you to constrain the arguments or number of
       # times, and configure how the object should respond to the message.
       #
       # @example
