@@ -1,9 +1,12 @@
 ### Development
-[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.6...main)
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.7...main)
 
 Enhancements:
 
 * Add an `array_excluding` matcher for arguments. (Zane Wolfgang Pickett, #1528)
+
+### 3.12.7 / 2024-02-04
+[Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.6...v3.12.7)
 
 Bug Fixes:
 
