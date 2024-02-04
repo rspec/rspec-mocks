@@ -1,6 +1,10 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.6...3-12-maintenance)
 
+Bug Fixes:
+
+* Reduce allocations from "any_instance" style mocks. (Carlos Palhares, #1479)
+
 ### 3.12.6 / 2023-07-11
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.5...v3.12.6)
 
