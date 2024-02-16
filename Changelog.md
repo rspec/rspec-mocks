@@ -66,7 +66,7 @@ Bug Fixes:
 * Remove empty diff marker when a diff only contains console codes. (Jon Rowe, #1506)
 * Show keyword vs hash diff marker when arguments are not `==` (Jon Rowe, #1506)
 * Change check to detect frozen objects to rescue errors rather than
-  pre-empting by checking `frozen?` due to some objects mis-behaving.
+  pre-empting by checking `frozen?` due to some objects misbehaving.
   (Keegan Roth, #1401)
 * Prevent unfulfilled expectations using `expect_any_instance_of` across a class
   inheritance boundary from raising rather than failing. (Jon Rowe, #1496)
@@ -190,7 +190,7 @@ Bug Fixes:
 * Issue error when encountering invalid "counted" negative message expectations.
   (Sergiy Yarinovskiy, #1212)
 * Ensure `allow_any_instance_of` and `expect_any_instance_of` can be temporarily
-  supressed. (Jon Rowe, #1228)
+  suppressed. (Jon Rowe, #1228)
 * Ensure `expect_any_instance_of(double).to_not have_received(:some_method)`
   fails gracefully (as its not supported) rather than issuing a `NoMethodError`.
   (Maxim Krizhanovsky, #1231)
@@ -287,7 +287,7 @@ Bug Fixes:
   `allow`. (Andrew Kozin, #1056)
 * Prevent stubbing `respond_to?` on partial doubles from causing infinite
   recursion. (Jon Rowe, #1013)
-* Prevent aliased methods from disapearing after being mocked with
+* Prevent aliased methods from disappearing after being mocked with
   `any_instance` (regression from #1043). (Joe Rafaniello, #1060)
 
 ### 3.4.1 / 2016-01-10
@@ -368,7 +368,7 @@ Bug Fixes:
   for when the message was received the wrong number of times with
   the specified args, and also received additional times with other
   arguments. Previously it confusingly listed the arguments as being
-  mis-matched (even when the double was allowed to receive with any
+  mismatched (even when the double was allowed to receive with any
   args) rather than listing the count. (John Ceh, #918)
 * Fix `any_args`/`anything` support so that we avoid calling `obj == anything`
   on user objects that may have improperly implemented `==` in a way that
@@ -824,7 +824,7 @@ Deprecations:
 Deprecations
 
 * Expecting to use lambdas or other strong arity implementations for stub
-  methods with mis-matched arity is deprecated and support for them will be
+  methods with mismatched arity is deprecated and support for them will be
   removed in 3.0. Either provide the right amount of arguments or use a weak
   arity implementation (methods with splats or procs). (Jon Rowe)
 * Using the same test double instance in multiple examples is deprecated. Test
@@ -898,7 +898,7 @@ Bug Fixes:
   double's nullness persisted between examples in earlier examples.
   While this is not an intended use case (test doubles are meant to live
   for only one example), we don't want to break behavior users rely
-  on in a minor relase.  This will be deprecated in 2.99 and removed
+  on in a minor release.  This will be deprecated in 2.99 and removed
   in 3.0. (Myron Marston)
 
 ### 2.14.0 / 2013-07-06
@@ -1023,7 +1023,7 @@ Bug fixes
 * Fix `stub_const` with an undefined constnat name to work properly
   with constant strings that are prefixed with `::` -- and edge case
   I missed in the bug fix in the 2.12.1 release (Myron Marston).
-* Ensure method visibility on a partial mock is restored after reseting
+* Ensure method visibility on a partial mock is restored after resetting
   method stubs, even on a singleton module (created via `extend self`)
   when the method visibility differs between the instance and singleton
   versions (Andy Lindeman).

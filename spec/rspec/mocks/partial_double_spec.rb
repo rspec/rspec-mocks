@@ -382,7 +382,7 @@ module RSpec
         expect(object.send(:defined_private_method)).to eq("works")
       end
 
-      it 'can be temporarily supressed' do
+      it 'can be temporarily suppressed' do
         without_partial_double_verification do
           expect(object).to receive(:fictitious_method) { 'works' }
           expect_any_instance_of(klass).to receive(:other_fictitious_method) { 'works' }
@@ -395,7 +395,7 @@ module RSpec
         }.to raise_error RSpec::Mocks::MockExpectationError
       end
 
-      it 'can be temporarily supressed and nested' do
+      it 'can be temporarily suppressed and nested' do
         without_partial_double_verification do
           without_partial_double_verification do
             expect(object).to receive(:fictitious_method) { 'works' }
@@ -410,7 +410,7 @@ module RSpec
         }.to raise_error RSpec::Mocks::MockExpectationError
       end
 
-      specify 'temporarily supressing partial doubles does not affect normal verifying doubles' do
+      specify 'temporarily suppressing partial doubles does not affect normal verifying doubles' do
         without_partial_double_verification do
           expect {
             instance_double(Class.new, :fictitious_method => 'works')
@@ -471,7 +471,7 @@ module RSpec
           )
         end
 
-        it 'can be temporarily supressed' do
+        it 'can be temporarily suppressed' do
           without_partial_double_verification do
             expect(subclass).to receive(:fictitious_method) { 'works' }
           end

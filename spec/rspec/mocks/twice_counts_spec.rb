@@ -76,7 +76,7 @@ module RSpec
             # call with these args), but currently it fails with a confusing
             # message on verification, and ultimately we care more about
             # what the message is than when it is raised. Still, it would be
-            # preferrable for the error to be triggered on the first line,
+            # preferable for the error to be triggered on the first line,
             # so it'd be good to update this spec to enforce that once we
             # get the failure message right.
             @double.do_something(:args, 1)
