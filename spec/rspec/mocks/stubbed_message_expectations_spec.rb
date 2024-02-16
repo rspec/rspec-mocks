@@ -1,4 +1,4 @@
-RSpec.describe "expection set on previously stubbed method" do
+RSpec.describe "expectation set on previously stubbed method" do
   it "fails if message is not received after expectation is set" do
     dbl = double(:msg => nil)
     dbl.msg
@@ -40,7 +40,7 @@ RSpec.describe "expection set on previously stubbed method" do
     verify dbl
   end
 
-  it 'indicates the site of expectation in the stacktrace when outputing arguments of similar calls' do
+  it 'indicates the site of expectation in the stacktrace when outputting arguments of similar calls' do
     dbl = double('double', :foo => true)
     expect(dbl).to receive(:foo).with('first'); line = __LINE__
 
