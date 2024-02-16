@@ -156,7 +156,7 @@ module RSpec
       end
 
       # @private
-      # Used to track wether we are temporarily suppressing verifying partial
+      # Used to track whether we are temporarily suppressing verifying partial
       # doubles with `without_partial_double_verification { ... }`
       attr_accessor :temporarily_suppress_partial_double_verification
 
