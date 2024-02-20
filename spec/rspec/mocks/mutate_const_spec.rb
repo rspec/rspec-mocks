@@ -142,6 +142,13 @@ module RSpec
           expect(recursive_const_defined?(const_name)).to be_falsey
         end
 
+        it 'gives the same subclasses after rspec clears its mocks' do
+          original_subclasses = TestClass.subclasses
+          stub_const(const_name, Class.new(TestClass))
+          reset_rspec_mocks
+          expect(TestClass.subclasses).to eq(original_subclasses)
+        end
+
         it 'returns nil' do
           expect(hide_const(const_name)).to be_nil
         end
