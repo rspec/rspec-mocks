@@ -1,4 +1,5 @@
 RSpec::Support.require_rspec_support 'recursive_const_methods'
+require 'weakref'
 
 module RSpec
   module Mocks
