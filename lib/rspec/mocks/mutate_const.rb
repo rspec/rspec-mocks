@@ -297,6 +297,7 @@ module RSpec
         end
 
         def reset
+          RSpec::Mocks.exclude_subclass(@mutated_value)
           @parent.__send__(:remove_const, @const_name)
         end
 

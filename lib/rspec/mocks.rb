@@ -101,6 +101,23 @@ module RSpec
       end
     end
 
+    @@excluded_subclasses = []
+
+    def self.excluded_subclasses
+      @@excluded_subclasses.select(&:weakref_alive?).map(&:__getobj__)
+    end
+
+    def self.exclude_subclass(constant)
+      @@excluded_subclasses << WeakRef.new(constant)
+    end
+
+    module ExcludeClassesFromSubclasses
+      def subclasses
+        super - RSpec::Mocks.excluded_subclasses
+      end
+    end
+    Class.prepend(ExcludeClassesFromSubclasses)
+
     class << self
       # @private
       attr_reader :space
