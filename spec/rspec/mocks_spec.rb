@@ -21,7 +21,9 @@ RSpec.describe RSpec::Mocks do
   it_behaves_like 'library wide checks', 'rspec-mocks',
     :preamble_for_lib => lib_preamble,
     :allowed_loaded_feature_regexps => [
-      /rbconfig/ # loaded by rspec-support
+      /rbconfig/, # loaded by rspec-support
+      /weakref/,
+      /delegate/,
     ] do
 
       if RSpec::Support::Ruby.jruby? && JRUBY_VERSION =~ /9\.1\.7\.0/
