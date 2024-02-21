@@ -104,7 +104,11 @@ module RSpec
     @@excluded_subclasses = []
 
     def self.excluded_subclasses
-      @@excluded_subclasses.select(&:weakref_alive?).map(&:__getobj__)
+      @@excluded_subclasses.select(&:weakref_alive?).map do |ref|
+        ref.__getobj__
+      rescue RefError
+        nil
+      end
     end
 
     def self.exclude_subclass(constant)
