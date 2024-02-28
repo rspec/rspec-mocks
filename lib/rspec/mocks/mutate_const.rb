@@ -161,7 +161,6 @@ module RSpec
           reset unless @reset_performed
           @reset_performed = true
         end
-
       end
 
       # Hides a defined constant for the duration of an example.
