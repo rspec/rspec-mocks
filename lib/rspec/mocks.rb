@@ -101,27 +101,6 @@ module RSpec
       end
     end
 
-    @excluded_subclasses = []
-
-    def self.excluded_subclasses
-      @excluded_subclasses.select(&:weakref_alive?).map do |ref|
-        ref.__getobj__
-      rescue RefError
-        nil
-      end.compact
-    end
-
-    def self.exclude_subclass(constant)
-      @excluded_subclasses << WeakRef.new(constant)
-    end
-
-    module ExcludeClassesFromSubclasses
-      def subclasses
-        super - RSpec::Mocks.excluded_subclasses
-      end
-    end
-    Class.prepend(ExcludeClassesFromSubclasses)
-
     class << self
       # @private
       attr_reader :space
@@ -134,10 +113,11 @@ module RSpec
 
     # To speed up boot time a bit, delay loading optional or rarely
     # used features until their first use.
-    autoload :AnyInstance,      "rspec/mocks/any_instance"
-    autoload :ExpectChain,      "rspec/mocks/message_chain"
-    autoload :StubChain,        "rspec/mocks/message_chain"
-    autoload :MarshalExtension, "rspec/mocks/marshal_extension"
+    autoload :AnyInstance,                          "rspec/mocks/any_instance"
+    autoload :ExpectChain,                          "rspec/mocks/message_chain"
+    autoload :StubChain,                            "rspec/mocks/message_chain"
+    autoload :MarshalExtension,                     "rspec/mocks/marshal_extension"
+    autoload :ExcludeStubbedClassesFromSubclasses,  "rspec/mocks/exclude_stubbed_classes_from_subclasses"
 
     # Namespace for mock-related matchers.
     module Matchers

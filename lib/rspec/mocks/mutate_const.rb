@@ -1,5 +1,4 @@
 RSpec::Support.require_rspec_support 'recursive_const_methods'
-require 'weakref'
 
 module RSpec
   module Mocks
@@ -162,6 +161,7 @@ module RSpec
           reset unless @reset_performed
           @reset_performed = true
         end
+
       end
 
       # Hides a defined constant for the duration of an example.
@@ -222,6 +222,7 @@ module RSpec
         end
 
         def reset
+          RSpec::Mocks.exclude_subclass(@mutated_value) if RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses?
           @constants_to_transfer.each do |const|
             @mutated_value.__send__(:remove_const, const)
           end
@@ -298,7 +299,7 @@ module RSpec
         end
 
         def reset
-          RSpec::Mocks.exclude_subclass(@mutated_value)
+          RSpec::Mocks.exclude_subclass(@mutated_value) if RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses?
           @parent.__send__(:remove_const, @const_name)
         end
 
