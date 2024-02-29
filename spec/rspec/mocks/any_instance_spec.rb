@@ -177,6 +177,24 @@ module RSpec
           end
         end
 
+        it "allows an expectation to be set on a subclass when an allowance already exists on a superclass" do
+          a = Class.new do
+            def foo
+              true
+            end
+          end
+
+          b = Class.new(a) do
+            def foo
+              super
+            end
+          end
+
+          allow_any_instance_of(a).to receive(:foo)
+          expect_any_instance_of(b).to receive(:foo).with(:bar)
+          b.new.foo(:bar)
+        end
+
         context "when the class has a prepended module", :if => Support::RubyFeatures.module_prepends_supported? do
           it 'allows stubbing a method that is not defined on the prepended module' do
             klass.class_eval { prepend Module.new { def other; end } }
