@@ -5,6 +5,7 @@ module RSpec
     # @private
     class ExcludeStubbedClassesFromSubclasses
       def self.enable!
+        return if Class.method_defined?(:subclasses) # RUBY_VERSION >= "3.1"
         return if Class.respond_to?(:subclasses_with_rspec_mocks)
 
         require 'weakref'

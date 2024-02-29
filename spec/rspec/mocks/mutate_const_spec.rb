@@ -146,18 +146,20 @@ module RSpec
           expect(hide_const(const_name)).to be_nil
         end
 
-        describe 'with global exclude_stubbed_classes_from_subclasses option set' do
-          include_context "with isolated configuration"
+        if RUBY_VERSION >= '3.1'
+          describe 'with global exclude_stubbed_classes_from_subclasses option set' do
+            include_context "with isolated configuration"
 
-          before do
-            RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
-          end
+            before do
+              RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
+            end
 
-          it 'gives the same subclasses after rspec clears its mocks' do
-            original_subclasses = TestClass.subclasses
-            stub_const(const_name, Class.new(TestClass))
-            reset_rspec_mocks
-            expect(TestClass.subclasses).to eq(original_subclasses)
+            it 'gives the same subclasses after rspec clears its mocks' do
+              original_subclasses = TestClass.subclasses
+              stub_const(const_name, Class.new(TestClass))
+              reset_rspec_mocks
+              expect(TestClass.subclasses).to eq(original_subclasses)
+            end
           end
         end
       end
@@ -367,18 +369,20 @@ module RSpec
             end
           end
 
-          describe 'with global exclude_stubbed_classes_from_subclasses option set' do
-            include_context "with isolated configuration"
+          if RUBY_VERSION >= '3.1'
+            describe 'with global exclude_stubbed_classes_from_subclasses option set' do
+              include_context "with isolated configuration"
 
-            before do
-              RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
-            end
+              before do
+                RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
+              end
 
-            it 'gives the same subclasses after rspec clears its mocks' do
-              original_subclasses = TestClass::Nested.subclasses
-              stub_const('TestClass', Class.new(TestClass::Nested))
-              reset_rspec_mocks
-              expect(TestClass::Nested.subclasses).to eq(original_subclasses)
+              it 'gives the same subclasses after rspec clears its mocks' do
+                original_subclasses = TestClass::Nested.subclasses
+                stub_const('TestClass', Class.new(TestClass::Nested))
+                reset_rspec_mocks
+                expect(TestClass::Nested.subclasses).to eq(original_subclasses)
+              end
             end
           end
         end
