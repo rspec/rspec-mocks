@@ -14,9 +14,11 @@ module RSpec
           def excluded_subclasses
             @excluded_subclasses ||= []
             @excluded_subclasses.select(&:weakref_alive?).map do |ref|
-              ref.__getobj__
-            rescue RefError
-              nil
+              begin
+                ref.__getobj__
+              rescue RefError
+                nil
+              end
             end.compact
           end
 
