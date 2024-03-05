@@ -16,7 +16,7 @@ module RSpec
             @excluded_subclasses.select(&:weakref_alive?).map do |ref|
               begin
                 ref.__getobj__
-              rescue RefError
+              rescue ::WeakRef::RefError
                 nil
               end
             end.compact
@@ -24,7 +24,7 @@ module RSpec
 
           def exclude_subclass(constant)
             @excluded_subclasses ||= []
-            @excluded_subclasses << WeakRef.new(constant)
+            @excluded_subclasses << ::WeakRef.new(constant)
           end
         end
         RSpec::Mocks.extend(mod_something)
