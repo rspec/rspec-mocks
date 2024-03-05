@@ -44,7 +44,7 @@ module RSpec
 
         Class.class_eval do
           undef subclasses_with_rspec_mocks
-          alias subclasses subclasses_without_rspec_mocks
+          alias subclasses subclasses_without_rspec_mocks # rubocop:disable Lint/DuplicateMethods
           undef subclasses_without_rspec_mocks
         end
       end
