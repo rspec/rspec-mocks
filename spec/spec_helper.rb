@@ -174,3 +174,13 @@ RSpec.shared_context "with the default mocks syntax" do
     RSpec::Mocks.configuration.syntax = orig_syntax
   end
 end
+
+RSpec.shared_context "with stubbed classes excluded from subclasses" do
+  before do
+    RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
+  end
+
+  after do
+    RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = false
+  end
+end

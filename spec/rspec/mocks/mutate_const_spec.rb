@@ -149,10 +149,7 @@ module RSpec
         if RUBY_VERSION >= '3.1'
           describe 'with global exclude_stubbed_classes_from_subclasses option set' do
             include_context "with isolated configuration"
-
-            before do
-              RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
-            end
+            include_context "with stubbed classes excluded from subclasses"
 
             it 'gives the same subclasses after rspec clears its mocks' do
               original_subclasses = TestClass.subclasses
@@ -372,10 +369,7 @@ module RSpec
           if RUBY_VERSION >= '3.1'
             describe 'with global exclude_stubbed_classes_from_subclasses option set' do
               include_context "with isolated configuration"
-
-              before do
-                RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
-              end
+              include_context "with stubbed classes excluded from subclasses"
 
               it 'gives the same subclasses after rspec clears its mocks' do
                 original_subclasses = TestClass::Nested.subclasses
