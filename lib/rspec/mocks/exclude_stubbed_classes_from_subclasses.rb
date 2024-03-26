@@ -10,7 +10,7 @@ module RSpec
 
         require 'weakref'
 
-        mod_something = Module.new do
+        mod_exclude_subclasses = Module.new do
           def excluded_subclasses
             @excluded_subclasses ||= []
             @excluded_subclasses.select(&:weakref_alive?).map do |ref|
@@ -27,11 +27,11 @@ module RSpec
             @excluded_subclasses << ::WeakRef.new(constant)
           end
         end
-        RSpec::Mocks.extend(mod_something)
+        extend(mod_exclude_subclasses)
 
         Class.class_eval do
           def subclasses_with_rspec_mocks
-            subclasses_without_rspec_mocks - RSpec::Mocks.excluded_subclasses
+            subclasses_without_rspec_mocks - RSpec::Mocks::ExcludeStubbedClassesFromSubclasses.excluded_subclasses
           end
 
           alias subclasses_without_rspec_mocks subclasses

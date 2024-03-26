@@ -113,11 +113,11 @@ module RSpec
 
     # To speed up boot time a bit, delay loading optional or rarely
     # used features until their first use.
-    autoload :AnyInstance,                          "rspec/mocks/any_instance"
-    autoload :ExpectChain,                          "rspec/mocks/message_chain"
-    autoload :StubChain,                            "rspec/mocks/message_chain"
-    autoload :MarshalExtension,                     "rspec/mocks/marshal_extension"
-    autoload :ExcludeStubbedClassesFromSubclasses,  "rspec/mocks/exclude_stubbed_classes_from_subclasses"
+    autoload :AnyInstance, "rspec/mocks/any_instance"
+    autoload :ExpectChain, "rspec/mocks/message_chain"
+    autoload :StubChain, "rspec/mocks/message_chain"
+    autoload :MarshalExtension, "rspec/mocks/marshal_extension"
+    autoload :ExcludeStubbedClassesFromSubclasses, "rspec/mocks/exclude_stubbed_classes_from_subclasses"
 
     # Namespace for mock-related matchers.
     module Matchers
@@ -125,10 +125,10 @@ module RSpec
       # just a "tag" for rspec-mock matchers detection
       module Matcher; end
 
-      autoload :HaveReceived,        "rspec/mocks/matchers/have_received"
-      autoload :Receive,             "rspec/mocks/matchers/receive"
+      autoload :HaveReceived, "rspec/mocks/matchers/have_received"
+      autoload :Receive, "rspec/mocks/matchers/receive"
       autoload :ReceiveMessageChain, "rspec/mocks/matchers/receive_message_chain"
-      autoload :ReceiveMessages,     "rspec/mocks/matchers/receive_messages"
+      autoload :ReceiveMessages, "rspec/mocks/matchers/receive_messages"
     end
   end
 end

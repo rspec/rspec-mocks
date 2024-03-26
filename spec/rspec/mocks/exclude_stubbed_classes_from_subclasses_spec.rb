@@ -11,16 +11,17 @@ if RUBY_VERSION >= '3.1'
 
         describe '.enable!' do
           it 'does not extends Class when it has been enabled' do
+            allow(described_class).to receive(:extend).once
+
+            described_class.enable!
             described_class.enable!
 
-            expect {
-              described_class.enable!
-            }.not_to(change { Class.respond_to?(:subclasses_with_rspec_mocks) })
+            expect(described_class).to have_received(:extend).once
           end
 
           it 'extends RSpec::Mocks with methods' do
             described_class.enable!
-            expect(RSpec::Mocks).to respond_to(:excluded_subclasses)
+            expect(described_class).to respond_to(:excluded_subclasses)
           end
 
           it 'extends Class with methods' do
@@ -33,11 +34,15 @@ if RUBY_VERSION >= '3.1'
             ::RSpec::Mocks.space.reset_all
             RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
 
+            orignal_subclasses = TestClass.subclasses
+
             subclass = Class.new(TestClass)
             stub_const('TestSubClass', subclass)
 
+            expect(TestClass.subclasses).to eq(orignal_subclasses + [subclass])
+
             ::RSpec::Mocks.space.reset_all
-            expect(TestClass.subclasses.map(&:object_id)).not_to include(subclass.object_id)
+            expect(TestClass.subclasses).to eq(orignal_subclasses)
           end
         end
 

@@ -221,7 +221,7 @@ module RSpec
         end
 
         def reset
-          RSpec::Mocks.exclude_subclass(@mutated_value) if RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses?
+          RSpec::Mocks::ExcludeStubbedClassesFromSubclasses.exclude_subclass(@mutated_value) if RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses?
           @constants_to_transfer.each do |const|
             @mutated_value.__send__(:remove_const, const)
           end
@@ -298,7 +298,7 @@ module RSpec
         end
 
         def reset
-          RSpec::Mocks.exclude_subclass(@mutated_value) if RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses?
+          RSpec::Mocks::ExcludeStubbedClassesFromSubclasses.exclude_subclass(@mutated_value) if RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses?
           @parent.__send__(:remove_const, @const_name)
         end
 
