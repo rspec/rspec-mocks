@@ -39,10 +39,9 @@ if RUBY_VERSION >= '3.1'
             subclass = Class.new(TestClass)
             stub_const('TestSubClass', subclass)
 
-            expect(TestClass.subclasses).to eq(orignal_subclasses + [subclass])
-
-            ::RSpec::Mocks.space.reset_all
-            expect(TestClass.subclasses).to eq(orignal_subclasses)
+            expect {
+              ::RSpec::Mocks.space.reset_all
+            }.to change { TestClass.subclasses }.from(orignal_subclasses + [subclass]).to(orignal_subclasses)
           end
         end
 
