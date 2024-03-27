@@ -10,38 +10,30 @@ if RUBY_VERSION >= '3.1'
         end
 
         describe '.enable!' do
-          it 'does not extends Class when it has been enabled' do
-            allow(described_class).to receive(:extend).once
-
-            described_class.enable!
-            described_class.enable!
-
-            expect(described_class).to have_received(:extend).once
-          end
-
-          it 'extends RSpec::Mocks with methods' do
-            described_class.enable!
-            expect(described_class).to respond_to(:excluded_subclasses)
-          end
-
           it 'extends Class with methods' do
             expect {
               described_class.enable!
             }.to change { Class.respond_to?(:subclasses_with_rspec_mocks) }.from(false).to(true)
           end
 
+          it 'does not extends Class when it has been enabled' do
+            allow(Class).to receive(:class_eval).and_call_original
+
+            described_class.enable!
+            described_class.enable!
+
+            expect(Class).to have_received(:class_eval).once
+          end
+
           it 'excludes stubbed classes from subclasses' do
-            ::RSpec::Mocks.space.reset_all
-            RSpec::Mocks.configuration.exclude_stubbed_classes_from_subclasses = true
+            described_class.enable!
 
             orignal_subclasses = TestClass.subclasses
 
             subclass = Class.new(TestClass)
-            stub_const('TestSubClass', subclass)
+            described_class.exclude_subclass(subclass)
 
-            expect {
-              ::RSpec::Mocks.space.reset_all
-            }.to change { TestClass.subclasses }.from(orignal_subclasses + [subclass]).to(orignal_subclasses)
+            expect(TestClass.subclasses).to eq(orignal_subclasses)
           end
         end
 
@@ -50,7 +42,7 @@ if RUBY_VERSION >= '3.1'
             expect { described_class.disable! }.not_to raise_error
           end
 
-          it 'removes methods when it has been enabled' do
+          it 'removes methods from class when it has been enabled' do
             described_class.enable!
             expect {
               described_class.disable!
@@ -58,12 +50,45 @@ if RUBY_VERSION >= '3.1'
           end
 
           it 'does not exclude stubbed classes from subclasses' do
+            described_class.enable!
+            described_class.disable!
+
+            orignal_subclasses = TestClass.subclasses
+
             subclass = Class.new(TestClass)
+            described_class.exclude_subclass(subclass)
 
-            stub_const('TestSubClass', subclass)
+            expect(TestClass.subclasses).to an_array_matching(orignal_subclasses + [subclass])
+          end
+        end
 
-            ::RSpec::Mocks.space.reset_all
-            expect(TestClass.subclasses).to include(subclass)
+        describe '.excluded_subclasses' do
+          it 'returns excluded subclasses' do
+            subclass = Class.new
+            described_class.exclude_subclass(subclass)
+
+            expect(described_class.excluded_subclasses).to eq([subclass])
+          end
+
+          it 'does not return excluded subclasses that have been garbage collected' do
+            subclass = Class.new
+            described_class.exclude_subclass(subclass)
+
+            subclass = nil
+
+            GC.start
+
+            expect(described_class.excluded_subclasses).to eq([])
+          end
+
+          it 'does not return excluded subclasses that raises a ::WeakRef::RefError' do
+            require 'weakref'
+            subclass = double(:weakref_alive? => true)
+            described_class.instance_variable_set(:@excluded_subclasses, [subclass])
+
+            allow(subclass).to receive(:__getobj__).and_raise(::WeakRef::RefError)
+
+            expect(described_class.excluded_subclasses).to eq([])
           end
         end
       end

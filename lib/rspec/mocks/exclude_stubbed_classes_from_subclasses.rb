@@ -4,48 +4,51 @@ module RSpec
     #
     # @private
     class ExcludeStubbedClassesFromSubclasses
-      def self.enable!
-        return unless RUBY_VERSION >= "3.1"
-        return if Class.respond_to?(:subclasses_with_rspec_mocks)
+      class << self
+        def enable!
+          return unless RUBY_VERSION >= "3.1"
+          return if Class.respond_to?(:subclasses_with_rspec_mocks)
 
-        require 'weakref'
+          Class.class_eval do
+            def subclasses_with_rspec_mocks
+              subclasses_without_rspec_mocks - RSpec::Mocks::ExcludeStubbedClassesFromSubclasses.excluded_subclasses
+            end
 
-        mod_exclude_subclasses = Module.new do
-          def excluded_subclasses
-            @excluded_subclasses ||= []
-            @excluded_subclasses.select(&:weakref_alive?).map do |ref|
-              begin
-                ref.__getobj__
-              rescue ::WeakRef::RefError
-                nil
-              end
-            end.compact
-          end
-
-          def exclude_subclass(constant)
-            @excluded_subclasses ||= []
-            @excluded_subclasses << ::WeakRef.new(constant)
+            alias subclasses_without_rspec_mocks subclasses
+            alias subclasses subclasses_with_rspec_mocks
           end
         end
-        extend(mod_exclude_subclasses)
 
-        Class.class_eval do
-          def subclasses_with_rspec_mocks
-            subclasses_without_rspec_mocks - RSpec::Mocks::ExcludeStubbedClassesFromSubclasses.excluded_subclasses
+        def disable!
+          @excluded_subclasses = []
+
+          if Class.respond_to?(:subclasses_with_rspec_mocks)
+            Class.class_eval do
+              undef subclasses_with_rspec_mocks
+              alias subclasses subclasses_without_rspec_mocks # rubocop:disable Lint/DuplicateMethods
+              undef subclasses_without_rspec_mocks
+            end
           end
-
-          alias subclasses_without_rspec_mocks subclasses
-          alias subclasses subclasses_with_rspec_mocks
         end
-      end
 
-      def self.disable!
-        return unless Class.respond_to?(:subclasses_with_rspec_mocks)
+        def excluded_subclasses
+          require 'weakref' unless defined?(::WeakRef)
 
-        Class.class_eval do
-          undef subclasses_with_rspec_mocks
-          alias subclasses subclasses_without_rspec_mocks # rubocop:disable Lint/DuplicateMethods
-          undef subclasses_without_rspec_mocks
+          @excluded_subclasses ||= []
+          @excluded_subclasses.select(&:weakref_alive?).map do |ref|
+            begin
+              ref.__getobj__
+            rescue ::WeakRef::RefError
+              nil
+            end
+          end.compact
+        end
+
+        def exclude_subclass(constant)
+          require 'weakref' unless defined?(::WeakRef)
+
+          @excluded_subclasses ||= []
+          @excluded_subclasses << ::WeakRef.new(constant)
         end
       end
     end
