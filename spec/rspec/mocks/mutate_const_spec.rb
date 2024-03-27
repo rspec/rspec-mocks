@@ -145,6 +145,20 @@ module RSpec
         it 'returns nil' do
           expect(hide_const(const_name)).to be_nil
         end
+
+        if RUBY_VERSION >= '3.1'
+          describe 'with global exclude_stubbed_classes_from_subclasses option set' do
+            include_context "with isolated configuration"
+            include_context "with stubbed classes excluded from subclasses"
+
+            it 'gives the same subclasses after rspec clears its mocks' do
+              original_subclasses = TestClass.subclasses
+              stub_const(const_name, Class.new(TestClass))
+              reset_rspec_mocks
+              expect(TestClass.subclasses).to an_array_matching(original_subclasses)
+            end
+          end
+        end
       end
 
       describe "#hide_const" do
@@ -348,6 +362,20 @@ module RSpec
                 expect {
                   stub_const("TOP_LEVEL_VALUE_CONST", 4, :transfer_nested_constants => true)
                 }.to raise_error(/cannot transfer nested constant/i)
+              end
+            end
+          end
+
+          if RUBY_VERSION >= '3.1'
+            describe 'with global exclude_stubbed_classes_from_subclasses option set' do
+              include_context "with isolated configuration"
+              include_context "with stubbed classes excluded from subclasses"
+
+              it 'gives the same subclasses after rspec clears its mocks' do
+                original_subclasses = TestClass::Nested.subclasses
+                stub_const('TestClass', Class.new(TestClass::Nested))
+                reset_rspec_mocks
+                expect(TestClass::Nested.subclasses).to an_array_matching(original_subclasses)
               end
             end
           end
