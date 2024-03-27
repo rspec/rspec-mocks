@@ -25,7 +25,7 @@ module RSpec
           if Class.respond_to?(:subclasses_with_rspec_mocks)
             Class.class_eval do
               undef subclasses_with_rspec_mocks
-              alias subclasses subclasses_without_rspec_mocks # rubocop:disable Lint/DuplicateMethods
+              alias subclasses subclasses_without_rspec_mocks
               undef subclasses_without_rspec_mocks
             end
           end
@@ -36,7 +36,7 @@ module RSpec
 
           @excluded_subclasses ||= []
           @excluded_subclasses.select(&:weakref_alive?).map do |ref|
-            begin
+            begin # rubocop:disable Style/RedundantBegin
               ref.__getobj__
             rescue ::WeakRef::RefError
               nil
