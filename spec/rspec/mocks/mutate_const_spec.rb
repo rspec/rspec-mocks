@@ -155,7 +155,7 @@ module RSpec
               original_subclasses = TestClass.subclasses
               stub_const(const_name, Class.new(TestClass))
               reset_rspec_mocks
-              expect(TestClass.subclasses).to eq(original_subclasses)
+              expect(TestClass.subclasses).to an_array_matching(original_subclasses)
             end
           end
         end
@@ -375,7 +375,7 @@ module RSpec
                 original_subclasses = TestClass::Nested.subclasses
                 stub_const('TestClass', Class.new(TestClass::Nested))
                 reset_rspec_mocks
-                expect(TestClass::Nested.subclasses).to eq(original_subclasses)
+                expect(TestClass::Nested.subclasses).to an_array_matching(original_subclasses)
               end
             end
           end

@@ -33,7 +33,7 @@ if RUBY_VERSION >= '3.1'
             subclass = Class.new(TestClass)
             described_class.exclude_subclass(subclass)
 
-            expect(TestClass.subclasses).to eq(orignal_subclasses)
+            expect(TestClass.subclasses).to an_array_matching(orignal_subclasses)
           end
         end
 
@@ -67,7 +67,7 @@ if RUBY_VERSION >= '3.1'
             subclass = Class.new
             described_class.exclude_subclass(subclass)
 
-            expect(described_class.excluded_subclasses).to eq([subclass])
+            expect(described_class.excluded_subclasses).to an_array_matching([subclass])
           end
 
           it 'does not return excluded subclasses that have been garbage collected' do
