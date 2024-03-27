@@ -36,7 +36,7 @@ module RSpec
 
           @excluded_subclasses ||= []
           @excluded_subclasses.select(&:weakref_alive?).map do |ref|
-            begin # rubocop:disable Style/RedundantBegin
+            begin
               ref.__getobj__
             rescue ::WeakRef::RefError
               nil
