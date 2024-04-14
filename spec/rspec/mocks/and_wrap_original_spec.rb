@@ -11,6 +11,46 @@ RSpec.describe "and_wrap_original" do
     let(:instance) { klass.new }
 
     shared_examples "using and_wrap_original" do
+      context 'with a class inheriting a method using argument forwarding' do
+        class ApplicationService
+          class << self
+            private_class_method :new
+
+            def call_now(...)
+              new(...).call
+            end
+          end
+        end
+
+        class MyService < ApplicationService
+          def initialize(my_object:)
+            @my_object = my_object
+          end
+
+          def call
+          end
+
+          private
+
+          attr_reader :my_object
+        end
+
+        current_time = nil
+
+        before do
+          allow(MyService).to receive(:call_now).and_wrap_original do |blk, *args|
+            blk.call(*args)
+            current_time = Time.now
+          end
+        end
+
+        it "allows us to modify the results of the original method" do
+          MyService.call_now(my_object: nil)
+
+          expect(current_time).not_to be_nil
+        end
+      end
+
       it "allows us to modify the results of the original method" do
         expect {
           allow_it.to receive(:results).and_wrap_original do |m|
