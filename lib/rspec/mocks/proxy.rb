@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support 'mutex'
+
 module RSpec
   module Mocks
     # @private
@@ -7,11 +9,6 @@ module RSpec
         def ==(expectation)
           expectation.orig_object == object && expectation.matches?(message, *args)
         end
-      end
-
-      unless defined?(Proxy::Mutex)
-        Support.require_rspec_support 'mutex'
-        Mutex = Support::Mutex
       end
 
       # @private
