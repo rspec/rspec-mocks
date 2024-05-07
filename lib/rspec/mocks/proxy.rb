@@ -27,7 +27,7 @@ module RSpec
         @order_group = order_group
         @error_generator = ErrorGenerator.new(object)
         @messages_received = []
-        @messages_received_mutex = Mutex.new
+        @messages_received_mutex = Support::Mutex.new
         @options = options
         @null_object = false
         @method_doubles = Hash.new { |h, k| h[k] = MethodDouble.new(@object, k, self) }
