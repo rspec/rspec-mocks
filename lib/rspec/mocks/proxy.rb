@@ -9,7 +9,7 @@ module RSpec
         end
       end
 
-      unless defined?(Mutex)
+      unless defined?(Proxy::Mutex)
         Support.require_rspec_support 'mutex'
         Mutex = Support::Mutex
       end
