@@ -1,6 +1,11 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.13.0...main)
 
+Bug Fixes:
+
+* Use `RSpec::Support::Mutex` in `RSpec::Mocks::Proxy` to avoid issues from
+  stubbing `::Mutex#new`. (Eric Mueller, #1575)
+
 ### 3.13.0 / 2024-02-04
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.12.7...v3.13.0)
 
