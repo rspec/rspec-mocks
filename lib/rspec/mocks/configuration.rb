@@ -10,6 +10,7 @@ module RSpec
         @verify_partial_doubles = false
         @temporarily_suppress_partial_double_verification = false
         @color = false
+        @exclude_stubbed_classes_from_subclasses = false
       end
 
       # Sets whether RSpec will warn, ignore, or fail a test when
@@ -175,6 +176,22 @@ module RSpec
         # is loaded; otherwise you can set it here.
         def color?
           @color
+        end
+      end
+
+      def exclude_stubbed_classes_from_subclasses?
+        @exclude_stubbed_classes_from_subclasses
+      end
+
+      # When this is set to true, stubbed classes are excluded from the list of
+      # subclasses of the parent class after each spec.
+      def exclude_stubbed_classes_from_subclasses=(val)
+        @exclude_stubbed_classes_from_subclasses = !!val
+
+        if val
+          RSpec::Mocks::ExcludeStubbedClassesFromSubclasses.enable!
+        else
+          RSpec::Mocks::ExcludeStubbedClassesFromSubclasses.disable!
         end
       end
 
