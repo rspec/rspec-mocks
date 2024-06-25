@@ -157,6 +157,29 @@ module RSpec
         }.to fail_with(/MyClass/)
       end
 
+      it "formats an error message when inspect fails" do
+        klass = Struct.new(:name) do
+          def inspect
+            "<Inspector(#{name})>"
+          end
+        end
+
+        object = klass.new('foo')
+        expect(object).to receive(:name).once.and_return('bar')
+        object.name
+
+        expect {
+          object.name
+        }.to fail_with(
+          %|(<Inspector(bar)>).name(no args)\n    expected: 1 time with any arguments\n    received: 2 times|
+        )
+        expect {
+          verify object
+        }.to fail_with(
+          %|(<Inspector(bar)>).name(*(any args))\n    expected: 1 time with any arguments\n    received: 2 times with any arguments|
+        )
+      end
+
       it "shares message expectations with clone" do
         expect(object).to receive(:foobar)
         twin = object.clone
