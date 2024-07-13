@@ -68,7 +68,7 @@ module RSpec
       #   counter.count # => 3
       #   counter.count # => 3
       #   # etc
-      def and_return(first_value, *values)
+      def and_return(first_value, *values, &_block)
         raise_already_invoked_error_if_necessary(__method__)
         if negative?
           raise "`and_return` is not supported with negative message expectations"
@@ -106,7 +106,7 @@ module RSpec
       #   api.get_foo # => :a_foo
       #   api.get_foo # => :a_foo
       #   # etc
-      def and_invoke(first_proc, *procs)
+      def and_invoke(first_proc, *procs, &_block)
         raise_already_invoked_error_if_necessary(__method__)
         if negative?
           raise "`and_invoke` is not supported with negative message expectations"
