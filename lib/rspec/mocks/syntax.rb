@@ -115,7 +115,7 @@ module RSpec
             Matchers::Receive.new(method_name, block)
           end
 
-          def receive_messages(message_return_value_hash)
+          def receive_messages(message_return_value_hash, &_block)
             matcher = Matchers::ReceiveMessages.new(message_return_value_hash)
             matcher.warn_about_block if block_given?
             matcher

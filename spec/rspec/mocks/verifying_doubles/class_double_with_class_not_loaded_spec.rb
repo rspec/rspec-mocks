@@ -46,7 +46,7 @@ module RSpec
         it 'can mock private module methods' do
           double = Module.new
           allow(double).to receive(:use)
-          expect { double.use }.to raise_error(/private method `use' called/)
+          expect { double.use }.to raise_error(/private method [`']use' called/)
 
           double = class_double("NonloadedClass")
           expect(double).to receive(:use).and_return(:ok)
