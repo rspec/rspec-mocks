@@ -87,12 +87,12 @@ module RSpec
 
       it "remains private when it stubs a private instance method" do
         allow(@instance).to receive(:existing_private_instance_method).and_return(1)
-        expect { @instance.existing_private_instance_method }.to raise_error NoMethodError, /private method `existing_private_instance_method/
+        expect { @instance.existing_private_instance_method }.to raise_error NoMethodError, /private method [`']existing_private_instance_method/
       end
 
       it "remains private when it stubs a private class method" do
         allow(@class).to receive(:existing_private_class_method).and_return(1)
-        expect { @class.existing_private_class_method }.to raise_error NoMethodError, /private method `existing_private_class_method/
+        expect { @class.existing_private_class_method }.to raise_error NoMethodError, /private method [`']existing_private_class_method/
       end
 
       context "using `with`" do
