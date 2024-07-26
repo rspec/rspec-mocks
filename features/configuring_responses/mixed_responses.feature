@@ -8,6 +8,9 @@ Feature: Mixed responses
   use a `lambda` or similar with the same arity as your method but you can use a `proc` if you
   do not care about arity (e.g. when raising).
 
+  Note: You can also use `and_invoke` to yield. In this case, use a `proc` with a `&block`
+  parameter.
+
   Scenario: Mixed responses
     Given a file named "raises_and_then_returns.rb" with:
       """ruby
@@ -22,4 +25,23 @@ Feature: Mixed responses
       end
       """
      When I run `rspec raises_and_then_returns.rb`
+     Then the examples should all pass
+
+  Scenario: Yielding
+    Given a file named "yields_and_raises.rb" with:
+      """ruby
+      RSpec.describe "when the method is called multiple times" do
+        it "yields and then later raises" do
+          dbl = double
+          allow(dbl).to receive(:foo).and_invoke(
+            proc { |&block| block.call("foo") },
+            proc { raise "failure" }
+          )
+
+          dbl.foo { |yielded| expect(yielded).to eq("foo") }
+          expect { dbl.foo }.to raise_error("failure")
+        end
+      end
+      """
+     When I run `rspec yields_and_raises.rb`
      Then the examples should all pass
