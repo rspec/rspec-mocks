@@ -171,6 +171,27 @@ module RSpec
         expect { duplicate.foobar }.to raise_error(NoMethodError, /foobar/)
         expect { verify object }.to fail_with(/foobar/)
       end
+
+      describe "class" do
+        let(:object) do
+          Class.new
+        end
+
+        it "shares message expectations with clone" do
+          expect(object).to receive(:foobar)
+          twin = object.clone
+          twin.foobar
+          expect { verify twin }.not_to raise_error
+          expect { verify object }.not_to raise_error
+        end
+
+        it "clears message expectations when `dup`ed" do
+          expect(object).to receive(:foobar)
+          duplicate = object.dup
+          expect { duplicate.foobar }.to raise_error(NoMethodError, /foobar/)
+          expect { verify object }.to fail_with(/foobar/)
+        end
+      end
     end
 
     RSpec.describe "Using a reopened file object as a partial mock" do

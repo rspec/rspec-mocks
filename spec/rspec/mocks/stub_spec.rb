@@ -95,6 +95,18 @@ module RSpec
         expect { @class.existing_private_class_method }.to raise_error NoMethodError, /private method [`']existing_private_class_method/
       end
 
+      context "on a class" do
+        it "is retained when stubbed object is `clone`d" do
+          allow(@class).to receive(:foobar).and_return(1)
+          expect(@class.clone.foobar).to eq(1)
+        end
+
+        it "is cleared when stubbed object when `dup`ed" do
+          allow(@class).to receive(:foobar).and_return(1)
+          expect { @class.dup.foobar }.to raise_error NoMethodError, /foobar/
+        end
+      end
+
       context "using `with`" do
         it 'determines which value is returned' do
           allow(@stub).to receive(:foo).with(1) { :one }
