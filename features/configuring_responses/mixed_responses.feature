@@ -24,7 +24,7 @@ Feature: Mixed responses
      When I run `rspec raises_and_then_returns.rb`
      Then the examples should all pass
 
-  Scenario: Yielding
+  Scenario: Block arguments
     Given a file named "yields_and_raises.rb" with:
       """ruby
       RSpec.describe "when the method is called multiple times" do
