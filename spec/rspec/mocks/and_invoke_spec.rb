@@ -39,6 +39,18 @@ module RSpec
           expect(dbl.square_then_cube(2)).to eq 4
           expect(dbl.square_then_cube(2)).to eq 8
         end
+
+        if RSpec::Support::RubyFeatures.kw_args_supported?
+          binding.eval(<<-RUBY, __FILE__, __LINE__)
+          it 'passes keyword arguments into the callable' do
+            expect(dbl).to receive(:square_then_cube).and_invoke(lambda { |i: 1| i ** 2 },
+                                                                 lambda { |i: 1| i ** 3 })
+
+            expect(dbl.square_then_cube(i: 2)).to eq 4
+            expect(dbl.square_then_cube(i: 2)).to eq 8
+          end
+          RUBY
+        end
       end
     end
   end
