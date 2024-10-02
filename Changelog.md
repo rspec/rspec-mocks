@@ -1,6 +1,10 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.13.1...3-13-maintennace)
 
+Bug Fixes:
+
+* Support keyword arguments in callables passed to `and_invoke`. (Jon Rowe, #1595)
+
 ### 3.13.1 / 2024-05-08
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.13.0...v3.13.1)
 
