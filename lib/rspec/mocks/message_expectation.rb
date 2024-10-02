@@ -748,6 +748,7 @@ module RSpec
 
         proc.call(*args, &block)
       end
+      ruby2_keywords(:call) if respond_to?(:ruby2_keywords, true)
     end
 
     # Represents a configured implementation. Takes into account
