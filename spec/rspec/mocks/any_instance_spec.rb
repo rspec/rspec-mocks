@@ -1078,16 +1078,17 @@ module RSpec
 
               let(:object) { klass.new }
 
+              # The map(&:to_sym) is for legacy Ruby compatability and can be dropped in RSpec 4
               it "maintains the method in the list of private_methods" do
                 expect {
                   verify_all
-                }.to_not change { object.private_methods.include?(:private_method) }.from(true)
+                }.to_not change { object.private_methods.map(&:to_sym).include?(:private_method) }.from(true)
               end
 
               it "maintains the methods exclusion from the list of public_methods" do
                 expect {
                   verify_all
-                }.to_not change { object.public_methods.include?(:private_method) }.from(false)
+                }.to_not change { object.public_methods.map(&:to_sym).include?(:private_method) }.from(false)
               end
 
               it "maintains the methods visibility" do
@@ -1129,7 +1130,7 @@ module RSpec
 
               it "restores a stubbed private method after the spec is run" do
                 expect(klass.private_method_defined?(:private_method)).to be_truthy
-                expect(klass.new.private_methods).to include :private_method
+                expect(klass.new.private_methods.map(&:to_sym)).to include :private_method
               end
 
               it "ensures that the restored method behaves as it originally did" do
