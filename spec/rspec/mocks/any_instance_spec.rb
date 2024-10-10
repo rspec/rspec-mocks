@@ -1074,22 +1074,43 @@ module RSpec
             end
 
             context "private methods" do
-              before :each do
-                allow_any_instance_of(klass).to receive(:private_method).and_return(:something)
+              before(:example) { allow_any_instance_of(klass).to receive(:private_method).and_return(:something) }
 
-                verify_all
+              let(:object) { klass.new }
+
+              # The map(&:to_sym) is for legacy Ruby compatability and can be dropped in RSpec 4
+              it "maintains the method in the list of private_methods" do
+                expect {
+                  verify_all
+                }.to_not change { object.private_methods.map(&:to_sym).include?(:private_method) }.from(true)
               end
 
-              it "cleans up the backed up method" do
-                expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
+              it "maintains the methods exclusion from the list of public_methods" do
+                expect {
+                  verify_all
+                }.to_not change { object.public_methods.map(&:to_sym).include?(:private_method) }.from(false)
               end
 
-              it "restores a stubbed private method after the spec is run" do
+              it "maintains the methods visibility" do
+                expect { klass.new.private_method }.to raise_error(NoMethodError)
+                expect(klass.new.send(:private_method)).to eq(:something)
                 expect(klass.private_method_defined?(:private_method)).to be_truthy
               end
 
-              it "ensures that the restored method behaves as it originally did" do
-                expect(klass.new.send(:private_method)).to eq(:private_method_return_value)
+              context "after the spec has run" do
+                before(:example) { verify_all }
+
+                it "cleans up the backed up method" do
+                  expect(klass.method_defined?(:__existing_method_without_any_instance__)).to be_falsey
+                end
+
+                it "restores a stubbed private method after the spec is run" do
+                  expect(klass.private_method_defined?(:private_method)).to be_truthy
+                end
+
+                it "ensures that the restored method behaves as it originally did" do
+                  expect(klass.new.send(:private_method)).to eq(:private_method_return_value)
+                end
               end
             end
           end
@@ -1098,7 +1119,7 @@ module RSpec
             context "private methods" do
               before :each do
                 expect_any_instance_of(klass).to receive(:private_method).and_return(:something)
-                klass.new.private_method
+                klass.new.send(:private_method)
 
                 verify_all
               end
@@ -1109,6 +1130,7 @@ module RSpec
 
               it "restores a stubbed private method after the spec is run" do
                 expect(klass.private_method_defined?(:private_method)).to be_truthy
+                expect(klass.new.private_methods.map(&:to_sym)).to include :private_method
               end
 
               it "ensures that the restored method behaves as it originally did" do

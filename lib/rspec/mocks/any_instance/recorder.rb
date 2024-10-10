@@ -259,10 +259,12 @@ module RSpec
           @observed_methods << method_name
           backup_method!(method_name)
           recorder = self
+          method_was_private = @klass.private_method_defined?(method_name)
           @klass.__send__(:define_method, method_name) do |*args, &blk|
             recorder.playback!(self, method_name)
             __send__(method_name, *args, &blk)
           end
+          @klass.__send__(:private, method_name) if method_was_private
           @klass.__send__(:ruby2_keywords, method_name) if @klass.respond_to?(:ruby2_keywords, true)
         end
 
