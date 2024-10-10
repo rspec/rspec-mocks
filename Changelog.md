@@ -1,6 +1,12 @@
 ### Development
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.13.2...main)
 
+Bug Fixes:
+
+* When stubbing methods using the `expect_any_instance_of` or `allow_any_instance_of`
+  ensure the stubbed method has the same visibility as the real method.
+  (Jon Rowe, #1596)
+
 ### 3.13.2 / 2024-10-02
 [Full Changelog](http://github.com/rspec/rspec-mocks/compare/v3.13.1...v3.13.2)
 
