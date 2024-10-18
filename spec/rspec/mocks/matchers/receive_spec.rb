@@ -130,7 +130,7 @@ module RSpec
               dbl.kw_args_method(a: 1, b: 2)
             end
 
-            if RUBY_VERSION >= '3.0'
+            if RUBY_VERSION.to_f >= 3.0
               it "fails to expect to receive hash with keyword args" do
                 expect {
                   dbl = instance_double(TestObject)
@@ -138,9 +138,16 @@ module RSpec
                   dbl.kw_args_method({a: 1, b: 2})
                 }.to fail_with do |failure|
                   reset_all
-                  expect(failure.message)
-                    .to include('expected: ({:a=>1, :b=>2}) (keyword arguments)')
-                    .and include('got: ({:a=>1, :b=>2}) (options hash)')
+
+                  if RUBY_VERSION.to_f > 3.3
+                    expect(failure.message)
+                      .to include('expected: ({:a => 1, :b => 2}) (keyword arguments)')
+                      .and include('got: ({:a => 1, :b => 2}) (options hash)')
+                  else
+                    expect(failure.message)
+                      .to include('expected: ({:a=>1, :b=>2}) (keyword arguments)')
+                      .and include('got: ({:a=>1, :b=>2}) (options hash)')
+                  end
                 end
               end
             else
@@ -505,9 +512,14 @@ module RSpec
               receiver.foo(1, :bar => 2)
               receiver.foo(1, :bar => 3)
 
-              expect { verify_all }.to(
-                raise_error(/received: 2 times with arguments: \(anything, hash_including\(:bar=>"anything"\)\)$/)
-              )
+              message =
+                if RUBY_VERSION.to_f > 3.3
+                  /received: 2 times with arguments: \(anything, hash_including\(bar: "anything"\)\)$/
+                else
+                  /received: 2 times with arguments: \(anything, hash_including\(:bar=>"anything"\)\)$/
+                end
+
+              expect { verify_all }.to raise_error(message)
             end
           end
         end

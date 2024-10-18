@@ -526,10 +526,17 @@ module RSpec
 
       if kw_args_supported?
         it 'fails when calling yielding method with invalid kw args' do
+          message =
+            if RUBY_VERSION.to_f > 3.3
+              '#<Double "test double"> yielded |{:x => 1, :y => 2}| to block with optional keyword args (:x)'
+            else
+              '#<Double "test double"> yielded |{:x=>1, :y=>2}| to block with optional keyword args (:x)'
+            end
+
           expect(@double).to receive(:yield_back).and_yield(:x => 1, :y => 2)
           expect {
             eval("@double.yield_back { |x: 1| }")
-          }.to fail_with '#<Double "test double"> yielded |{:x=>1, :y=>2}| to block with optional keyword args (:x)'
+          }.to fail_with message
         end
       end
 

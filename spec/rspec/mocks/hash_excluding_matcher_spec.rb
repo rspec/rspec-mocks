@@ -4,7 +4,14 @@ module RSpec
       RSpec.describe HashExcludingMatcher do
 
         it "describes itself properly" do
-          expect(HashExcludingMatcher.new(:a => 5).description).to eq "hash_not_including(:a=>5)"
+          message =
+            if RUBY_VERSION.to_f > 3.3
+              "hash_not_including(a: 5)"
+            else
+              "hash_not_including(:a=>5)"
+            end
+
+          expect(HashExcludingMatcher.new(:a => 5).description).to eq message
         end
 
         describe "passing" do

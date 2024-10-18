@@ -22,8 +22,13 @@ RSpec::Matchers.define :match_table do |lines|
   diffable
 end
 
-Then /^it should fail with the following output:$/ do |table|
+Then /^it should fail with the following output(, ignoring hash syntax)?:$/ do |ignore_hash_syntax, table|
   step %q(the exit status should be 1)
   lines = table.raw.flatten.reject(&:empty?)
+
+  if ignore_hash_syntax && RUBY_VERSION.to_f > 3.3
+    lines = lines.map { |line| line.gsub(/([^\s])=>/, '\1 => ') }
+  end
+
   expect(all_output).to match_table(lines)
 end
