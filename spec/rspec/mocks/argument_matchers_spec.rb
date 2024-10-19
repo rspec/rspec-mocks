@@ -256,7 +256,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(hash_including(:a => 1))
           expect {
             a_double.random_call(:a => 2)
-          }.to fail_including "expected: (hash_including(:a=>1))"
+          }.to fail_including "expected: (hash_including(#{hash_syntax(:a => 1)}))"
         end
       end
 
@@ -270,7 +270,7 @@ module RSpec
           expect(a_double).to receive(:random_call).with(hash_excluding(:a => 1))
           expect {
             a_double.random_call(:a => 1)
-          }.to fail_including "expected: (hash_not_including(:a=>1))"
+          }.to fail_including "expected: (hash_not_including(#{hash_syntax(:a => 1)}))"
         end
       end
 
@@ -431,7 +431,7 @@ module RSpec
             expect(a_double).to receive(:random_call).with(:a => "a", :b => "b")
             expect do
               a_double.random_call(opts)
-            end.to fail_with(/expected: \(\{(:a=>\"a\", :b=>\"b\"|:b=>\"b\", :a=>\"a\")\}\)/)
+            end.to fail_with(/expected: \(\{(:a\s*=>\s*\"a\", :b\s*=>\s*\"b\"|:b\s*=>\s*\"b\", :a\s*=>\s*\"a\")\}\)/)
           end
         else
           it "matches against a hash submitted as a positional argument and received as keyword arguments in Ruby 2.7 or before" do
@@ -445,14 +445,14 @@ module RSpec
           expect(a_double).to receive(:random_call).with(:a => "b", :c => "d")
           expect do
             a_double.random_call(:a => "b", :c => "e")
-          end.to fail_with(/expected: \(\{(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")\}\)/)
+          end.to fail_with(/expected: \(\{(:a\s*=>\s*\"b\", :c\s*=>\s*\"d\"|:c\s*=>\s*\"d\", :a\s*=>\s*\"b\")\}\)/)
         end
 
         it "fails for a hash w/ wrong keys", :reset => true do
           expect(a_double).to receive(:random_call).with(:a => "b", :c => "d")
           expect do
             a_double.random_call("a" => "b", "c" => "d")
-          end.to fail_with(/expected: \(\{(:a=>\"b\", :c=>\"d\"|:c=>\"d\", :a=>\"b\")\}\)/)
+          end.to fail_with(/expected: \(\{(:a\s*=>\s*\"b\", :c\s*=>\s*\"d\"|:c\s*=>\s*\"d\", :a\s*=>\s*\"b\")\}\)/)
         end
 
         it "matches a class against itself" do
@@ -501,6 +501,10 @@ module RSpec
           expect(a_double).to receive(:msg).with(arg)
           expect { a_double.msg 3 }.to fail_including "expected: (my_thing)"
         end
+      end
+
+      def hash_syntax(hash)
+        hash.inspect.gsub(/\{(.*)\}/, '\1')
       end
     end
   end

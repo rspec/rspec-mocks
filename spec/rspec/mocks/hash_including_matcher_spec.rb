@@ -4,7 +4,14 @@ module RSpec
       RSpec.describe HashIncludingMatcher do
 
         it "describes itself properly" do
-          expect(HashIncludingMatcher.new(:a => 1).description).to eq "hash_including(:a=>1)"
+          message =
+            if RUBY_VERSION.to_f > 3.3
+              "hash_including(a: 1)"
+            else
+              "hash_including(:a=>1)"
+            end
+
+          expect(HashIncludingMatcher.new(:a => 1).description).to eq message
         end
 
         it "describes passed matchers" do

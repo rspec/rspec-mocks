@@ -73,7 +73,7 @@ Feature: Matching arguments
       end
       """
     When I run `rspec keyword_example_spec.rb`
-    Then it should fail with the following output:
+    Then it should fail with the following output, ignoring hash syntax:
       | 2 examples, 1 failure                                                                 |
       |                                                                                       |
       | Failure/Error: dbl.foo(bar: "incorrect")                                              |
@@ -100,7 +100,7 @@ Feature: Matching arguments
       end
       """
     When I run `rspec keyword_example_spec.rb`
-    Then it should fail with the following output:
+    Then it should fail with the following output, ignoring hash syntax:
       | 1 example, 1 failure                                                                  |
       |                                                                                       |
       | Failure/Error: dbl.foo({bar: "also incorrect"})                                       |
@@ -156,7 +156,7 @@ Feature: Matching arguments
       end
       """
     When I run `rspec rspec_satisfy_spec.rb`
-    Then it should fail with the following output:
+    Then it should fail with the following output, ignoring hash syntax:
       | 2 examples, 1 failure                                         |
       |                                                               |
       | Failure/Error: dbl.foo({ :a => { :b => { :c => 3 } } })       |
