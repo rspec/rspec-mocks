@@ -3,7 +3,7 @@ rspec-mocks is a test-double framework for rspec with support for method stubs,
 fakes, and message expectations on generated test-doubles and real objects
 alike.
 
-**This is the old rspec metagem repository, please see the monorepo rspec/rspec for new issues and releases.**
+**This is the old rspec mocks repository, please see the monorepo rspec/rspec for new issues and releases.**
 
 ## Install
 
